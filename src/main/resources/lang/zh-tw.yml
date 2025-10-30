@@ -1,0 +1,825 @@
+# I spent a absolute fucking hour translating this shit by hand
+# You better like it >:(
+# - Huey
+
+general:
+  title: "<white>殲滅攻城戰 III</white>"
+  subtitle: "原作: <gold>Hageeshow</gold> / 第三版: <gold>_hueeey_</gold>"
+  plugin-prefix: "[<red>殲滅</red><white>攻城</white><yellow>戰</yellow>] "
+
+chat:
+  format: "<player>: <white><message></white>"
+  shout:
+    prefix: "[<gold>吶喊</gold>] "
+    empty: "我是白癡, 我吶喊但沒打訊息!"
+    cooldown: "<red>你必須等待 <value> 秒才能再次吶喊!</red>"
+
+player:
+  no-perm: "<red>你沒有權限這麼做!</red>"
+  in-cooldown: "<red>這項物品冷卻還有 <value> 秒</red>"
+  group-in-cooldown: "<red>此物品群組冷卻還有 <value> 秒</red>"
+  respawning: "在 <seconds> 秒後重生"
+  respawned: "<yellow>已重生</yellow>"
+
+quiz:
+  prefix: "[<light_purple>問題</light_purple>] "
+  question: "<aqua>答題以減少重生時間: <a> + <b> = ?</aqua>"
+  correct: "<green>正確! 重生時間減少 10 秒! (還有 <try> 次機會)</green>"
+  wrong: "<red>錯誤! 正確答案是 <answer> (還有 <try> 次機會)</red>"
+
+game:
+  phases:
+    core-protected:
+      name: "核心保護"
+      desc: "遊戲開始"
+    shop-opened:
+      name: "交易所開啟"
+      desc: "核心保護失效 / 交易所開啟"
+    missions-started:
+      name: "任務開始"
+      desc: "開始接收任務 / 鑽石礦開啟"
+    death-penalty:
+      name: "死亡懲罰"
+      desc: "每死一次扣 1 點核心生命"
+    double-core-damage:
+      name: "雙倍核心傷害"
+      desc: "核心受到的傷害雙倍"
+    core-wilting:
+      name: "核心凋零"
+      desc: "每 15 秒核心扣 1 點血"
+  phase-title: "<gold>第 <index> 階段</gold>"
+  sides:
+    red: "<red>紅隊</red>"
+    green: "<green>綠隊</green>"
+    spectator: "<gray>旁觀者</gray>"
+  prompt-rejoin: "用 <aqua>/rejoin</aqua> 以重新加入遊戲"
+  banned:
+    attack:
+      teammate: "<red>你幹麻打你隊友!</red>"
+      spectator: "<red>旁觀者不能攻擊!</red>"
+    use:
+      time: "<red>你現在什麼事都不能做!</red>"
+      lobby: "<red>你不能在大廳使用方塊!</red>"
+      rest-area: "<red>你不能在重生等待區附近使用方塊!</red>"
+      spectator: "<red>旁觀者不能使用方塊!</red>"
+    shop: "<red>交易所目前未開放!</red>"
+    place:
+      lobby: "<red>你不能在這裡放置方塊!</red>"
+      obsidian: "<red>你不能在核心旁放置黑曜石!</red>"
+      spawn: "<red>你不能在重生點附近放置方塊!</red>"
+    break:
+      netherite: "<red>你不能破壞獄髓磚!</red>"
+      time: "<red>你現在不能破壞方塊!</red>"
+      lobby: "<red>你不能在大廳破壞方塊!</red>"
+      rest-area: "<red>你不能在重生等待區附近破壞方塊!</red>"
+      enemy-container: "<red>你被懲罰 10 點罪惡!</red>"
+      own-core: "<red>你幹麻挖你自己核心!</red>"
+      spectator: "<red>旁觀者不能破壞方塊!</red>"
+    pour: "<red>你不能在核心旁倒液體!</red>"
+    open-enemy-container: "<red>你不能翻敵人的箱子!</red>"
+  bounty:
+    prefix: "[<light_purple>懸賞</light_purple>] "
+    reward: "<player> 得到了 <white>綠寶石</white> × <dark_aqua><amount></dark_aqua>"
+    appear: "<player> 成為了<aqua>殺人隊長</aqua>, 擊殺者可獲得綠寶石!"
+  death:
+    title: "<red>你死了</red>"
+    messages:
+      unknown: "<player> 死了"
+      kill: "<player> 被 <killer> <yellow><action></yellow>"
+      kill-actions: "無情殺死|爆打|送往天堂|實力輾壓|壓在地上打|打回原型|殺得灰飛煙滅|強制退休|嚇到吃手手|送去見老祖|斬首示眾"
+    killer-sin: "<red>你因為殺人, 罪惡值增加 2!</red>"
+  core-attack:
+    title: "核心攻擊"
+    subtitle: "來自 <player>"
+    message: "<player> 正在攻擊<side>核心, 剩餘 <yellow><health></yellow> 點血"
+  side:
+    join:
+      bad-time: "<red>你不能臨陣倒戈!</red>"
+      success: "你加入了<side>"
+    ender-chest: "團隊儲物箱"
+  truce:
+    warning: "<red>你腦中忽然冒出不該再繼續往前的想法</red>"
+    sent-spawn: "<player> 剛才<yellow>迷路了</yellow>結果被半顆心送回家"
+  height-warning: "<red>你即將得到高山症!</red>"
+  start-canceled: "<red>取消</red>"
+  missing-loc: "<red>地圖沒弄好!</red>"
+  result:
+    titles:
+      draw: "平手"
+      spectator: "遊戲結束"
+      win: "贏家"
+      lose: "輸光"
+    subtitles:
+      more-health: "<side> 有更多血"
+      destroyed: "<side> 摧毀了敵方核心"
+  reduce-respawn-time:
+    progress: "<aqua>你正在贖罪: <progress>/5</aqua>"
+    done: "<green>贖罪成功! 罪惡值減少 1 點</green>"
+    no-more: "<red>你的罪惡值太低不能贖罪!</red>"
+  ores:
+    luck: "<aqua>幸運! 礦物掉落 ×<amount>"
+    bad-luck: "<red>不幸! 礦物沒有掉落</red>"
+  credits:
+    title: "<white>殲滅攻城戰 III</white> - <yellow>遊戲結束</yellow>"
+    time: "遊玩時間: <time>"
+    list:
+      empty: "|"
+      first: "| <yellow>第 1 名</yellow> - <players> - <aqua><count></aqua>"
+      second: "| <gold>第 2 名</gold> - <players> - <aqua><count></aqua>"
+      third: "| <red>第 3 名</red> - <players> - <aqua><count></aqua>"
+      foot: "+---------------------------------------+"
+    top-attackers: "+--------------- <light_purple>核心攻擊數</light_purple> ---------------+"
+    top-killers: "+--------------- <light_purple>殺人如麻者</light_purple> ---------------+"
+    top-dyers: "+--------------- <light_purple>死到脫褲者</light_purple> ---------------+"
+    top-miners: "+--------------- <light_purple>最優質礦工</light_purple> ---------------+"
+    thanks: "<gold>感謝您的遊玩!</gold>"
+    sign: "- 插件製作人, <yellow>_hueeey_</yellow>"
+  bars:
+    no-ores: "<white>礦區封鎖: <time></white>"
+    no-shop: "<white>商店封鎖: <time></white>"
+
+item-gen:
+  right-click-to-use: "- <yellow>右鍵以使用</yellow>"
+
+tool:
+  prefix: "[<yellow>編輯</yellow>] "
+
+role:
+  prefix: "[<light_purple>職業</light_purple>] "
+  change: "<player> 轉職成為<yellow><role></yellow>"
+  skill: "[<white>技能</white>] <light_purple><name></light_purple>"
+  desc:
+    feature:
+      first: "<white>特色</white>: <aqua><desc></aqua>"
+      others: "<black>特色:</black> <aqua><desc></aqua>"
+    item: "<white>物品</white>: <green><name> (<detail>)</green>"
+  item-lore: "- <red><role>專屬物品</red>"
+
+mission:
+  prefix: "[<light_purple>任務</light_purple>] "
+  waiting-title: "<gray>任務冷卻時間</gray>"
+  progressive:
+    red-bar: "<red>紅隊進度</red>"
+    green-bar: "<green>綠隊進度</green>"
+  draw: "任務結果為<yellow>平手</yellow>!"
+  results:
+    clear-xp: "<side>因為任務失敗, 全員經驗值被<light_purple>歸零</light_purple>了!"
+    give-xp: "<side>因為任務成功, 每人獲得 <yellow>500 點經驗值</yellow>!"
+    bad-effect: "<side>因為任務失敗, 全員獲得<light_purple><effect></light_purple>效果!"
+    good-effect: "<side>因為任務成功, 全員獲得<yellow><effect></yellow>效果!"
+    add-respawn-time: "<side>因為任務失敗, 每人<light_purple>增加 20 點罪惡</light_purple>!"
+    remove-respawn-time: "<side>因為任務成功, 每人<yellow>減少 20 點罪惡</yellow>!"
+    ban-ores: "<side>因為任務失敗, 礦區<light_purple>封鎖 2 分鐘</light_purple>!"
+    ban-shop: "<side>因為任務失敗, 商店<light_purple>封鎖 2 分鐘</light_purple>!"
+    attack-core: "<side>因為任務失敗, 核心生命<light_purple>減少 10</light_purple>!"
+    summon-pig: "<side>因為任務失敗, 獲得 <light_purple><name></light_purple>!"
+    pig-name: "87 豬隊友"
+    void: "<side>因為任務失敗, <player> 被<light_purple>傳送到異世界</light_purple>!"
+    give-emerald: "<side>因為任務成功, 每人獲得 <yellow>1 個綠寶石</yellow>!"
+    lightning: "<side>因為任務失敗, 全員<light_purple>被閃電劈</light_purple>!"
+    tnt: "<side>因為任務失敗, <player> 得到<light_purple>點燃的 TNT</light_purple>!"
+    skill-cooldown: "<side>因為任務失敗, 全員技能冷卻<light_purple>增加 120 秒</light_purple>!"
+
+gui:
+  buttons:
+    next-page:
+      title: "<yellow>下一頁</yellow>"
+      desc: "到頁面 <gold><next></gold>/<max>"
+      desc-end: "<dark_purple>沒有更多頁了</dark_purple>"
+    prev-page:
+      title: "<yellow>上一頁</yellow>"
+      desc: "到頁面 <gold><prev></gold>/<max>"
+      desc-end: "<dark_purple>沒辦法再往前了</dark_purple>"
+    pick-random:
+      title: "<yellow>隨機</yellow>"
+      announce: "<player> 隨機轉職成<yellow><role></yellow>"
+  titles:
+    choose-role: "選個好職業"
+    teleporter: "傳送到玩家"
+
+board:
+  title: "<red>殲滅</red><white>攻城</white><yellow>戰</yellow>"
+  team: "<white>隊伍</white>: <side>"
+  role: "<white>職業</white>: <yellow><role></yellow>"
+  phase: "<white>階段</white> <green><index></green> - <aqua><title></aqua>"
+  countdown: "<white>倒數</white>: <time>"
+  health: "<white>❤</white>: <gold><a></gold> <gray>/</gray> <gold><b></gold>"
+  truce: "<white>停戰</white>: <time>"
+  sin: "<white>罪惡值</white>: <red><value></red>"
+  kd: "<white>擊殺數</white>: <yellow><kills></yellow> - <white>死亡數</white>: <yellow><deaths></yellow>"
+  attacks: "<white>核心攻擊次數</white>: <light_purple><value></light_purple>"
+  ores: "<white>總礦物數</white>: <light_purple><value></light_purple>"
+  wins: "<white>贏局</white>: <aqua><wins></aqua>/<dark_aqua><all></dark_aqua> <gold><ratio>%</gold>"
+
+command:
+  not-found: "沒有這種指令!"
+
+world:
+  deleting-live: "<aqua>正在刪除世界...</aqua>"
+  copying-template: "<aqua>正在複製模板...</aqua>"
+  copied: "<green>世界複製完成!</green>"
+  template-warning: "<red>你在模板世界中!</red>"
+
+commands:
+  night-vision:
+    on: "<green>已啟用夜視效果</green>"
+    off: "<green>已關閉夜視效果/green>"
+  edit:
+    unclear: "<red>請指定一個工具組!</red>"
+    loaded: "<green>已載入工具組!</green>"
+  give:
+    unclear: "<red>請指定一個物品!</red>"
+    not-found: "<red>找不到物品!</red>"
+  join:
+    unclear: "<red>請指定一個隊伍!</red>"
+    side-not-found: "<red>沒有這種隊伍!</red>"
+    only-self: "<red>你只能改你自已的隊伍!</red>"
+    only-lobby: "<red>你只能在大廳換隊伍!</red>"
+    player-not-found: "<red>找不到指定的玩家!</red>"
+    made-other: "<player> 讓 <target> 加入<side>"
+    made-self: "<player> 加入了<side>"
+  role:
+    unclear: "<red>請指定一個職業!</red>"
+    role-not-found: "<red>沒有這種職業!</red>"
+    only-self: "<red>你只能改你自己的職業!</red>"
+    only-lobby: "<red>你只能在大廳選職業!</red>"
+    player-not-found: "<red>找不到指定的玩家!</red>"
+    made-other: "<player> 讓 <target> 成為了<yellow><role></yellow>"
+    made-self: "<player> 轉職成了<yellow><role></yellow>"
+  revive:
+    no-game: "<red>沒有對戰!</red>"
+    made-other: "<player> 已將 <target> 重生"
+    made-self: "<player> 已重生"
+  skip:
+    announce: "<green>階段被 <player> 跳過</green>"
+  rejoin:
+    wrong-world: "<red>你不在大廳中!</red>"
+    no-game: "<red>沒有對戰!</red>"
+    announce: "<player> 重新加入遊戲"
+  reload:
+    success: "<green>已重新載入!</green>"
+  reset:
+    announce: "<green>遊戲被 <player> 重置</green>"
+  save:
+    success: "<green>已儲存!</green>"
+  shuffle-team:
+    announce: "<player> 已隨機分隊!"
+  stop:
+    announce: "<green>遊戲被 <player> 停止</green>"
+  warp:
+    unclear: "<red>請指定要去哪!</red>"
+    not-found: "<red>沒有那種地方!</red>"
+  world:
+    query: "你在 <yellow><world></yellow>"
+    not-found: "<red>沒有那種世界!</red>"
+
+items:
+  absorption-helmet:
+    name: "<aqua>安全帽</aqua>"
+    desc-1: "不知道從哪撿來的海龜殼, 戴在頭上好像很厲害!"
+    desc-2: "挖掘核心時有這麼多血量肯定撐很久!"
+  golden-helmet:
+    name: "<aqua>朱雀神盔</aqua>"
+    desc-1: "由朱雀之羽打造合成, 具有強大抗擊效果!"
+    desc-2: "防禦力和鐵製的一模一樣!"
+  golden-chestplate:
+    name: "<aqua>玄武盾鎧</aqua>"
+    desc-1: "由玄武盾甲打造合成, 具有增加生命效果!"
+    desc-2: "防禦力和鐵製的一模一樣!"
+  golden-leggings:
+    name: "<aqua>青龍武褲</aqua>"
+    desc-1: "由青龍利牙打造合成, 能增加攻擊傷害!"
+    desc-2: "防禦力和鐵製的一模一樣!"
+  golden-boots:
+    name: "<aqua>白虎之靴</aqua>"
+    desc-1: "由白虎猛爪打造合成, 具有跑速增強效果!"
+    desc-2: "防禦力和鐵製的一模一樣!"
+  starter-helmet:
+    name: "<yellow>低成本零售帽子</yellow>"
+    desc-1: "<dark_aqua>你沒有更好的裝備可以穿了嗎?</dark_aqua>"
+  starter-chestplate:
+    name: "<yellow>低成本零售襯衫</yellow>"
+    desc-1: "<dark_aqua>你沒有更好的裝備可以穿了嗎?</dark_aqua>"
+  starter-leggings:
+    name: "<yellow>低成本零售長褲</yellow>"
+    desc-1: "<dark_aqua>你沒有更好的裝備可以穿了嗎?</dark_aqua>"
+  starter-boots:
+    name: "<yellow>低成本零售靴子</yellow>"
+    desc-1: "<dark_aqua>你沒有更好的裝備可以穿了嗎?</dark_aqua>"
+  elytra:
+    name: "<aqua>精靈的翅膀</aqua>"
+    desc-1: "死去的精靈折下的翅膀, 讓凡人也有翱翔天際的能力"
+  shame-chestplate:
+    name: "<aqua>抽獎者的羞恥襯衫</aqua>"
+    desc-1: "那你運氣也是很差!"
+  damage-assist:
+    name: "<aqua>闇釋者</aqua>"
+    desc-1: "強化! 記憶釋放!"
+  ink-assist:
+    name: "<aqua>墨魚護身符</aqua>"
+    desc-1: "深海大魷魚被割下來的囊包"
+    desc-2: "放置在副手, 讓打你的敵人致盲!"
+  placeholder:
+    name: "<yellow>渾沌之物</yellow>"
+    desc-1: "這裡原本好像有什麼..."
+  soul:
+    name: "<yellow>靈魂碎片</yellow>"
+    desc-1: "殺人時獲得"
+  add-core-health:
+    name: "<light_purple>核心恢復藥</light_purple>"
+    desc-1: "恢復核心 1 點血!"
+    core-full: "<red>你的核心血量是滿的!</red>"
+    announce: "<player> 使用了<item>"
+  assign-respawn-time:
+    name: "<aqua>罪惡之眼</aqua>"
+    desc-1: "讓隨機敵人的罪惡值增加 30!"
+    not-found: "<red>找不到目標</red>"
+    announce: "<player> 使用了<item>, 使 <target> 增加 30 點罪惡值"
+  bridge-helper:
+    name: "<yellow>造橋輔助</yellow>"
+    desc-1: "生成一個 15 格高的磚塊柱子"
+    no-block: "<red>請看著一個方塊使用!</red>"
+  give-jump-boost:
+    name: "<yellow>彈跳球</yellow>"
+    desc-1: "給你 6 秒跳躍提升 X"
+    announce: "<player> 使用了<item>"
+  give-speed:
+    name: "<yellow>暴衝羽毛</yellow>"
+    desc-1: "給你 6 秒加速 X"
+    announce: "<player> 使用了<item>"
+  give-strength:
+    name: "<yellow>力量石</yellow>"
+    desc-1: "給你 6 秒力量 III"
+    announce: "<player> 使用了<item>"
+  grenade:
+    name: "<aqua>手榴彈</aqua>"
+    desc-1: "砰!"
+  random-role:
+    name: "<light_purple>轉職書</light_purple>"
+    desc-1: "經過菩薩加持!"
+    desc-2: "使用後可以隨機轉換職業"
+    announce: "<player> 使用了<item>, 轉職成<yellow><role></yellow>"
+  choose-role:
+    name: "<aqua>選擇職業</aqua>"
+    no-team: "<red>請先加入隊伍!</red>"
+  spectator-teleporter:
+    name: "<aqua>旁觀者傳送器</aqua>"
+  absorption-potion:
+    name: "<aqua>強效護水</aqua>"
+    desc-1: "擁有守護之神加持的聖水"
+  invis-potion:
+    name: "<aqua>間諜水</aqua>"
+    desc-1: "變色龍萃取物, 能讓你隱形"
+  ice-arrow:
+    name: "<yellow>冰霜箭</yellow>"
+    desc-1: "<red>寒霜<red>"
+    desc-2: "<red>緩速 I (5s)</red>"
+  weakness-arrow:
+    name: "<yellow>暗夜之箭</yellow>"
+    desc-1: "<red>虛弱 I (8s)</red>"
+  poison-arrow:
+    name: "<yellow>九陰白骨箭</yellow>"
+    desc-1: "<red>中毒 I (8s)</red>"
+  lottery:
+    name: "<light_purple>樂透</light_purple>"
+    desc-1: "15% 大獎"
+    desc-2: "35% 普通物品"
+    desc-3: "50% 垃圾"
+    prefix: "[<light_purple>樂透</light_purple>] "
+    item-lore: "- <gold>樂透獎品</gold>"
+    sent-to-spawn: "<green>樂透獎品已送至你的重生點!</green>"
+    announce:
+      item: "<player> 得到了<item> × <dark_aqua><amount></dark_aqua>"
+      poison: "<player> 使<side>中毒了"
+      wear: "<player> 穿上了<item>"
+      nothing: "<player> 得到了<yellow>什麼都沒有</yellow>"
+      replace-hotbar: "<player> 將快捷欄全換成<yellow>腐肉</yellow>"
+      kill: "<player> 剛才<yellow><action></yellow>了<side>"
+      kill-actions: "屠宰|謀殺|消滅|滅門|血洗|殺光"
+      send-spawn: "<player> 將<side>全員送回家"
+      chaos: "<player> 體驗了<light_purple>渾沌</light_purple>"
+  witchcraft:
+    name: "<light_purple>巫術</light_purple>"
+    desc-1: "可能會發生隨機事情..."
+    prefix: "[<light_purple>巫術</light_purple>] "
+    announce:
+      drop-ores: "<player> 使<enemy>全部成員噴出身上的礦物!"
+      poison: "<player> 使<enemy>全部成員獲得中毒 II (10s)!"
+      add-skill-cooldown: "<player> 使<enemy>全部成員技能冷卻增加 60 秒!"
+      random-role: "<player> 將 <target> 的職業換成<yellow><role></yellow>!"
+      unluck: "<player> 使<enemy>全部成員獲得霉運 I (60s)!"
+      add-respawn-time: "<player> 使<enemy>全部成員增加 15 點罪惡值!"
+      ban-ores: "<player> 封鎖<enemy>礦區 60 秒!"
+      glow: "<player> 使<enemy>全部成員發光 60 秒!"
+      attack-core: "<player> 使<enemy>核心扣 1 點血!"
+      attack-core-3: "<player> 使<enemy>核心扣 3 點血!"
+      slowness: "<player> 使<enemy>全部成員獲得緩速 II (30s)!"
+      mining-fatigue: "<player> 使<enemy>全部成員獲得挖掘疲勞 I (30s)!"
+  gold-digger-chestplate:
+    name: "<aqua>反光警示衣</aqua>"
+    desc-1: "- <red>淘金者綁定物品</red>"
+  provocateur-chestplate:
+    name: "<aqua>厚紙板夾克</aqua>"
+    desc-1: "- <red>挑釁者綁定物品</red>"
+  ranger-helmet:
+    name: "<aqua>遊俠帽</aqua>"
+    desc-1: "- <red>遊俠綁定物品</red>"
+  constructor-helmet:
+    name: "<aqua>工地帽</aqua>"
+    desc-1: "- <red>建築師綁定物品</red>"
+  kekkai-master-leggings:
+    name: "<aqua>符文褲</aqua>"
+    desc-1: "- <red>結界師綁定物品</red>"
+  assign-clear-inv:
+    name: "[<white>令牌</white>] <light_purple>盜賊集結</light_purple>"
+    desc-1: "清空隨機敵人的背包"
+    cooldown: "<red>你必須等待 <cooldown> 秒才能再次使用盜賊令!</red>"
+    not-found: "<red>找不到敵人</red>"
+    announce: "<player> 使用了 <item>, 清空了 <target> 的背包"
+    post-announce: "嗚嗚嗚嗚嗚嗚嗚!"
+  assign-more-respawn-time:
+    name: "[<white>令牌</white>] <light_purple>滔天大罪</light_purple>"
+    desc-1: "使隨機敵人罪惡值增加 60!"
+    not-found: "<red>找不到敵人</red>"
+    announce: "<player> 使用了 <item>, 使 <target> 增加 60 點罪惡值"
+  core-invuln:
+    name: "[<white>令牌</white>] <light_purple>核心封鎖</light_purple>"
+    desc-1: "保護核心 60 秒"
+    desc-2: "敵人可用強制破壞令來取消此令牌效果"
+    announce: "<player> 使用了 <item>"
+  enemy-glow:
+    name: "[<white>令牌</white>] <light_purple>敵人發光</light_purple>"
+    desc-1: "使所有敵人發光 10 分鐘"
+    announce: "<player> 使用了 <item>"
+  ignore-core-invuln:
+    name: "[<white>令牌</white>] <light_purple>強制破壞</light_purple>"
+    desc-1: "取消對方的核心封鎖令"
+    no-effect: "<red>對方核心並無封鎖!</red>"
+    announce: "<player> 使用了 <item>"
+  last-ditch:
+    name: "[<white>令牌</white>] <light_purple>背水一戰</light_purple>"
+    desc-1: "<gold>條件</gold>: <yellow>核心血量必須低於對方 30 點</yellow>"
+    desc-2: "給友方 120 秒加速 II, 力量 I, 回復 I & 額外核心傷害"
+    health-too-high: "<red>你的核心血量沒有低於對方 30 點</red>"
+    announce: "<player> 使用了 <item>"
+  respawn-teammates:
+    name: "[<white>令牌</white>] <light_purple>全體復活</light_purple>"
+    desc-1: "瞬間復活全體隊友!"
+    desc-2: "而且全體獲得 60 秒的額外 10 顆心"
+    announce: "<player> 使用了 <item>"
+  truce:
+    name: "[<white>令牌</white>] <light_purple>停戰協議</light_purple>"
+    desc-1: "<gold>條件</gold>: <yellow>必須在階段 1 ~ 4 使用</yellow>"
+    desc-2: "<gold>條件</gold>: <yellow>一場遊戲只能使用一次</yellow>"
+    desc-3: "雙方玩家禁止接近對方陣營 5 分鐘"
+    too-late: "<red>現在已經來不及用了!</red>"
+    duped-usage: "<red>你已經使用過停戰協議!</red>"
+    announce: "<player> 使用了 <item>"
+  levi-stick:
+    name: "<aqua>飄飄棒</aqua>"
+    desc-1: "讓敵人漂浮魔法棒!"
+    not-found: "<red>找不到目標</red>"
+    success: "<aqua>正在使 <target> 漂浮</aqua>"
+  netherite-sword:
+    name: "<aqua>倚天劍</aqua>"
+    desc-1: "可自行附魔的頂級武器"
+  netherite-axe:
+    name: "<aqua>消防斧</aqua>"
+    desc-1: "可自行附魔的頂級武器"
+    desc-2: "只要想像他是紅色的!"
+  starter-sword:
+    name: "<yellow>低成本零售劍</yellow>"
+    desc-1: "<dark_aqua>你沒有更好的武器可以用了嗎?</dark_aqua>"
+  trident:
+    name: "<aqua>波賽頓之戟</aqua>"
+    desc-1: "亞特蘭提斯七大文物之一"
+  kb-stick:
+    name: "<aqua>擊退棒</aqua>"
+    desc-1: "很有彈性的棒子!"
+
+tools:
+  cancel: "離開編輯模式"
+  core: "核心"
+  join-green: "加入綠隊區"
+  join-red: "加入紅隊區"
+  join-spectator: "加入旁觀者區"
+  lobby: "大廳出生點"
+  rest-area: "重生等待區"
+  spawn-point: "重生點"
+  start-button: "開始按鈕"
+  woods: "木頭"
+  ores: "一般礦物"
+  diamonds: "鑽石礦"
+  mission: "中央任務點"
+
+missions:
+  chicken:
+    title: "<yellow>搶奪先雞</yellow>"
+    desc: "中央出現一隻跑速極快, 血量 25 心的雞, 殺死者該陣營獲勝!"
+    chicken: "<yellow>小雞</yellow>"
+    boss-bar: "<yellow>小雞血量</yellow>"
+  roll-call:
+    title: "<yellow>陣營點點名</yellow>"
+    desc: "所有人快回自家核心旁點名!"
+  collect-stars:
+    title: "<yellow>天降星石</yellow>"
+    desc: "中央任務點附近天上掉落星星、撿起較多星星的陣營獲勝!"
+    item: "<light_purple>星星</light_purple>"
+    score: "<player> 搶得 1 星!"
+  occupy-center:
+    title: "<yellow>佔領中央</yellow>"
+    desc: "佔領中央任務點超過 30 秒即該陣營獲勝!"
+  ores:
+    title: "<yellow>挖礦大賽</yellow>"
+    desc: "挖比較多礦的陣營獲勝!"
+  no-jump:
+    title: "<yellow>忍住別跳</yellow>"
+    desc: "跳躍次數較少的陣營獲勝!"
+  teleport-core:
+    title: "<yellow>強制點名</yellow>"
+    desc: "核心感到孤單寂寞覺得冷, 就把大家叫回來了..."
+  hungry:
+    title: "<yellow>肚子破洞</yellow>"
+    desc: "肚子好像破了一個洞, 突然變得好餓喔!"
+  earthquake-cow:
+    title: "<yellow>地牛來襲</yellow>"
+    desc: "從地心鑽出了一頭牛... 他在翻身! 殺死者該陣營獲勝!"
+    cow: "<yellow>地牛</yellow>"
+    boss-bar: "<yellow>地牛血量</yellow>"
+  drop-all:
+    title: "<yellow>噴裝逞罰</yellow>"
+    desc: "下一個死亡的人會直接噴裝!"
+  jump:
+    title: "<yellow>跳跳大賽</yellow>"
+    desc: "跳最多下的陣營獲勝!"
+  eat-cake:
+    title: "<yellow>蛋糕大賽</yellow>"
+    desc: "吃最多蛋糕的陣營獲勝!"
+  discount-trader:
+    title: "<yellow>特價商人</yellow>"
+    desc: "一個來自未來的商人經過此地! 數量有限, 售完為止!"
+    trader: "特價商人"
+  free-money:
+    title: "<yellow>意外之財</yellow>"
+    desc: "突然間, 你發現你的口袋裡好像有一些零用錢!"
+  drop-ores:
+    title: "<yellow>口袋破洞</yellow>"
+    desc: "你發現你的口袋破了個洞, 礦物都掉到地板上了!"
+  anti-gravity:
+    title: "<yellow>重力反轉</yellow>"
+    desc: "重力被反轉了, 蹲下會飄起來!"
+    bar: "<yellow>重力反轉: <time></yellow>"
+  xp-fountain:
+    title: "<yellow>經驗噴泉</yellow>"
+    desc: "中央任務點出現大量的經驗值!"
+  angry-bees:
+    title: "<yellow>女王蜂來襲</yellow>"
+    desc: "中央出現了突變的女王蜂! 擊殺會掉落綠寶石!"
+    queen-bee: "<yellow>女王蜂</yellow>"
+    normal-bee: "<yellow>工蜂</yellow>"
+    boss-bar: "<yellow>女王蜂血量</yellow>"
+  swap-pos:
+    title: "<yellow>靈魂交換</yellow>"
+    desc: "雙方隨機一位玩家, 將會在 10 秒後位置互換!"
+    bar: "<yellow>傳送倒數: <time></yellow>"
+  swap-all-pos:
+    title: "<yellow>大風吹</yellow>"
+    desc: "10 秒後所有玩家隨機換位!"
+    bar: "<yellow>傳送倒數: <time></yellow>"
+  covid:
+    title: "<yellow>疫情來襲</yellow>"
+    desc: "請大家保持 5 格的社交距離"
+    bar: "<yellow>疫情: <time></yellow>"
+  random-role:
+    title: "<yellow>天選職業</yellow>"
+    desc: "某個人的職業被偷偷換掉了!"
+  free-soup:
+    title: "<yellow>可疑燉湯</yellow>"
+    desc: "隨機效果... 要喝嗎?"
+  hero:
+    title: "<yellow>超級戰神</yellow>"
+    desc: "雙方隨機一位玩家獲得力量 I, 抗性 III, 速度 II, 發光"
+  sneak-walk:
+    title: "<yellow>蹲走大賽</yellow>"
+    desc: "蹲下移動距離較長的玩家獲勝!"
+  invis:
+    title: "<yellow>忍者精神</yellow>"
+    desc: "所有人隱形直到死亡!"
+  cargo:
+    title: "<yellow>貨運大賽</yellow>"
+    desc: "兩陣營有人將貨物送到中央任務點就獲勝!"
+    item: "<light_purple>沉重的貨物</light_purple>"
+  explode:
+    title: "<yellow>苦力怕上身</yellow>"
+    desc: "兩陣營各有一名玩家將在 60 秒後爆炸!"
+    bar: "<yellow>玩家爆炸倒數: <time></yellow>"
+    warning: "<red>你即將爆炸!</red>"
+  infinite-ores:
+    title: "<yellow>無限礦物</yellow>"
+    desc: "中央任務點出現無限隨機礦物!"
+    bar: "<yellow>無限礦物: <time></yellow>"
+  rocket:
+    title: "<yellow>一飛衝天</yellow>"
+    desc: "所有人快準備找掩蔽物, 5 秒後準備起飛!"
+    bar: "<yellow>起飛倒數: <time></yellow>"
+    warning: "<red>你即將起飛!</red>"
+  cold:
+    title: "<yellow>寒流來襲</yellow>"
+    desc: "請大家與其他人待在 5 格內取暖"
+    bar: "<yellow>寒流: <time></yellow>"
+  cursed-item:
+    title: "<yellow>詛咒之物</yellow>"
+    desc: "持有者會得到加速 III 及力量 I, 但拿超過 10 秒就會死!"
+    item: "<yellow>詛咒之物</yellow>"
+    bar: "<yellow>詛咒之物: <time></yellow>"
+  go-outside:
+    title: "<yellow>曬曬太陽</yellow>"
+    desc: "在這陽光明媚的好日子, 你不該待在室內!"
+    bar: "<yellow>曬太陽: <time></yellow>"
+  find-skull:
+    title: "<yellow>尋找頭顱</yellow>"
+    desc: "找到自己的頭顱便可獲得隨機寶藏!"
+    complete: "<player> 找到了自己的頭顱, 獲得 <item> × <dark_aqua><amount></dark_aqua>"
+    bar: "<yellow>找頭顱: <time></yellow>"
+
+roles:
+  default:
+    name: "村民"
+    desc-1: "<gold>你沒有工作!</gold>"
+    skill:
+      name: "哭哭"
+      desc-1: "<dark_purple>後悔沒有找個好工作</dark_purple>"
+      announce: "<player> 正在後悔沒有找個好工作..."
+  attacker:
+    name: "突襲者"
+    desc-1: "<gold>衝鋒陷陣的主要攻擊核心者!</gold>"
+    feature-1: "重生時間減半"
+    item:
+      name: "<aqua>突襲劍</aqua>"
+      detail: "鋒利 III 木劍"
+    skill:
+      name: "閃電戰開始"
+      desc-1: "<dark_purple>獲得加速 I (5s), 抗性 I (10s)</dark_purple>"
+      announce: "<player> 使用了<yellow><role></yellow>技能, 跑速抗性增加!"
+  guard:
+    name: "守護者"
+    desc-1: "<gold>守護核心的重要防禦角色!</gold>"
+    feature-1: "在自家核心旁 15 格內獲得回復 II"
+    feature-2: "贖罪經驗值 ×3"
+    feature-3: "敵方附魔時會被通知"
+    item:
+      name: "<yellow>聖盾</yellow>"
+      detail: "盾牌"
+    skill:
+      name: "核心雜質清除"
+      desc-1: "<dark_purple>核心 15 格內的敵人將獲得:</dark_purple>"
+      desc-2: "<dark_purple>- 發光 (60s)</dark_purple>"
+      desc-3: "<dark_purple>- 緩速 V & 挖掘減速 V (5s)</dark_purple>"
+      desc-4: "<dark_purple>給予自己力量 II (15s)</dark_purple>"
+      announce: "<player> 使用了<yellow><role></yellow>技能, 正在檢測核心附近的敵人!"
+      found-enemy:
+        none: "核心附近非常空曠!"
+        self: "檢測到 <enemy>"
+        enemy: "你被 <player> 檢測到了!"
+    near-enemy-core-warning: "<red><role>不該離對方核心這麼近!</red>"
+    enchanting-alarm: "<aqua>敵方正在附魔!</aqua>"
+  gold-digger:
+    name: "淘金者"
+    desc-1: "<gold>貪婪之心使其能快速致富</gold>"
+    desc-2: "<gold>但也很常變成被獵殺的對象!</gold>"
+    feature-1: "10 格內隊友:"
+    feature-2: "- 獲得挖掘加速 I"
+    feature-3: "- 挖礦石, 25% 機率也獲得同樣礦物"
+    feature-4: "永久發光"
+    feature-5: "永久緩速 I"
+    item:
+      name: "<aqua>掏金者之礸</aqua>"
+      detail: "效率 III 鐵鎬"
+    skill:
+      name: "貪婪之心"
+      desc-1: "<dark_purple>獲得幸運 III (15s)</dark_purple>"
+      announce: "<player> 使用了<yellow><role></yellow>技能!"
+    ores-bonus: "<aqua><player> 的加成<ore></aqua>"
+  ranger:
+    name: "遊俠"
+    desc-1: "<gold>可放置陷阱的弓箭手</gold>"
+    desc-2: "<gold>騷擾敵人和防禦時的重要角色!</gold>"
+    feature-1: "拿著弩時抗性 I"
+    feature-2: "每階段發放 20 支箭矢"
+    item:
+      name: "<aqua>暴風弩</aqua>"
+      detail: "快速上弦 III 弩"
+    skill:
+      name: "獵人陷阱"
+      desc-1: "<dark_purple>放置一個陷阱</dark_purple>"
+      desc-2: "<dark_purple>踩上去的敵人獲得中毒 X (10s)</dark_purple>"
+      announce: "<player> 使用了<yellow><role></yellow>技能, 放置了一個陷阱!"
+      trap-hit:
+        owner: "<enemy> 採到你的陷阱!"
+        enemy: "你踩到 <owner> 的陷阱!"
+        enemy-unknown: "你踩到了陷阱!"
+  kekkai-master:
+    name: "結界師"
+    desc-1: "輔助職業, 可放置各種結界"
+    feature-1: "永久抗火"
+    feature-2: "手持結界杖站在結界裡可以維持結界"
+    item:
+      name: "<aqua>結界杖</aqua>"
+      detail: "擊退 I 釣竿"
+    skill:
+      name: "結界展開"
+      desc-1: "<dark_purple>根據副手物品放置不同結界 (半徑 15 格)</dark_purple>"
+      desc-2: "<dark_purple>鐵碇 - 加速 V (30s)</dark_purple>"
+      desc-3: "<dark_purple>金碇 - 回復 II (30s)</dark_purple>"
+      desc-4: "<dark_purple>紅石 - 防彈 (30s)</dark_purple>"
+      desc-5: "<dark_purple>綠寶石 - 抗性 II (30s)</dark_purple>"
+      desc-6: "<dark_purple>青金石 - 礦物冷卻時間減半 (30s)</dark_purple>"
+      desc-7: "<dark_purple>鑽石 - 力量 I (30s)</dark_purple>"
+      desc-8: "<dark_purple>鐵磚 - 加速 V (30s)</dark_purple>"
+      desc-9: "<dark_purple>金磚 - 恢復飽食度 (10s)</dark_purple>"
+      desc-10: "<dark_purple>紅石磚 - 防彈 (180s)</dark_purple>"
+      desc-11: "<dark_purple>綠寶石磚 - 抗性 IV (30s)</dark_purple>"
+      desc-12: "<dark_purple>青金石磚 - 礦物冷卻時間減半 (180s)</dark_purple>"
+      desc-13: "<dark_purple>鑽石磚 - 力量 III (180s)</dark_purple>"
+      desc-14: "<dark_purple>渾沌之物 - 隨機效果 III (10s)</dark_purple>"
+      desc-15: "<dark_purple>靈魂碎片 - 加速 II, 回復 II, 力量 II, 增加罪惡 (30s)</dark_purple>"
+      desc-16: "<dark_purple>加強結界需要 6 倍冷卻時間</dark_purple>"
+      announce: "<player> 使用了<yellow><role></yellow>技能, 放置了一個<aqua><type></aqua>結界!"
+      inside-kekkai: "<red>將覆蓋 <amount> 個結界, 蹲下以確認!</red>"
+      no-material: "<red>這副手物品沒效果啊!</red>"
+      duration: "<aqua>結界剩餘時間: <value> 秒</aqua>"
+    kekkais:
+      speed: "加速"
+      healing: "回復"
+      bullet-proof: "防彈"
+      resistance: "抗性"
+      fast-ores: "礦物"
+      strength: "力量"
+      speed-plus: "強化速度"
+      saturation: "飽食"
+      bullet-proof-plus: "強化防彈"
+      resistance-plus: "強化抗性"
+      fast-ores-plus: "強化礦物"
+      strength-plus: "強化力量"
+      chaos: "渾沌"
+      soul: "靈魂"
+    center-name: "結界命核"
+  assassin:
+    name: "刺客"
+    desc-1: "<gold>暗夜會有隱形的強大職業, 最擅長來陰的!</gold>"
+    feature-1: "不動 2 秒時隱形"
+    feature-2: "隱形時獲得力量 I"
+    feature-3: "不能使用弓或弩"
+    item:
+      name: "<aqua>忍刃</aqua>"
+      detail: "不死剋星 V 石劍"
+    skill:
+      name: "暗夜突刺"
+      desc-1: "<dark_purple>只能在隱形時發動</dark_purple>"
+      desc-2: "<dark_purple>傳送到最近的玩家 (隊友或敵人!)</dark_purple>"
+      desc-3: "<dark_purple>得到額外 4 秒隱形及力量 III</dark_purple>"
+      not-invis: "<red>你必須隱形才能使用技能!</red>"
+      no-target: "<red>找不到傳送目標!</red>"
+    no-bow: "<red>你不能使用弓箭!</red>"
+  constructor:
+    name: "建築師"
+    desc-1: "<gold>工人隨身攜帶一把榔頭也是正常的吧</gold>"
+    feature-1: "破壞木頭時:"
+    feature-2: "- 得到 2 秒挖掘加速 I"
+    feature-3: "- 有 5% 機會回復飽食度"
+    item:
+      name: "<aqua>榔頭</aqua>"
+      detail: "效率 VII 石斧"
+    skill:
+      name: "領域展開"
+      desc-1: "<dark_purple>建造一個 9×5×9 橡木材豆腐屋</dark_purple>"
+      announce: "<player> 使用了<yellow><role></yellow>技能, 蓋了一間豆腐屋!"
+    eat-wood: "<aqua>挖木頭時不小心吃到了木屑, 飽食度已回復!</aqua>"
+  wanderer:
+    name: "流浪者"
+    desc-1: "<gold>浪跡天涯心自高, 雙劍乾坤我獨豪</gold>"
+    desc-2: "<gold>副持長劍更飄逸, 一技使人飛上天</gold>"
+    feature-1: "副手持劍時加速 I, 回復 I"
+    feature-2: "否則緩速 I"
+    feature-3: "不能穿戴盾牌"
+    item:
+      name: "<aqua>浪刀</aqua>"
+      detail: "擊退 I 鐵劍"
+    skill:
+      name: "引力電梯"
+      desc-1: "<dark_purple>讓敵人起飛 & 虛弱 I</dark_purple>"
+      announce: "<player> 使用了<yellow><role></yellow>技能, 創造了引力電梯!"
+    no-shield: "<red>你不能穿戴盾牌!</red>"
+  provocateur:
+    name: "挑釁者"
+    desc-1: "<gold>完美的肉盾, 幫隊友擋傷害!</gold>"
+    feature-1: "轉移 10 格內隊友受的 60% 傷害給自己"
+    feature-2: "若自身正在套用吸收效果, 則改為轉移 90% 傷害"
+    feature-3: "永久虛弱 I"
+    item:
+      name: "<aqua>超派</aqua>"
+      detail: "橫掃之刃 III 南瓜派"
+    skill:
+      name: "成為肉盾"
+      desc-1: "<dark_purple>獲得吸收 X & 抗性 III (10s), 虛弱 X (30s)</dark_purple>"
+      announce: "<player> 使用了<yellow><role></yellow>技能, 血量增加!"

@@ -1,0 +1,816 @@
+general:
+  title: "<white>Destroy the Core III</white>"
+  subtitle: "Original by <gold>Hageeshow</gold> / v3 by <gold>_hueeey_</gold>"
+  plugin-prefix: "[<red>Destroy</red><white>The</white><yellow>Core</yellow>] "
+
+chat:
+  format: "<player>: <white><message></white>"
+  shout:
+    prefix: "[<gold>Shout</gold>] "
+    empty: "I am an idiot, I shouted but I got no message to say!"
+    cooldown: "<red>You need to wait <value> seconds to shout again!</red>"
+
+player:
+  no-perm: "<red>You don't have the permissions to do so!</red>"
+  in-cooldown: "<red>This item is in <value>s cooldown</red>"
+  group-in-cooldown: "<red>This item group is in <value>s cooldown</red>"
+  respawning: "Respawning in <seconds>"
+  respawned: "<yellow>Respawned</yellow>"
+
+quiz:
+  prefix: "[<light_purple>Quiz</light_purple>] "
+  question: "<aqua>Answer the quiz to shorten respawn time: <a> + <b> = ?</aqua>"
+  correct: "<green>Correct! Respawn time shortened 10 seconds! (<try> tries left)</green>"
+  wrong: "<red>Wrong! The answer was <answer> (<try> tries left)</red>"
+
+game:
+  phases:
+    core-protected:
+      name: "Core Protected"
+      desc: "Game start"
+    shop-opened:
+      name: "Shop Opened"
+      desc: "Core protection removed / Shops opened"
+    missions-started:
+      name: "Missions Started"
+      desc: "Missions started / Diamonds opened"
+    death-penalty:
+      name: "Death Penalty"
+      desc: "Each death erases 1 core health"
+    double-core-damage:
+      name: "Double Core Damage"
+      desc: "Core damage doubled"
+    core-wilting:
+      name: "Core Wilting"
+      desc: "Core health drops every 15 seconds"
+  phase-title: "<gold>Phase <index></gold>"
+  sides:
+    red: "<red>Red</red>"
+    green: "<green>Green</green>"
+    spectator: "<gray>Spectator</gray>"
+  prompt-rejoin: "Use <aqua>/rejoin</aqua> to go back to the game"
+  banned:
+    attack:
+      teammate: "<red>You can't attack your teammate!</red>"
+      spectator: "<red>Spectators can't attack!</red>"
+    use:
+      time: "<red>You can't do anything now!</red>"
+      lobby: "<red>You can't use blocks in lobby!</red>"
+      rest-area: "<red>You can't use blocks near rest area!</red>"
+      spectator: "<red>Spectators can't use blocks!</red>"
+    shop: "<red>Shops have not yet opened</red>"
+    place:
+      lobby: "<red>You can't place blocks here!</red>"
+      obsidian: "<red>You can't place obsidian near cores!</red>"
+      spawn: "<red>You can't place blocks near spawn!</red>"
+    break:
+      netherite: "<red>You can't break a netherite block!</red>"
+      time: "<red>You can't break blocks now!</red>"
+      lobby: "<red>You can't break blocks here!</red>"
+      rest-area: "<red>You can't break blocks near rest area!</red>"
+      enemy-container: "<red>You are fined with 10 sin!</red>"
+      own-core: "<red>That's your own core!</red>"
+      spectator: "<red>Spectators can't break blocks!</red>"
+    pour: "<red>You can't pour liquids near cores!</red>"
+    open-enemy-container: "<red>You cannot access containers in enemy's area!</red>"
+  bounty:
+    prefix: "[<light_purple>Bounty</light_purple>] "
+    reward: "<player> got <white>Emerald</white> × <dark_aqua><amount></dark_aqua>"
+    appear: "<player> became the <aqua>Killer Captain</aqua>, kill them for emeralds!"
+  death:
+    title: "<red>You Died</red>"
+    messages:
+      unknown: "<player> died"
+      kill: "<player> was <yellow><action></yellow> by <killer>"
+      kill-actions: "killed|slain|bested|sent to the shadow realm|crushed|run over|stomped|cheesed|turned into dust|reduced to atoms|forcibly retired|shocked to death"
+    killer-sin: "<red>You're sin is increased by 2 for killing people</red>"
+  core-attack:
+    title: "Core Attack"
+    subtitle: "by <player>"
+    message: "<player> is attacking <side> core, <yellow><health></yellow> health left"
+  side:
+    join:
+      bad-time: "<red>You can't change team now!</red>"
+      success: "You joined <side> team"
+    ender-chest: "Team Chest"
+  truce:
+    warning: "<red>You feel like you shouldn't go any further</red>"
+    sent-spawn: "<player> was <yellow>lost</yellow> and was sent home with half a heart"
+  height-warning: "<red>You're about to experience altitude sickness!</red>"
+  start-canceled: "<red>Start Canceled</red>"
+  missing-loc: "<red>Map setup isn't complete!</red>"
+  result:
+    titles:
+      draw: "Draw"
+      spectator: "Game Over"
+      win: "Winner"
+      lose: "Defeat"
+    subtitles:
+      more-health: "<side> team has more health"
+      destroyed: "<side> team destroyed the core"
+  reduce-respawn-time:
+    progress: "<aqua>You're atoning: <progress>/5</aqua>"
+    done: "<green>Atoning complete! Sin reduced by 1</green>"
+    no-more: "<red>Your sin is too low!</red>"
+  ores:
+    luck: "<aqua>You're lucky! Ore drops ×<amount>"
+    bad-luck: "<red>You're unlucky... No ore drops</red>"
+  credits:
+    title: "<white>Destroy the Core III</white> - <yellow>Game Over</yellow>"
+    time: "Time: <time>"
+    list:
+      empty: "|"
+      first: "| <yellow>1st</yellow> - <players> - <aqua><count></aqua>"
+      second: "| <gold>2nd</gold> - <players> - <aqua><count></aqua>"
+      third: "| <red>3rd</red> - <players> - <aqua><count></aqua>"
+      foot: "+---------------------------------------+"
+    top-attackers: "+------------- <light_purple>Top Attackers</light_purple> -------------+"
+    top-killers: "+-------------- <light_purple>Top Killers</light_purple> --------------+"
+    top-dyers: "+-------------- <light_purple>Top Dyers</light_purple> --------------+"
+    top-miners: "+-------------- <light_purple>Top Miners</light_purple> --------------+"
+    thanks: "<gold>Thanks for playing!</gold>"
+    sign: "- Plugin creator, <yellow>_hueeey_</yellow>"
+  bars:
+    no-ores: "<white>Ores Banned: <time></white>"
+    no-shop: "<white>Shop Banned: <time></white>"
+
+item-gen:
+  right-click-to-use: "- <yellow>Right click to use</yellow>"
+
+tool:
+  prefix: "[<yellow>Editor</yellow>] "
+
+role:
+  prefix: "[<light_purple>Role</light_purple>] "
+  change: "<player> changed role to <yellow><role></yellow>"
+  skill: "[<white>Skill</white>] <light_purple><name></light_purple>"
+  desc:
+    feature:
+      first: "<white>Feature</white>: <aqua><desc></aqua>"
+      others: "<black>Feature:</black> <aqua><desc></aqua>"
+    item: "<white>Item</white>: <green><name> (<detail>)</green>"
+  item-lore: "- <red>Exclusive item for <role></red>"
+
+mission:
+  prefix: "[<light_purple>Mission</light_purple>] "
+  waiting-title: "<gray>Mission Cooldown</gray>"
+  progressive:
+    red-bar: "<red>Red Progress</red>"
+    green-bar: "<green>Green Progress</green>"
+  draw: "The result was <yellow>tied</yellow>!"
+  results:
+    clear-xp: "As <side> team failed the mission, their experience was <light_purple>reset to zero</light_purple>!"
+    give-xp: "As <side> team completed the mission, each person got <yellow>500 experience points</yellow>!"
+    bad-effect: "As <side> team failed the mission, they got <light_purple><effect></light_purple> effect!"
+    good-effect: "As <side> team completed the mission, they got <yellow><effect></yellow> effect!"
+    add-respawn-time: "As <side> team failed the mission, each person <light_purple>increased 20 sin</light_purple>!"
+    remove-respawn-time: "As <side> team completed the mission, each person <yellow>reduced 20 sin</yellow>!"
+    ban-ores: "As <side> team failed the mission, their ores are <light_purple>banned for 2 minutes</light_purple>!"
+    ban-shop: "As <side> team failed the mission, their shop are <light_purple>banned for 2 minutes</light_purple>!"
+    attack-core: "As <side> team failed the mission, their core health is <light_purple>reduced by 10</light_purple>!"
+    summon-pig: "As <side> team failed the mission, they got <light_purple><name></light_purple>!"
+    pig-name: "Stupid Piggy Mates"
+    void: "As <side> team failed the mission, <player> is <light_purple>teleported to the backroom</light_purple>!"
+    give-emerald: "As <side> team completed the mission, each person got <yellow>1 emerald</yellow>!"
+    lightning: "As <side> team failed the mission, they got <light_purple>striked by lightning</light_purple>"
+    tnt: "As <side> team failed the mission, <player> got <light_purple>a primed TNT</light_purple>!"
+    skill-cooldown: "As <side> team failed the mission, their skill cooldown was <light_purple>increased by 120 seconds</light_purple>"
+
+gui:
+  buttons:
+    next-page:
+      title: "<yellow>Next Page</yellow>"
+      desc: "Go to page <gold><next></gold>/<max>"
+      desc-end: "<dark_purple>There are no more pages</dark_purple>"
+    prev-page:
+      title: "<yellow>Previous Page</yellow>"
+      desc: "Go to page <gold><prev></gold>/<max>"
+      desc-end: "<dark_purple>You can't go further back</dark_purple>"
+    pick-random:
+      title: "<yellow>Pick Random</yellow>"
+      announce: "<player> randomly changed role to <yellow><role></yellow>"
+  titles:
+    choose-role: "Choose a Role"
+    teleporter: "Teleport to Player"
+
+board:
+  title: "<red>Destroy</red><white>The</white><yellow>Core</yellow>"
+  team: "<white>Team</white>: <side>"
+  role: "<white>Role</white>: <yellow><role></yellow>"
+  phase: "<white>Phase</white> <green><index></green> - <aqua><title></aqua>"
+  countdown: "<white>Countdown</white>: <time>"
+  health: "<white>❤</white>: <gold><a></gold> <gray>/</gray> <gold><b></gold>"
+  truce: "<white>Truce</white>: <time>"
+  sin: "<white>Sin</white>: <red><value></red>"
+  kd: "<white>Kills</white>: <yellow><kills></yellow> - <white>Deaths</white>: <yellow><deaths></yellow>"
+  attacks: "<white>Core Attacks</white>: <light_purple><value></light_purple>"
+  ores: "<white>Ores Mined</white>: <light_purple><value></light_purple>"
+  wins: "<white>Wins</white>: <aqua><wins></aqua>/<dark_aqua><all></dark_aqua> <gold><ratio>%</gold>"
+
+command:
+  not-found: "Unknown command!"
+
+world:
+  deleting-live: "<aqua>Deleting live world...</aqua>"
+  copying-template: "<aqua>Copying template world...</aqua>"
+  copied: "<green>World copied!</green>"
+  template-warning: "<red>You're in the template world!</red>"
+
+commands:
+  night-vision:
+    on: "<green>Enabled Night Vision</green>"
+    off: "<green>Disabled Night Vision</green>"
+  edit:
+    unclear: "<red>Please specify which kit!</red>"
+    loaded: "<green>Editor kit loaded!</green>"
+  give:
+    unclear: "<red>Please specify which item!</red>"
+    not-found: "<red>Item not found!</red>"
+  join:
+    unclear: "<red>Please specify which team!</red>"
+    side-not-found: "<red>Can't find the specific team!</red>"
+    only-self: "<red>You can only choose your own team!</red>"
+    only-lobby: "<red>You can only change team in lobby!</red>"
+    player-not-found: "<red>Can't find the specific player!</red>"
+    made-other: "<player> made <target> joined <side> team"
+    made-self: "<player> joined <side> team"
+  role:
+    unclear: "<red>Please specify which role!</red>"
+    role-not-found: "<red>Can't find the specific role!</red>"
+    only-self: "<red>You can only choose your own role!</red>"
+    only-lobby: "<red>You can only choose role in lobby!</red>"
+    player-not-found: "<red>Can't find the specific player!</red>"
+    made-other: "<player> made <target> a <yellow><role></yellow>"
+    made-self: "<player> changed role to <yellow><role></yellow>"
+  revive:
+    no-game: "<red>There's not a match right now!</red>"
+    made-other: "<player> revived <target>"
+    made-self: "<player> revived themself"
+  skip:
+    announce: "<green>Phase skipped by <player></green>"
+  rejoin:
+    wrong-world: "<red>You're not in the lobby!</red>"
+    no-game: "<red>There's not a match right now!</red>"
+    announce: "<player> rejoined"
+  reload:
+    success: "<green>Config reloaded!</green>"
+  reset:
+    announce: "<green>Game reset by <player></green>"
+  save:
+    success: "<green>Config saved to file!</green>"
+  shuffle-team:
+    announce: "<player> shuffled teams!"
+  stop:
+    announce: "<green>Game stopped by <player></green>"
+  warp:
+    unclear: "<red>Please specify where to go!</red>"
+    not-found: "<red>Can't find the specific place!</red>"
+  world:
+    query: "You're in world <yellow><world></yellow>"
+    not-found: "<red>Can't find the specific world!</red>"
+
+items:
+  absorption-helmet:
+    name: "<aqua>Safety Helmet</aqua>"
+    desc-1: "A random turtle shell, seems cool to wear it on your head"
+    desc-2: "With so much health, you can definitely last a long time when attacking the core!"
+  golden-helmet:
+    name: "<aqua>Suzaku Helmet</aqua>"
+    desc-1: "Crafted from Suzaku feathers, it possesses powerful resistance!"
+    desc-2: "Its defense is identical to that of iron!"
+  golden-chestplate:
+    name: "<aqua>Black Tortoise Armor</aqua>"
+    desc-1: "Made from basalt shield, it has the effect of increasing life!"
+    desc-2: "Its defense is identical to that of iron!"
+  golden-leggings:
+    name: "<aqua>Teal Dragon Trousers</aqua>"
+    desc-1: "Crafted from the sharp teeth of the teal dragon, it can increase attack damage!"
+    desc-2: "Its defense is identical to that of iron!"
+  golden-boots:
+    name: "<aqua>White Tiger Boots</aqua>"
+    desc-1: "Made from white tiger claws, it has the effect of increasing running speed!"
+    desc-2: "Its defense is identical to that of iron!"
+  starter-helmet:
+    name: "<yellow>Low-cost Retail Hat</yellow>"
+    desc-1: "<dark_aqua>Don't you have a better armor?</dark_aqua>"
+  starter-chestplate:
+    name: "<yellow>Low-cost Retail Shirt</yellow>"
+    desc-1: "<dark_aqua>Don't you have a better armor?</dark_aqua>"
+  starter-leggings:
+    name: "<yellow>Low-cost Retail Pants</yellow>"
+    desc-1: "<dark_aqua>Don't you have a better armor?</dark_aqua>"
+  starter-boots:
+    name: "<yellow>Low-cost Retail Shoes</yellow>"
+    desc-1: "<dark_aqua>Don't you have a better armor?</dark_aqua>"
+  elytra:
+    name: "<aqua>Wings of the Fairy</aqua>"
+    desc-1: "Wings from a deceased fairy, it gives mortals the ability to glide through the sky"
+  shame-chestplate:
+    name: "<aqua>Lottery Players' Shame Shirt</aqua>"
+    desc-1: "You have such a bad luck!"
+  damage-assist:
+    name: "<aqua>Dark Memories Unveiler</aqua>"
+    desc-1: "Strengthen! Memories release!"
+  ink-assist:
+    name: "<aqua>Cuttlefish Amulet</aqua>"
+    desc-1: "The cyst of a giant deep-sea squid"
+    desc-2: "Place it in your off-hand to blind enemies that hit you!"
+  placeholder:
+    name: "<yellow>Mysterious Relic</yellow>"
+    desc-1: "Something seems to have disappeared here..."
+  soul:
+    name: "<yellow>Soul Fragment</yellow>"
+    desc-1: "Obtained by killing enemies"
+  add-core-health:
+    name: "<light_purple>Core Recovery Medication</light_purple>"
+    desc-1: "Restores 1 health to the core!"
+    core-full: "<red>Your core's health is full!</red>"
+    announce: "<player> used <item>"
+  assign-respawn-time:
+    name: "<aqua>Eye of Sin</aqua>"
+    desc-1: "Increases the sin value of a random enemy by 30!"
+    not-found: "<red>Can't find a valid target</red>"
+    announce: "<player> used <item>, added 30 sin to <target>"
+  bridge-helper:
+    name: "<yellow>Bridge Helper</yellow>"
+    desc-1: "Generates a 15 blocks tall bricks pillar"
+    no-block: "<red>Please look at a block!</red>"
+  give-jump-boost:
+    name: "<yellow>Bouncy Ball</yellow>"
+    desc-1: "Gives you 6 seconds of Jump Boost X"
+    announce: "<player> used <item>"
+  give-speed:
+    name: "<yellow>Rush Feather</yellow>"
+    desc-1: "Gives you 6 seconds of Speed X"
+    announce: "<player> used <item>"
+  give-strength:
+    name: "<yellow>Power Stone</yellow>"
+    desc-1: "Gives you 6 seconds of Strength III"
+    announce: "<player> used <item>"
+  grenade:
+    name: "<aqua>Grenade</aqua>"
+    desc-1: "Boom!"
+  random-role:
+    name: "<light_purple>Job Changing Book</light_purple>"
+    desc-1: "After the blessing of the great bodhisattva!"
+    desc-2: "By using this, you will be randomly assigned to another role"
+    announce: "<player> used <item> and became <yellow><role></yellow>"
+  choose-role:
+    name: "<aqua>Role Selection</aqua>"
+    no-team: "<red>Join a team first!</red>"
+  spectator-teleporter:
+    name: "<aqua>Spectator Teleporter</aqua>"
+  absorption-potion:
+    name: "<aqua>Guard Potion +</aqua>"
+    desc-1: "Holy water blessed by the guardian deity"
+  invis-potion:
+    name: "<aqua>Spy Potion +</aqua>"
+    desc-1: "Made from chameleon essence, it can make you invisible"
+  ice-arrow:
+    name: "<yellow>Ice Arrow</yellow>"
+    desc-1: "<red>Cold<red>"
+    desc-2: "<red>Slowness I (5s)</red>"
+  weakness-arrow:
+    name: "<yellow>Dark Night Arrow</yellow>"
+    desc-1: "<red>Weakness I (8s)</red>"
+  poison-arrow:
+    name: "<yellow>Nine Yin Bone Arrow</yellow>"
+    desc-1: "<red>Poison I (8s)</red>"
+  lottery:
+    name: "<light_purple>Lottery</light_purple>"
+    desc-1: "15% Treasure"
+    desc-2: "35% Normal Stuff"
+    desc-3: "50% Junk"
+    prefix: "[<light_purple>Lottery</light_purple>] "
+    item-lore: "- <gold>Lottery prize</gold>"
+    sent-to-spawn: "<green>Lottery rewards was sent to your spawn!</green>"
+    announce:
+      item: "<player> got <item> × <dark_aqua><amount></dark_aqua>"
+      poison: "<player> poisoned <side> team"
+      wear: "<player> wore <item>"
+      nothing: "<player> got <yellow>absolutely nothing</yellow>"
+      replace-hotbar: "<player> replaced hot-bar with <yellow>rotten flesh</yellow>"
+      kill: "<player> just <yellow><action></yellow> the whole <side> team"
+      kill-actions: "annihilated|erased|vaporized|decimated|exterminated|wiped out|eliminated|bloodwashed"
+      send-spawn: "<player> sent the whole <side> team back to spawn"
+      chaos: "<player> received <light_purple>chaos</light_purple>"
+  witchcraft:
+    name: "<light_purple>Witchcraft</light_purple>"
+    desc-1: "Random things would happen..."
+    prefix: "[<light_purple>Witchcraft</light_purple>] "
+    announce:
+      drop-ores: "<player> made all <enemy> team members drop ores!"
+      poison: "<player> applied Poison II (10s) to all <enemy> team members!"
+      add-skill-cooldown: "<player> added 60 seconds skill cooldown to all <enemy> team members!"
+      random-role: "<player> changed <target>'s role to <yellow><role></yellow>!"
+      unluck: "<player> applied Bad Luck I (60s) to all <enemy> team members!"
+      add-respawn-time: "<player> added 15 sin to all <enemy> team members!"
+      ban-ores: "<player> banned <enemy> team's ores for 60 seconds!"
+      glow: "<player> made all <enemy> team members glow for 60 seconds!"
+      attack-core: "<player> reduced <enemy> team's core health!"
+      attack-core-3: "<player> reduced <enemy> team's core health by 3!"
+      slowness: "<player> applied Slowness II (30s) to all <enemy> team members!"
+      mining-fatigue: "<player> applied Mining Fatigue I (30s) to all <enemy> team members!"
+  gold-digger-chestplate:
+    name: "<aqua>Luminous Warning Shirt</aqua>"
+    desc-1: "- <red>Bound item for Gold Diggers</red>"
+  provocateur-chestplate:
+    name: "<aqua>Cardboard Jacket</aqua>"
+    desc-1: "- <red>Bound item for Provocateurs</red>"
+  ranger-helmet:
+    name: "<aqua>Ranger Hat</aqua>"
+    desc-1: "- <red>Bound item for Rangers</red>"
+  constructor-helmet:
+    name: "<aqua>Construction Site Helmet</aqua>"
+    desc-1: "- <red>Bound item for Constructor</red>"
+  kekkai-master-leggings:
+    name: "<aqua>Rune Pants</aqua>"
+    desc-1: "- <red>Bound item for Kekkai Masters</red>"
+  assign-clear-inv:
+    name: "[<white>Token</white>] <light_purple>Thieves Gather</light_purple>"
+    desc-1: "Clears a random enemy's inventory"
+    cooldown: "<red>You need to wait for <cooldown>s to use this again!</red>"
+    not-found: "<red>Can't find a valid target</red>"
+    announce: "<player> used <item>, cleared <target>'s inventory"
+    post-announce: "boo-hoo!"
+  assign-more-respawn-time:
+    name: "[<white>Token</white>] <light_purple>Heinous Sins</light_purple>"
+    desc-1: "Increases the sin value of a random enemy by 60!"
+    not-found: "<red>Can't find a valid target</red>"
+    announce: "<player> used <item>, added 60 sin to <target>"
+  core-invuln:
+    name: "[<white>Token</white>] <light_purple>Core Protection</light_purple>"
+    desc-1: "Protect your core for 60 seconds"
+    desc-2: "Enemies can use Force Destroy to cancel the effect"
+    announce: "<player> used <item>"
+  enemy-glow:
+    name: "[<white>Token</white>] <light_purple>Thermal Radar</light_purple>"
+    desc-1: "Makes all enemies glow for 10 minutes"
+    announce: "<player> used <item>"
+  ignore-core-invuln:
+    name: "[<white>Token</white>] <light_purple>Force Destroy</light_purple>"
+    desc-1: "Decline the protection of enemy's core"
+    no-effect: "<red>Your enemy's core isn't protected!</red>"
+    announce: "<player> used <item>"
+  last-ditch:
+    name: "[<white>Token</white>] <light_purple>Last Ditch</light_purple>"
+    desc-1: "<gold>Condition</gold>: <yellow>Your core health must be 30 less than the enemy's</yellow>"
+    desc-2: "Gives your team 120s of Speed II, Strengh I, Regeneration I & extra core damage"
+    health-too-high: "<red>Your core health must be 30 less than the enemy's</red>"
+    announce: "<player> used <item>"
+  respawn-teammates:
+    name: "[<white>Token</white>] <light_purple>Respawn Teammates</light_purple>"
+    desc-1: "Instantly respawns all your teammates!"
+    desc-2: "On top of that, they now gains extra 10 hearts for 60 seconds"
+    announce: "<player> used <item>"
+  truce:
+    name: "[<white>Token</white>] <light_purple>Truce</light_purple>"
+    desc-1: "<gold>Condition</gold>: <yellow>Must be in phase 1 ~ 4</yellow>"
+    desc-2: "<gold>Condition</gold>: <yellow>Can only be used once in a match</yellow>"
+    desc-3: "Keeps players away from their enemy's base in the next 5 minutes"
+    too-late: "<red>It's too late to use this!</red>"
+    duped-usage: "<red>You have used the truce already!</red>"
+    announce: "<player> used <item>"
+  levi-stick:
+    name: "<aqua>Stick of Levitation</aqua>"
+    desc-1: "A magical wand that makes enemies levitate!"
+    not-found: "<red>No target found</red>"
+    success: "<aqua>Levitating <target></aqua>"
+  netherite-sword:
+    name: "<aqua>Heaven Sword</aqua>"
+    desc-1: "A top-tier weapon that can be manually enchanted"
+  netherite-axe:
+    name: "<aqua>Fire Axe</aqua>"
+    desc-1: "A top-tier weapon that can be manually enchanted"
+    desc-2: "Just imagine this weapon is red!"
+  starter-sword:
+    name: "<yellow>Low-cost Retail Sword</yellow>"
+    desc-1: "<dark_aqua>Don't you have a better weapon?</dark_aqua>"
+  trident:
+    name: "<aqua>Poseidon's Halberd</aqua>"
+    desc-1: "One of the seven relics of Atlantis"
+  kb-stick:
+    name: "<aqua>Knockback Stick</aqua>"
+    desc-1: "Bouncy but not sticky!"
+
+tools:
+  cancel: "Leave Editor"
+  core: "Core"
+  join-green: "Green Join Platform"
+  join-red: "Red Join Platform"
+  join-spectator: "Spectator Join Platform"
+  lobby: "Lobby Spawn"
+  rest-area: "Rest Area"
+  spawn-point: "Spawnpoint"
+  start-button: "Start Button"
+  woods: "Woods"
+  ores: "Ores"
+  diamonds: "Diamonds"
+  mission: "Mission Center"
+
+missions:
+  chicken:
+    title: "<yellow>Kill the Chicken</yellow>"
+    desc: "A chicken with 25 hearts and fast running speed appeared at the center. The team killed it wins!"
+    chicken: "<yellow>Chicken</yellow>"
+    boss-bar: "<yellow>Chicken's Health</yellow>"
+  roll-call:
+    title: "<yellow>Team Roll Call</yellow>"
+    desc: "Everyone go to your own core!"
+  collect-stars:
+    title: "<yellow>Collect Stars</yellow>"
+    desc: "Stars fell from the sky near the center, the team picked up the most stars wins!"
+    item: "<light_purple>Star</light_purple>"
+    score: "<player> got 1 star!"
+  occupy-center:
+    title: "<yellow>Occupy Center</yellow>"
+    desc: "Occupy the center for 30 seconds to win!"
+  ores:
+    title: "<yellow>Mining Competition</yellow>"
+    desc: "The team who mines more ores wins!"
+  no-jump:
+    title: "<yellow>No Jump</yellow>"
+    desc: "Hold back! The team that jumps the less wins!"
+  teleport-core:
+    title: "<yellow>Mandatory Roll Call</yellow>"
+    desc: "The core felt lonely and cold, so he called everyone back..."
+  hungry:
+    title: "<yellow>Hole in the Stomach</yellow>"
+    desc: "Your stomach feels like there's a hole in it, and you're suddenly super hungry!"
+  earthquake-cow:
+    title: "<yellow>Earthquake Cow</yellow>"
+    desc: "A cow from the underground! The team killed it wins!"
+    cow: "<yellow>Earthquake Cow</yellow>"
+    boss-bar: "<yellow>Earthquake Cow's Health</yellow>"
+  drop-all:
+    title: "<yellow>Drop All</yellow>"
+    desc: "The next person to die will drop all their items!"
+  jump:
+    title: "<yellow>Jumping Competition</yellow>"
+    desc: "The team that jumped more wins!"
+  eat-cake:
+    title: "<yellow>Cake Eating Competition</yellow>"
+    desc: "The team that ate more cakes wins!"
+  discount-trader:
+    title: "<yellow>Discount Trader</yellow>"
+    desc: "A trader from the future is passing through here! Limited quantity!"
+    trader: "Discount Trader"
+  free-money:
+    title: "<yellow>Windfall</yellow>"
+    desc: "You realized there's money in your pocket this whole time!"
+  drop-ores:
+    title: "<yellow>Hole in the Pocket</yellow>"
+    desc: "Everyone dropped all the ores on the ground!"
+  anti-gravity:
+    title: "<yellow>Reverse Gravity</yellow>"
+    desc: "You'll levitate when you crouch!"
+    bar: "<yellow>Anti-gravity: <time></yellow>"
+  xp-fountain:
+    title: "<yellow>Experience Fountain</yellow>"
+    desc: "Large amount of experience appeared at the center!"
+  angry-bees:
+    title: "<yellow>Angry Bees</yellow>"
+    desc: "A mutant queen bee appeared in the center!"
+    queen-bee: "<yellow>Queen Bee</yellow>"
+    normal-bee: "<yellow>Worker Bee</yellow>"
+    boss-bar: "<yellow>Queen Bee's Health</yellow>"
+  swap-pos:
+    title: "<yellow>Soul Swap</yellow>"
+    desc: "A random player from both teams will swap positions after 10 seconds!"
+    bar: "<yellow>Time until teleportation: <time></yellow>"
+  swap-all-pos:
+    title: "<yellow>Soul Swap</yellow>"
+    desc: "All player will shuffle positions in 10 seconds!"
+    bar: "<yellow>Time until teleportation: <time></yellow>"
+  covid:
+    title: "<yellow>Covid Outbreak Hits</yellow>"
+    desc: "Everyone stay at least 5 blocks away from each other!"
+    bar: "<yellow>Covid Outbreak: <time></yellow>"
+  random-role:
+    title: "<yellow>Chosen Role</yellow>"
+    desc: "Somebody's role has been secretly changed!"
+  free-soup:
+    title: "<yellow>Suspicious Stew</yellow>"
+    desc: "Random effects... Should you consume it?"
+  hero:
+    title: "<yellow>Superheroes</yellow>"
+    desc: "A random player from both teams gets Strength I, Resistance III, Speed II & Glowing!"
+  sneak-walk:
+    title: "<yellow>Sneaking Competition</yellow>"
+    desc: "The team who walked more while crouching wins!"
+  invis:
+    title: "<yellow>Ninja Spirit</yellow>"
+    desc: "Everyone becomes invisible until death!"
+  cargo:
+    title: "<yellow>Cargo Competition</yellow>"
+    desc: "A random player from both teams has to carry a heavy package to the center"
+    item: "<light_purple>Heavy Package</light_purple>"
+  explode:
+    title: "<yellow>Possessed by Creeper</yellow>"
+    desc: "A random player from both teams will explode in 60 seconds!"
+    bar: "<yellow>Player Explode: <time></yellow>"
+    warning: "<red>You're going to explode!</red>"
+  infinite-ores:
+    title: "<yellow>Infinite Ores</yellow>"
+    desc: "Infinite random ores appeared at the center!"
+    bar: "<yellow>Infinite Ores: <time></yellow>"
+  rocket:
+    title: "<yellow>Rocket Launch</yellow>"
+    desc: "Everyone go find cover quickly, ready to take off in 5 seconds"
+    bar: "<yellow>Rocket Launch: <time></yellow>"
+    warning: "<red>You're going to take off!</red>"
+  cold:
+    title: "<yellow>Cold Wave Hits</yellow>"
+    desc: "Everyone stay within 5 blocks from another player!"
+    bar: "<yellow>Cold Wave: <time></yellow>"
+  cursed-item:
+    title: "<yellow>Cursed Object</yellow>"
+    desc: "Holding it gets you Speed III & Strength I, but would kill you if held longer than 10 seconds!"
+    item: "<yellow>Cursed Object</yellow>"
+    bar: "<yellow>Cursed Object: <time></yellow>"
+  go-outside:
+    title: "<yellow>Go Outside</yellow>"
+    desc: "It's a beautiful day, you shouldn't stay indoors!"
+    bar: "<yellow>Go Outside: <time></yellow>"
+
+roles:
+  default:
+    name: "Villager"
+    desc-1: "<gold>You're unemployed!</gold>"
+    skill:
+      name: "Cry"
+      desc-1: "<dark_purple>Regret not finding a job</dark_purple>"
+      announce: "<player> is regretting not finding a job..."
+  attacker:
+    name: "Attacker"
+    desc-1: "<gold>The main attacker who charges into battle!</gold>"
+    feature-1: "Respawn time halved"
+    item:
+      name: "<aqua>Assault Sword</aqua>"
+      detail: "Sharpness III wooden sword"
+    skill:
+      name: "Blitz Launch"
+      desc-1: "<dark_purple>Gets Speed I (5s), Resistance I (10s)</dark_purple>"
+      announce: "<player> used <yellow><role></yellow>'s skill, increased speed and resistance!"
+  guard:
+    name: "Guard"
+    desc-1: "<gold>An important defensive role guarding the core!</gold>"
+    feature-1: "Gets Regeneration II when 15 blocks within own core"
+    feature-2: "Atonement experience value ×3"
+    feature-3: "Will be notified if enemy's enchanting"
+    item:
+      name: "<yellow>Aegis</yellow>"
+      detail: "Shield"
+    skill:
+      name: "Core Blockade"
+      desc-1: "<dark_purple>Enemies 15 blocks within the core gets:</dark_purple>"
+      desc-2: "<dark_purple>- Glowing (60s)</dark_purple>"
+      desc-3: "<dark_purple>- Slowness V & Mining Fatigue V (5s)</dark_purple>"
+      desc-4: "<dark_purple>Gives themself Strength II (15s)</dark_purple>"
+      announce: "<player> used <yellow><role></yellow>'s skill, detecting enemies near their core!"
+      found-enemy:
+        none: "No enemy found!"
+        self: "Detected: <enemy>"
+        enemy: "You have been detected by <player>!"
+    near-enemy-core-warning: "<red>A <role> shouldn't come this close to enemy's core!</red>"
+    enchanting-alarm: "<aqua>Enemy is enchanting!</aqua>"
+  gold-digger:
+    name: "Gold Digger"
+    desc-1: "<gold>Greed enables them to obtain a large amount of economic</gold>"
+    desc-2: "<gold>But often makes them the target as well!</gold>"
+    feature-1: "Teammates within 10 blocks:"
+    feature-2: "- Gets Haste I"
+    feature-3: "- When mining, 25% chance to get the same ore"
+    feature-4: "Forever glowing"
+    feature-5: "Forever gets Slowness I"
+    item:
+      name: "<aqua>Gold Digging Pickaxe</aqua>"
+      detail: "Efficiency III iron pickaxe"
+    skill:
+      name: "Greedy Heart"
+      desc-1: "<dark_purple>Gets Luck III (15s)</dark_purple>"
+      announce: "<player> used <yellow><role></yellow>'s skill!"
+    ores-bonus: "<aqua>Bonus <ore> by <player></aqua>"
+  ranger:
+    name: "Ranger"
+    desc-1: "<gold>Archers who can lay traps</gold>"
+    desc-2: "<gold>An important role in harassing the enemy and defending!</gold>"
+    feature-1: "Gets Resistance I when holding a crossbow"
+    feature-2: "Receives 20 free arrows each phase"
+    item:
+      name: "<aqua>Storm Crossbow</aqua>"
+      detail: "Quick Charge III crossbow"
+    skill:
+      name: "Hunter Trap"
+      desc-1: "<dark_purple>Places a trap</dark_purple>"
+      desc-2: "<dark_purple>Enemies trapped will get Poison X (10s)</dark_purple>"
+      announce: "<player> used <yellow><role></yellow>'s skill, placed a trap!"
+      trap-hit:
+        owner: "<enemy> fell into your trap!"
+        enemy: "You fell into <owner>'s trap!"
+        enemy-unknown: "You fell into someone's trap!"
+  kekkai-master:
+    name: "Kekkai Master"
+    desc-1: "Auxiliary role, can place various different barriers"
+    feature-1: "Forever Fire Resistance I"
+    feature-2: "Standing in a kekkai while holding Kekkai Staff keeps it alive"
+    item:
+      name: "<aqua>Kekkai Staff</aqua>"
+      detail: "Knockback I fishing rod"
+    skill:
+      name: "Kekkai Expand"
+      desc-1: "<dark_purple>Places a kekkai based on the material on off-hand (15 blocks)</dark_purple>"
+      desc-2: "<dark_purple>Iron Ingot - Speed V (30s)</dark_purple>"
+      desc-3: "<dark_purple>Gold Ingot - Regeneration II (30s)</dark_purple>"
+      desc-4: "<dark_purple>Redstone - Bullet Proof (30s)</dark_purple>"
+      desc-5: "<dark_purple>Emerald - Resistance II (30s)</dark_purple>"
+      desc-6: "<dark_purple>Lapis Lazuli - Halves ores cooldown (30s)</dark_purple>"
+      desc-7: "<dark_purple>Diamond - Strength I (30s)</dark_purple>"
+      desc-8: "<dark_purple>Iron Block - Speed V (30s)</dark_purple>"
+      desc-9: "<dark_purple>Gold Block - Recovers food level (10s)</dark_purple>"
+      desc-10: "<dark_purple>Redstone Block - Bullet Proof (180s)</dark_purple>"
+      desc-11: "<dark_purple>Emerald Block - Resistance IV (30s)</dark_purple>"
+      desc-12: "<dark_purple>Lapis Block - Halves ores cooldown (180s)</dark_purple>"
+      desc-13: "<dark_purple>Diamond Block - Strength III (180s)</dark_purple>"
+      desc-14: "<dark_purple>Mysterious Relic - Random Effect III (10s)</dark_purple>"
+      desc-15: "<dark_purple>Soul Fragment - Speed, Regeneration, Strength II, adds sin (30s)</dark_purple>"
+      desc-16: "<dark_purple>A plus kekkai takes 6 times the normal skill cooldown</dark_purple>"
+      announce: "<player> used <yellow><role></yellow>'s skill, placed a <aqua><type></aqua> kekkai!"
+      inside-kekkai: "<red>Replacing <amount> kekkais, crouch to confirm!</red>"
+      no-material: "<red>Invalid material on off-hand!</red>"
+      duration: "<aqua>Kekkai health: <value> seconds</aqua>"
+    kekkais:
+      speed: "Speed"
+      healing: "Healing"
+      bullet-proof: "Bullet Proof"
+      resistance: "Resistance"
+      fast-ores: "Fast Ores"
+      strength: "Strength"
+      speed-plus: "Speed +"
+      saturation: "Saturation"
+      bullet-proof-plus: "Bullet Proof +"
+      resistance-plus: "Resistance +"
+      fast-ores-plus: "Fast Ores +"
+      strength-plus: "Strength +"
+      chaos: "Chaos"
+      soul: "Soul"
+    center-name: " Kekkai Origin"
+  assassin:
+    name: "Assassin"
+    desc-1: "<gold>A powerful profession that becomes invisible at night and is good at attacking from behind!</gold>"
+    feature-1: "Invisible when didn't move for 2 seconds"
+    feature-2: "Strength I when turned invisible"
+    feature-3: "Can't shoot bow or crossbow"
+    item:
+      name: "<aqua>Assassin's Blade</aqua>"
+      detail: "Smite V stone sword"
+    skill:
+      name: "Midnight Assault"
+      desc-1: "<dark_purple>Can only be used when invisible</dark_purple>"
+      desc-2: "<dark_purple>Teleports to the nearest person (teammates or enemy!)</dark_purple>"
+      desc-3: "<dark_purple>Gain invisible for another 4 seconds & Strength III</dark_purple>"
+      not-invis: "<red>You need to be invisible to use this skill!</red>"
+      no-target: "<red>No target to teleport to!</red>"
+    no-bow: "<red>You can't use bow!</red>"
+  constructor:
+    name: "Constructor"
+    desc-1: "<gold>It's normal for a worker to carry a hammer with them, right?</gold>"
+    feature-1: "When breaking woods:"
+    feature-2: "- Gains 2 seconds Haste I"
+    feature-3: "- 5% chance to restore hunger"
+    item:
+      name: "<aqua>Hammer</aqua>"
+      detail: "Efficiency VII stone axe"
+    skill:
+      name: "Domain Expansion"
+      desc-1: "<dark_purple>Builds a 9×5×9 oak planks bunker</dark_purple>"
+      announce: "<player> used <yellow><role></yellow>'s skill, built a bunker!"
+    eat-wood: "<aqua>You accidentally ate a sawdust, hunger restored!</aqua>"
+  wanderer:
+    name: "Wanderer"
+    desc-1: "<gold>Wandering the world I feel so proud, my twin swords dominate the universe</gold>"
+    desc-2: "<gold>Wielding off a longsword is even more graceful, a single skill sends them soaring into the sky</gold>"
+    feature-1: "Speed I, Regeneration I when sword on off-hand"
+    feature-2: "Slowness I otherwise"
+    feature-3: "Can't equip shields"
+    item:
+      name: "<aqua>Wanderer's Longsword</aqua>"
+      detail: "Knockback I iron sword"
+    skill:
+      name: "Anti-gravity Elevator"
+      desc-1: "<dark_purple>Makes players levitate & Weakness I</dark_purple>"
+      announce: "<player> used <yellow><role></yellow>'s skill, created an elevator!"
+    no-shield: "<red>You can't equip a shield!</red>"
+  provocateur:
+    name: "Provocateur"
+    desc-1: "<gold>Absolute tank, help teammates take damage!</gold>"
+    feature-1: "Transfer 60% damage of teammates within 10 blocks to themself"
+    feature-2: "When absorption effect is applied, transfer 90% damage instead"
+    feature-3: "Forever gets Weakness I"
+    item:
+      name: "<aqua>Super Pie</aqua>"
+      detail: "Sweeping Edge III pumpkin pie"
+    skill:
+      name: "Become the Shield"
+      desc-1: "<dark_purple>Gets Absorption X & Resistance III (10s), Weakness X (30s)</dark_purple>"
+      announce: "<player> used <yellow><role></yellow>'s skill, increased health!"

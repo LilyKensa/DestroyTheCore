@@ -1,0 +1,45 @@
+name: Java CI with Maven
+
+# Controls when the workflow will run
+on:
+  push:
+    branches: [ "master", "main" ]
+  pull_request:
+    branches: [ "master", "main" ]
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs
+jobs:
+  # This job builds the project
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Set up a specific version of Java and enable Maven caching
+      - name: Set up JDK and Cache Maven Dependencies
+        uses: actions/setup-java@v4
+        with:
+          # Based on your pom.xml, your project uses Java 21
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven # This enables caching of your local Maven repository (.m2)
+
+      # Runs the Maven package goal
+      - name: Build with Maven and create final JAR
+        run: mvn -B package --file pom.xml
+        # The -B (Batch Mode) flag makes the output more CI-friendly.
+        # Since your pom.xml uses the maven-shade-plugin, this step will
+        # generate the final shaded JAR in the 'target' directory.
+
+      # Optionally, upload the resulting JAR as a workflow artifact
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.event.repository.name }}-${{ github.sha }}
+          # Assuming your final jar is named like artifactId-version.jar in the target folder
+          path: target/*.jar

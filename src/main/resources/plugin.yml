@@ -1,0 +1,29 @@
+name: DestroyTheCore
+version: '${project.version}'
+main: dev.huey.destroyTheCore.DestroyTheCore
+api-version: '1.21'
+authors: [ _hueeey_ ]
+depend: [ ProtocolLib ]
+commands:
+  dtc:
+    description: Main command of Destroy the Core 3
+  rejoin:
+    description: Rejoin the game
+  night-vision:
+    description: Toggle night vision
+  shout:
+    description: Shout to everybody
+  warp:
+    description: Warp to a place
+  skip:
+    description: Skip a game phase
+  edit:
+    description: Edit the lobby / map
+  reset:
+    description: Reset the game
+  revive:
+    description: Revive somebody
+permissions:
+  dtc.admin:
+    description: The admin permission
+    default: op
