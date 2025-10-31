@@ -129,10 +129,10 @@ public class Game {
     static public MapLocs deserialize(Map<String, Object> map) {
       MapLocs locs = new MapLocs();
       
-      locs.restArea      = (Location) map.getOrDefault("rest-area", null);
-      locs.core          = (Location) map.getOrDefault("core", null);
-      locs.spawnPoint    = (Location) map.getOrDefault("spawnpoint", null);
-      locs.mission       = (Location) map.getOrDefault("mission", null);
+      locs.restArea   = (Location) map.getOrDefault("rest-area", null);
+      locs.core       = (Location) map.getOrDefault("core", null);
+      locs.spawnPoint = (Location) map.getOrDefault("spawnpoint", null);
+      locs.mission    = (Location) map.getOrDefault("mission", null);
       
       Function<String, List<Location>> locListLoader = (key) -> {
         List<Location> result = new ArrayList<>();
@@ -140,7 +140,6 @@ public class Game {
         Object unknown = map.get(key);
         if (unknown == null) return result;
         if (!(unknown instanceof List<?> list)) return result;
-        if (list.isEmpty()) return result;
         
         for (Object element : list) {
           if (element instanceof Location loc)

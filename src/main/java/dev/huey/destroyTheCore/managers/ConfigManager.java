@@ -53,7 +53,7 @@ public class ConfigManager {
         config.save(file);
       }
       catch (IOException e) {
-        CoreUtils.log("Cannot save %s!".formatted(path));
+        CoreUtils.error("Cannot save %s!".formatted(path));
       }
     }
     

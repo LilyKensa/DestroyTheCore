@@ -97,7 +97,24 @@ public class WorldsManager {
     return LocationUtils.isSameWorld(loc.getWorld(), live);
   }
   
+  public void clearLiveWorldPlayers() {
+    for (Player p : Bukkit.getOnlinePlayers()) {
+      if (p.getWorld().equals(live)) {
+        p.teleport(CoreUtils.def(
+          DestroyTheCore.game.lobby.spawn,
+          new Location(lobby, 0, 100, 0)
+        ));
+      }
+    }
+  }
+  
   public void deleteLive() {
+    if (live != null && live.getPlayerCount() > 0) {
+      clearLiveWorldPlayers();
+      CoreUtils.setTickOut(this::deleteLive);
+      return;
+    }
+    
     Bukkit.unloadWorld("live", false);
     
     File targetFolder = new File(Bukkit.getWorldContainer(), "live");
@@ -107,16 +124,11 @@ public class WorldsManager {
       FileUtils.deleteDirectory(targetFolder);
     }
     catch (IOException e) {
-      e.printStackTrace();
+      CoreUtils.error("Cannot delete live world!");
     }
   }
   
   public void cloneLive() {
-    if (mapName == null) {
-      CoreUtils.log("No map to clone!");
-      return;
-    }
-    
     isReady = false;
     
     Bukkit.unloadWorld("template-" + mapName, true);
