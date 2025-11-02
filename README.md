@@ -1,384 +1,386 @@
-# 殲滅攻城戰 III
+> [English](README.md) | [繁體中文](README-zh.md)
 
-—— 沒有用到任何指令的 Minecraft 小遊戲
+# Destroy the Core III
 
-[//]: # (<img src="screenshot.png" alt="截圖" />)
+—— A Minecraft mini-game without a single command!
 
-## 簡介
+[//]: # (<img src="screenshot.png" alt="Screenshot" />)
 
-由哈記 (`Hageeshow`) 製作的殲滅攻城戰 I & II 曾經爆紅一時  
+## Introduction
 
-但使用資料包有各種壞處, 畢竟它是 Mojang 官方設計給玩家使用的, 不僅許多事情都需要繞一大圈, 甚至根本做不到  
-最重大的問題是每次 Minecraft 更新它的 API 都會改版, 導致製作好的資料包不再適用
+The DTC I & II, created by Hageeshow (`Hageeshow`), were once hugely popular.
 
-晴 (`_hueeey_`) 遊玩了由 `just_like_bear` 及 `ItzYoyo` 等人改版的殲滅攻城戰 II  
-決定把遊戲重新製作成插件, 於是便誕生了殲滅攻城戰 III
+However, using data packs has various drawbacks. After all, they are officially designed by Mojang for players, which means many things require going around in circles, or are simply impossible.
+The most significant problem is that its API is revised every time Minecraft updates, causing the created data packs to become obsolete.
 
-簡略介紹一下殲滅 III 與殲滅 II 不同之處:
-- 運算快速
-> Paper + 插件可能比 Vanilla + 資料包快 10 倍不止
-- 職業頭銜
-> 如 `[守護者] Hi_Chocolate`
-- 資訊側欄
-> 包含職業, 階段, 陣營血量等資訊
-- 統計數據
-> 顯示勝局, 殺人, 攻擊與挖礦數
-- 翻譯系統
-> 目前支援英文與繁體中文
-- 地圖系統
-> 支援動態載入地圖, 並且每局玩完後會自動重置
-- 更多細節與各種粒子特效
-> 礦物冷卻會有方塊破壞動畫  
-> 許多道具會有像法障一樣的光芒效果
-- 團隊共用的大終界箱
+晴 (`_hueeey_`) played the modified version of DTC II by `just_like_bear` and `ItzYoyo`, among others.
+Decided to remake the game as a plugin, and thus DTC III was born.
 
-## 給玩家
+A brief introduction to the differences between DTC III and DTC II:
+- Fast computation
+> Paper + plugin may be more than 10 times faster than Vanilla + data pack
+- Profession titles
+> Such as `[Guardian] Hi_Chocolate`
+- Information sidebar
+> Includes profession, stage, faction health, etc.
+- Statistics
+> Displays wins, kills, attacks, and mining counts
+- Translation system
+> Currently supports English and Traditional Chinese
+- Map system
+> Supports dynamic map loading and automatically resets after each game
+- More details and various particle effects
+> Mineral cooldowns have block breaking animations
+> Many items have a magical aura-like glow effect
+- Team-shared Ender Chest
 
-這邊我直接複製[殲滅 II 的介紹](https://forum.gamer.com.tw/C.php?bsn=18673&snA=173606)
+## For Players
 
-- 地圖名稱: 殲滅攻城戰 III  
-- 遊玩人數: 建議最少 4v4, 最多... 我也不知道 XD (不過當然你要 1v1 也是可以啦...)  
-- 遊戲時間: 1 小時內結束, 根據玩家攻打激烈程度可能會更快  
-- 版本建議: 1.21.4+
+Here, I directly copy the [introduction of DTC II](https://forum.gamer.com.tw/C.php?bsn=18673&snA=173606)
 
-### 地圖下載
+- Map Name: DTC III
+- Number of Players: Recommended at least 4v4, at most... I don't know XD (But of course, you can also do 1v1...)
+- Game Time: Ends within 1 hour, may be faster depending on the intensity of player attacks
+- Version Recommendation: 1.21.4+
 
-目前無提供地圖
+### Map Download
 
-### 取勝方式
+No map is currently provided
 
-殲滅攻城戰 III 分成兩個陣營: 紅隊及綠隊  
-玩家的任務是要保護自己陣營的核心, 破壞敵方陣營核心  
-當敵方陣營血量歸零即勝利
+### How to Win
 
-### 地圖介紹
+DTC III is divided into two factions: Red Team and Green Team
+The player's mission is to protect their own faction's core and destroy the enemy faction's core
+Victory is achieved when the enemy faction's health reaches zero
 
-(之後補上)
+### Map Introduction
 
-### 陣營核心
+(To be added later)
 
-核心就是那顆終界石, 含有強大的能量, 附近的敵方陣營成員都會獲得挖掘減速效果  
-終界石只要被挖掘, 該陣營的生命值就會直接減少  
-同時挖掘的人會因為核心的能量外洩到身上而獲得 30 秒發光, 並且增加自身的罪惡值 3 點  
-核心附近水、岩漿、黑曜石會直接被核心直接吸收
+### Faction Core
 
-### 礦物系統
+The core is that Ender Stone, containing powerful energy, and nearby enemy faction members will receive mining fatigue
+As long as the Ender Stone is mined, the faction's health will be directly reduced
+At the same time, the miner will gain 30 seconds of glowing due to the core's energy leaking onto them, and increase their sin value by 3 points
+Water, lava, and obsidian near the core will be directly absorbed by the core
 
-礦物系統與殲滅 II 不同, 鐵和金並不會自動燒製 (但熔爐的速度都是原版 Minecraft 的 10×)  
-礦物被挖掉後會變成基岩進行冷卻, 時間到以後會重新生成礦物
+### Mineral System
 
-| 物資  | 用途             |
-|-----|----------------|
-| 鐵錠  | 製作裝備與工具 / 購買藥水 |
-| 金錠  | 購買食物 / 兌換為其他礦物 |
-| 紅石  | 購買弓箭與箭矢        |
-| 青金石 | 附魔             |
-| 綠寶石 | 購買特殊道具與令牌      |
-| 鑽石  | 製作裝備與工具        |
-| 煤炭  | 獲得經驗值          |
+The mineral system is different from DTC II. Iron and gold are not automatically smelted (but the speed of the furnace is 10× that of vanilla Minecraft)
+After a mineral is mined, it will turn into bedrock for cooling, and the mineral will regenerate after the time is up
 
-預設的地圖中, 鐵在左方礦洞, 鑽石在中央河流底下, 其他則在右方礦洞
+| Resource | Use |
+|---|---|
+| Iron Ingot | Crafting equipment and tools / Buying potions |
+| Gold Ingot | Buying food / Exchanging for other minerals |
+| Redstone | Buying bows and arrows |
+| Lapis Lazuli | Enchanting |
+| Emerald | Buying special items and tokens |
+| Diamond | Crafting equipment and tools |
+| Coal | Gaining experience points |
 
-### 遊戲階段
+In the default map, iron is in the left mine, diamonds are under the central river, and others are in the right mine
 
-每階段都是 10 分鐘:
+### Game Stages
 
-- 第一階段: 核心無敵
-> 核心在這個階段還無法被攻擊, 盡可能的收集物資準備戰鬥
-- 第二階段: 交易所開放
-> 在這階段可以開始破壞核心  
-> 村民也開放交易了
-- 第三階段: 隨機任務
-> 這時候會每過 2 分鐘就出現隨機任務, 完成任務可以獲得獎勵或是給敵方懲罰  
-> 同時地圖中央的鑽石礦開放挖取
-- 第四階段: 死亡懲罰
-> 礦物的冷卻時間將會減半  
-> 死亡會扣除陣營生命值 1 點
-- 第五階段: 核心雙倍傷害
-> 原先破壞核心只有 1 點傷害, 到這階段將會扣 2 點
-- 最終階段: 核心凋零
-> 到此已經是最後階段, 為加速遊戲進行, 每過15秒雙方核心會被同時扣血
+Each stage is 10 minutes:
 
-### 罪惡值
+- Stage 1: Core Invincible
+> The core cannot be attacked in this stage, so collect as many resources as possible to prepare for battle
+- Stage 2: Exchange Opens
+> In this stage, you can start destroying the core
+> Villagers are also open for trading
+- Stage 3: Random Mission
+> At this time, a random mission will appear every 2 minutes. Completing the mission can earn rewards or give penalties to the enemy
+> At the same time, the diamond mine in the center of the map is open for mining
+- Stage 4: Death Penalty
+> The cooldown time of minerals will be halved
+> Dying will deduct 1 point from the faction's health
+- Stage 5: Core Double Damage
+> Originally, destroying the core only dealt 1 point of damage, but in this stage, it will deduct 2 points
+- Final Stage: Core Wither
+> This is the final stage. To speed up the game, both sides' cores will lose health every 15 seconds
 
-罪惡值是殲滅 II 新增的系統, 簡單來說就是重生的冷卻時間  
-每階段的初始罪惡值不同, 分別是 5, 8, 11, 14, 17, 20  
-殺人就會獲得罪惡值 2 點, 破壞核心會獲得罪惡值 3 點  
-最低不會低於 5 點，最高不會超過 180 點  
+### Sin Value
 
-為了防止防守的人一直殺人導致罪惡值過高, 這裡有提供一個減少罪惡值的方法  
-只要蹲在核心附近感受核心能量, 一定時間過後就會慢慢的回覆你的罪惡值, 也會給你一點點的經驗值
+Sin value is a new system added in DTC II, which is simply the respawn cooldown time
+The initial sin value for each stage is different, namely 5, 8, 11, 14, 17, 20
+Killing a player will gain 2 sin points, and destroying the core will gain 3 sin points
+The minimum will not be lower than 5 points, and the maximum will not exceed 180 points
 
-### 噴裝系統
+In order to prevent the defenders from killing people all the time, resulting in too high a sin value, here is a method to reduce the sin value
+As long as you crouch near the core and feel the core energy, your sin value will slowly recover after a certain period of time, and it will also give you a little experience
 
-畢竟這是戰鬥遊戲, 玩家難免會在遊戲中陣亡, 所以設計成陣亡後東西不會全部噴出  
-但會有 10% 的機率裝備或身上物品消失  
-玩家身上共有 36 格, 加上裝備 4 格, 共計40格的物品, 平均每次死亡會有 4 格物品消失, 並且被替換成混沌之物
+### Item Drop System
 
-附魔台及終界箱一定會噴出, 盾牌和技能書則不會噴出
+After all, this is a battle game, and players will inevitably die in the game, so it is designed so that things will not all drop out after death
+But there is a 10% chance that equipment or items on the body will disappear
+There are a total of 36 slots on the player's body, plus 4 equipment slots, for a total of 40 slots of items. On average, 4 slots of items will disappear each time you die and be replaced with Chaos Matter
 
-### 其他設定
+Enchanting tables and Ender Chests will definitely drop, while shields and skill books will not
 
-#### 殺人
+### Other Settings
 
-玩家殺人會增加罪惡值 2 點, 並且獲得五秒虛弱 II, 發光, 失明, 緩速  
-連續殺 10 個人會成為殺人隊長, 擊殺後會獲得獎勵 10 顆綠寶石
+#### Killing
 
-#### 隱形
+Killing a player will increase the sin value by 2 points, and gain five seconds of Weakness II, Glowing, Blindness, and Slowness
+Killing 10 people in a row will become the Killing Leader, and killing them will reward 10 emeralds
 
-隱形時受到超過 1 顆心的傷害就會解除隱形
+#### Invisibility
 
-#### 雜項
+Invisibility will be canceled when taking more than 1 heart of damage
 
-- 幸運效果會使礦物掉落有機會翻倍
-- 終界箱點開會是一個團隊共用的大箱子
-- 重生等待區及重生點附近無法放置方塊
-- 玩家高於重生等待區的高度時會得到高山症, 觸發冰凍及噁心效果
-- 活塞推不了礦物, 木頭或核心
-- 獄髓方塊無法破壞
+#### Miscellaneous
 
-#### 抽獎
+- Luck effect will double the chance of mineral drops
+- Opening the Ender Chest will be a large team-shared chest
+- Blocks cannot be placed near the respawn waiting area and respawn point
+- Players above the height of the respawn waiting area will get altitude sickness, triggering freezing and nausea effects
+- Pistons cannot push minerals, wood, or the core
+- Netherite blocks cannot be destroyed
 
-抽獎是 15% 大獎, 35% 普通, 50% 垃圾  
-每抽到一次大獎會使大獎機率下降 2% (垃圾的機率會上升)
+#### Lottery
 
-## 給服主
+The lottery is 15% grand prize, 35% normal, 50% trash
+Each time you win a grand prize, the grand prize probability will decrease by 2% (the probability of trash will increase)
 
-殲滅 III 有提供動態地圖及編輯工具組
+## For Server Owners
 
-### 伺服器架設
+DTC III provides dynamic maps and editing toolsets
 
-我沒有在 Bukkit 或 Spigot 上測試過, 所以你最好使用 Paper 或以上的伺服器核心
+### Server Setup
 
-首先你的伺服器必須要有一個叫做 `lobby` 的世界當作大廳
+I haven't tested it on Bukkit or Spigot, so you better use Paper or above server core
+
+First, your server must have a world called `lobby` as the lobby
 
 ```properties
 # server.properties
 level-name=lobby
 ```
 
-每張地圖則存在 `template-[name]` 裡面, 預設會載入名為 `castle` 的地圖
+Each map exists in `template-[name]`, and the map named `castle` will be loaded by default
 
-裝好 [ProtocolLib](https://github.com/dmulloy2/ProtocolLib) 和此插件, 接著直接運行你的伺服器就可以了
+Install [ProtocolLib](https://github.com/dmulloy2/ProtocolLib) and this plugin, then just run your server
 
-### 指令
+### Commands
 
-| 格式                          | 介紹                     | 備註             |
-|-----------------------------|------------------------|----------------|
-| `/shout`                    | 吶喊, 這樣敵對才能看到你的訊息       |
-| `/rejoin`                   | 斷線的話要打這個重新進入遊戲         |
-| `/night-vision`             | 開啟 / 關閉夜視效果            |
-| `/shuffle-team`             | 隨機分隊                   | 管理員限定          |
-| `/revive [player]`          | 使人瞬間重生                 | 管理員限定          |
-| `/language <locale>`        | 設定語言                   | 管理員限定          |
-| `/edit <lobby\|game>`       | 進入編輯模式                 | 管理員限定          |
-| `/reset`                    | 終止遊戲並重置地圖              | 管理員限定          |
-| `/dtc`                      | 查看插件版本                 |
-| `/dtc reload`               | 從檔案重新載入設定              | 管理員限定          |
-| `/dtc save`                 | 把設定存到檔案                | 管理員限定          |
-| `/dtc team <team> [player]` | 加入隊伍                   | 非管理員只能於大廳對自己使用 |
-| `/dtc role <role> [player]` | 轉變職業                   | 非管理員只能於大廳對自己使用 |
-| `/dtc give <item>`          | 給你特殊物品                 | 管理員限定          |
-| `/dtc skip`                 | 跳過這個階段                 | 管理員限定          |
-| `/dtc stop`                 | 終止遊戲                   | 管理員限定, 不會重製地圖  |
-| `/dtc world <name>`         | 讓你在不同世界穿梭              | 管理員限定          |
-| `/dtc map <name>`           | 設定地圖                   | 管理員限定          |
-| `/dtc help`                 | 我根本沒做這個指令, 用了只會回你一個 :3 |
+| Format | Introduction | Remarks |
+|---|---|---|
+| `/shout` | Shout, so the enemy can see your message | |
+| `/rejoin` | If you disconnect, type this to re-enter the game | |
+| `/night-vision` | Turn on / off night vision effect | |
+| `/shuffle-team` | Random team assignment | Admin only |
+| `/revive [player]` | Instantly revive someone | Admin only |
+| `/language <locale>` | Set language | Admin only |
+| `/edit <lobby\|game>` | Enter edit mode | Admin only |
+| `/reset` | End the game and reset the map | Admin only |
+| `/dtc` | View plugin version | |
+| `/dtc reload` | Reload settings from file | Admin only |
+| `/dtc save` | Save settings to file | Admin only |
+| `/dtc team <team> [player]` | Join team | Non-admins can only use it on themselves in the lobby |
+| `/dtc role <role> [player]` | Change profession | Non-admins can only use it on themselves in the lobby |
+| `/dtc give <item>` | Give you special items | Admin only |
+| `/dtc skip` | Skip this stage | Admin only |
+| `/dtc stop` | End the game | Admin only, does not reset the map |
+| `/dtc world <name>` | Let you travel in different worlds | Admin only |
+| `/dtc map <name>` | Set map | Admin only |
+| `/dtc help` | I didn't even make this command, using it will only give you a :3 |
 
-沒有 `/dtc` 的指令也可以加上 `/dtc` 開頭  
-像是 `/rejoin` 和 `/dtc rejoin` 的效果是一樣的
+Commands without `/dtc` can also be added with `/dtc` at the beginning
+For example, `/rejoin` and `/dtc rejoin` have the same effect
 
-### 編輯器
+### Editor
 
-| 編輯器類型 | 使用方式                                                                        |
-|-------|-----------------------------------------------------------------------------|
-| 方塊    | 右鍵以設定, 如果指著一個方塊, 則會設定為那個方塊, 否則會變成玩家目前位置 <br/> 方向將與玩家面朝的方向一致 <br/> 左鍵可移除這個位置 |
-| 區域    | 需要設定兩個對角, 左鍵會移除整個區域                                                         |
-| 方塊清單  | 與方塊是同樣操作, 但有許多個                                                             |
+| Editor Type | How to Use |
+|---|---|
+| Block | Right-click to set. If pointing at a block, it will be set to that block, otherwise it will become the player's current position <br/> The direction will be the same as the direction the player is facing <br/> Left-click to remove this position |
+| Region | Need to set two corners, left-click will remove the entire region |
+| Block List | Same operation as block, but there are many |
 
-編輯器拿在手上時都會顯示粒子效果
+Particle effects will be displayed when the editor is held in hand
 
-#### 大廳
+#### Lobby
 
-用 `/edit lobby`, 你會獲得 5 個工具:
+Use `/edit lobby`, you will get 5 tools:
 
-| 工具    | 類型 | 簡介                                    |
-|-------|----|---------------------------------------|
-| 大廳重生點 | 方塊 | 玩家進入伺服器會出生在這裡                         |
-| 開始按鈕  | 方塊 | 不一定要是一個按鈕, 被按右鍵時會倒數 5 秒開始遊戲 (再按一次可取消) |
-| 加入紅隊  | 區域 | 玩家進入這區域就會加入紅隊                         |
-| 加入綠隊  | 區域 | 玩家進入這區域就會加入綠隊                         |
-| 加入旁觀者 | 區域 | 玩家進入這區域就會加入旁觀者                        |
+| Tool | Type | Introduction |
+|---|---|---|
+| Lobby Respawn Point | Block | Players will spawn here when entering the server |
+| Start Button | Block | It doesn't have to be a button, right-clicking it will count down 5 seconds to start the game (press again to cancel) |
+| Join Red Team | Region | Players who enter this area will join the Red Team |
+| Join Green Team | Region | Players who enter this area will join the Green Team |
+| Join Spectator | Region | Players who enter this area will join the Spectator |
 
-如果你的玩家很過動, 很可能會不小心更換隊伍  
-建議把加入隊伍的區域放在較為偏僻的角落, 或者直接不要放置, 使用指令分隊
+If your players are hyperactive, they may accidentally change teams
+It is recommended to put the team joining area in a more remote corner, or simply not place it and use commands to assign teams
 
-#### 地圖
+#### Map
 
-設定紅隊的即可, 綠隊的地點將會是對 (0, 0) 旋轉鏡射 (x, z 皆會是紅隊的反轉)  
-如果你目前蓋的地圖中心位置錯誤的話, 可以用 [WorldEdit](https://github.com/EngineHub/WorldEdit) 來移動地圖
+Set the Red Team's location, and the Green Team's location will be mirrored to (0, 0) (x, z will be the reverse of the Red Team)
+If the center position of the map you are currently building is incorrect, you can use [WorldEdit](https://github.com/EngineHub/WorldEdit) to move the map
 
-先用 `/dtc world template-[name]` 進入模板世界  
-用 `/edit game`, 你會獲得 7 個工具:
+First use `/dtc world template-[name]` to enter the template world
+Use `/edit game`, you will get 7 tools:
 
-| 工具    | 類型   | 簡介                          |
-|-------|------|-----------------------------|
-| 重生等待區 | 方塊   | 死亡時的站存區域, 6 格內無法放置, 破壞或使用方塊 |
-| 重生點   | 方塊   | 玩家的重生點, 上方 3×3×3 無法放置方塊     |
-| 核心    | 方塊   | 核心                          |
-| 礦物    | 方塊列表 | 陣營如果被套用礦物封鎖會變成基岩的方塊         |
-| 鑽石    | 方塊列表 | 鑽石礦, 不會鏡射                   |
-| 任務點   | 方塊   | 中央任務點, 不會鏡射                 |
+| Tool | Type | Introduction |
+|---|---|---|
+| Respawn Waiting Area | Block | The area where you wait when you die, blocks cannot be placed, destroyed, or used within 6 blocks |
+| Respawn Point | Block | The player's respawn point, blocks cannot be placed above 3×3×3 |
+| Core | Block | Core |
+| Mineral | Block List | The blocks that will turn into bedrock if the faction is blocked by minerals |
+| Diamond | Block List | Diamond mine, will not be mirrored |
+| Mission Point | Block | Central mission point, will not be mirrored |
 
-## 給開發者
+## For Developers
 
-以下將解釋本插件的程式碼, 如果你不是開發者, 可以跳過這段
+The following will explain the code of this plugin, if you are not a developer, you can skip this section
 
-### 需要的 API
+### Required APIs
 
-| API               | 原因              |
-|-------------------|-----------------|
-| Paper API         | 顯然的吧            |
-| Apache Commons IO | 世界檔案讀寫          |
-| Protocol Lib      | 方塊挖掘特效, 終界箱開關特效 |
-| Fast Board        | 自訂側欄            |
-| Inv UI            | 自訂 GUI          |
+| API | Reason |
+|---|---|
+| Paper API | Obviously |
+| Apache Commons IO | World file read and write |
+| Protocol Lib | Block mining effects, Ender Chest switch effects |
+| Fast Board | Custom sidebar |
+| Inv UI | Custom GUI |
 
-### 注意事項
+### Precautions
 
-- 為了避免與 Minecraft 內建的 Scoreboard Team 混淆, 隊伍在這裡稱作 Side
+- In order to avoid confusion with Minecraft's built-in Scoreboard Team, the team is called Side here
 
-### 基本結構
+### Basic Structure
 
-- `DestroyTheCore` 是基礎的 `JavaPlugin`, 裡面有插件載入的最基本邏輯
-- `Game` 是遊戲的 Lifecycle
-- `Constants` 是一些常用的固定資訊
+- `DestroyTheCore` is the basic `JavaPlugin`, which contains the most basic logic for plugin loading
+- `Game` is the game's Lifecycle
+- `Constants` are some commonly used fixed information
 
-| Package    | 內容                      |
-|------------|-------------------------|
-| `bases`    | 各種模板                    |
-| `commands` | 指令 (`Subcommand`)       |
-| `gui`      | `InvUI` 的物品 (`GUIItem`) |
-| `items`    | 物品 (`ItemGen`)          |
-| `managers` | 各種管理器                   |
-| `missions` | 任務 (`Mission`)          |
-| `records`  | 自訂資料格式                  |
-| `roles`    | 職業 (`Role`)             |
-| `tools`    | 編輯器 (`EditorTool`)      |
-| `utils`    | 各種常用功能的集合               |
+| Package | Content |
+|---|---|
+| `bases` | Various templates |
+| `commands` | Commands (`Subcommand`) |
+| `gui` | `InvUI` items (`GUIItem`) |
+| `items` | Items (`ItemGen`) |
+| `managers` | Various managers |
+| `missions` | Missions (`Mission`) |
+| `records` | Custom data format |
+| `roles` | Professions (`Role`) |
+| `tools` | Editors (`EditorTool`) |
+| `utils` | Collection of various common functions |
 
-幾個重點我挑出來講一下就好
+I'll just pick out a few key points to talk about
 
 ### Bases
 
-各種東西的基本, 基本上就是用來 Extend 的模板
+The basics of everything, basically used for Extend templates
 
-#### 關於 `EditorTool`
+#### About `EditorTool`
 
-定義了最基本的編輯器, 含物品材質, 按鍵的事件等等  
+Defines the most basic editor, including item material, button events, etc.
 
-底下 `bases/editorTools` 則包含了方塊, 區域及方塊列表工具的實作
+The `bases/editorTools` below contains the implementation of block, region, and block list tools
 
-#### 關於 `GUIItem`
+#### About `GUIItem`
 
-就是給 `InvUI` 用的按鈕物品
+It is a button item for `InvUI`
 
-#### 關於 `ItemGen`
+#### About `ItemGen`
 
-自訂物品, 這裡的 ID 是 `ItemsManager.ItemKey`, 新物品記得加到 `ItemsManager.gens`
+Custom item, the ID here is `ItemsManager.ItemKey`, remember to add new items to `ItemsManager.gens`
 
-底下 `bases/itemGens` 則有:
-- `AssistItemGen`: 拿在副手會有效果的物品
-- `ProjItemGen`: 自訂箭矢物品
-- `UsableItemGen`: 右鍵會有效果的物品
+The `bases/itemGens` below have:
+- `AssistItemGen`: Items that have effects when held in the off-hand
+- `ProjItemGen`: Custom arrow items
+- `UsableItemGen`: Items that have effects when right-clicked
 
-#### 關於 `Mission`
+#### About `Mission`
 
-任務, 包含開始, Tick 與結束
+Mission, including start, tick, and end
 
-底下 `bases/missions` 則有:
-- `InstantMission`: 瞬間結束的任務
-- `ProgressiveMission`: 兩隊比賽進度的任務, 內建進度條
-- `TimedMission`: 有倒數計時的任務
+The `bases/missions` below have:
+- `InstantMission`: Instantly ending mission
+- `ProgressiveMission`: Mission with progress competition between two teams, built-in progress bar
+- `TimedMission`: Mission with countdown timer
 
-#### 關於 `Role`
+#### About `Role`
 
-職業, 這裡的 ID 是 `RolesManager.RoleKey`, 新職業記得加到 `RolesManager.roles`
+Profession, the ID here is `RolesManager.RoleKey`, remember to add new professions to `RolesManager.roles`
 
-#### 關於 `Subcommand`
+#### About `Subcommand`
 
-指令, 新指令記得加到 `CommandsManager#subcommands`
+Command, remember to add new commands to `CommandsManager#subcommands`
 
-### 物品
+### Items
 
-比較特別的物品:
-- `GrenadeGen`: 它有一個自己的 `onProjectileHit` 監聽器
+More special items:
+- `GrenadeGen`: It has its own `onProjectileHit` listener
 
-### 管理器
+### Managers
 
-| 管理器                   | 用途                          |
-|-----------------------|-----------------------------|
-| `BoardsManager`       | 管理側欄顯示的資訊                   |
-| `CommandsManager`     | 管理指令                        |
-| `ConfigManager`       | 管理設定資料                      |
-| `DamangeManager`      | 使用最大傷害, 而非 Minecraft 預設的尾刀制 |
-| `EventsManager`       | 管理事件監聽器                     |
-| `GUIManager`          | 管理 GUI                      |
-| `InventoriesManager`  | 管理玩家背包                      |
-| `ItemsManager`        | 管理自訂物品                      |
-| `MissionsManager`     | 管理任務                        |
-| `QuizManager`         | 管理重生數學題系統                   |
-| `RecipesManager`      | 管理合成配方                      |
-| `TicksManager`        | 管理每幀都要執行的事                  |
-| `ToolsManager`        | 管理編輯器                       |
-| `TranslationsManager` | 管理文字翻譯                      |
-| `WorldsManager`       | 管理世界                        |
+| Manager | Purpose |
+|---|---|
+| `BoardsManager` | Manage the information displayed on the sidebar |
+| `CommandsManager` | Manage commands |
+| `ConfigManager` | Manage configuration data |
+| `DamangeManager` | Use maximum damage instead of Minecraft's default last-hit system |
+| `EventsManager` | Manage event listeners |
+| `GUIManager` | Manage GUI |
+| `InventoriesManager` | Manage player inventory |
+| `ItemsManager` | Manage custom items |
+| `MissionsManager` | Manage missions |
+| `QuizManager` | Manage respawn math problem system |
+| `RecipesManager` | Manage crafting recipes |
+| `TicksManager` | Manage things that need to be executed every frame |
+| `ToolsManager` | Manage editors |
+| `TranslationsManager` | Manage text translation |
+| `WorldsManager` | Manage worlds |
 
-### 任務
+### Missions
 
-底下還有一個 `missions/result` 負責每個任務結束的獎勵 / 懲罰
+There is also a `missions/result` below, which is responsible for the rewards/punishments at the end of each mission
 
-### 資料儲存
+### Data Storage
 
-| 項目           | 用途                |
-|--------------|-------------------|
-| `Region`     | 用於儲存一個方形區域        |
-| `Stats`      | 用於儲存玩家的統計數據 (永久的) |
-| `SideData`   | 目前遊戲中的陣營資訊        |
-| `PlayerData` | 目前遊戲中的玩家資訊        |
+| Item | Purpose |
+|---|---|
+| `Region` | Used to store a square area |
+| `Stats` | Used to store player statistics (permanent) |
+| `SideData` | Current faction information in the game |
+| `PlayerData` | Current player information in the game |
 
-### 公用程式
+### Utilities
 
-| 公用程式             | 用途                              |
-|------------------|---------------------------------|
-| `CoreUtils`      | 雜項功能                            |
-| `AttributeUtils` | 物品修飾器                           |
-| `LocationUtils`  | 關於位置的各種功能                       |
-| `ParticleUtils`  | 用於生成區域粒子效果                      |
-| `PlayerUtils`    | 跟玩家有關的一大堆功能                     |
-| `RandomUtils`    | 產生隨機                            |
-| `TextUtils`      | 基本上就是 `TranslationsManager` 的捷徑 |
+| Utility | Purpose |
+|---|---|
+| `CoreUtils` | Miscellaneous functions |
+| `AttributeUtils` | Item modifier |
+| `LocationUtils` | Various functions about location |
+| `ParticleUtils` | Used to generate regional particle effects |
+| `PlayerUtils` | A bunch of functions related to players |
+| `RandomUtils` | Generate random |
+| `TextUtils` | Basically a shortcut to `TranslationsManager` |
 
-### 遊戲邏輯
+### Game Logic
 
-`Game` 是整個插件的重點, 遊戲的整個生命周期都寫在這
+`Game` is the focus of the entire plugin, and the entire life cycle of the game is written here
 
-| 內容               | 解釋        |
-|------------------|-----------|
-| `Game.LobbyLocs` | 記錄了大廳的位置們 |
-| `Game.MapLocs`   | 記錄了地圖的位置們 |
-| `Game.Phase`     | 是遊戲的階段    |
-| `Game.Side`      | 是遊戲的陣營    |
+| Content | Explanation |
+|---|---|
+| `Game.LobbyLocs` | Records the locations of the lobby |
+| `Game.MapLocs` | Records the locations of the map |
+| `Game.Phase` | Is the stage of the game |
+| `Game.Side` | Is the faction of the game |
 
-## 謝誌
+## Credits
 
-| 事項   | 名單                                                                                                                                                                                                                |
-|------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| 原製作者 | 哈記 (`Hageeshow`)                                                                                                                                                                                                  | |
-| 測試人員 | 溜溜球 (`ItzYoyo`) <br/> 張哥 (`QinnYu`) <br/> 潤迪 (`rendyhsu`) <br/> 絡達洛 (`Lodarod29`) <br/> 我哥萊 (`c0ldc0al`) <br/> 喜歡熊 (`just_like_bear`) <br/> 鴨鴨太短 (`duckduck960325`) <br/> 帖帖 (`tete0804`) <br/> 遊戲亡 (`gdnb_0428`) |
-| 玩家   | 遊玩殲滅 III 的各位                                                                                                                                                                                                      |
+| Item | List |
+|---|---|
+| Original Creator | 哈記 (`Hageeshow`) |
+| Testers | 溜溜球 (`ItzYoyo`) <br/> 張哥 (`QinnYu`) <br/> 潤迪 (`rendyhsu`) <br/> 絡達洛 (`Lodarod29`) <br/> 我哥萊 (`c0ldc0al`) <br/> 喜歡熊 (`just_like_bear`) <br/> 鴨鴨太短 (`duckduck960325`) <br/> 帖帖 (`tete0804`) <br/> 遊戲亡 (`gdnb_0428`) |
+| Players | Everyone who plays DTC III |
 
-## 回報問題
+## Report Issues
 
-別忘了關注我們的 [OnlyFans](https://onlyfans.com/destroy_the_core/)  
-並加入殲滅 III 官方 Discord 群
+Don't forget to follow our [OnlyFans](https://onlyfans.com/destroy_the_core/)
+And join the DTC III official Discord group
