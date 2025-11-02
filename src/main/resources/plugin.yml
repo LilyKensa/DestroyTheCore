@@ -11,6 +11,8 @@ commands:
     description: Rejoin the game
   night-vision:
     description: Toggle night vision
+  shuffle-team:
+    description: Shuffle teams
   shout:
     description: Shout to everybody
   warp:

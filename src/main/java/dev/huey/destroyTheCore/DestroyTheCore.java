@@ -59,8 +59,8 @@ public final class DestroyTheCore extends JavaPlugin {
     
     for (String commandName : new String[] {
       "dtc",
-      "rejoin", "night-vision", "shout",
-      "warp", "skip", "edit", "reset", "revive"
+      "rejoin", "night-vision", "shout", "shuffle-team",
+      "warp", "skip", "edit", "reset", "revive", "language"
     }) {
       PluginCommand command = getCommand(commandName);
       if (command == null) {

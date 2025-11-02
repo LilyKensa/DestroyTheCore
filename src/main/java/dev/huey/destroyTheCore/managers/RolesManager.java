@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class RolesManager {
-  
   public enum RoleKey {
     DEFAULT,
     ATTACKER,

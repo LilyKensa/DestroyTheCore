@@ -95,6 +95,7 @@ public class InventoriesManager {
       }
       else if (
         item.getType() == Material.ENCHANTING_TABLE ||
+        item.getType() == Material.ENDER_CHEST ||
         Constants.oreItems.contains(item.getType()) ||
         RandomUtils.hit(chance)
       ) {

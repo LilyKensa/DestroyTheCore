@@ -2124,7 +2124,10 @@ public class Game {
     
     if (DestroyTheCore.ticksManager.isUpdateTick()) {
       for (Player p : Bukkit.getOnlinePlayers()) {
-        if (p.getInventory().contains(Material.ENCHANTING_TABLE)) {
+        if (
+          p.getInventory().contains(Material.ENCHANTING_TABLE) ||
+          p.getInventory().contains(Material.ENDER_CHEST)
+        ) {
           p.addPotionEffect(new PotionEffect(
             PotionEffectType.SLOWNESS,
             30,
@@ -2197,7 +2200,10 @@ public class Game {
       
       PlayerData data = getPlayerData(p);
       
-      if (p.getInventory().contains(Material.ENCHANTING_TABLE)) {
+      if (
+        p.getInventory().contains(Material.ENCHANTING_TABLE) ||
+      p.getInventory().contains(Material.ENDER_CHEST)
+      ) {
         ParticleUtils.dust(
           PlayerUtils.all(),
           p.getEyeLocation().add(0, 0.6, 0),
