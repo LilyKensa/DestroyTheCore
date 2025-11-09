@@ -26,6 +26,7 @@ public class UsableItemGen extends ItemGen {
     lore.add(TextUtils.$("item-gen.right-click-to-use"));
   }
   
+  /** @implNote Required - The functionality when right clicked */
   public void use(Player pl, Block block) {
     PlayerUtils.prefixedSend(pl, "This item's usage isn't implemented yet!", NamedTextColor.RED);
   }

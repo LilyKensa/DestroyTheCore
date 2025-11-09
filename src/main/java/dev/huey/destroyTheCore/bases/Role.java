@@ -3,6 +3,11 @@ package dev.huey.destroyTheCore.bases;
 import com.destroystokyo.paper.ParticleBuilder;
 import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.Game;
+import dev.huey.destroyTheCore.items.armors.StarterBootsGen;
+import dev.huey.destroyTheCore.items.armors.StarterChestplateGen;
+import dev.huey.destroyTheCore.items.armors.StarterHelmetGen;
+import dev.huey.destroyTheCore.items.armors.StarterLeggingsGen;
+import dev.huey.destroyTheCore.managers.GUIManager;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.managers.RolesManager;
 import dev.huey.destroyTheCore.utils.CoreUtils;
@@ -32,15 +37,18 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class Role extends GUIItem {
+  /** Used to distinguish skill items, stored data is {@code true} */
   static public final NamespacedKey skillNamespace = new NamespacedKey(
     DestroyTheCore.instance,
     "skill"
   );
+  /** Used to distinguish role-exclusive items, stored data is the name of {@link #id} */
   static public final NamespacedKey exclusiveItemNamespace = new NamespacedKey(
     DestroyTheCore.instance,
     "exclusive-item"
   );
   
+  /** Prefixed send */
   static public void send(Player pl, Component message) {
     PlayerUtils.send(pl, TextUtils.$("role.prefix").append(message));
   }
@@ -48,15 +56,24 @@ public class Role extends GUIItem {
   public RolesManager.RoleKey id;
   public String translationName;
   
+  /**
+   * Add extra settings using:<br>
+   * - {@link #addInfo}<br>
+   * - {@link #addFeature}<br>
+   * - {@link #addExclusiveItem}<br>
+   * - {@link #addSkill}
+   */
   public Role(RolesManager.RoleKey id) {
     this.id = id;
     this.translationName = id.name().toLowerCase().replace('_', '-');
   }
   
+  /** Translation with {@code %s} being the role's {@link #id} */
   String $r(String translateRoot) {
     return TextUtils.$r(translateRoot.formatted(translationName));
   }
   
+  /** Multi-line version of {@link #$r} */
   List<String> $ra(String translateRoot) {
     List<String> list = new ArrayList<>();
     
@@ -116,20 +133,13 @@ public class Role extends GUIItem {
     skillCooldown = cd;
   }
   
+  /** Announce that a player has changed to this role */
   public void announce(Player pl) {
     PlayerUtils.prefixedBroadcast(
       TextUtils.$("role.change", List.of(
         Placeholder.component("player", PlayerUtils.getName(pl)),
         Placeholder.unparsed("role", name)
       ))
-    );
-  }
-  
-  public void addTagToMeta(ItemMeta meta) {
-    meta.getPersistentDataContainer().set(
-      exclusiveItemNamespace,
-      PersistentDataType.STRING,
-      this.id.name()
     );
   }
   
@@ -166,38 +176,52 @@ public class Role extends GUIItem {
     
     ItemStack item = new ItemStack(itemType);
     item.editMeta(meta -> {
-      meta.displayName(Component.text(itemName));
       meta.setUnbreakable(true);
+      
+      meta.displayName(Component.text(itemName));
       meta.lore(List.of(TextUtils.$("role.item-lore", List.of(
         Placeholder.unparsed("role", name)
       ))));
+      
       itemMetaEditor.accept(meta);
-      addTagToMeta(meta);
+      
+      meta.getPersistentDataContainer().set(
+        exclusiveItemNamespace,
+        PersistentDataType.STRING,
+        this.id.name()
+      );
     });
     return item;
   }
   
+  /** Helmet on spawn, default to {@link StarterHelmetGen} */
   public ItemsManager.ItemKey defHelmet() {
     return ItemsManager.ItemKey.STARTER_HELMET;
   }
+  /** Chestplate on spawn, default to {@link StarterChestplateGen} */
   public ItemsManager.ItemKey defChestplate() {
     return ItemsManager.ItemKey.STARTER_CHESTPLATE;
   }
+  /** Leggings on spawn, default to {@link StarterLeggingsGen} */
   public ItemsManager.ItemKey defLeggings() {
     return ItemsManager.ItemKey.STARTER_LEGGINGS;
   }
+  /** Boots on spawn, default to {@link StarterBootsGen} */
   public ItemsManager.ItemKey defBoots() {
     return ItemsManager.ItemKey.STARTER_BOOTS;
   }
   
+  /** Used in {@link Game#onTick} */
   public void onTick(Player pl) {
   
   }
   
+  /** @implNote Optional */
   public void onPhaseChange(Game.Phase phase, Player pl) {
   
   }
   
+  /** Call this if the skill is successfully used */
   public void skillFeedback(Player pl) {
     pl.playSound(
       pl.getLocation(),
@@ -215,10 +239,12 @@ public class Role extends GUIItem {
     pl.swingMainHand();
   }
   
+  /** @implNote Required - The skill callback */
   public void useSkill(Player pl) {
     PlayerUtils.prefixedSend(pl, "This skill is not implemented yet!", NamedTextColor.RED);
   }
   
+  /** @see GUIManager */
   @Override
   public ItemProvider getItemProvider() {
     List<String> combinedLore = new ArrayList<>();
@@ -258,6 +284,7 @@ public class Role extends GUIItem {
       .addLoreLines(combinedLore.toArray(new String[0]));
   }
   
+  /** @see GUIManager */
   @Override
   public void handleClick(ClickType clickType, Player pl, InventoryClickEvent ev) {
     announce(pl);

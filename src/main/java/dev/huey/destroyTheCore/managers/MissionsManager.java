@@ -89,6 +89,7 @@ public class MissionsManager {
     mission.init();
   }
   
+  /** Check if missions should continue, then restart */
   public void next() {
     if (!active) return;
     if (!DestroyTheCore.game.isPlaying) return;

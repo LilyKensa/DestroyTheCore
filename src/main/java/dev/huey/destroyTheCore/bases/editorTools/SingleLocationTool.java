@@ -25,10 +25,12 @@ public class SingleLocationTool extends EditorTool {
     loc = getLoc();
   }
   
+  /** @implNote Required - To load the current location */
   public Location getLoc() {
     return null;
   }
   
+  /** @implNote Required - To update the current location */
   public void setLoc(Location loc) {
   
   }

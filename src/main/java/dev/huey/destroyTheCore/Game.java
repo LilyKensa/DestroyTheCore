@@ -818,6 +818,8 @@ public class Game {
     Map<Integer, ItemStack> leftovers = sd.enderChest.addItem(item);
     
     if (leftovers.isEmpty()) {
+      pl.getInventory().setItemInMainHand(ItemStack.empty());
+      
       pl.playSound(
         pl.getLocation(),
         Sound.BLOCK_ENDER_CHEST_OPEN,
@@ -1399,7 +1401,7 @@ public class Game {
     Location loc = sd.getEnderChestViewer(pl);
     if (loc == null) return;
     
-    sd.enderChestViewers.get(loc).remove(pl.getUniqueId());
+    sd.removeEnderChestViewer(loc, pl);
     if (sd.enderChestViewers.get(loc).isEmpty())
       LocationUtils.playChestAnimation(loc, false);
   }
@@ -1991,17 +1993,7 @@ public class Game {
       
       if (data.side.equals(Side.SPECTATOR)) continue;
       
-      stat.games++;
-      stat.kills += data.kills;
-      stat.deaths += data.deaths;
-      stat.coreAttacks += data.coreAttacks;
-      
-      for (Material type : data.ores.keySet())
-        stat.ores.put(
-          type,
-          stat.ores.getOrDefault(type, 0)
-            + data.ores.getOrDefault(type, 0)
-        );
+      stat.addFromPlayerData(data);
     }
   }
   
@@ -2045,18 +2037,7 @@ public class Game {
       
       if (data.side.equals(Side.SPECTATOR)) continue;
       
-      stat.games++;
-      if (data.side.equals(winner)) stat.wins++;
-      stat.kills += data.kills;
-      stat.deaths += data.deaths;
-      stat.coreAttacks += data.coreAttacks;
-      
-      for (Material type : data.ores.keySet())
-        stat.ores.put(
-          type,
-          stat.ores.getOrDefault(type, 0)
-            + data.ores.getOrDefault(type, 0)
-        );
+      stat.addFromPlayerData(data, data.side.equals(winner));
     }
   }
   
@@ -2122,7 +2103,10 @@ public class Game {
       }
     }
     
-    if (DestroyTheCore.ticksManager.isUpdateTick()) {
+    if (
+      isPlaying &&
+      DestroyTheCore.ticksManager.isUpdateTick()
+    ) {
       for (Player p : Bukkit.getOnlinePlayers()) {
         if (
           p.getInventory().contains(Material.ENCHANTING_TABLE) ||

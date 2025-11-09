@@ -10,10 +10,12 @@ public class AssistItemGen extends ItemGen {
     super(id, iconType);
   }
   
+  /** @implNote Optional - Called every tick when a player has this item in off-hand */
   public void onEquippingTick(Player pl) {
   
   }
   
+  /** @implNote Optional - Called when a player is attacked while this item is in off-hand */
   public void onAttack(Player victim, Player attacker) {
   
   }

@@ -96,6 +96,7 @@ public class ParticleUtils {
     simpleRegion(players, loc, loc, color);
   }
   
+  /** Region with 2 corners */
   public static void region(
     List<Player> players,
     Location loc1, Location loc2,
@@ -120,7 +121,7 @@ public class ParticleUtils {
     
     TriConsumer<Double, Double, Double> emitter = (x, y, z) -> {
       Location loc = new Location(world, x, y, z);
-      if (LocationUtils.isOn(loc, loc1) || LocationUtils.isOn(loc, loc2)) return;
+      if (LocationUtils.closeEnough(loc, loc1) || LocationUtils.closeEnough(loc, loc2)) return;
       
       dust(players, loc, color0);
     };
@@ -168,7 +169,7 @@ public class ParticleUtils {
     ring(players, loc, radius, 16, color);
   }
   
-  // Gemini wrote this
+  /** By Gemini */
   public static void spiralSphere(
     Location center,
     double radius,

@@ -70,6 +70,7 @@ public class WorldsManager {
     }
   }
   
+  /** All world is loaded properly */
   public boolean isReady = false;
   public String mapName = "castle";
   

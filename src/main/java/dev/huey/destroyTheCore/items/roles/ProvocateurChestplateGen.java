@@ -19,7 +19,7 @@ public class ProvocateurChestplateGen extends ItemGen {
       Material.LEATHER_CHESTPLATE
     );
     setNeverDrop();
-    setNotImportant();
+    setTrash();
   }
   
   @Override

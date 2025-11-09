@@ -1,6 +1,7 @@
 package dev.huey.destroyTheCore.bases;
 
 import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.managers.InventoriesManager;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import net.kyori.adventure.text.Component;
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ItemGen {
+  /** Used to distinguish item-gens, stored data is the name of {@link #id} */
   static public final NamespacedKey dataNamespace = new NamespacedKey(
     DestroyTheCore.instance, "custom-item");
   
@@ -24,35 +26,25 @@ public class ItemGen {
   public String translationName;
   
   public Component name;
-  public List<Component> lore;
-  
-  Component $(String translateRoot) {
-    return TextUtils.$(translateRoot.formatted(translationName));
-  }
-  
-  List<Component> $a(String translateRoot) {
-    List<Component> list = new ArrayList<>();
-    
-    String key;
-    for (int i = 1; true; ++i) {
-      key = translateRoot.formatted(translationName) + "-" + i;
-      
-      if (DestroyTheCore.translationsManager.has(key))
-        list.add(TextUtils.$(key));
-      else
-        break;
-    }
-    
-    return list;
-  }
+  public List<Component> lore = new ArrayList<>();
   
   public ItemGen(ItemsManager.ItemKey id, Material iconType) {
     this.id = id;
     this.iconType = iconType;
     
     translationName = id.name().toLowerCase().replace('_', '-');
-    name = $("items.%s.name");
-    lore = $a("items.%s.desc");
+    
+    name = TextUtils.$("items.%s.name".formatted(translationName));
+    
+    String key;
+    for (int i = 1; true; ++i) {
+      key = "items.%s.desc".formatted(translationName) + "-" + i;
+      
+      if (DestroyTheCore.translationsManager.has(key))
+        lore.add(TextUtils.$(key));
+      else
+        break;
+    }
   }
   
   public ItemStack getItem(int count) {
@@ -82,10 +74,15 @@ public class ItemGen {
     return getItem(1);
   }
   
+  /**
+   * For custom metadata other than name and descriptions
+   * @apiNote Optional
+   */
   public void computeMeta(ItemMeta meta) {
   
   }
   
+  /** Check if an item stack is an instance of this item-gen */
   public boolean checkItem(ItemStack item) {
     if (item == null) return false;
     
@@ -97,14 +94,28 @@ public class ItemGen {
     return this.id.name().equals(container.get(dataNamespace, PersistentDataType.STRING));
   }
   
-  boolean important = true, bound = false, vanish = false, neverDrop = false;
+  /**
+   * If {@code true}, this item will vanish when being replaced
+   * Otherwise they'll be added back or dropped
+   */
+  boolean trash = false;
   
-  public void setImportant(boolean important) {
-    this.important = important;
+  public void setTrash(boolean trash) {
+    this.trash = trash;
   }
-  public void setNotImportant() {
-    setImportant(false);
+  public void setTrash() {
+    setTrash(true);
   }
+  public boolean isTrash() {
+    return trash;
+  }
+  
+  /**
+   * If {@code true}, players can't drop this item
+   * <p>
+   * Used in {@link ItemsManager#onPlayerDropItem}
+   */
+  boolean bound = false;
   
   public void setBound(boolean bound) {
     this.bound = bound;
@@ -112,6 +123,16 @@ public class ItemGen {
   public void setBound() {
     setBound(true);
   }
+  public boolean isBound() {
+    return bound;
+  }
+  
+  /**
+   * If {@code true}, players will always drop this item on death
+   * <p>
+   * Used in {@link InventoriesManager#dropSome}
+   */
+  boolean vanish = false;
   
   public void setVanish(boolean state) {
     vanish = state;
@@ -119,6 +140,16 @@ public class ItemGen {
   public void setVanish() {
     setVanish(true);
   }
+  public boolean willVanish() {
+    return vanish;
+  }
+  
+  /**
+   * If {@code true}, players will never drop this item on death
+   * <p>
+   * Used in {@link InventoriesManager#dropSome}
+   */
+  boolean neverDrop = false;
   
   public void setNeverDrop(boolean state) {
     neverDrop = state;
@@ -126,17 +157,7 @@ public class ItemGen {
   public void setNeverDrop() {
     setNeverDrop(true);
   }
-  
-  public boolean isBound() {
-    return bound;
-  }
-  public boolean isImportant() {
-    return important;
-  }
-  public boolean disappearOnDeath() {
-    return vanish;
-  }
-  public boolean ignoreOnDeath() {
+  public boolean willNeverDrop() {
     return neverDrop;
   }
 }

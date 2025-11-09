@@ -16,7 +16,7 @@ public class GoldDiggerChestplateGen extends ItemGen {
       Material.LEATHER_CHESTPLATE
     );
     setNeverDrop();
-    setNotImportant();
+    setTrash();
   }
   
   @Override

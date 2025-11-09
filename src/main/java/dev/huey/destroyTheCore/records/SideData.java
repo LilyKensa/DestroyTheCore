@@ -11,6 +11,7 @@ import org.bukkit.inventory.Inventory;
 import java.util.*;
 
 public class SideData {
+  /** Constants */
   static public final int maxCoreHealth = 75;
   
   public int coreHealth = maxCoreHealth;
@@ -35,8 +36,7 @@ public class SideData {
     enderChestViewers.get(loc).add(pl.getUniqueId());
   }
   public void removeEnderChestViewer(Location loc, Player pl) {
-    if (!enderChestViewers.containsKey(loc))
-      enderChestViewers.put(loc, new HashSet<>());
+    if (!enderChestViewers.containsKey(loc)) return;
     
     enderChestViewers.get(loc).remove(pl.getUniqueId());
   }
@@ -49,6 +49,7 @@ public class SideData {
     return null;
   }
   
+  /** Remove specific amount of health, without modifiers */
   public void directAttackCore(int amount) {
     coreHealth -= amount;
     if (coreHealth < 0) coreHealth = 0;
@@ -57,6 +58,7 @@ public class SideData {
     directAttackCore(1);
   }
   
+  /** Remove 1 core health, with modifiers */
   public void attackCore() {
     directAttackCore();
     if (DestroyTheCore.game.phase.isAfter(Game.Phase.DoubleDamage)) {

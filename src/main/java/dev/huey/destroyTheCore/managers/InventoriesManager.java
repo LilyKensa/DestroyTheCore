@@ -14,11 +14,13 @@ import java.util.*;
 public class InventoriesManager {
   final Map<UUID, ItemStack[]> savedInventories = new HashMap<>();
   
+  /** Store the player's inventory, use {@link #restore} to restore */
   public void store(Player pl) {
     savedInventories.put(pl.getUniqueId(), pl.getInventory().getContents());
     pl.getInventory().clear();
   }
   
+  /** Restore the inventory stored by {@link #store} */
   public void restore(Player pl) {
     UUID id = pl.getUniqueId();
     if (!savedInventories.containsKey(id)) return;
@@ -29,6 +31,7 @@ public class InventoriesManager {
   
   final Map<UUID, List<ItemStack>> savedHotbars = new HashMap<>();
   
+  /** Save the hotbar, use {@link #restoreHotbar} to restore */
   public void saveHotbar(Player pl) {
     List<ItemStack> hotbar = new ArrayList<>();
     for (int i = 0; i < 9; ++i) {
@@ -37,6 +40,7 @@ public class InventoriesManager {
     savedHotbars.put(pl.getUniqueId(), hotbar);
   }
   
+  /** Restore the inventory stored by {@link #saveHotbar} */
   public void restoreHotbar(Player pl) {
     List<ItemStack> hotbar = savedHotbars.get(pl.getUniqueId());
     
@@ -47,10 +51,12 @@ public class InventoriesManager {
     savedHotbars.remove(pl.getUniqueId());
   }
   
+  /** Remove all the saved inventories */
   public void reset() {
     savedInventories.clear();
   }
   
+  /** Remove all items with {@link Enchantment#VANISHING_CURSE} from a player */
   public void applyVanishingCurse(Player pl) {
     PlayerInventory inv = pl.getInventory();
     
@@ -64,6 +70,7 @@ public class InventoriesManager {
     inv.setContents(contents);
   }
   
+  /** @param chance Every item will have this chance to drop */
   public void dropSome(Player pl, double chance) {
     PlayerInventory inv = pl.getInventory();
     
@@ -83,13 +90,13 @@ public class InventoriesManager {
       if (
         DestroyTheCore.itemsManager.isGen(item) &&
         DestroyTheCore.itemsManager.getGen(item)
-          .ignoreOnDeath()
+          .willNeverDrop()
       ) continue;
       
       if (
         DestroyTheCore.itemsManager.isGen(item) &&
         DestroyTheCore.itemsManager.getGen(item)
-          .disappearOnDeath()
+          .willVanish()
       ) {
         contents[i] = placeholder;
       }

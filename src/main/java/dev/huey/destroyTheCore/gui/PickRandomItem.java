@@ -25,7 +25,7 @@ public class PickRandomItem extends GUIItem {
   }
   
   @Override
-  public void handleClick(ClickType clickType, Player pl, InventoryClickEvent ev) {
+  public void handleClick(ClickType click, Player pl, InventoryClickEvent ev) {
     Role role = RandomUtils.pick(
       DestroyTheCore.rolesManager.roles.values().stream()
         .filter(r -> r.id != RolesManager.RoleKey.DEFAULT)

@@ -86,7 +86,7 @@ public class RolesManager {
         getter.get().isEmpty() ||
         (
           DestroyTheCore.itemsManager.isGen(getter.get()) &&
-          !DestroyTheCore.itemsManager.getGen(getter.get()).isImportant()
+            DestroyTheCore.itemsManager.getGen(getter.get()).isTrash()
         )
       ) {
         setter.accept(replacement);

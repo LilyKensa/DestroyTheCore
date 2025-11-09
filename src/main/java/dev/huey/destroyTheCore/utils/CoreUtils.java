@@ -12,10 +12,12 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 public class CoreUtils {
+  /** if {@code value} is null, return {@code defValue} */
   static public <T> T def(Object value, T defValue) {
     return value == null ? defValue : (T) value;
   }
   
+  /** Fix numbers to specific after point */
   static public String toFixed(double value, int pow) {
     return String.format("%." + pow + "f", value);
   }
@@ -23,6 +25,7 @@ public class CoreUtils {
     return toFixed(value, 2);
   }
   
+  /** Snap an angle to its nearest n-th slice */
   static public double snapAngle(double angle, int slices) {
     double sliceSize = 360D / slices;
     double normalized = ((angle % 360) + 360) % 360;
@@ -39,16 +42,19 @@ public class CoreUtils {
     return (float) snapAngle((double) angle);
   }
   
+  /** This uses legacy color codes, for components, use {@link #formatTimeComp} */
   static public String formatTime(int totalSeconds, String color) {
     int minutes = totalSeconds / 60;
     int seconds = totalSeconds % 60;
     return "%s%d§7:%s%02d§r".formatted(color, minutes, color, seconds);
   }
   
+  /** Remove legacy color codes from a string */
   static public String stripColor(String text) {
     return text.replaceAll("§[0-9a-fklmnor]", "");
   }
   
+  /** Randomly add drops count */
   static public int applyFortune(int levels) {
     if (levels <= 0) return 1;
     return Math.floorMod(RandomUtils.nextInt(), Math.min(levels + 1, 64)) + 1;
@@ -65,6 +71,7 @@ public class CoreUtils {
     );
   }
   
+  /** Empty item for GUIs */
   static public ItemStack emptyItem() {
     ItemStack item = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
     item.editMeta(meta -> {
@@ -91,7 +98,7 @@ public class CoreUtils {
     DestroyTheCore.instance.getLogger().severe(text);
   }
   
-  // Gemini wrote this
+  /** Pure math, by Gemini */
   public static Vector calculateBounce(
     Location center,
     Location pos,

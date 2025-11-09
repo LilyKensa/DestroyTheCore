@@ -13,7 +13,7 @@ public class ConstructorHelmetGen extends ItemGen {
       Material.TURTLE_HELMET
     );
     setNeverDrop();
-    setNotImportant();
+    setTrash();
   }
   
   @Override
