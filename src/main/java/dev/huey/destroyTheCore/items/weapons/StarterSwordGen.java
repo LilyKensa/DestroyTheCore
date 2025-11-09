@@ -11,6 +11,6 @@ public class StarterSwordGen extends ItemGen {
       Material.WOODEN_SWORD
     );
     setNeverDrop();
-    setNotImportant();
+    setTrash();
   }
 }

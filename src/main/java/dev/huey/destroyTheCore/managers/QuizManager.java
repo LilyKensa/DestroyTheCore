@@ -18,8 +18,6 @@ import java.util.UUID;
 import java.util.function.Predicate;
 
 public class QuizManager {
-  static public final String metadataTag = "quiz-correct";
-  
   static public class Quiz {
     Player pl;
     

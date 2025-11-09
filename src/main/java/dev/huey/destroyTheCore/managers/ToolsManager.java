@@ -56,6 +56,7 @@ public class ToolsManager {
     }
   }
   
+  /** On config file reload */
   public void refresh() {
     if (DestroyTheCore.toolsManager.kits == null) return;
     

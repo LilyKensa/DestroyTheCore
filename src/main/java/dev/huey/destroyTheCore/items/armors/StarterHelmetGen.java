@@ -11,6 +11,6 @@ public class StarterHelmetGen extends ItemGen {
       Material.LEATHER_HELMET
     );
     setNeverDrop();
-    setNotImportant();
+    setTrash();
   }
 }

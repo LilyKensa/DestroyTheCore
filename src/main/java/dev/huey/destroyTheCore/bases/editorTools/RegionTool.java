@@ -31,10 +31,12 @@ public class RegionTool extends EditorTool {
     }
   }
   
+  /** @implNote Required - To load the current region */
   public Region getRegion() {
     return null;
   }
   
+  /** @implNote Required - To update the current region */
   public void setRegion(Region region) {
     
   }

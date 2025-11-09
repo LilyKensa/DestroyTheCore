@@ -223,6 +223,11 @@ commands:
   edit:
     unclear: "<red>Please specify which kit!</red>"
     loaded: "<green>Editor kit loaded!</green>"
+  map:
+    info: "<aqua>Current map is <map></aqua>"
+    bad-time: "<red>Stop the game first!</red>"
+    not-found: "<red>Map not found!</red>"
+    announce: "<green>Map changed to <map> by <player></green>"
   give:
     unclear: "<red>Please specify which item!</red>"
     not-found: "<red>Item not found!</red>"

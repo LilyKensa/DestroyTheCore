@@ -40,6 +40,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class ItemsManager {
+  /** Every item-gen's unique key */
   public enum ItemKey {
     // Armors
     ELYTRA,
@@ -106,6 +107,7 @@ public class ItemsManager {
     PROVOCATEUR_CHESTPLATE
   }
   
+  /** Filter item-gens by type */
   <T extends ItemGen> Map<ItemKey, T> filterGens(Class<T> clazz) {
     return gens.entrySet().stream()
       .filter(e -> clazz.isInstance(e.getValue()))
@@ -197,6 +199,7 @@ public class ItemsManager {
       item.getItemMeta().getPersistentDataContainer().has(ItemGen.dataNamespace);
   }
   
+  /** Check if the item stack is an instance of the specific item-gen */
   public boolean checkGen(ItemStack item, ItemKey key) {
     return isGen(item) && key.name().equals(
       item.getItemMeta().getPersistentDataContainer()
@@ -204,6 +207,7 @@ public class ItemsManager {
     );
   }
   
+  /** Get an instance of a item-gen */
   public ItemGen getGen(ItemStack item) {
     if (!isGen(item)) return null;
     
@@ -267,7 +271,7 @@ public class ItemsManager {
     ItemStack item = itemEntity.getItemStack();
     if (isGen(item)) {
       ItemGen gen = getGen(item);
-      if (!gen.isImportant()) {
+      if (gen.isTrash()) {
         itemEntity.remove();
       }
       if (gen.isBound()) {

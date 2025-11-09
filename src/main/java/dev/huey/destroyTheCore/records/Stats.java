@@ -12,11 +12,22 @@ public class Stats implements ConfigurationSerializable {
   public int games = 0, wins = 0, kills = 0, deaths = 0, coreAttacks = 0;
   public Map<Material, Integer> ores = new HashMap<>();
   
-  public void addOre(Material type) {
-    ores.put(
-      type,
-      ores.getOrDefault(type, 0) + 1
-    );
+  public void addFromPlayerData(PlayerData data, boolean win) {
+    games++;
+    if (win) wins++;
+    kills += data.kills;
+    deaths += data.deaths;
+    coreAttacks += data.coreAttacks;
+    
+    for (Material type : data.ores.keySet())
+      ores.put(
+        type,
+        ores.getOrDefault(type, 0)
+          + data.ores.getOrDefault(type, 0)
+      );
+  }
+  public void addFromPlayerData(PlayerData data) {
+    addFromPlayerData(data, false);
   }
   
   @Override
