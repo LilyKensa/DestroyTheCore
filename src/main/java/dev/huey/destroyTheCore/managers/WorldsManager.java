@@ -173,9 +173,8 @@ public class WorldsManager {
     };
     
     addForceLoad.accept(DestroyTheCore.game.map.restArea);
-    addForceLoad.accept(DestroyTheCore.game.map.spawnPoint);
     addForceLoad.accept(DestroyTheCore.game.map.core);
-    for (Location loc : DestroyTheCore.game.map.woods)
+    for (Location loc : DestroyTheCore.game.map.spawnpoints)
       addForceLoad.accept(loc);
     
     for (Chunk chunk : toLoad) {

@@ -73,6 +73,7 @@ public class EventsManager implements Listener {
   public void onPlayerQuit(PlayerQuitEvent ev) {
     DestroyTheCore.game.handleQuitedPlayer(ev.getPlayer());
     DestroyTheCore.boardsManager.onPlayerQuit(ev);
+    DestroyTheCore.guiManager.onPlayerLeave(ev.getPlayer());
   }
   
   @EventHandler
@@ -183,6 +184,7 @@ public class EventsManager implements Listener {
   
   @EventHandler
   public void onProjectileHit(ProjectileHitEvent ev) {
+    WandererRole.onProjectileHit(ev);
     GrenadeGen.onProjectileHit(ev);
     
     for (ProjItemGen g : DestroyTheCore.itemsManager.projGens.values())

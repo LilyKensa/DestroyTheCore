@@ -145,11 +145,16 @@ public class LotteryGen extends UsableItemGen {
     if (DestroyTheCore.game.getPlayerData(pl).alive) {
       pl.give(item);
     }
-    else if (DestroyTheCore.game.map.spawnPoint != null) {
+    else if (DestroyTheCore.game.map.spawnpoints != null) {
       pl.sendActionBar(TextUtils.$("items.lottery.sent-to-spawn"));
       pl.getWorld().dropItemNaturally(
         LocationUtils.live(
-          LocationUtils.selfSide(DestroyTheCore.game.map.spawnPoint, pl)
+          LocationUtils.selfSide(
+            LocationUtils.toSpawnPoint(
+            RandomUtils.pick(DestroyTheCore.game.map.spawnpoints)
+            ),
+            pl
+          )
         ),
         item
       );

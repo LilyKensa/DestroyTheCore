@@ -1,4 +1,4 @@
-package dev.huey.destroyTheCore.gui;
+package dev.huey.destroyTheCore.gui.control;
 
 import dev.huey.destroyTheCore.utils.TextUtils;
 import net.kyori.adventure.text.Component;

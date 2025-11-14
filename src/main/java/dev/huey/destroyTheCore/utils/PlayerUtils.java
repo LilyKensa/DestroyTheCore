@@ -285,12 +285,14 @@ public class PlayerUtils {
   }
   
   static public void teleportToSpawnPoint(Player pl) {
-    if (DestroyTheCore.game.map.spawnPoint == null) return;
-    
     pl.teleport(
-      LocationUtils.selfSide(
-        LocationUtils.live(DestroyTheCore.game.map.spawnPoint),
-        pl
+      LocationUtils.live(
+        LocationUtils.selfSide(
+          LocationUtils.toSpawnPoint(
+            RandomUtils.pick(DestroyTheCore.game.map.spawnpoints)
+          ),
+          pl
+        )
       )
     );
   }

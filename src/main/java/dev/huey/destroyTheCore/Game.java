@@ -11,15 +11,13 @@ import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.managers.RolesManager;
 import dev.huey.destroyTheCore.missions.InfiniteOresMission;
-import dev.huey.destroyTheCore.records.PlayerData;
-import dev.huey.destroyTheCore.records.Region;
-import dev.huey.destroyTheCore.records.SideData;
-import dev.huey.destroyTheCore.records.Stats;
+import dev.huey.destroyTheCore.records.*;
 import dev.huey.destroyTheCore.roles.KekkaiMasterRole;
 import dev.huey.destroyTheCore.utils.*;
 import io.papermc.paper.chat.ChatRenderer;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.bossbar.BossBar;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -33,10 +31,7 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.damage.DamageSource;
 import org.bukkit.damage.DamageType;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.ExperienceOrb;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
+import org.bukkit.entity.*;
 import org.bukkit.event.block.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
@@ -50,6 +45,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.*;
+import org.bukkit.util.Vector;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -100,11 +96,12 @@ public class Game {
   static public class MapLocs implements ConfigurationSerializable {
     public Location restArea = null;
     public Location core = null;
-    public Location spawnPoint = null;
     public Location mission = null;
+    public Set<Location> spawnpoints = new HashSet<>();
     public Set<Location> woods = new HashSet<>();
     public Set<Location> ores = new HashSet<>();
     public Set<Location> diamonds = new HashSet<>();
+    public Set<Location> shops = new HashSet<>();
     
     @Override
     public Map<String, Object> serialize() {
@@ -116,12 +113,13 @@ public class Game {
       
       pusher.accept("rest-area", restArea);
       pusher.accept("core", core);
-      pusher.accept("spawnpoint", spawnPoint);
       pusher.accept("mission", mission);
       
+      pusher.accept("spawnpoints", new ArrayList<>(spawnpoints));
       pusher.accept("woods",    new ArrayList<>(woods));
       pusher.accept("ores",     new ArrayList<>(ores));
       pusher.accept("diamonds", new ArrayList<>(diamonds));
+      pusher.accept("shops",    new ArrayList<>(shops));
 
       return map;
     }
@@ -129,29 +127,18 @@ public class Game {
     static public MapLocs deserialize(Map<String, Object> map) {
       MapLocs locs = new MapLocs();
       
-      locs.restArea   = (Location) map.getOrDefault("rest-area", null);
-      locs.core       = (Location) map.getOrDefault("core", null);
-      locs.spawnPoint = (Location) map.getOrDefault("spawnpoint", null);
-      locs.mission    = (Location) map.getOrDefault("mission", null);
+      locs.restArea = (Location) map.getOrDefault("rest-area", null);
+      locs.core     = (Location) map.getOrDefault("core", null);
+      locs.mission  = (Location) map.getOrDefault("mission", null);
       
-      Function<String, List<Location>> locListLoader = (key) -> {
-        List<Location> result = new ArrayList<>();
-        
-        Object unknown = map.get(key);
-        if (unknown == null) return result;
-        if (!(unknown instanceof List<?> list)) return result;
-        
-        for (Object element : list) {
-          if (element instanceof Location loc)
-            result.add(loc);
-        }
-        
-        return result;
-      };
+      Function<String, List<Location>> loader = CoreUtils.listLoader(Location.class)
+        .compose(map::get);
       
-      locs.woods    = new HashSet<>(locListLoader.apply("woods"));
-      locs.ores     = new HashSet<>(locListLoader.apply("ores"));
-      locs.diamonds = new HashSet<>(locListLoader.apply("diamonds"));
+      locs.spawnpoints = new HashSet<>(loader.apply("spawnpoints"));
+      locs.woods       = new HashSet<>(loader.apply("woods"));
+      locs.ores        = new HashSet<>(loader.apply("ores"));
+      locs.diamonds    = new HashSet<>(loader.apply("diamonds"));
+      locs.shops       = new HashSet<>(loader.apply("shops"));
       
       return locs;
     }
@@ -159,6 +146,116 @@ public class Game {
   
   public LobbyLocs lobby = new LobbyLocs();
   public MapLocs map = new MapLocs();
+  
+  record VillagerData(Location loc, Villager villager) {}
+  List<VillagerData> villagers = new ArrayList<>();
+  
+  public void updateVillagers() {
+    villagers.removeIf(vd -> !vd.villager.isValid() || vd.villager.isDead());
+    
+    for (VillagerData vd : villagers) {
+      Location loc = vd.loc.clone();
+      Villager villager = vd.villager;
+      
+      PlayerUtils.allGaming().stream()
+        .filter(p -> LocationUtils.near(p, villager, 5))
+        .map(p ->
+          LocationUtils.hitboxCenter(p).toVector()
+            .subtract(LocationUtils.hitboxCenter(villager).toVector())
+        )
+        .min(Comparator.comparing(Vector::lengthSquared))
+        .ifPresent(loc::setDirection);
+      
+      villager.setRotation(loc.getYaw(), loc.getPitch());
+    }
+  }
+  
+  static public class Shop implements ConfigurationSerializable {
+    public String name = "Anonymous Shop";
+    public Villager.Type biome = Villager.Type.PLAINS;
+    public Villager.Profession prof = Villager.Profession.NONE;
+    public Material blockType = Material.BEDROCK;
+    
+    public List<MaybeGen> items = new ArrayList<>();
+    
+    public Villager summonVillager(Location loc) {
+      World world = loc.getWorld();
+      
+      Villager villager = (Villager) world.spawnEntity(loc, EntityType.VILLAGER);
+      
+      villager.setAI(false);
+      villager.setNoPhysics(true);
+      villager.setCanPickupItems(false);
+      villager.setPersistent(true);
+      villager.setInvulnerable(true);
+      
+      villager.setVillagerType(biome);
+      villager.setProfession(prof);
+      villager.setVillagerLevel(5);
+      
+      List<MerchantRecipe> recipes = new ArrayList<>();
+      
+      List<ItemStack> itemList = items.stream().map(MaybeGen::get).toList();
+      
+      for (int i = 0; i + 1 < itemList.size(); i += 2) {
+        ItemStack good = itemList.get(i), cost = itemList.get(i + 1);
+        
+        MerchantRecipe customTrade = new MerchantRecipe(
+          good,
+          0,
+          Integer.MAX_VALUE,
+          false,
+          0,
+          0.0f
+        );
+        customTrade.addIngredient(cost);
+        
+        recipes.add(customTrade);
+      }
+      
+      villager.setRecipes(recipes);
+      
+      return villager;
+    }
+    
+    @Override
+    public Map<String, Object> serialize() {
+      Map<String, Object> map = new HashMap<>();
+      
+      BiConsumer<String, Object> pusher = (key, value) -> {
+        if (value != null) map.put(key, value);
+      };
+      
+      pusher.accept("name", name);
+      pusher.accept("biome", biome.key().asString());
+      pusher.accept("profession", prof.key().asString());
+      pusher.accept("block-type", blockType.name());
+      pusher.accept("items", items);
+      
+      return map;
+    }
+    
+    static public Shop deserialize(Map<String, Object> map) {
+      Shop shop = new Shop();
+      
+      if (map.containsKey("name"))
+        shop.name = (String) map.get("name");
+      if (map.containsKey("biome"))
+        shop.biome = Registry.VILLAGER_TYPE.get(Key.key((String) map.get("biome")));
+      if (map.containsKey("profession"))
+        shop.prof = Registry.VILLAGER_PROFESSION.get(Key.key((String) map.get("profession")));
+      if (map.containsKey("block-type"))
+        shop.blockType = Material.valueOf((String) map.get("block-type"));
+      
+      Function<String, List<MaybeGen>> loader = CoreUtils.listLoader(MaybeGen.class)
+        .compose(map::get);
+      
+      shop.items = loader.apply("items");
+      
+      return shop;
+    }
+  }
+  public List<Shop> shops = new ArrayList<>();
   
   public Map<UUID, Stats> stats = new HashMap<>();
   
@@ -873,12 +970,15 @@ public class Game {
       return;
     }
     
-    Location restCenter = LocationUtils.live(DestroyTheCore.game.map.restArea);
-    restCenter.setX(0);
-    if (LocationUtils.near(block.getLocation(), restCenter, 6)) {
-      ev.getPlayer().sendActionBar(TextUtils.$("game.banned.use.rest-area"));
-      ev.setCancelled(true);
-      return;
+    for (Location rest : new Location[] {
+      DestroyTheCore.game.map.restArea,
+      LocationUtils.flip(DestroyTheCore.game.map.restArea)
+    }) {
+      if (LocationUtils.near(block.getLocation(), LocationUtils.live(rest), 6)) {
+        ev.getPlayer().sendActionBar(TextUtils.$("game.banned.use.rest-area"));
+        ev.setCancelled(true);
+        return;
+      }
     }
     
     if (isPlaying && block.getType().equals(Material.ENDER_CHEST)) {
@@ -1170,12 +1270,15 @@ public class Game {
       return;
     }
     
-    Location restCenter = LocationUtils.live(DestroyTheCore.game.map.restArea);
-    restCenter.setX(0);
-    if (LocationUtils.near(block.getLocation(), restCenter, 6)) {
-      pl.sendActionBar(TextUtils.$("game.banned.break.rest-area"));
-      ev.setCancelled(true);
-      return;
+    for (Location rest : new Location[] {
+      DestroyTheCore.game.map.restArea,
+      LocationUtils.flip(DestroyTheCore.game.map.restArea)
+    }) {
+      if (LocationUtils.near(block.getLocation(), LocationUtils.live(rest), 6)) {
+        pl.sendActionBar(TextUtils.$("game.banned.break.rest-area"));
+        ev.setCancelled(true);
+        return;
+      }
     }
     
     if (!data.alive) {
@@ -1465,16 +1568,19 @@ public class Game {
     }
     
     if (isPlaying && map.restArea != null) {
-      Location restAreaCenter = LocationUtils.live(map.restArea);
-      restAreaCenter.setX(0);
-      
-      for (Player p : Bukkit.getOnlinePlayers()) {
-        PlayerData pData = getPlayerData(p);
-        if (pData.alive || pData.side == Side.SPECTATOR) continue;
+      playerLoop: for (Player p : Bukkit.getOnlinePlayers()) {
+        PlayerData pd = getPlayerData(p);
+        if (pd.alive || pd.side == Side.SPECTATOR) continue;
         
-        if (!LocationUtils.near(p.getLocation(), restAreaCenter, 6)) {
-          p.damage(Double.MAX_VALUE);
+        for (Location rest : new Location[] {
+          DestroyTheCore.game.map.restArea,
+          LocationUtils.flip(DestroyTheCore.game.map.restArea)
+        }) {
+          if (LocationUtils.near(p.getLocation(), LocationUtils.live(rest), 6))
+            continue playerLoop;
         }
+        
+        p.damage(Double.MAX_VALUE);
       }
     }
     
@@ -1589,6 +1695,43 @@ public class Game {
     }
   }
   
+  public void summonShopVillagers() {
+    for (Location originalLoc : map.shops) {
+      Location loc = LocationUtils.live(
+        LocationUtils.toSpawnPoint(originalLoc)
+      );
+      loc.setY(loc.getBlockY());
+      
+      for (Villager e : loc.getNearbyEntitiesByType(Villager.class, 2)) {
+        if (LocationUtils.near(loc, e.getLocation(), 1))
+          e.remove();
+      }
+      
+      offsetLoop: for (Vector offset : new Vector[] {
+        new Vector(0, -2, 0),
+        new Vector(1, 0, 0),
+        new Vector(-1, 0, 0),
+        new Vector(0, 0, 1),
+        new Vector(0, 0, -1)
+      }) {
+        for (Shop shop : shops) {
+          if (shop.blockType != loc.clone().add(offset).getBlock().getType()) continue;
+          
+          villagers.add(new VillagerData(
+            loc,
+            shop.summonVillager(loc)
+          ));
+          villagers.add(new VillagerData(
+            LocationUtils.flip(loc),
+            shop.summonVillager(LocationUtils.flip(loc))
+          ));
+          
+          break offsetLoop;
+        }
+      }
+    }
+  }
+  
   public void scheduleStart() {
     startingTask = new BukkitRunnable() {
       int countdown = 5;
@@ -1678,15 +1821,13 @@ public class Game {
   public void start() {
     if (
       map.restArea == null ||
-      map.spawnPoint == null ||
       map.core == null ||
       map.mission == null ||
+      map.spawnpoints == null ||
       map.woods == null ||
-      map.woods.isEmpty() ||
       map.ores == null ||
-      map.ores.isEmpty() ||
       map.diamonds == null ||
-      map.diamonds.isEmpty()
+      map.shops == null
     ) {
       PlayerUtils.prefixedBroadcast(TextUtils.$("game.missing-loc"));
       return;
@@ -1701,6 +1842,8 @@ public class Game {
     
     setBothCoreMaterial(Material.BEDROCK);
     setDiamonds(Material.BEDROCK);
+    
+    summonShopVillagers();
     
     DestroyTheCore.ticksManager.ticksCount = 0;
     
@@ -1795,6 +1938,9 @@ public class Game {
     }
     
     DestroyTheCore.inventoriesManager.reset();
+    DestroyTheCore.missionsManager.forceStop();
+    
+    villagers.clear();
     
     for (Player p : Bukkit.getOnlinePlayers()) {
       PlayerUtils.backToLobby(p);
@@ -2130,6 +2276,8 @@ public class Game {
       }
     }
     
+    updateVillagers();
+    
     if (
       map.core != null &&
       phase.isAfter(Phase.CoreWilting) &&
@@ -2180,13 +2328,14 @@ public class Game {
   
   public void onParticleTick() {
     for (Player p : Bukkit.getOnlinePlayers()) {
+      if (!isPlaying) continue;
       if (p.hasPotionEffect(PotionEffectType.INVISIBILITY)) continue;
       
       PlayerData data = getPlayerData(p);
       
       if (
         p.getInventory().contains(Material.ENCHANTING_TABLE) ||
-      p.getInventory().contains(Material.ENDER_CHEST)
+        p.getInventory().contains(Material.ENDER_CHEST)
       ) {
         ParticleUtils.dust(
           PlayerUtils.all(),

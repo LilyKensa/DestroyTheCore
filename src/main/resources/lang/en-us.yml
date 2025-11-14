@@ -177,6 +177,7 @@ mission:
     skill-cooldown: "As <side> team failed the mission, their skill cooldown was <light_purple>increased by 120 seconds</light_purple>"
 
 gui:
+  in-use: "<red>The window is currently used by someone else!</red>"
   buttons:
     next-page:
       title: "<yellow>Next Page</yellow>"
@@ -186,12 +187,43 @@ gui:
       title: "<yellow>Previous Page</yellow>"
       desc: "Go to page <gold><prev></gold>/<max>"
       desc-end: "<dark_purple>You can't go further back</dark_purple>"
+    scroll-down:
+      title: "<yellow>Scroll Down</yellow>"
+      desc-end: "<dark_purple>You can't scroll further down</dark_purple>"
+    scroll-up:
+      title: "<yellow>Scroll Up</yellow>"
+      desc-end: "<dark_purple>You've reached the top</dark_purple>"
     pick-random:
       title: "<yellow>Pick Random</yellow>"
       announce: "<player> randomly changed role to <yellow><role></yellow>"
+    new-shop:
+      title: "<yellow>New Shop</yellow>"
+    rename-shop:
+      title: "<yellow>Rename Shop</yellow>"
+      desc: "Current name: <name>"
+    delete-shop:
+      title: "<yellow>Delete Shop</yellow>"
+      title-confirm: "<red>Delete Shop - Confirm</red>"
+    detail-shop:
+      title: "<yellow>Edit Shop Villager</yellow>"
+      desc: "Current: <type> <profession>"
+      selected: "Selected"
   titles:
     choose-role: "Choose a Role"
-    teleporter: "Teleport to Player"
+    teleporter: "Teleport to a Player"
+    shop:
+      list: "Click to Edit a Shop"
+      trades: "Editing Shop"
+      rename: "Renaming Shop"
+      villager: "Villager Options"
+  villagers:
+    snow: "Snow"
+    plains: "Plains"
+    jungle: "Jungle"
+    taiga: "Taiga"
+    desert: "Desert"
+    savanna: "Savanna"
+    swamp: "Swamp"
 
 board:
   title: "<red>Destroy</red><white>The</white><yellow>Core</yellow>"
@@ -506,11 +538,12 @@ tools:
   join-spectator: "Spectator Join Platform"
   lobby: "Lobby Spawn"
   rest-area: "Rest Area"
-  spawn-point: "Spawnpoint"
+  spawnpoints: "Spawnpoint"
   start-button: "Start Button"
   woods: "Woods"
   ores: "Ores"
   diamonds: "Diamonds"
+  shops: "Villagers"
   mission: "Mission Center"
 
 missions:

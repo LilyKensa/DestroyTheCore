@@ -172,26 +172,26 @@ public class LocationUtils {
   }
   
   public static boolean nearSpawn(Location blockLoc) {
-    if (DestroyTheCore.game.map.spawnPoint == null) return false;
-    
-    for (Location spawnLoc : new Location[] {
-      DestroyTheCore.game.map.spawnPoint,
-      LocationUtils.flip(DestroyTheCore.game.map.spawnPoint)
-    }) {
-      int
-        sx = blockLoc.getBlockX(),
-        sy = blockLoc.getBlockY(),
-        sz = blockLoc.getBlockZ(),
-        tx = spawnLoc.getBlockX(),
-        ty = spawnLoc.getBlockY(),
-        tz = spawnLoc.getBlockZ();
-      
-      if (
-        sx >= tx - 1 && sx <= tx + 1 &&
-          sy >= ty && sy <= ty + 2 &&
-          sz >= tz - 1 && sz <= tz + 1
-      ) {
-        return true;
+    for (Location point : DestroyTheCore.game.map.spawnpoints) {
+      for (Location spawnLoc : new Location[]{
+        point,
+        LocationUtils.flip(point)
+      }) {
+        int
+          sx = blockLoc.getBlockX(),
+          sy = blockLoc.getBlockY(),
+          sz = blockLoc.getBlockZ(),
+          tx = spawnLoc.getBlockX(),
+          ty = spawnLoc.getBlockY(),
+          tz = spawnLoc.getBlockZ();
+        
+        if (
+          sx >= tx - 1 && sx <= tx + 1 &&
+            sy >= ty && sy <= ty + 2 &&
+            sz >= tz - 1 && sz <= tz + 1
+        ) {
+          return true;
+        }
       }
     }
     
@@ -204,10 +204,8 @@ public class LocationUtils {
     boolean hasFloatX = loc.getX() - loc.getBlockX() >= 0.1,
             hasFloatZ = loc.getZ() - loc.getBlockZ() >= 0.1;
     
-    loc.setYaw(90);
-    
     if (flip) {
-      loc.setYaw(-90);
+      loc.setYaw(loc.getYaw() + 180);
       loc.setX(-loc.getX() + (hasFloatX ? 1 : 0));
       loc.setZ(-loc.getZ() + (hasFloatZ ? 1 : 0));
     }

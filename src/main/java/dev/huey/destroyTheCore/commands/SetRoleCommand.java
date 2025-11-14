@@ -35,7 +35,7 @@ public class SetRoleCommand extends Subcommand {
       key = RolesManager.RoleKey.valueOf(args.getFirst().toUpperCase());
     }
     catch (IllegalArgumentException ignored) {
-      PlayerUtils.prefixedSend(pl, "commands.role.role-not-found");
+      PlayerUtils.prefixedSend(pl, TextUtils.$("commands.role.role-not-found"));
       return;
     }
     

@@ -181,6 +181,7 @@ mission:
     skill-cooldown: "<side>因為任務失敗, 全員技能冷卻<light_purple>增加 120 秒</light_purple>!"
 
 gui:
+  in-use: "<red>該視窗目前已被其他人占用!</red>"
   buttons:
     next-page:
       title: "<yellow>下一頁</yellow>"
@@ -190,12 +191,43 @@ gui:
       title: "<yellow>上一頁</yellow>"
       desc: "到頁面 <gold><prev></gold>/<max>"
       desc-end: "<dark_purple>沒辦法再往前了</dark_purple>"
+    scroll-down:
+      title: "<yellow>往下捲</yellow>"
+      desc-end: "<dark_purple>不能再往下捲了</dark_purple>"
+    scroll-up:
+      title: "<yellow>往上捲</yellow>"
+      desc-end: "<dark_purple>你已經在最頂端</dark_purple>"
     pick-random:
       title: "<yellow>隨機</yellow>"
       announce: "<player> 隨機轉職成<yellow><role></yellow>"
+    new-shop:
+      title: "<yellow>新增商店</yellow>"
+    delete-shop:
+      title: "<yellow>移除商店</yellow>"
+      title-confirm: "<red>移除商店 - 確認</red>"
+    rename-shop:
+      title: "<yellow>命名商店</yellow>"
+      desc: "目前名稱: <name>"
+    detail-shop:
+      title: "<yellow>編輯商店村民</yellow>"
+      desc: "目前: <type><profession>"
+      selected: "已選擇"
   titles:
-    choose-role: "選個好職業"
-    teleporter: "傳送到玩家"
+    choose-role: "選擇職業"
+    teleporter: "傳送至玩家"
+    shop:
+      list: "點擊以編輯交易所"
+      trades: "編輯品項"
+      rename: "命名商店"
+      villager: "村民選項"
+  villagers:
+    snow: "雪地"
+    plains: "平原"
+    jungle: "叢林"
+    taiga: "針葉林"
+    desert: "沙漠"
+    savanna: "莽原"
+    swamp: "沼澤"
 
 board:
   title: "<red>殲滅</red><white>攻城</white><yellow>戰</yellow>"
@@ -227,6 +259,11 @@ commands:
   edit:
     unclear: "<red>請指定一個工具組!</red>"
     loaded: "<green>已載入工具組!</green>"
+  map:
+    info: "<aqua>目前的地圖是 <map></aqua>"
+    bad-time: "<red>請先停止遊戲!</red>"
+    not-found: "<red>找不到地圖!</red>"
+    announce: "<green>地圖被 <player> 更改成 <map></green>"
   give:
     unclear: "<red>請指定一個物品!</red>"
     not-found: "<red>找不到物品!</red>"
@@ -261,7 +298,7 @@ commands:
   reset:
     announce: "<green>遊戲被 <player> 重置</green>"
   save:
-    success: "<green>已儲存!</green>"
+    success: "<green>已儲存設定至檔案!</green>"
   shuffle-team:
     announce: "<player> 已隨機分隊!"
   stop:
@@ -505,17 +542,18 @@ tools:
   join-spectator: "加入旁觀者區"
   lobby: "大廳出生點"
   rest-area: "重生等待區"
-  spawn-point: "重生點"
+  spawnpoints: "重生點"
   start-button: "開始按鈕"
   woods: "木頭"
   ores: "一般礦物"
   diamonds: "鑽石礦"
+  shops: "交易所村民"
   mission: "中央任務點"
 
 missions:
   chicken:
     title: "<yellow>搶奪先雞</yellow>"
-    desc: "中央出現一隻跑速極快, 血量 25 心的雞, 殺死者該陣營獲勝!"
+    desc: "中央出現一隻跑速極快, 血量 25 心的雞, 擊殺者該陣營獲勝!"
     chicken: "<yellow>小雞</yellow>"
     boss-bar: "<yellow>小雞血量</yellow>"
   roll-call:
@@ -543,7 +581,7 @@ missions:
     desc: "肚子好像破了一個洞, 突然變得好餓喔!"
   earthquake-cow:
     title: "<yellow>地牛來襲</yellow>"
-    desc: "從地心鑽出了一頭牛... 他在翻身! 殺死者該陣營獲勝!"
+    desc: "從地心鑽出了一頭牛... 他在翻身! 擊殺者該陣營獲勝!"
     cow: "<yellow>地牛</yellow>"
     boss-bar: "<yellow>地牛血量</yellow>"
   drop-all:
