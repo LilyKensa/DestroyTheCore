@@ -11,6 +11,6 @@ public class StarterLeggingsGen extends ItemGen {
       Material.LEATHER_LEGGINGS
     );
     setNeverDrop();
-    setNotImportant();
+    setTrash();
   }
 }

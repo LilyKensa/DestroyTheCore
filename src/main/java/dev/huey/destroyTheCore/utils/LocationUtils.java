@@ -62,6 +62,7 @@ public class LocationUtils {
     );
   }
   
+  /** {@link #toBlockCenter}, but it's 0.25 up from the ground, instead of 0.5 */
   public static Location toSpawnPoint(Location loc) {
     loc = toBlockCenter(loc).add(0, -0.25, 0);
     loc.setYaw(CoreUtils.snapAngle(loc.getYaw()));
@@ -69,7 +70,7 @@ public class LocationUtils {
     return loc;
   }
   
-  public static boolean isOn(Location target, Location source) {
+  public static boolean closeEnough(Location target, Location source) {
     source = toBlockCenter(source);
     return
       isSameWorld(target, source) &&
@@ -82,6 +83,7 @@ public class LocationUtils {
     return e.getBoundingBox().clone().getCenter().toLocation(e.getWorld());
   }
   
+  /** Ender chest animation, as we use custom ender chests */
   public static void playChestAnimation(Location loc, boolean open) {
     Block block = loc.getBlock();
     
@@ -120,6 +122,7 @@ public class LocationUtils {
     }
   }
   
+  /** Do something several times in a circle */
   public static void ring(Location centerLoc, double radius, int count, Consumer<Location> task) {
     double step = (2 * Math.PI) / count;
     
@@ -137,6 +140,7 @@ public class LocationUtils {
     ring(centerLoc, radius, 16, task);
   }
   
+  /** Set a block at specific location, but in live world */
   public static void setLiveBlock(Location loc, Material type) {
     LocationUtils.live(loc).getBlock().setType(type);
     
@@ -194,6 +198,7 @@ public class LocationUtils {
     return false;
   }
   
+  /** Flip X & Z, useful for red / green locations conversion */
   public static Location flip(Location originalLoc, boolean flip) {
     Location loc = originalLoc.clone();
     boolean hasFloatX = loc.getX() - loc.getBlockX() >= 0.1,
@@ -213,6 +218,7 @@ public class LocationUtils {
     return flip(loc, true);
   }
   
+  /** Flip if {@code side} is green */
   public static Location selfSide(Location loc, Game.Side side) {
     return flip(
       loc,
@@ -226,6 +232,7 @@ public class LocationUtils {
     );
   }
   
+  /** Flip if {@code side} is red */
   public static Location enemySide(Location loc, Game.Side side) {
     return flip(
       loc,
@@ -239,6 +246,7 @@ public class LocationUtils {
     );
   }
   
+  /** A location's live world version */
   public static Location live(Location originalLoc) {
     if (DestroyTheCore.worldsManager.live == null) return originalLoc;
     

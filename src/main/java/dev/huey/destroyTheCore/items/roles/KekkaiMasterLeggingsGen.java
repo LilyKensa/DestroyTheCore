@@ -13,7 +13,7 @@ public class KekkaiMasterLeggingsGen extends ItemGen {
       Material.CHAINMAIL_LEGGINGS
     );
     setNeverDrop();
-    setNotImportant();
+    setTrash();
   }
   
   @Override

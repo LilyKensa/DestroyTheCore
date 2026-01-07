@@ -2,6 +2,7 @@ package dev.huey.destroyTheCore.bases;
 
 import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.Game;
+import dev.huey.destroyTheCore.managers.MissionsManager;
 import dev.huey.destroyTheCore.missions.results.*;
 import dev.huey.destroyTheCore.utils.CoreUtils;
 import dev.huey.destroyTheCore.utils.LocationUtils;
@@ -21,15 +22,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Mission implements Listener {
+  /** Mission central location, assigned in {@link #init} */
   public static Location loc;
   
   public static class Result {
     String id;
     
+    /** @param id Used for translation, all lowercase */
     public Result(String id) {
       this.id = id;
     }
     
+    /** Prefixed broadcast */
     public void announce(Game.Side side, List<TagResolver> places) {
       List<TagResolver> placeholders = new ArrayList<>();
       placeholders.add(Placeholder.component("side", side.titleComp()));
@@ -46,17 +50,24 @@ public abstract class Mission implements Listener {
       forLoser(side.opposite());
     }
     
+    /** @implNote Optional */
     public void forWinner(Game.Side side) {
     
     }
     
+    /** @implNote Optional */
     public void forLoser(Game.Side side) {
     
     }
   }
   
+  /** How long it waits until the mission is automatically ended */
+  public static final int clockDuration = 60 * 20;
+  
+  /** All the result, assigned in {@link #init} */
   public static List<Result> results;
   
+  /** Prefixed broadcast */
   static public void broadcast(Component comp) {
     DestroyTheCore.missionsManager.broadcast(comp);
   }
@@ -66,6 +77,7 @@ public abstract class Mission implements Listener {
   
   public String id;
   
+  /** @param id Used for translation, all lowercase */
   public Mission(String id) {
     this.id = id;
   }
@@ -103,15 +115,17 @@ public abstract class Mission implements Listener {
     clock = Bukkit.getScheduler().runTaskLater(
       DestroyTheCore.instance,
       this::end,
-      60 * 20
+      clockDuration
     );
   }
   
+  /** Used in {@link MissionsManager#onTick} */
   public void onTick() {
     if (active)
       tick();
   }
   
+  /** Call this to end the mission */
   public void end() {
     active = false;
     cancelClock();
@@ -122,10 +136,12 @@ public abstract class Mission implements Listener {
     CoreUtils.setTickOut(DestroyTheCore.missionsManager::next);
   }
   
+  /** Call this to announce draw */
   public void declareDraw() {
     broadcast(TextUtils.$("mission.draw"));
   }
   
+  /** Call this to announce the winner */
   public void declareWinner(Game.Side side) {
     RandomUtils.pick(results).run(side);
   }
@@ -133,6 +149,7 @@ public abstract class Mission implements Listener {
     declareWinner(DestroyTheCore.game.getPlayerData(pl).side);
   }
   
+  /** Call this if you don't want the  background clock */
   public void cancelClock() {
     if (clock != null) clock.cancel();
   }

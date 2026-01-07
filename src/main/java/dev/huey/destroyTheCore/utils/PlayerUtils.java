@@ -51,6 +51,7 @@ public class PlayerUtils {
     send(pl, text, NamedTextColor.GRAY);
   }
   
+  /** {@link #send} with {@link DestroyTheCore#prefix} */
   static public void prefixedSend(Player pl, Component component) {
     send(pl, DestroyTheCore.prefix.append(component));
   }
@@ -61,23 +62,27 @@ public class PlayerUtils {
     prefixedSend(pl, text, NamedTextColor.GRAY);
   }
   
+  /** Broadcast to admins */
   static public void prefixedNotice(Component comp) {
     for (Player p : Bukkit.getOnlinePlayers())
       if (PlayerUtils.isAdmin(p))
         PlayerUtils.prefixedSend(p, comp);
   }
   
+  /** Broadcast to everyone */
   static public void broadcast(Component comp) {
     for (Player pl : Bukkit.getOnlinePlayers())
       send(pl, comp);
   }
   
+  /** Broadcast to nearby players */
   static public void auraBroadcast(Location center, double dist, Component comp) {
     for (Player pl : Bukkit.getOnlinePlayers())
       if (LocationUtils.near(pl.getLocation(), center, dist))
         send(pl, comp);
   }
   
+  /** {@link #broadcast} with {@link DestroyTheCore#prefix} */
   static public void prefixedBroadcast(Component comp) {
     for (Player pl : Bukkit.getOnlinePlayers())
       prefixedSend(pl, comp);
@@ -110,6 +115,7 @@ public class PlayerUtils {
     return builder.build();
   }
   
+  /** Send 1.5 + 0.25 title duration */
   static public void normalTitleTimes(Player pl) {
     pl.sendTitlePart(
       TitlePart.TIMES,
@@ -120,6 +126,7 @@ public class PlayerUtils {
       )
     );
   }
+  /** Send 3 + 1 title duration */
   static public void longTitleTimes(Player pl) {
     pl.sendTitlePart(
       TitlePart.TIMES,
@@ -131,12 +138,9 @@ public class PlayerUtils {
     );
   }
   
+  /** If that block has right click functionalities, and shouldn't be canceled */
   static public boolean checkUsingBlock(Player pl, Block block) {
     return block != null && block.getBlockData() instanceof Openable && !pl.isSneaking();
-  }
-  
-  static public boolean isPotionExpiring(Player pl, PotionEffectType type) {
-    return !pl.hasPotionEffect(type) || pl.getPotionEffect(type).getDuration() <= 20;
   }
   
   static public ItemStack getHandItem(Player pl) {
@@ -221,6 +225,7 @@ public class PlayerUtils {
     pl.damageItemStack(EquipmentSlot.HAND, 1);
   }
   
+  /** Skip players in creative mode */
   static public boolean shouldHandle(Player pl) {
     return !pl.getGameMode().equals(GameMode.CREATIVE);
   }
@@ -233,6 +238,7 @@ public class PlayerUtils {
     prefixedSend(pl, TextUtils.$("player.no-perm"));
   }
   
+  /** If a block is in their own half of the map */
   static public boolean canAccess(Player pl, Block block)  {
     PlayerData data = DestroyTheCore.game.getPlayerData(pl);
     
@@ -302,6 +308,7 @@ public class PlayerUtils {
     pl.setFallDistance(0);
   }
   
+  /** Grant invulnerabilities */
   static public void protect(Player pl, int ticks) {
     pl.addPotionEffect(new PotionEffect(
       PotionEffectType.RESISTANCE,
@@ -319,6 +326,7 @@ public class PlayerUtils {
     ));
   }
   
+  /** Refresh night vision effect based on their preference */
   static public void enforceNightVision(Player pl) {
     if (DestroyTheCore.game.stats.get(pl.getUniqueId()).nightVision) {
       pl.addPotionEffect(new PotionEffect(
@@ -334,6 +342,7 @@ public class PlayerUtils {
     }
   }
   
+  /** Remove spectators from {@code viewer}'s pov world */
   static public void hideSpectators(Player viewer) {
     for (Player s : Bukkit.getOnlinePlayers()) {
       if (DestroyTheCore.game.getPlayerData(s).side == Game.Side.SPECTATOR) {
@@ -355,6 +364,7 @@ public class PlayerUtils {
     }
   }
   
+  /** Add spectators back from {@code viewer}'s pov world */
   static public void showAllPlayers(Player viewer) {
     for (Player s : Bukkit.getOnlinePlayers()) {
       viewer.showPlayer(DestroyTheCore.instance, s);
@@ -366,6 +376,7 @@ public class PlayerUtils {
     }
   }
   
+  /** Set the player as a spectator */
   static public void refreshSpectatorAbilities(Player pl, boolean state) {
     if (!DestroyTheCore.game.isPlaying) state = false;
     
@@ -396,6 +407,7 @@ public class PlayerUtils {
     );
   }
   
+  /** Reduce respawn time process */
   static public void rrt(Player pl) {
     PlayerData d = DestroyTheCore.game.getPlayerData(pl);
     if (
@@ -578,11 +590,13 @@ public class PlayerUtils {
     }.runTaskTimer(DestroyTheCore.instance, 0, 1);
   }
   
+  /** Safely give a player an item, will not crash if item's empty */
   public static void give(Player pl, ItemStack item) {
     if (item == null || item.isEmpty()) return;
     pl.give(item);
   }
   
+  /** Give a player basic armors, weapons & skill books */
   public static void giveEssentials(Player pl) {
     PlayerData data = DestroyTheCore.game.getPlayerData(pl);
     PlayerInventory inv = pl.getInventory();
@@ -672,6 +686,7 @@ public class PlayerUtils {
     }
   }
   
+  /** Use a particle trial to delay assign a task between 2 players */
   public static void delayAssign(
     Player from,
     Player to,
@@ -743,6 +758,7 @@ public class PlayerUtils {
     return getEnemies(DestroyTheCore.game.getPlayerData(pl).side);
   }
   
+  /** Including teammates & spectators */
   public static List<Player> getNonEnemies(Game.Side side) {
     return all().stream()
       .filter(p -> {
@@ -784,7 +800,7 @@ public class PlayerUtils {
     return target;
   }
   
-  // I have no idea how this works :)
+  /** Pure math, by Gemini */
   static Double rayIntersectsBox(
     Vector origin, Vector dir, double maxDist, BoundingBox box
   ) {

@@ -40,21 +40,22 @@ public class CommandsManager implements TabCompleter, CommandExecutor {
       new WorldCommand(),
       new NextPhaseCommand(),
       new LanguageCommand(),
+      new MapCommand(),
       new HelpCommand()
     );
   }
   
-  List<String> checkCompletion(List<String> fullList, String lastArg) {
+  public List<String> checkCompletion(List<String> fullList, String lastArg) {
     if (fullList.contains(lastArg)) return List.of();
     
     return fullList.stream()
       .filter(s -> s.contains(lastArg))
       .toList();
-  };
+  }
   
   @Override
   public List<String> onTabComplete(
-    CommandSender commandSender,
+    CommandSender sender,
     Command command,
     String label,
     String[] args
@@ -85,12 +86,12 @@ public class CommandsManager implements TabCompleter, CommandExecutor {
   
   @Override
   public boolean onCommand(
-    CommandSender commandSender,
+    CommandSender sender,
     Command command,
     String label,
     String[] args
   ) {
-    if (!(commandSender instanceof Player pl)) return true;
+    if (!(sender instanceof Player pl)) return true;
     
     if (command.getName().equals("dtc")) {
       if (args.length < 1) {

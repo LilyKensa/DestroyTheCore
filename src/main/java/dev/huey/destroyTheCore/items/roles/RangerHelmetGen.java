@@ -16,7 +16,7 @@ public class RangerHelmetGen extends ItemGen {
       Material.LEATHER_HELMET
     );
     setNeverDrop();
-    setNotImportant();
+    setTrash();
   }
   
   @Override

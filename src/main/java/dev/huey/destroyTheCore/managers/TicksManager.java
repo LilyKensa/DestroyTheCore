@@ -4,27 +4,33 @@ import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.roles.KekkaiMasterRole;
 import dev.huey.destroyTheCore.roles.RangerRole;
 import dev.huey.destroyTheCore.roles.WandererRole;
-import org.bukkit.Bukkit;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class TicksManager {
   static public final int particleRate = 4, updateRate = 10;
   
+  /** Ticks elapsed from last game start */
   public int ticksCount = 0;
   
+  /** Particle tick is every {@value #particleRate} ticks */
   public boolean isParticleTick() {
     return ticksCount % particleRate == 0;
   }
   
+  /** Update tick is every {@value #updateRate} ticks */
   public boolean isUpdateTick() {
     return ticksCount % updateRate == 0;
   }
   
+  /** Second is every 20 ticks */
   public boolean isSeconds() {
     return ticksCount % 20 == 0;
   }
   
-  public void init() {
-    Bukkit.getScheduler().scheduleSyncRepeatingTask(DestroyTheCore.instance, () -> {
+  /** The {@link BukkitRunnable} that runs every tick */
+  public class TicksRunnable extends BukkitRunnable {
+    @Override
+    public void run() {
       ticksCount++;
       
       DestroyTheCore.game.onTick();
@@ -48,6 +54,14 @@ public class TicksManager {
       if (isSeconds()) {
         DestroyTheCore.boardsManager.onUITick();
       }
-    }, 0, 1);
+    }
+  }
+  
+  /** Instance of {@link TicksRunnable} */
+  TicksRunnable task;
+  
+  public void init() {
+    (task = new TicksRunnable())
+      .runTaskTimer(DestroyTheCore.instance, 0, 1);
   }
 }

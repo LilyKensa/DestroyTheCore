@@ -5,6 +5,10 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.inventory.EquipmentSlotGroup;
 
+/**
+ * Specifically made for {@link AttributeModifier}
+ * Probably should move this to other places though
+ */
 public class AttributeUtils {
   static public AttributeModifier addition(
     String name, EquipmentSlotGroup slot, double amount

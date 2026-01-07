@@ -11,6 +11,6 @@ public class StarterBootsGen extends ItemGen {
       Material.LEATHER_BOOTS
     );
     setNeverDrop();
-    setNotImportant();
+    setTrash();
   }
 }

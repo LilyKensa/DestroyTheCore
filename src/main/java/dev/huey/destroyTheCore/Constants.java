@@ -23,6 +23,7 @@ public class Constants {
     Map.entry(Material.DIAMOND_ORE,  new OreData(Material.DIAMOND,      60, 3, 12))
   );
   
+  /** To be dropped when needed */
   static public final List<Material> oreItems = List.of(
     Material.COAL,
     Material.LAPIS_LAZULI,

@@ -11,12 +11,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PlayerData {
-  static public final int minRespawnTime = 5;
-  static public final int maxRespawnTime = 180;
-  static public final int killPunishment = 2;
-  static public final int corePunishment = 5;
-  static public final int shoutCooldownDuration = 10 * 20;
-  static public final int rrtDuration = 5 * 20; // Reduce respawn time
+  /** Constants */
+  static public final int
+    minRespawnTime = 5,
+    maxRespawnTime = 180,
+    killPunishment = 2,
+    corePunishment = 5,
+    shoutCooldownDuration = 10 * 20,
+    rrtDuration = 5 * 20; // Reduce respawn time
   
   public Player owner;
   public Game.Side side = Game.Side.SPECTATOR;

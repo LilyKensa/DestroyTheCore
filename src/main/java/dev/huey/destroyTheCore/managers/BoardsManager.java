@@ -21,6 +21,7 @@ import java.util.function.Function;
 public class BoardsManager {
   final Map<UUID, FastBoard> boards = new HashMap<>();
   
+  /** Call this whenever you change any of the stuff on the board */
   public void refresh(Player pl) {
     FastBoard board = boards.get(pl.getUniqueId());
     

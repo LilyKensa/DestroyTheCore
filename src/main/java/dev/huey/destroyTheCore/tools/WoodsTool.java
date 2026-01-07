@@ -3,10 +3,7 @@ package dev.huey.destroyTheCore.tools;
 import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.bases.editorTools.RegionTool;
 import dev.huey.destroyTheCore.records.Region;
-import org.bukkit.Color;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -55,7 +52,7 @@ public class WoodsTool extends RegionTool {
     Set<Location> set = new HashSet<>();
     
     region.forEachBlock((block) -> {
-      if (block.getType().equals(Material.OAK_LOG))
+      if (Tag.LOGS.isTagged(block.getType()))
         set.add(block.getLocation());
     });
     DestroyTheCore.game.map.woods = set;

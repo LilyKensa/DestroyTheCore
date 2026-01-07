@@ -1,5 +1,6 @@
 package dev.huey.destroyTheCore.bases;
 
+import dev.huey.destroyTheCore.managers.CommandsManager;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
@@ -26,10 +27,15 @@ public class Subcommand {
     this.name = name;
   }
   
+  /**
+   * Add an argument for tab-completion, the name is currently useless
+   * @see CommandsManager#checkCompletion
+   */
   public void addArgument(String name, Supplier<List<String>> completionsSupplier) {
     arguments.add(new Argument(name, completionsSupplier));
   }
   
+  /** @implNote Required - The command callback */
   public void execute(Player pl, List<String> args) {
     PlayerUtils.prefixedSend(pl, "This command isn't implemented yet!", NamedTextColor.RED);
   }

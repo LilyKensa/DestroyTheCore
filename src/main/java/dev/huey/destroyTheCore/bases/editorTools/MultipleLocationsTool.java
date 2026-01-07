@@ -26,10 +26,12 @@ public class MultipleLocationsTool extends EditorTool {
     locs = getLocs();
   }
   
+  /** @implNote Required - To load the current locations list */
   public Set<Location> getLocs() {
     return null;
   }
   
+  /** @implNote Required - To update the current locations list */
   public void setLocs(Set<Location> locs) {
   
   }

@@ -11,6 +11,6 @@ public class StarterChestplateGen extends ItemGen {
       Material.LEATHER_CHESTPLATE
     );
     setNeverDrop();
-    setNotImportant();
+    setTrash();
   }
 }

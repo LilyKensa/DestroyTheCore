@@ -1,6 +1,7 @@
 package dev.huey.destroyTheCore.bases;
 
 import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.managers.TicksManager;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -17,12 +18,14 @@ import org.bukkit.persistence.PersistentDataType;
 public class EditorTool {
   static final Component toolPrefix = TextUtils.$("tool.prefix");
   
+  /** Used to distinguish tools, stored data is {@link #id} */
   static final NamespacedKey dataNamespace = new NamespacedKey(
     DestroyTheCore.instance, "editor-tool");
   
   public String id;
   public Material iconType;
   
+  /** @param id Used for translation, all lowercase */
   public EditorTool(String id, Material iconType) {
     this.id = id;
     this.iconType = iconType;
@@ -48,6 +51,7 @@ public class EditorTool {
     return item;
   }
   
+  /** Check if an item stack is an instance of this tool */
   public boolean checkItem(ItemStack item) {
     if (item == null) return false;
     
@@ -59,22 +63,33 @@ public class EditorTool {
     return this.id.equals(container.get(dataNamespace, PersistentDataType.STRING));
   }
   
+  /**
+   * Used to refresh the tool when reloading data from config files
+   * @implNote Optional
+   */
   public void refresh() {
   
   }
   
+  /**
+   * Used in {@link TicksManager.TicksRunnable}
+   * @implNote Optional
+   */
   public void onParticleTick(Player pl) {
     
   }
   
+  /** @implNote Optional */
   public void onRightClickAir(Player pl) {
   
   }
   
+  /** @implNote Optional */
   public void onRightClickBlock(Player pl, Block block) {
     
   }
   
+  /** @implNote Optional */
   public void onBreakBlock(Player pl, Block block) {
   
   }
