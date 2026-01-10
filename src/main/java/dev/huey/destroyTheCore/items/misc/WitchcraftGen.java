@@ -54,6 +54,7 @@ public class WitchcraftGen extends UsableItemGen {
             DestroyTheCore.inventoriesManager.dropOres(e);
           });
         }
+        
         announce(TextUtils.$("items.witchcraft.announce.drop-ores", List.of(
           Placeholder.component("player", PlayerUtils.getName(pl)),
           Placeholder.component("enemy", data.side.opposite().titleComp())
@@ -71,6 +72,7 @@ public class WitchcraftGen extends UsableItemGen {
             ));
           });
         }
+        
         announce(TextUtils.$("items.witchcraft.announce.poison", List.of(
           Placeholder.component("player", PlayerUtils.getName(pl)),
           Placeholder.component("enemy", data.side.opposite().titleComp())
@@ -85,6 +87,7 @@ public class WitchcraftGen extends UsableItemGen {
             );
           });
         }
+        
         announce(TextUtils.$("items.witchcraft.announce.add-skill-cooldown", List.of(
           Placeholder.component("player", PlayerUtils.getName(pl)),
           Placeholder.component("enemy", data.side.opposite().titleComp())
@@ -122,6 +125,7 @@ public class WitchcraftGen extends UsableItemGen {
             ));
           });
         }
+        
         announce(TextUtils.$("items.witchcraft.announce.unluck", List.of(
           Placeholder.component("player", PlayerUtils.getName(pl)),
           Placeholder.component("enemy", data.side.opposite().titleComp())
@@ -133,6 +137,7 @@ public class WitchcraftGen extends UsableItemGen {
             DestroyTheCore.game.getPlayerData(e).addRespawnTime(15);
           });
         }
+        
         announce(TextUtils.$("items.witchcraft.announce.add-respawn-time", List.of(
           Placeholder.component("player", PlayerUtils.getName(pl)),
           Placeholder.component("enemy", data.side.opposite().titleComp())
@@ -142,6 +147,7 @@ public class WitchcraftGen extends UsableItemGen {
         DestroyTheCore.game.getSideData(data.side.opposite()).banOres(60 * 20);
         DestroyTheCore.game.noOresBars.show(data.side.opposite());
         DestroyTheCore.game.banOres(data.side.opposite());
+        
         announce(TextUtils.$("items.witchcraft.announce.ban-ores", List.of(
           Placeholder.component("player", PlayerUtils.getName(pl)),
           Placeholder.component("enemy", data.side.opposite().titleComp())
@@ -159,6 +165,7 @@ public class WitchcraftGen extends UsableItemGen {
             ));
           });
         }
+        
         announce(TextUtils.$("items.witchcraft.announce.glow", List.of(
           Placeholder.component("player", PlayerUtils.getName(pl)),
           Placeholder.component("enemy", data.side.opposite().titleComp())
@@ -166,6 +173,8 @@ public class WitchcraftGen extends UsableItemGen {
       }
       case 8 -> {
         DestroyTheCore.game.getSideData(data.side.opposite()).directAttackCore();
+        DestroyTheCore.game.checkWinner();
+        
         announce(TextUtils.$("items.witchcraft.announce.attack-core", List.of(
           Placeholder.component("player", PlayerUtils.getName(pl)),
           Placeholder.component("enemy", data.side.opposite().titleComp())
@@ -174,6 +183,7 @@ public class WitchcraftGen extends UsableItemGen {
       case 9 -> {
         for (int i = 0; i < 3; ++i)
           DestroyTheCore.game.getSideData(data.side.opposite()).directAttackCore();
+        
         announce(TextUtils.$("items.witchcraft.announce.attack-core-3", List.of(
           Placeholder.component("player", PlayerUtils.getName(pl)),
           Placeholder.component("enemy", data.side.opposite().titleComp())
@@ -191,6 +201,7 @@ public class WitchcraftGen extends UsableItemGen {
             ));
           });
         }
+        
         announce(TextUtils.$("items.witchcraft.announce.slowness", List.of(
           Placeholder.component("player", PlayerUtils.getName(pl)),
           Placeholder.component("enemy", data.side.opposite().titleComp())
@@ -208,6 +219,7 @@ public class WitchcraftGen extends UsableItemGen {
             ));
           });
         }
+        
         announce(TextUtils.$("items.witchcraft.announce.mining-fatigue", List.of(
           Placeholder.component("player", PlayerUtils.getName(pl)),
           Placeholder.component("enemy", data.side.opposite().titleComp())

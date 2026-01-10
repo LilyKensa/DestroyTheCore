@@ -22,6 +22,7 @@ public class NightVisionCommand extends Subcommand {
     PlayerUtils.enforceNightVision(pl);
     
     PlayerUtils.prefixedSend(pl, TextUtils.$(
-      "commands.night-vision." + (stats.nightVision ? "on" : "off")));
+      "commands.night-vision." + (stats.nightVision ? "on" : "off")
+    ));
   }
 }

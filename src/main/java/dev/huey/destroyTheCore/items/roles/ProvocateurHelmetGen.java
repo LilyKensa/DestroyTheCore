@@ -12,11 +12,11 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
-public class ProvocateurChestplateGen extends ItemGen {
-  public ProvocateurChestplateGen() {
+public class ProvocateurHelmetGen extends ItemGen {
+  public ProvocateurHelmetGen() {
     super(
-      ItemsManager.ItemKey.PROVOCATEUR_CHESTPLATE,
-      Material.LEATHER_CHESTPLATE
+      ItemsManager.ItemKey.PROVOCATEUR_HELMET,
+      Material.LEATHER_HELMET
     );
     setNeverDrop();
     setTrash();

@@ -29,8 +29,8 @@ public class ProvocateurRole extends Role {
   }
   
   @Override
-  public ItemsManager.ItemKey defChestplate() {
-    return ItemsManager.ItemKey.PROVOCATEUR_CHESTPLATE;
+  public ItemsManager.ItemKey defHelmet() {
+    return ItemsManager.ItemKey.PROVOCATEUR_HELMET;
   }
   
   @Override

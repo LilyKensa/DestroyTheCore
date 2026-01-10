@@ -27,7 +27,7 @@ public class HelmetGen extends ItemGen {
     );
     meta.addAttributeModifier(
       Attribute.KNOCKBACK_RESISTANCE,
-      AttributeUtils.addition("knockback-resistance", EquipmentSlotGroup.HEAD, 10)
+      AttributeUtils.addition("knockback-resistance", EquipmentSlotGroup.HEAD, 2)
     );
   }
 }

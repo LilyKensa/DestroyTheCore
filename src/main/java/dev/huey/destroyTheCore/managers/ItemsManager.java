@@ -7,6 +7,7 @@ import dev.huey.destroyTheCore.bases.itemGens.UsableItemGen;
 import dev.huey.destroyTheCore.items.armors.*;
 import dev.huey.destroyTheCore.items.assistance.DamageAssistGen;
 import dev.huey.destroyTheCore.items.assistance.InkAssistGen;
+import dev.huey.destroyTheCore.items.assistance.SkillCooldownAssistGen;
 import dev.huey.destroyTheCore.items.fragments.PlaceholderGen;
 import dev.huey.destroyTheCore.items.fragments.SoulGen;
 import dev.huey.destroyTheCore.items.gadgets.*;
@@ -104,7 +105,7 @@ public class ItemsManager {
     RANGER_HELMET,
     KEKKAI_MASTER_LEGGINGS,
     CONSTRUCTOR_HELMET,
-    PROVOCATEUR_CHESTPLATE
+    PROVOCATEUR_HELMET
   }
   
   /** Filter item-gens by type */
@@ -145,6 +146,7 @@ public class ItemsManager {
       // Assists
       new DamageAssistGen(),
       new InkAssistGen(),
+      new SkillCooldownAssistGen(),
       // Gadgets
       new AssignRespawnTimeGen(),
       new AddCoreHealthGen(),
@@ -185,7 +187,7 @@ public class ItemsManager {
       new RangerHelmetGen(),
       new KekkaiMasterLeggingsGen(),
       new ConstructorHelmetGen(),
-      new ProvocateurChestplateGen()
+      new ProvocateurHelmetGen()
     ).collect(Collectors.toMap(ci -> ci.id, ci -> ci));
     
     usableGens = filterGens(UsableItemGen.class);

@@ -178,16 +178,16 @@ public class WorldsManager {
       addForceLoad.accept(loc);
     
     for (Chunk chunk : toLoad) {
-      chunk.setForceLoaded(true);
+      chunk.addPluginChunkTicket(DestroyTheCore.instance);
     }
     
     for (Chunk chunk : template.getForceLoadedChunks()) {
       if (!toLoad.contains(chunk))
-        chunk.setForceLoaded(false);
+        chunk.removePluginChunkTicket(DestroyTheCore.instance);
     }
     for (Chunk chunk : live.getForceLoadedChunks()) {
       if (!toLoad.contains(chunk))
-        chunk.setForceLoaded(false);
+        chunk.removePluginChunkTicket(DestroyTheCore.instance);
     }
   }
   

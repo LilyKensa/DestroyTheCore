@@ -134,7 +134,7 @@ public class WandererRole extends Role {
         pl.addPotionEffect(new PotionEffect(
           PotionEffectType.SPEED,
           20,
-          1,
+          0,
           true,
           false
         ));

@@ -42,7 +42,7 @@ public class LotteryGen extends UsableItemGen {
     PlayerUtils.takeOneItemFromHand(pl);
     
     final Location centerLoc = pl.getLocation().add(0, 0.1, 0);
-    final int percentage = RandomUtils.nextInt() % 100 + data.lotteryShift;
+    final int percentage = Math.floorMod(RandomUtils.nextInt(), 100) + data.lotteryShift;
     new BukkitRunnable() {
       int age = 0;
       Color color = Color.GRAY;

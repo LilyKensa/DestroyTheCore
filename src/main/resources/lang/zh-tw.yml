@@ -100,6 +100,7 @@ game:
   truce:
     warning: "<red>你腦中忽然冒出不該再繼續往前的想法</red>"
     sent-spawn: "<player> 剛才<yellow>迷路了</yellow>結果被半顆心送回家"
+  diamond-broadcast: "我愛鑽石!|是時候來點鑽石了!|好耶! 我得到了鑽石!|鑽石實在太讚了!|鑽石! 鑽石! 鑽石!|我最喜歡挖鑽石了!"
   height-warning: "<red>你即將得到高山症!</red>"
   start-canceled: "<red>取消</red>"
   missing-loc: "<red>地圖沒弄好!</red>"
@@ -138,6 +139,11 @@ game:
     no-ores: "<white>礦區封鎖: <time></white>"
     no-shop: "<white>商店封鎖: <time></white>"
 
+anti-cheat:
+  prefix: "[<red>反作弊</red>] "
+  reaction-time: "<red>不合理的反應時間</red>"
+  auto-click: "<red>自動點擊</red>"
+
 item-gen:
   right-click-to-use: "- <yellow>右鍵以使用</yellow>"
 
@@ -147,7 +153,9 @@ tool:
 role:
   prefix: "[<light_purple>職業</light_purple>] "
   change: "<player> 轉職成為<yellow><role></yellow>"
-  skill: "[<white>技能</white>] <light_purple><name></light_purple>"
+  skill:
+    title: "[<white>技能</white>] <light_purple><name></light_purple>"
+    cooldown: "- <light_purple>冷卻: <cooldown> 秒</light_purple>"
   desc:
     feature:
       first: "<white>特色</white>: <aqua><desc></aqua>"
@@ -352,6 +360,9 @@ items:
   damage-assist:
     name: "<aqua>闇釋者</aqua>"
     desc-1: "強化! 記憶釋放!"
+  skill-cooldown-assist:
+    name: "<light_purple>技能加速器</light_purple>"
+    desc-1: "副手持有可使技能冷卻時間減半!"
   ink-assist:
     name: "<aqua>墨魚護身符</aqua>"
     desc-1: "深海大魷魚被割下來的囊包"
@@ -395,6 +406,7 @@ items:
     name: "<light_purple>轉職書</light_purple>"
     desc-1: "經過菩薩加持!"
     desc-2: "使用後可以隨機轉換職業"
+    confirm: "<yellow>蹲下以確認!</yellow>"
     announce: "<player> 使用了<item>, 轉職成<yellow><role></yellow>"
   choose-role:
     name: "<aqua>選擇職業</aqua>"
@@ -455,8 +467,8 @@ items:
   gold-digger-chestplate:
     name: "<aqua>反光警示衣</aqua>"
     desc-1: "- <red>淘金者綁定物品</red>"
-  provocateur-chestplate:
-    name: "<aqua>厚紙板夾克</aqua>"
+  provocateur-helmet:
+    name: "<aqua>厚紙板箱子</aqua>"
     desc-1: "- <red>挑釁者綁定物品</red>"
   ranger-helmet:
     name: "<aqua>遊俠帽</aqua>"

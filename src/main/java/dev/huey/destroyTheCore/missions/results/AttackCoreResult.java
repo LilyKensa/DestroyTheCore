@@ -14,5 +14,6 @@ public class AttackCoreResult extends Mission.Result {
     announce(side);
     
     DestroyTheCore.game.getSideData(side).directAttackCore(10);
+    DestroyTheCore.game.checkWinner();
   }
 }

@@ -155,10 +155,10 @@ public class PlayerUtils {
     return pl.getCooldown(getHandItem(pl).getType());
   }
   
-  static public boolean checkHandCooldown(Player pl) {
+  static public boolean checkHandCooldown(Player pl, int offset) {
     if (!shouldHandle(pl)) return true;
     
-    int cooldown = getHandCooldown(pl);
+    int cooldown = getHandCooldown(pl) - offset;
     if (cooldown > 0) {
       pl.sendActionBar(TextUtils.$("player.in-cooldown", List.of(
         Placeholder.unparsed("value", CoreUtils.toFixed(cooldown / 20D, 1))
@@ -167,6 +167,9 @@ public class PlayerUtils {
     }
     
     return true;
+  }
+  static public boolean checkHandCooldown(Player pl) {
+    return checkHandCooldown(pl, 0);
   }
   
   static public void setGroupCooldown(Player pl, List<ItemsManager.ItemKey> keys, int ticks) {
@@ -236,6 +239,13 @@ public class PlayerUtils {
   
   static public void reportNoPerm(Player pl) {
     prefixedSend(pl, TextUtils.$("player.no-perm"));
+  }
+  
+  static public void kickAntiCheat(Player pl, String path) {
+    pl.kick(
+      TextUtils.$("anti-cheat.prefix")
+        .append(TextUtils.$("anti-cheat." + path))
+    );
   }
   
   /** If a block is in their own half of the map */

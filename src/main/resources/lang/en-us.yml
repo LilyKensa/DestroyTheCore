@@ -96,6 +96,7 @@ game:
   truce:
     warning: "<red>You feel like you shouldn't go any further</red>"
     sent-spawn: "<player> was <yellow>lost</yellow> and was sent home with half a heart"
+  diamond-broadcast: "I love diamonds!|Time for some diamonds!|Yay! I got diamonds!|Diamonds are so nice!|Diamonds! Diamonds! Diamonds!|I like mining diamonds!"
   height-warning: "<red>You're about to experience altitude sickness!</red>"
   start-canceled: "<red>Start Canceled</red>"
   missing-loc: "<red>Map setup isn't complete!</red>"
@@ -134,6 +135,11 @@ game:
     no-ores: "<white>Ores Banned: <time></white>"
     no-shop: "<white>Shop Banned: <time></white>"
 
+anti-cheat:
+  prefix: "[<light_purple>Anti-cheat</light_purple>] "
+  reaction-time: "<red>Illegal reaction time</red>"
+  auto-click: "<red>Auto clicker</red>"
+
 item-gen:
   right-click-to-use: "- <yellow>Right click to use</yellow>"
 
@@ -143,7 +149,9 @@ tool:
 role:
   prefix: "[<light_purple>Role</light_purple>] "
   change: "<player> changed role to <yellow><role></yellow>"
-  skill: "[<white>Skill</white>] <light_purple><name></light_purple>"
+  skill:
+    title: "[<white>Skill</white>] <light_purple><name></light_purple>"
+    cooldown: "- <light_purple>Cooldown: <cooldown>s</light_purple>"
   desc:
     feature:
       first: "<white>Feature</white>: <aqua><desc></aqua>"
@@ -348,6 +356,9 @@ items:
   damage-assist:
     name: "<aqua>Dark Memories Unveiler</aqua>"
     desc-1: "Strengthen! Memories release!"
+  skill-cooldown-assist:
+    name: "<light_purple>Skill Accelerator</light_purple>"
+    desc-1: "Holding it in off hand reduces skill cooldown by half!"
   ink-assist:
     name: "<aqua>Cuttlefish Amulet</aqua>"
     desc-1: "The cyst of a giant deep-sea squid"
@@ -391,6 +402,7 @@ items:
     name: "<light_purple>Job Changing Book</light_purple>"
     desc-1: "After the blessing of the great bodhisattva!"
     desc-2: "By using this, you will be randomly assigned to another role"
+    confirm: "<yellow>Crouch to confirm!</yellow>"
     announce: "<player> used <item> and became <yellow><role></yellow>"
   choose-role:
     name: "<aqua>Role Selection</aqua>"
@@ -451,8 +463,8 @@ items:
   gold-digger-chestplate:
     name: "<aqua>Luminous Warning Shirt</aqua>"
     desc-1: "- <red>Bound item for Gold Diggers</red>"
-  provocateur-chestplate:
-    name: "<aqua>Cardboard Jacket</aqua>"
+  provocateur-helmet:
+    name: "<aqua>Cardboard Box</aqua>"
     desc-1: "- <red>Bound item for Provocateurs</red>"
   ranger-helmet:
     name: "<aqua>Ranger Hat</aqua>"

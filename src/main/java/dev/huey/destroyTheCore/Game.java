@@ -10,6 +10,7 @@ import dev.huey.destroyTheCore.bases.Mission;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.managers.RolesManager;
+import dev.huey.destroyTheCore.managers.TicksManager;
 import dev.huey.destroyTheCore.missions.InfiniteOresMission;
 import dev.huey.destroyTheCore.records.*;
 import dev.huey.destroyTheCore.roles.KekkaiMasterRole;
@@ -27,6 +28,7 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Container;
+import org.bukkit.block.DoubleChest;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.damage.DamageSource;
 import org.bukkit.damage.DamageType;
@@ -482,11 +484,12 @@ public class Game {
     }
   }
   
+  Objective respawnTimeBoard, healthBoard;
+  
   public void createScoreboards() {
     Scoreboard board = Bukkit.getServer().getScoreboardManager().getMainScoreboard();
     
-    Objective respawnTimeBoard = board.getObjective("respawn-time");
-    
+    respawnTimeBoard = board.getObjective("respawn-time");
     if (respawnTimeBoard == null) {
       respawnTimeBoard = board.registerNewObjective(
         "respawn-time",
@@ -494,12 +497,9 @@ public class Game {
         Component.text("Sin Display")
           .color(NamedTextColor.RED)
       );
-      
-      respawnTimeBoard.setDisplaySlot(DisplaySlot.PLAYER_LIST);
     }
     
-    Objective healthBoard = board.getObjective("health");
-    
+    healthBoard = board.getObjective("health");
     if (healthBoard == null) {
       healthBoard = board.registerNewObjective(
         "health",
@@ -512,7 +512,16 @@ public class Game {
     }
   }
   
-  public void enforceSinScore(Player pl) {
+  public void hideRTScore() {
+    Scoreboard board = Bukkit.getServer().getScoreboardManager().getMainScoreboard();
+    board.clearSlot(DisplaySlot.PLAYER_LIST);
+  }
+  
+  public void showRTScore() {
+    respawnTimeBoard.setDisplaySlot(DisplaySlot.PLAYER_LIST);
+  }
+  
+  public void enforceRTScore(Player pl) {
     Scoreboard board = Bukkit.getServer().getScoreboardManager().getMainScoreboard();
     Objective respawnTimeBoard = board.getObjective("respawn-time");
     
@@ -886,7 +895,7 @@ public class Game {
         item.getItemMeta().getPersistentDataContainer()
           .has(Role.skillNamespace)
       ) {
-        if (!PlayerUtils.checkHandCooldown(pl)) return;
+        if (!PlayerUtils.checkHandCooldown(pl, data.extraSkillReload)) return;
         PlayerUtils.setHandCooldown(pl, data.role.skillCooldown);
         
         data.role.useSkill(pl);
@@ -1293,6 +1302,21 @@ public class Game {
       return;
     }
     
+    if (block.getType().equals(Material.DIAMOND_ORE)) {
+      PlayerUtils.broadcast(
+        TextUtils.$("chat.format", List.of(
+          Placeholder.component("player", PlayerUtils.getName(pl)),
+          Placeholder.unparsed(
+            "message",
+            RandomUtils.pick(
+              TextUtils.translateRaw("game.diamond-broadcast")
+                .split("\\|")
+            )
+          )
+        ))
+      );
+    }
+    
     if (map.woods.stream()
       .anyMatch(loc -> LocationUtils.isSameBlock(
         LocationUtils.live(loc),
@@ -1378,11 +1402,16 @@ public class Game {
   
   public boolean unmovable(Block block) {
     Predicate<Location> checker = loc ->
-      loc != null &&
+      loc != null && (
         LocationUtils.isSameBlock(
           block.getLocation(),
           LocationUtils.live(loc)
-        );
+        ) ||
+        LocationUtils.isSameBlock(
+          block.getLocation(),
+          LocationUtils.live(LocationUtils.flip(loc))
+        )
+      );
     
     Predicate<Set<Location>> listChecker = locs ->
       locs != null &&
@@ -1449,16 +1478,8 @@ public class Game {
     if (!PlayerUtils.shouldHandle(pl)) return;
     
     if (inv.getType() != InventoryType.PLAYER) {
-      if (
-        click.isShiftClick() ||
-        click.isCreativeAction() ||
-        click.isRightClick() ||
-        click.isLeftClick() ||
-        click == ClickType.DOUBLE_CLICK
-      ) {
-        if (!DestroyTheCore.rolesManager.canTakeExclusiveItem(pl, item))
-          ev.setCancelled(true);
-      }
+      if (!DestroyTheCore.rolesManager.canTakeExclusiveItem(pl, item))
+        ev.setCancelled(true);
     }
   }
   
@@ -1467,20 +1488,20 @@ public class Game {
     if (!PlayerUtils.shouldHandle(pl)) return;
     if (!isPlaying) return;
     
-//    if (ev.getInventory().getHolder() instanceof Container container) {
-//      if (!PlayerUtils.canAccess(pl, container.getBlock())) {
-//        pl.sendActionBar(TextUtils.$("game.banned.open-enemy-container"));
-//        ev.setCancelled(true);
-//        return;
-//      }
-//    }
-//    if (ev.getInventory().getHolder() instanceof DoubleChest dc) {
-//      if (!PlayerUtils.canAccess(pl, dc.getLocation().getBlock())) {
-//        pl.sendActionBar(TextUtils.$("game.banned.open-enemy-container"));
-//        ev.setCancelled(true);
-//        return;
-//      }
-//    }
+    if (ev.getInventory().getHolder() instanceof BlockInventoryHolder holder) {
+      if (!PlayerUtils.canAccess(pl, holder.getBlock())) {
+        pl.sendActionBar(TextUtils.$("game.banned.open-enemy-container"));
+        ev.setCancelled(true);
+        return;
+      }
+    }
+    if (ev.getInventory().getHolder() instanceof DoubleChest dc) {
+      if (!PlayerUtils.canAccess(pl, dc.getLocation().getBlock())) {
+        pl.sendActionBar(TextUtils.$("game.banned.open-enemy-container"));
+        ev.setCancelled(true);
+        return;
+      }
+    }
     
     if (ev.getInventory() instanceof MerchantInventory) {
       if (
@@ -1663,6 +1684,7 @@ public class Game {
     
     recreateTeams();
     createScoreboards();
+    hideRTScore();
   }
   
   public void setBothCoreMaterial(Material type) {
@@ -1840,6 +1862,8 @@ public class Game {
     phase = Phase.CoreProtected;
     phaseTimer = 10 * 60 * 20;
     
+    showRTScore();
+    
     setBothCoreMaterial(Material.BEDROCK);
     setDiamonds(Material.BEDROCK);
     
@@ -1924,6 +1948,8 @@ public class Game {
     PlayerUtils.showAllPlayers();
     for (Player p : Bukkit.getOnlinePlayers())
       PlayerUtils.refreshSpectatorAbilities(p, false);
+    
+    hideRTScore();
     
     DestroyTheCore.boardsManager.refresh();
     
@@ -2254,6 +2280,8 @@ public class Game {
       DestroyTheCore.ticksManager.isUpdateTick()
     ) {
       for (Player p : Bukkit.getOnlinePlayers()) {
+        PlayerData data = getPlayerData(p);
+        
         if (
           p.getInventory().contains(Material.ENCHANTING_TABLE) ||
           p.getInventory().contains(Material.ENDER_CHEST)
@@ -2272,6 +2300,18 @@ public class Game {
             true,
             false
           ));
+        }
+        
+        if (DestroyTheCore.itemsManager.checkGen(
+          p.getInventory().getItemInOffHand(),
+          ItemsManager.ItemKey.SKILL_COOLDOWN_ASSIST
+        )) {
+          data.extraSkillReload += TicksManager.updateRate;
+        }
+        
+        if (p.getCooldown(Material.KNOWLEDGE_BOOK) - data.extraSkillReload <= 0) {
+          p.setCooldown(Material.KNOWLEDGE_BOOK, 0);
+          data.extraSkillReload = 0;
         }
       }
     }
