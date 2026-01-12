@@ -27,6 +27,7 @@ public class PlayerData {
   
   public int
     respawnTime = minRespawnTime,
+    extraSkillReload = 0,
     rrtProgress = -20,
     shoutCooldown = 0,
     quizQuota = 10,
@@ -54,7 +55,7 @@ public class PlayerData {
   
   public void setRespawnTime(int time) {
     this.respawnTime = Math.min(Math.max(minRespawnTime, time), maxRespawnTime);
-    DestroyTheCore.game.enforceSinScore(owner);
+    DestroyTheCore.game.enforceRTScore(owner);
   }
   public void addRespawnTime(int plus) {
     setRespawnTime(respawnTime + plus);

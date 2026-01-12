@@ -18,7 +18,8 @@ public class AssignMoreRespawnTimeGen extends UsableItemGen {
   public AssignMoreRespawnTimeGen() {
     super(
       ItemsManager.ItemKey.ASSIGN_MORE_RESPAWN_TIME,
-      Material.JUNGLE_SIGN
+      Material.JUNGLE_SIGN,
+      true
     );
   }
   

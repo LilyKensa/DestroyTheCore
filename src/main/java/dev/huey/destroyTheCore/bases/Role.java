@@ -148,7 +148,7 @@ public class Role extends GUIItem {
     item.editMeta(meta -> {
       meta.setEnchantmentGlintOverride(true);
       
-      meta.displayName(TextUtils.$("role.skill", List.of(
+      meta.displayName(TextUtils.$("role.skill.title", List.of(
         Placeholder.unparsed("name", skillName)
       )));
       
@@ -157,6 +157,10 @@ public class Role extends GUIItem {
         lore.add(Component.text(line)
           .decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE));
       meta.lore(lore);
+      
+      lore.add(TextUtils.$("role.skill.cooldown", List.of(
+        Placeholder.component("cooldown", Component.text(skillCooldown / 20))
+      )));
       
       meta.addItemFlags(
         ItemFlag.HIDE_ATTRIBUTES,
@@ -272,7 +276,7 @@ public class Role extends GUIItem {
     if (!combinedLore.isEmpty() && !combinedLore.getLast().isEmpty())
       combinedLore.add("");
     if (skillName != null && skillDesc != null) {
-      combinedLore.add(TextUtils.$r("role.skill", List.of(
+      combinedLore.add(TextUtils.$r("role.skill.title", List.of(
         Placeholder.unparsed("name", skillName)
       )));
       combinedLore.addAll(skillDesc);

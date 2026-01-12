@@ -44,7 +44,9 @@ public class MapCommand extends Subcommand {
     }
     
     DestroyTheCore.worldsManager.mapName = mapName;
-    DestroyTheCore.worldsManager.cloneLive();
+    
+    DestroyTheCore.configManager.save();
+    DestroyTheCore.configManager.load();
     
     PlayerUtils.prefixedBroadcast(TextUtils.$("commands.map.announce", List.of(
       Placeholder.unparsed("map", mapName),

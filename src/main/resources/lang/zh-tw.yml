@@ -86,7 +86,7 @@ game:
     messages:
       unknown: "<player> 死了"
       kill: "<player> 被 <killer> <yellow><action></yellow>"
-      kill-actions: "無情殺死|爆打|送往天堂|實力輾壓|壓在地上打|打回原型|殺得灰飛煙滅|強制退休|嚇到吃手手|送去見老祖|斬首示眾"
+      kill-actions: "無情虐殺|吊著打|爆打|送往天堂|實力輾壓|壓在地上打|打回原型|打得滿地找牙|殺至血流成河|原地蒸發|強制登出|物理超渡|打成豬頭|打到原地破防|剝皮拆骨|打到媽媽認不得|送上西天|秒成渣|殺得灰飛煙滅|強制退休|嚇到吃手手|送去見老祖|斬首示眾"
     killer-sin: "<red>你因為殺人, 罪惡值增加 2!</red>"
   core-attack:
     title: "核心攻擊"
@@ -100,6 +100,7 @@ game:
   truce:
     warning: "<red>你腦中忽然冒出不該再繼續往前的想法</red>"
     sent-spawn: "<player> 剛才<yellow>迷路了</yellow>結果被半顆心送回家"
+  diamond-broadcast: "我愛鑽石!|是時候來點鑽石了!|好耶! 我得到了鑽石!|鑽石實在太讚了!|鑽石! 鑽石! 鑽石!|我最喜歡挖鑽石了!"
   height-warning: "<red>你即將得到高山症!</red>"
   start-canceled: "<red>取消</red>"
   missing-loc: "<red>地圖沒弄好!</red>"
@@ -138,8 +139,14 @@ game:
     no-ores: "<white>礦區封鎖: <time></white>"
     no-shop: "<white>商店封鎖: <time></white>"
 
+anti-cheat:
+  prefix: "[<red>反作弊</red>] "
+  reaction-time: "<red>不合理的反應時間</red>"
+  auto-click: "<red>自動點擊</red>"
+
 item-gen:
   right-click-to-use: "- <yellow>右鍵以使用</yellow>"
+  instant-use: "- <aqua>購買後立即生效</aqua>"
 
 tool:
   prefix: "[<yellow>編輯</yellow>] "
@@ -147,7 +154,9 @@ tool:
 role:
   prefix: "[<light_purple>職業</light_purple>] "
   change: "<player> 轉職成為<yellow><role></yellow>"
-  skill: "[<white>技能</white>] <light_purple><name></light_purple>"
+  skill:
+    title: "[<white>技能</white>] <light_purple><name></light_purple>"
+    cooldown: "- <light_purple>冷卻: <cooldown> 秒</light_purple>"
   desc:
     feature:
       first: "<white>特色</white>: <aqua><desc></aqua>"
@@ -181,6 +190,7 @@ mission:
     skill-cooldown: "<side>因為任務失敗, 全員技能冷卻<light_purple>增加 120 秒</light_purple>!"
 
 gui:
+  in-use: "<red>該視窗目前已被其他人占用!</red>"
   buttons:
     next-page:
       title: "<yellow>下一頁</yellow>"
@@ -190,12 +200,43 @@ gui:
       title: "<yellow>上一頁</yellow>"
       desc: "到頁面 <gold><prev></gold>/<max>"
       desc-end: "<dark_purple>沒辦法再往前了</dark_purple>"
+    scroll-down:
+      title: "<yellow>往下捲</yellow>"
+      desc-end: "<dark_purple>不能再往下捲了</dark_purple>"
+    scroll-up:
+      title: "<yellow>往上捲</yellow>"
+      desc-end: "<dark_purple>你已經在最頂端</dark_purple>"
     pick-random:
       title: "<yellow>隨機</yellow>"
       announce: "<player> 隨機轉職成<yellow><role></yellow>"
+    new-shop:
+      title: "<yellow>新增商店</yellow>"
+    delete-shop:
+      title: "<yellow>移除商店</yellow>"
+      title-confirm: "<red>移除商店 - 確認</red>"
+    rename-shop:
+      title: "<yellow>命名商店</yellow>"
+      desc: "目前名稱: <name>"
+    detail-shop:
+      title: "<yellow>編輯商店村民</yellow>"
+      desc: "目前: <type><profession>"
+      selected: "已選擇"
   titles:
-    choose-role: "選個好職業"
-    teleporter: "傳送到玩家"
+    choose-role: "選擇職業"
+    teleporter: "傳送至玩家"
+    shop:
+      list: "點擊以編輯交易所"
+      trades: "編輯品項"
+      rename: "命名商店"
+      villager: "村民選項"
+  villagers:
+    snow: "雪地"
+    plains: "平原"
+    jungle: "叢林"
+    taiga: "針葉林"
+    desert: "沙漠"
+    savanna: "莽原"
+    swamp: "沼澤"
 
 board:
   title: "<red>殲滅</red><white>攻城</white><yellow>戰</yellow>"
@@ -227,6 +268,11 @@ commands:
   edit:
     unclear: "<red>請指定一個工具組!</red>"
     loaded: "<green>已載入工具組!</green>"
+  map:
+    info: "<aqua>目前的地圖是 <map></aqua>"
+    bad-time: "<red>請先停止遊戲!</red>"
+    not-found: "<red>找不到地圖!</red>"
+    announce: "<green>地圖被 <player> 更改成 <map></green>"
   give:
     unclear: "<red>請指定一個物品!</red>"
     not-found: "<red>找不到物品!</red>"
@@ -261,7 +307,7 @@ commands:
   reset:
     announce: "<green>遊戲被 <player> 重置</green>"
   save:
-    success: "<green>已儲存!</green>"
+    success: "<green>已儲存設定至檔案!</green>"
   shuffle-team:
     announce: "<player> 已隨機分隊!"
   stop:
@@ -278,19 +324,19 @@ items:
     name: "<aqua>安全帽</aqua>"
     desc-1: "不知道從哪撿來的海龜殼, 戴在頭上好像很厲害!"
     desc-2: "挖掘核心時有這麼多血量肯定撐很久!"
-  golden-helmet:
+  god-helmet:
     name: "<aqua>朱雀神盔</aqua>"
     desc-1: "由朱雀之羽打造合成, 具有強大抗擊效果!"
     desc-2: "防禦力和鐵製的一模一樣!"
-  golden-chestplate:
+  god-chestplate:
     name: "<aqua>玄武盾鎧</aqua>"
     desc-1: "由玄武盾甲打造合成, 具有增加生命效果!"
     desc-2: "防禦力和鐵製的一模一樣!"
-  golden-leggings:
+  god-leggings:
     name: "<aqua>青龍武褲</aqua>"
     desc-1: "由青龍利牙打造合成, 能增加攻擊傷害!"
     desc-2: "防禦力和鐵製的一模一樣!"
-  golden-boots:
+  god-boots:
     name: "<aqua>白虎之靴</aqua>"
     desc-1: "由白虎猛爪打造合成, 具有跑速增強效果!"
     desc-2: "防禦力和鐵製的一模一樣!"
@@ -315,6 +361,9 @@ items:
   damage-assist:
     name: "<aqua>闇釋者</aqua>"
     desc-1: "強化! 記憶釋放!"
+  skill-cooldown-assist:
+    name: "<light_purple>絕招促進器</light_purple>"
+    desc-1: "副手持有可使技能冷卻時間減半!"
   ink-assist:
     name: "<aqua>墨魚護身符</aqua>"
     desc-1: "深海大魷魚被割下來的囊包"
@@ -358,6 +407,7 @@ items:
     name: "<light_purple>轉職書</light_purple>"
     desc-1: "經過菩薩加持!"
     desc-2: "使用後可以隨機轉換職業"
+    confirm: "<yellow>蹲下以確認!</yellow>"
     announce: "<player> 使用了<item>, 轉職成<yellow><role></yellow>"
   choose-role:
     name: "<aqua>選擇職業</aqua>"
@@ -418,8 +468,8 @@ items:
   gold-digger-chestplate:
     name: "<aqua>反光警示衣</aqua>"
     desc-1: "- <red>淘金者綁定物品</red>"
-  provocateur-chestplate:
-    name: "<aqua>厚紙板夾克</aqua>"
+  provocateur-helmet:
+    name: "<aqua>厚紙板箱子</aqua>"
     desc-1: "- <red>挑釁者綁定物品</red>"
   ranger-helmet:
     name: "<aqua>遊俠帽</aqua>"
@@ -435,8 +485,9 @@ items:
     desc-1: "清空隨機敵人的背包"
     cooldown: "<red>你必須等待 <cooldown> 秒才能再次使用盜賊令!</red>"
     not-found: "<red>找不到敵人</red>"
-    announce: "<player> 使用了 <item>, 清空了 <target> 的背包"
+    announce: "<player> 使用了 <item>, 盜走了 <target> 的背包"
     post-announce: "嗚嗚嗚嗚嗚嗚嗚!"
+    allay: "<aqua>盜賊</aqua>"
   assign-more-respawn-time:
     name: "[<white>令牌</white>] <light_purple>滔天大罪</light_purple>"
     desc-1: "使隨機敵人罪惡值增加 60!"
@@ -505,17 +556,18 @@ tools:
   join-spectator: "加入旁觀者區"
   lobby: "大廳出生點"
   rest-area: "重生等待區"
-  spawn-point: "重生點"
+  spawnpoints: "重生點"
   start-button: "開始按鈕"
   woods: "木頭"
   ores: "一般礦物"
   diamonds: "鑽石礦"
+  shops: "交易所村民"
   mission: "中央任務點"
 
 missions:
   chicken:
     title: "<yellow>搶奪先雞</yellow>"
-    desc: "中央出現一隻跑速極快, 血量 25 心的雞, 殺死者該陣營獲勝!"
+    desc: "中央出現一隻跑速極快, 血量 25 心的雞, 擊殺者該陣營獲勝!"
     chicken: "<yellow>小雞</yellow>"
     boss-bar: "<yellow>小雞血量</yellow>"
   roll-call:
@@ -543,7 +595,7 @@ missions:
     desc: "肚子好像破了一個洞, 突然變得好餓喔!"
   earthquake-cow:
     title: "<yellow>地牛來襲</yellow>"
-    desc: "從地心鑽出了一頭牛... 他在翻身! 殺死者該陣營獲勝!"
+    desc: "從地心鑽出了一頭牛... 他在翻身! 擊殺者該陣營獲勝!"
     cow: "<yellow>地牛</yellow>"
     boss-bar: "<yellow>地牛血量</yellow>"
   drop-all:

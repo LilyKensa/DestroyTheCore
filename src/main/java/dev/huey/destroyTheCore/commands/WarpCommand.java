@@ -4,6 +4,7 @@ import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.bases.Subcommand;
 import dev.huey.destroyTheCore.utils.LocationUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
+import dev.huey.destroyTheCore.utils.RandomUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -38,7 +39,13 @@ public class WarpCommand extends Subcommand {
         loc = DestroyTheCore.game.lobby.spawn;
       }
       case "spawn" -> {
-        loc = LocationUtils.live(DestroyTheCore.game.map.spawnPoint);
+        loc = LocationUtils.live(
+          LocationUtils.toSpawnPoint(
+            RandomUtils.pick(
+              DestroyTheCore.game.map.spawnpoints
+            )
+          )
+        );
       }
     }
     

@@ -159,7 +159,7 @@ public class AssassinRole extends Role {
     pl.addPotionEffect(new PotionEffect(
       PotionEffectType.STRENGTH,
       4 * 20,
-      2,
+      1,
       true,
       false
     ));

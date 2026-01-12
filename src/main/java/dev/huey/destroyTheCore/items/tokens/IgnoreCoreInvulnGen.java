@@ -20,7 +20,8 @@ public class IgnoreCoreInvulnGen extends UsableItemGen {
   public IgnoreCoreInvulnGen() {
     super(
       ItemsManager.ItemKey.IGNORE_CORE_INVULN,
-      Material.SPRUCE_SIGN
+      Material.SPRUCE_SIGN,
+      true
     );
   }
   

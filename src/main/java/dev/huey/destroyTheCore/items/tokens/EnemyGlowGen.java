@@ -20,7 +20,8 @@ public class EnemyGlowGen extends UsableItemGen {
   public EnemyGlowGen() {
     super(
       ItemsManager.ItemKey.ENEMY_GLOW,
-      Material.BIRCH_SIGN
+      Material.BIRCH_SIGN,
+      true
     );
   }
   

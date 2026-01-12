@@ -124,6 +124,13 @@ public class MissionsManager {
     }.runTaskTimer(DestroyTheCore.instance, 0, step);
   }
   
+  public void forceStop() {
+    if (mission != null && mission.active) {
+      mission.end();
+    }
+    stop();
+  }
+  
   public void stop() {
     active = false;
   }

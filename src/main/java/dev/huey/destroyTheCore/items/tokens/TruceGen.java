@@ -18,7 +18,8 @@ public class TruceGen extends UsableItemGen {
   public TruceGen() {
     super(
       ItemsManager.ItemKey.TRUCE,
-      Material.CRIMSON_SIGN
+      Material.CRIMSON_SIGN,
+      true
     );
   }
   
