@@ -18,7 +18,8 @@ public class CoreInvulnGen extends UsableItemGen {
   public CoreInvulnGen() {
     super(
       ItemsManager.ItemKey.CORE_INVULN,
-      Material.OAK_SIGN
+      Material.OAK_SIGN,
+      true
     );
   }
   

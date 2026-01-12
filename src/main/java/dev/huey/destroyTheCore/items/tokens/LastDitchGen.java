@@ -21,7 +21,8 @@ public class LastDitchGen extends UsableItemGen {
   public LastDitchGen() {
     super(
       ItemsManager.ItemKey.LAST_DITCH,
-      Material.ACACIA_SIGN
+      Material.ACACIA_SIGN,
+      true
     );
   }
   

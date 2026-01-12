@@ -6,6 +6,7 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.BlockPosition;
 import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.Game;
+import dev.huey.destroyTheCore.records.PlayerData;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -253,5 +254,20 @@ public class LocationUtils {
     
     return loc;
   }
+  
+  /** If a block is in their own half of the map */
+  static public boolean canAccess(Player pl, Block block)  {
+    if (DestroyTheCore.game.map.core == null) return true;
+    if (!isSameWorld(pl.getLocation(), DestroyTheCore.game.map.core)) return true;
+    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
+    
+    double selfDistSq = pl.getLocation().distanceSquared(
+      LocationUtils.selfSide(LocationUtils.toBlockCenter(block.getLocation()), data.side)
+    );
+    double enemyDistSq = pl.getLocation().distanceSquared(
+      LocationUtils.enemySide(LocationUtils.toBlockCenter(block.getLocation()), data.side)
+    );
+    
+    return selfDistSq <= enemyDistSq;
+  }
 }
-

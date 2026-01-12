@@ -9,11 +9,11 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class HelmetGen extends ItemGen {
-  public HelmetGen() {
+public class GodBootsGen extends ItemGen {
+  public GodBootsGen() {
     super(
-      ItemsManager.ItemKey.GOLDEN_HELMET,
-      Material.GOLDEN_HELMET
+      ItemsManager.ItemKey.GOD_BOOTS,
+      Material.GOLDEN_BOOTS
     );
   }
   
@@ -23,11 +23,11 @@ public class HelmetGen extends ItemGen {
     
     meta.addAttributeModifier(
       Attribute.ARMOR,
-      AttributeUtils.addition("protection", EquipmentSlotGroup.HEAD, 2)
+      AttributeUtils.addition("protection", EquipmentSlotGroup.FEET, 2)
     );
     meta.addAttributeModifier(
-      Attribute.KNOCKBACK_RESISTANCE,
-      AttributeUtils.addition("knockback-resistance", EquipmentSlotGroup.HEAD, 2)
+      Attribute.MOVEMENT_SPEED,
+      AttributeUtils.multiply("movement-speed", EquipmentSlotGroup.FEET, 1.4)
     );
   }
 }

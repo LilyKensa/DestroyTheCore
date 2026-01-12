@@ -12,9 +12,18 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 public class UsableItemGen extends ItemGen {
-  public UsableItemGen(ItemsManager.ItemKey id, Material iconType) {
+  boolean instantUse;
+  
+  public UsableItemGen(ItemsManager.ItemKey id, Material iconType, boolean instantUse) {
     super(id, iconType);
     addLore();
+  }
+  public UsableItemGen(ItemsManager.ItemKey id, Material iconType) {
+    this(id, iconType, false);
+  }
+  
+  public boolean isInstantUse() {
+    return instantUse;
   }
   
   void addLore() {
@@ -23,7 +32,7 @@ public class UsableItemGen extends ItemGen {
         (lore.getLast() instanceof TextComponent lastLore) &&
         !lastLore.content().startsWith("-")
     ) lore.add(Component.empty());
-    lore.add(TextUtils.$("item-gen.right-click-to-use"));
+    lore.add(TextUtils.$("item-gen." + (instantUse ? "instant-use" : "right-click-to-use")));
   }
   
   /** @implNote Required - The functionality when right clicked */

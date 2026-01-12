@@ -31,9 +31,13 @@ public class ProvocateurHelmetGen extends ItemGen {
     
     meta.addEnchant(Enchantment.BINDING_CURSE, 1, true);
     
+//    meta.addAttributeModifier(
+//      Attribute.ARMOR,
+//      AttributeUtils.multiply("armor", EquipmentSlotGroup.HEAD, 0.8)
+//    );
     meta.addAttributeModifier(
-      Attribute.ARMOR,
-      AttributeUtils.multiply("protection", EquipmentSlotGroup.CHEST, 0.8)
+      Attribute.ATTACK_DAMAGE,
+      AttributeUtils.multiply("damage", EquipmentSlotGroup.HEAD, 0.6)
     );
   }
 }

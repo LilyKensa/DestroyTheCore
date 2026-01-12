@@ -142,6 +142,7 @@ anti-cheat:
 
 item-gen:
   right-click-to-use: "- <yellow>Right click to use</yellow>"
+  instant-use: "- <aqua>Effective immediately upon purchase</aqua>"
 
 tool:
   prefix: "[<yellow>Editor</yellow>] "
@@ -319,19 +320,19 @@ items:
     name: "<aqua>Safety Helmet</aqua>"
     desc-1: "A random turtle shell, seems cool to wear it on your head"
     desc-2: "With so much health, you can definitely last a long time when attacking the core!"
-  golden-helmet:
+  god-helmet:
     name: "<aqua>Suzaku Helmet</aqua>"
     desc-1: "Crafted from Suzaku feathers, it possesses powerful resistance!"
     desc-2: "Its defense is identical to that of iron!"
-  golden-chestplate:
+  god-chestplate:
     name: "<aqua>Black Tortoise Armor</aqua>"
     desc-1: "Made from basalt shield, it has the effect of increasing life!"
     desc-2: "Its defense is identical to that of iron!"
-  golden-leggings:
+  god-leggings:
     name: "<aqua>Teal Dragon Trousers</aqua>"
     desc-1: "Crafted from the sharp teeth of the teal dragon, it can increase attack damage!"
     desc-2: "Its defense is identical to that of iron!"
-  golden-boots:
+  god-boots:
     name: "<aqua>White Tiger Boots</aqua>"
     desc-1: "Made from white tiger claws, it has the effect of increasing running speed!"
     desc-2: "Its defense is identical to that of iron!"
@@ -480,8 +481,9 @@ items:
     desc-1: "Clears a random enemy's inventory"
     cooldown: "<red>You need to wait for <cooldown>s to use this again!</red>"
     not-found: "<red>Can't find a valid target</red>"
-    announce: "<player> used <item>, cleared <target>'s inventory"
+    announce: "<player> used <item>, robbed <target>'s inventory"
     post-announce: "boo-hoo!"
+    allay: "<aqua>Thief</aqua>"
   assign-more-respawn-time:
     name: "[<white>Token</white>] <light_purple>Heinous Sins</light_purple>"
     desc-1: "Increases the sin value of a random enemy by 60!"

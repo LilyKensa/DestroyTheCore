@@ -198,6 +198,7 @@ public class EventsManager implements Listener {
   
   @EventHandler
   public void onPlayerDeath(PlayerDeathEvent ev) {
+    DestroyTheCore.glowManager.onPlayerDeath(ev);
     DestroyTheCore.game.handlePlayerDeath(ev);
   }
   

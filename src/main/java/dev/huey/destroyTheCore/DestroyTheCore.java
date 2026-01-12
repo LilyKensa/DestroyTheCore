@@ -22,6 +22,7 @@ public final class DestroyTheCore extends JavaPlugin {
   static public DamageManager damageManager;
   static public InventoriesManager inventoriesManager;
   static public ItemsManager itemsManager;
+  static public GlowManager glowManager;
   static public WorldsManager worldsManager;
   static public RecipesManager recipesManager;
   static public RolesManager rolesManager;
@@ -47,6 +48,7 @@ public final class DestroyTheCore extends JavaPlugin {
     damageManager = new DamageManager();
     inventoriesManager = new InventoriesManager();
     itemsManager = new ItemsManager();
+    glowManager = new GlowManager();
     worldsManager = new WorldsManager();
     recipesManager = new RecipesManager();
     rolesManager = new RolesManager();
@@ -80,6 +82,7 @@ public final class DestroyTheCore extends JavaPlugin {
     toolsManager.init();
     commandsManager.init();
     itemsManager.init();
+    glowManager.init();
     recipesManager.init();
     rolesManager.init();
     guiManager.init();

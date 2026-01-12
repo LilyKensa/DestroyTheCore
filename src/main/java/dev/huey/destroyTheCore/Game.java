@@ -6,8 +6,10 @@ import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.BlockPosition;
 import com.destroystokyo.paper.ParticleBuilder;
+import dev.huey.destroyTheCore.bases.ItemGen;
 import dev.huey.destroyTheCore.bases.Mission;
 import dev.huey.destroyTheCore.bases.Role;
+import dev.huey.destroyTheCore.bases.itemGens.UsableItemGen;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.managers.RolesManager;
 import dev.huey.destroyTheCore.managers.TicksManager;
@@ -42,6 +44,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.*;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -605,6 +608,7 @@ public class Game {
     
     ev.viewers().removeIf(audience ->
       audience instanceof Player p &&
+      side != Side.SPECTATOR &&
       DestroyTheCore.game.getPlayerData(p)
         .side.equals(side.opposite())
     );
@@ -640,7 +644,7 @@ public class Game {
     EntityDamageByEntityEvent ev
   ) {
     if (isPlaying) {
-      double damage = ev.getFinalDamage();
+      double damage = ev.getDamage(), finalDamage = ev.getFinalDamage();
       
       if (getPlayerData(attacker).side.equals(getPlayerData(victim).side)) {
         if (proj == null) {
@@ -655,7 +659,7 @@ public class Game {
         return;
       }
       
-      if (damage <= 0) return;
+      if (finalDamage <= 0) return;
       
       if (getPlayerData(victim).role.id != RolesManager.RoleKey.PROVOCATEUR) {
         List<Player> provocateurs = new ArrayList<>();
@@ -689,7 +693,7 @@ public class Game {
         ev.setDamage(damage);
       }
       
-      DestroyTheCore.damageManager.addDamage(attacker, victim, damage);
+      DestroyTheCore.damageManager.addDamage(attacker, victim, finalDamage);
     }
     
     if (ev.getFinalDamage() >= 2)
@@ -728,6 +732,13 @@ public class Game {
       getSideData(pl).directAttackCore();
       checkWinner();
     }
+    
+    ItemStack head = new ItemStack(Material.PLAYER_HEAD);
+    head.editMeta(uncastedMeta -> {
+      SkullMeta meta = (SkullMeta) uncastedMeta;
+      meta.setOwningPlayer(pl);
+    });
+    pl.getWorld().dropItemNaturally(pl.getLocation(), head);
     
     DestroyTheCore.inventoriesManager.applyVanishingCurse(pl);
     DestroyTheCore.inventoriesManager.dropSome(pl, nextPlayerDropAll ? 1 : 0.1);
@@ -876,8 +887,9 @@ public class Game {
     if (List.of(Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK).contains(ev.getAction())) {
       if (
         !PlayerUtils.checkUsingBlock(pl, ev.getClickedBlock()) &&
-          !mainhandItem.isEmpty() &&
-          mainhandItem.getType().equals(Material.KNOWLEDGE_BOOK)
+        item != null &&
+        !item.isEmpty() &&
+        item.getType().equals(Material.KNOWLEDGE_BOOK)
       ) ev.setCancelled(true);
       
       if (!data.alive && !PlayerUtils.inLobby(pl)) {
@@ -1145,7 +1157,8 @@ public class Game {
         
         try {
           for (Player p : Bukkit.getOnlinePlayers()) {
-            manager.sendServerPacket(p, packet);
+            if (LocationUtils.isSameWorld(p, pl))
+              manager.sendServerPacket(p, packet);
           }
         }
         catch (Exception e) {
@@ -1240,7 +1253,14 @@ public class Game {
             )
           ),
           Sound.BLOCK_ANVIL_LAND,
-          0.8f, // Volume
+          0.6f, // Volume
+          1 // Pitch
+        );
+        
+        p.playSound(
+          p.getLocation(),
+          Sound.BLOCK_ANVIL_LAND,
+          0.5f, // Volume
           1 // Pitch
         );
       }
@@ -1342,7 +1362,7 @@ public class Game {
       return;
     }
     
-//    if (block.getState() instanceof InventoryHolder && !PlayerUtils.canAccess(pl, block)) {
+//    if (block.getState() instanceof InventoryHolder && !LocationUtils.canAccess(pl, block)) {
 //      pl.sendActionBar(TextUtils.$("game.banned.break.enemy-container"));
 //      getPlayerData(pl).addRespawnTime(10);
 //      DestroyTheCore.boardsManager.refresh(pl);
@@ -1372,6 +1392,14 @@ public class Game {
     
     if (block.getType().equals(Material.COBWEB)) {
       ev.setDropItems(false);
+    }
+    
+    if (block.getType().equals(Material.ENDER_CHEST)) {
+      ev.setDropItems(false);
+      block.getWorld().dropItemNaturally(
+        LocationUtils.toBlockCenter(block.getLocation()),
+        new ItemStack(Material.ENDER_CHEST)
+      );
     }
   }
   
@@ -1477,9 +1505,43 @@ public class Game {
   ) {
     if (!PlayerUtils.shouldHandle(pl)) return;
     
-    if (inv.getType() != InventoryType.PLAYER) {
-      if (!DestroyTheCore.rolesManager.canTakeExclusiveItem(pl, item))
-        ev.setCancelled(true);
+    if (inv.getType() == InventoryType.PLAYER) return;
+    
+    if (!DestroyTheCore.rolesManager.canTakeExclusiveItem(pl, item)) {
+      ev.setCancelled(true);
+      return;
+    }
+    
+    if (inv instanceof MerchantInventory minv && ev.getRawSlot() == 2) {
+      if (DestroyTheCore.itemsManager.isGen(item)) {
+        MerchantRecipe recipe = minv.getSelectedRecipe();
+        ItemGen gen = DestroyTheCore.itemsManager.getGen(item);
+        if (gen instanceof UsableItemGen ugen && ugen.isInstantUse()) {
+          ev.setCancelled(true);
+          
+          ugen.use(pl, null);
+          
+          BiConsumer<Integer, ItemStack> consumeItemFromSlot
+            = (slot, recipeIngredient) -> {
+              ItemStack slotItem = inv.getItem(slot);
+              if (slotItem != null && slotItem.getType() == recipeIngredient.getType()) {
+                int newAmount = slotItem.getAmount() - recipeIngredient.getAmount();
+                if (newAmount <= 0) {
+                  inv.setItem(slot, null);
+                } else {
+                  slotItem.setAmount(newAmount);
+                }
+              }
+            };
+          
+          for (ItemStack ingredient : recipe.getIngredients()) {
+            if (ingredient.isEmpty()) continue;
+            
+            consumeItemFromSlot.accept(0, ingredient);
+            consumeItemFromSlot.accept(1, ingredient);
+          }
+        }
+      }
     }
   }
   
@@ -1489,14 +1551,14 @@ public class Game {
     if (!isPlaying) return;
     
     if (ev.getInventory().getHolder() instanceof BlockInventoryHolder holder) {
-      if (!PlayerUtils.canAccess(pl, holder.getBlock())) {
+      if (!LocationUtils.canAccess(pl, holder.getBlock())) {
         pl.sendActionBar(TextUtils.$("game.banned.open-enemy-container"));
         ev.setCancelled(true);
         return;
       }
     }
     if (ev.getInventory().getHolder() instanceof DoubleChest dc) {
-      if (!PlayerUtils.canAccess(pl, dc.getLocation().getBlock())) {
+      if (!LocationUtils.canAccess(pl, dc.getLocation().getBlock())) {
         pl.sendActionBar(TextUtils.$("game.banned.open-enemy-container"));
         ev.setCancelled(true);
         return;
@@ -1861,6 +1923,7 @@ public class Game {
     
     phase = Phase.CoreProtected;
     phaseTimer = 10 * 60 * 20;
+    truceTimer = 0;
     
     showRTScore();
     
@@ -1980,6 +2043,7 @@ public class Game {
     
     CoreUtils.setTickOut(() -> {
       DestroyTheCore.worldsManager.cloneLive();
+      DestroyTheCore.configManager.map.load();
     });
   }
   
@@ -2281,6 +2345,7 @@ public class Game {
     ) {
       for (Player p : Bukkit.getOnlinePlayers()) {
         PlayerData data = getPlayerData(p);
+        if (PlayerUtils.inLobby(p)) continue;
         
         if (
           p.getInventory().contains(Material.ENCHANTING_TABLE) ||
@@ -2369,6 +2434,7 @@ public class Game {
   public void onParticleTick() {
     for (Player p : Bukkit.getOnlinePlayers()) {
       if (!isPlaying) continue;
+      if (PlayerUtils.inLobby(p)) continue;
       if (p.hasPotionEffect(PotionEffectType.INVISIBILITY)) continue;
       
       PlayerData data = getPlayerData(p);

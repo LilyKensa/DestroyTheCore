@@ -157,7 +157,7 @@ public class ConfigManager {
     map = new Config("maps/%s.yml".formatted(DestroyTheCore.worldsManager.mapName)) {
       @Override
       public void read() {
-        DestroyTheCore.game.map   = (Game.MapLocs) config.get("locations");
+        DestroyTheCore.game.map = (Game.MapLocs) config.get("locations");
       }
       
       @Override

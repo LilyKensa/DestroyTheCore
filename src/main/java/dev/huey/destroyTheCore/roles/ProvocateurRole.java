@@ -1,7 +1,6 @@
 package dev.huey.destroyTheCore.roles;
 
 import com.destroystokyo.paper.ParticleBuilder;
-import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.managers.RolesManager;
@@ -35,15 +34,15 @@ public class ProvocateurRole extends Role {
   
   @Override
   public void onTick(Player pl) {
-    if (DestroyTheCore.ticksManager.isSeconds()) {
-      pl.addPotionEffect(new PotionEffect(
-        PotionEffectType.WEAKNESS,
-        30,
-        0,
-        true,
-        false
-      ));
-    }
+//    if (DestroyTheCore.ticksManager.isSeconds()) {
+//      pl.addPotionEffect(new PotionEffect(
+//        PotionEffectType.WEAKNESS,
+//        30,
+//        0,
+//        true,
+//        false
+//      ));
+//    }
     
     if (PlayerUtils.getTeammates(pl).stream()
       .anyMatch(p -> !p.equals(pl) && LocationUtils.near(p, pl, 10))

@@ -53,7 +53,7 @@ public class QuizManager {
       
       PlayerData data = DestroyTheCore.game.getPlayerData(pl);
       
-      if (!correct) data.quizQuota--;
+      if (correct) data.quizQuota--;
       
       send(pl, TextUtils.$("quiz." + (correct ? "correct" : "wrong"), List.of(
         Placeholder.component("answer", Component.text(answer)),

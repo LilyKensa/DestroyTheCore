@@ -86,7 +86,7 @@ game:
     messages:
       unknown: "<player> 死了"
       kill: "<player> 被 <killer> <yellow><action></yellow>"
-      kill-actions: "無情殺死|爆打|送往天堂|實力輾壓|壓在地上打|打回原型|殺得灰飛煙滅|強制退休|嚇到吃手手|送去見老祖|斬首示眾"
+      kill-actions: "無情虐殺|吊著打|爆打|送往天堂|實力輾壓|壓在地上打|打回原型|打得滿地找牙|殺至血流成河|原地蒸發|強制登出|物理超渡|打成豬頭|打到原地破防|剝皮拆骨|打到媽媽認不得|送上西天|秒成渣|殺得灰飛煙滅|強制退休|嚇到吃手手|送去見老祖|斬首示眾"
     killer-sin: "<red>你因為殺人, 罪惡值增加 2!</red>"
   core-attack:
     title: "核心攻擊"
@@ -146,6 +146,7 @@ anti-cheat:
 
 item-gen:
   right-click-to-use: "- <yellow>右鍵以使用</yellow>"
+  instant-use: "- <aqua>購買後立即生效</aqua>"
 
 tool:
   prefix: "[<yellow>編輯</yellow>] "
@@ -323,19 +324,19 @@ items:
     name: "<aqua>安全帽</aqua>"
     desc-1: "不知道從哪撿來的海龜殼, 戴在頭上好像很厲害!"
     desc-2: "挖掘核心時有這麼多血量肯定撐很久!"
-  golden-helmet:
+  god-helmet:
     name: "<aqua>朱雀神盔</aqua>"
     desc-1: "由朱雀之羽打造合成, 具有強大抗擊效果!"
     desc-2: "防禦力和鐵製的一模一樣!"
-  golden-chestplate:
+  god-chestplate:
     name: "<aqua>玄武盾鎧</aqua>"
     desc-1: "由玄武盾甲打造合成, 具有增加生命效果!"
     desc-2: "防禦力和鐵製的一模一樣!"
-  golden-leggings:
+  god-leggings:
     name: "<aqua>青龍武褲</aqua>"
     desc-1: "由青龍利牙打造合成, 能增加攻擊傷害!"
     desc-2: "防禦力和鐵製的一模一樣!"
-  golden-boots:
+  god-boots:
     name: "<aqua>白虎之靴</aqua>"
     desc-1: "由白虎猛爪打造合成, 具有跑速增強效果!"
     desc-2: "防禦力和鐵製的一模一樣!"
@@ -361,7 +362,7 @@ items:
     name: "<aqua>闇釋者</aqua>"
     desc-1: "強化! 記憶釋放!"
   skill-cooldown-assist:
-    name: "<light_purple>技能加速器</light_purple>"
+    name: "<light_purple>絕招促進器</light_purple>"
     desc-1: "副手持有可使技能冷卻時間減半!"
   ink-assist:
     name: "<aqua>墨魚護身符</aqua>"
@@ -484,8 +485,9 @@ items:
     desc-1: "清空隨機敵人的背包"
     cooldown: "<red>你必須等待 <cooldown> 秒才能再次使用盜賊令!</red>"
     not-found: "<red>找不到敵人</red>"
-    announce: "<player> 使用了 <item>, 清空了 <target> 的背包"
+    announce: "<player> 使用了 <item>, 盜走了 <target> 的背包"
     post-announce: "嗚嗚嗚嗚嗚嗚嗚!"
+    allay: "<aqua>盜賊</aqua>"
   assign-more-respawn-time:
     name: "[<white>令牌</white>] <light_purple>滔天大罪</light_purple>"
     desc-1: "使隨機敵人罪惡值增加 60!"

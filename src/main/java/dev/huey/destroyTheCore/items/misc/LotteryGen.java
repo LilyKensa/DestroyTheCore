@@ -206,10 +206,10 @@ public class LotteryGen extends UsableItemGen {
   void giveTreasure(Player pl) {    
     giveRandom(pl, List.of(
       getCustomItem(ItemsManager.ItemKey.ELYTRA),
-      getCustomItem(ItemsManager.ItemKey.GOLDEN_HELMET),
-      getCustomItem(ItemsManager.ItemKey.GOLDEN_CHESTPLATE),
-      getCustomItem(ItemsManager.ItemKey.GOLDEN_LEGGINGS),
-      getCustomItem(ItemsManager.ItemKey.GOLDEN_BOOTS),
+      getCustomItem(ItemsManager.ItemKey.GOD_HELMET),
+      getCustomItem(ItemsManager.ItemKey.GOD_CHESTPLATE),
+      getCustomItem(ItemsManager.ItemKey.GOD_LEGGINGS),
+      getCustomItem(ItemsManager.ItemKey.GOD_BOOTS),
       getCustomItem(ItemsManager.ItemKey.TRIDENT),
       new ItemStack(Material.TNT),
       getCustomItem(ItemsManager.ItemKey.ABSORPTION_POTION),
