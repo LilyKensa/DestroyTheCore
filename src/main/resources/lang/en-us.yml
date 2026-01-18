@@ -476,6 +476,8 @@ items:
   kekkai-master-leggings:
     name: "<aqua>Rune Pants</aqua>"
     desc-1: "- <red>Bound item for Kekkai Masters</red>"
+  noble-helmet:
+    name: "<aqua>Royal Helmet</aqua>"
   assign-clear-inv:
     name: "[<white>Token</white>] <light_purple>Thieves Gather</light_purple>"
     desc-1: "Clears a random enemy's inventory"
@@ -866,3 +868,24 @@ roles:
       name: "Become the Shield"
       desc-1: "<dark_purple>Gets Absorption X & Resistance III (10s), Weakness X (30s)</dark_purple>"
       announce: "<player> used <yellow><role></yellow>'s skill, increased health!"
+  jockey:
+    name: "Jockey"
+    desc-1: "<gold>Horse Rider for life</gold>"
+    feature-1: "<yellow>Horse Whip</yellow>"
+    feature-2: "<green>Summon a horse if you don't have one already, buff it if you got one already.</green>"
+    feature-3: "<aqua>When on horse: Resistance II Strength I</aqua>"
+    item:
+      name: "<aqua>Horse Whip</aqua>"
+    skill:
+      name: "Summon a Horse"
+      desc-1: "If you got one already. Upgrade your old one!"
+  noble:
+    name: "Noble"
+    desc-1: "A luxurious being, you should be proud after"
+    feature-1: "Royal Sword(Fire Aspect I)"
+    feature-2: "Give all your Allies 3 Hearts Protection(60 Second)(Cooldown 180 Second)"
+    feature-3: "In 10 block radius, gives allies resistance I. Enemy died within 15 blocks will earn you a gold."
+    item:
+      name: "Royal Sword"
+    skill:
+      name: "Health Boost"

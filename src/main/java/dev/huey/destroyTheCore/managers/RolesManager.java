@@ -23,9 +23,8 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.persistence.PersistentDataType;
 
 public class RolesManager {
-  
   public enum RoleKey {
-    DEFAULT, ATTACKER, GUARD, GOLD_DIGGER, RANGER, KEKKAI_MASTER, WANDERER, ASSASSIN, CONSTRUCTOR, EATER, PROVOCATEUR,
+    DEFAULT, ATTACKER, GUARD, GOLD_DIGGER, RANGER, KEKKAI_MASTER, WANDERER, ASSASSIN, CONSTRUCTOR, EATER, PROVOCATEUR, JOCKEY, NOBLE
   }
   
   public Map<RoleKey, Role> roles;
@@ -41,10 +40,15 @@ public class RolesManager {
       new AssassinRole(),
       new ConstructorRole(),
       new WandererRole(),
-      new ProvocateurRole()
-    ).collect(
-      Collectors.toMap(r -> r.id, r -> r, (e, n) -> e, LinkedHashMap::new)
-    );
+      new ProvocateurRole(),
+      new JockeyRole(),
+      new NobleRole()
+    ).collect(Collectors.toMap(
+      r -> r.id,
+      r -> r,
+      (e, n) -> e,
+      LinkedHashMap::new
+    ));
   }
   
   public void setRole(Player pl, Role role) {
@@ -60,15 +64,14 @@ public class RolesManager {
       ItemStack replacement = DestroyTheCore.itemsManager.gens.get(
         key).getItem();
       
-      if (
-        key.name().startsWith("STARTER")
-      ) replacement.editMeta(uncastedMeta -> {
-        LeatherArmorMeta meta = (LeatherArmorMeta) uncastedMeta;
+      if (key.name().startsWith("STARTER"))
+        replacement.editMeta(uncastedMeta -> {
+          LeatherArmorMeta meta = (LeatherArmorMeta) uncastedMeta;
+          
+          meta.setColor(DestroyTheCore.game.getPlayerData(pl).side.dyeColor);
+          meta.addItemFlags(ItemFlag.HIDE_DYE);
+        });
         
-        meta.setColor(DestroyTheCore.game.getPlayerData(pl).side.dyeColor);
-        meta.addItemFlags(ItemFlag.HIDE_DYE);
-      });
-      
       if (
         getter.get() == null || getter.get().isEmpty() || (DestroyTheCore.itemsManager.isGen(
           getter.get()) && DestroyTheCore.itemsManager.getGen(
@@ -86,11 +89,9 @@ public class RolesManager {
     };
     
     replacer.accept(inv::getHelmet, inv::setHelmet, role.defHelmet());
-    replacer.accept(
-      inv::getChestplate,
+    replacer.accept(inv::getChestplate,
       inv::setChestplate,
-      role.defChestplate()
-    );
+      role.defChestplate());
     replacer.accept(inv::getLeggings, inv::setLeggings, role.defLeggings());
     replacer.accept(inv::getBoots, inv::setBoots, role.defBoots());
     
@@ -110,7 +111,8 @@ public class RolesManager {
     }
     inv.setContents(contents);
     
-    if (!hasItem) pl.give(role.getExclusiveItem());
+    if (!hasItem)
+      pl.give(role.getExclusiveItem());
     
     pl.setCooldown(
       Material.KNOWLEDGE_BOOK,
@@ -119,8 +121,8 @@ public class RolesManager {
   }
   
   public boolean isExclusiveItem(ItemStack item) {
-    return (item.hasItemMeta() && item.getItemMeta().getPersistentDataContainer().has(
-      Role.exclusiveItemNamespace));
+    return item.hasItemMeta() && item.getItemMeta().getPersistentDataContainer().has(
+      Role.exclusiveItemNamespace);
   }
   
   public boolean canTakeExclusiveItem(Player pl, ItemStack item) {
@@ -138,9 +140,9 @@ public class RolesManager {
   public void onPhaseChange(Game.Phase phase) {
     for (Role role : roles.values())
       for (Player p : PlayerUtils.all().stream().filter(
-        p -> DestroyTheCore.game.getPlayerData(p).role.id.equals(
-          role.id)).toList()) {
-            role.onPhaseChange(phase, p);
-          }
+        p -> DestroyTheCore.game.getPlayerData(p).role.id.equals(role.id)
+      ).toList()) {
+        role.onPhaseChange(phase, p);
+      }
   }
 }
