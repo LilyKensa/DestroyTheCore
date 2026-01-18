@@ -21,9 +21,7 @@ import io.papermc.paper.chat.ChatRenderer;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.function.*;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
@@ -1559,31 +1557,54 @@ public class Game {
         if (gen instanceof UsableItemGen ugen && ugen.isInstantUse()) {
           ev.setCancelled(true);
           
-          ugen.use(pl, null);
-          
-          BiConsumer<Integer, ItemStack> consumeItemFromSlot = (
-            slot, recipeIngredient
-          ) -> {
-            ItemStack slotItem = inv.getItem(slot);
-            if (
-              slotItem != null && slotItem.getType() == recipeIngredient.getType()
-            ) {
-              int newAmount = slotItem.getAmount() - recipeIngredient.getAmount();
-              if (newAmount <= 0) {
-                inv.setItem(slot, null);
-              }
-              else {
-                slotItem.setAmount(newAmount);
-              }
-            }
-          };
+          Map<Material, Integer> costs = new HashMap<>();
+          Map<Material, Integer> given = new HashMap<>();
           
           for (ItemStack ingredient : recipe.getIngredients()) {
             if (ingredient.isEmpty()) continue;
             
-            consumeItemFromSlot.accept(0, ingredient);
-            consumeItemFromSlot.accept(1, ingredient);
+            costs.put(
+              ingredient.getType(),
+              costs.getOrDefault(ingredient.getType(),
+                0) + ingredient.getAmount()
+            );
           }
+          
+          for (int i = 0; i < 2; ++i) {
+            ItemStack slotItem = minv.getItem(i);
+            if (slotItem == null || slotItem.isEmpty()) continue;
+            
+            given.put(
+              slotItem.getType(),
+              given.getOrDefault(slotItem.getType(), 0) + slotItem.getAmount()
+            );
+          }
+          
+          for (Material type : costs.keySet()) {
+            int count = given.getOrDefault(type, 0) - costs.get(type);
+            if (count < 0) return;
+          }
+          
+          for (int i = 0; i < 2; ++i) {
+            ItemStack slotItem = minv.getItem(i);
+            if (slotItem == null || slotItem.isEmpty()) continue;
+            
+            Material type = slotItem.getType();
+            int count = costs.getOrDefault(type, 0) - slotItem.getAmount();
+            
+            if (count >= 0) {
+              slotItem = null;
+              costs.put(type, count);
+            }
+            else {
+              slotItem.setAmount(-count);
+              costs.put(type, 0);
+            }
+            
+            minv.setItem(i, slotItem);
+          }
+          
+          ugen.use(pl, null);
         }
       }
     }

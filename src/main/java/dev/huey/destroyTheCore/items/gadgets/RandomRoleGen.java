@@ -26,7 +26,7 @@ public class RandomRoleGen extends UsableItemGen {
   public void computeMeta(ItemMeta uncastedMeta) {
     BookMeta meta = (BookMeta) uncastedMeta;
     
-    meta.setGeneration(null);
+    meta.addItemFlags(org.bukkit.inventory.ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
   }
   
   @Override
