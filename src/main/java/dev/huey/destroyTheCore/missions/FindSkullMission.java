@@ -27,8 +27,11 @@ import java.util.List;
 import java.util.UUID;
 
 public class FindSkullMission extends TimedMission implements Listener {
-  public static final NamespacedKey dataNamespace
-    = new NamespacedKey(DestroyTheCore.instance, "find-skull-mission-item");
+  
+  public static final NamespacedKey dataNamespace = new NamespacedKey(
+    DestroyTheCore.instance,
+    "find-skull-mission-item"
+  );
   
   public static ItemStack getSkullItem(Player pl) {
     ItemStack item = new ItemStack(Material.PLAYER_HEAD);
@@ -37,19 +40,18 @@ public class FindSkullMission extends TimedMission implements Listener {
       
       meta.setOwningPlayer(pl);
       
-      meta.getPersistentDataContainer()
-        .set(dataNamespace, PersistentDataType.STRING, UUID.randomUUID().toString());
+      meta.getPersistentDataContainer().set(
+        dataNamespace,
+        PersistentDataType.STRING,
+        UUID.randomUUID().toString()
+      );
     });
     return item;
   }
   
   public static boolean isSkullItem(ItemStack item) {
-    return
-      item != null &&
-      !item.isEmpty() &&
-      item.hasItemMeta() &&
-      item.getItemMeta().getPersistentDataContainer()
-        .has(dataNamespace);
+    return (item != null && !item.isEmpty() && item.hasItemMeta() && item.getItemMeta().getPersistentDataContainer().has(
+      dataNamespace));
   }
   
   public static Location randomLocation(Location center, double radius) {
@@ -67,27 +69,29 @@ public class FindSkullMission extends TimedMission implements Listener {
     ItemStack item = RandomUtils.pick(
       new ItemStack(Material.EMERALD, 8),
       new ItemStack(Material.GOLD_INGOT, 64),
-      DestroyTheCore.itemsManager.gens
-        .get(ItemsManager.ItemKey.GRENADE).getItem(6),
+      DestroyTheCore.itemsManager.gens.get(
+        ItemsManager.ItemKey.GRENADE).getItem(6),
       new ItemStack(Material.TNT, 1),
       new ItemStack(Material.GOLDEN_APPLE, 8)
     );
     
     pl.give(item);
     
-    broadcast(TextUtils.$("missions.find-skull.complete", List.of(
-      Placeholder.component("player", PlayerUtils.getName(pl)),
-      Placeholder.component(
-        "item",
-        item.effectiveName()
-          .colorIfAbsent(
-            item.getItemMeta().hasRarity()
-              ? item.getItemMeta().getRarity().color()
-              : NamedTextColor.WHITE
-          )
-      ),
-      Placeholder.component("amount", Component.text(item.getAmount()))
-    )));
+    broadcast(
+      TextUtils.$(
+        "missions.find-skull.complete",
+        List.of(
+          Placeholder.component("player", PlayerUtils.getName(pl)),
+          Placeholder.component(
+            "item",
+            item.effectiveName().colorIfAbsent(
+              item.getItemMeta().hasRarity() ? item.getItemMeta().getRarity().color() : NamedTextColor.WHITE
+            )
+          ),
+          Placeholder.component("amount", Component.text(item.getAmount()))
+        )
+      )
+    );
   }
   
   public FindSkullMission() {
@@ -104,10 +108,7 @@ public class FindSkullMission extends TimedMission implements Listener {
         30
       );
       
-      Item itemEntity = skullLoc.getWorld().dropItem(
-        skullLoc,
-        getSkullItem(p)
-      );
+      Item itemEntity = skullLoc.getWorld().dropItem(skullLoc, getSkullItem(p));
       itemEntity.setOwner(p.getUniqueId());
       
       skullEntities.add(itemEntity.getUniqueId());
@@ -116,7 +117,6 @@ public class FindSkullMission extends TimedMission implements Listener {
   
   @Override
   public void innerTick() {
-  
   }
   
   @EventHandler
@@ -140,11 +140,8 @@ public class FindSkullMission extends TimedMission implements Listener {
     for (UUID id : skullEntities) {
       Entity e = Bukkit.getEntity(id);
       if (e != null) {
-        new ParticleBuilder(Particle.LARGE_SMOKE)
-          .allPlayers()
-          .location(e.getLocation())
-          .extra(0)
-          .spawn();
+        new ParticleBuilder(Particle.LARGE_SMOKE).allPlayers().location(
+          e.getLocation()).extra(0).spawn();
         
         e.remove();
       }

@@ -18,24 +18,29 @@ import xyz.xenondevs.invui.item.builder.ItemBuilder;
 import java.util.List;
 
 public class RandomRoleItem extends GUIItem {
+  
   @Override
   public ItemProvider getItemProvider() {
-    return new ItemBuilder(Material.REDSTONE)
-      .setDisplayName(TextUtils.$r("gui.buttons.pick-random.title"));
+    return new ItemBuilder(Material.REDSTONE).setDisplayName(TextUtils.$r(
+      "gui.buttons.pick-random.title"));
   }
   
   @Override
   public void handleClick(ClickType click, Player pl, InventoryClickEvent ev) {
     Role role = RandomUtils.pick(
-      DestroyTheCore.rolesManager.roles.values().stream()
-        .filter(r -> r.id != RolesManager.RoleKey.DEFAULT)
-        .toList()
+      DestroyTheCore.rolesManager.roles.values().stream().filter(
+        r -> r.id != RolesManager.RoleKey.DEFAULT).toList()
     );
     
-    PlayerUtils.prefixedBroadcast(TextUtils.$("gui.buttons.pick-random.announce", List.of(
-      Placeholder.component("player", PlayerUtils.getName(pl)),
-      Placeholder.unparsed("role", role.name)
-    )));
+    PlayerUtils.prefixedBroadcast(
+      TextUtils.$(
+        "gui.buttons.pick-random.announce",
+        List.of(
+          Placeholder.component("player", PlayerUtils.getName(pl)),
+          Placeholder.unparsed("role", role.name)
+        )
+      )
+    );
     
     DestroyTheCore.rolesManager.setRole(pl, role);
     DestroyTheCore.game.enforceTeam(pl);

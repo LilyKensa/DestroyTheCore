@@ -7,25 +7,27 @@ import java.util.List;
 import java.util.Map;
 
 public class Constants {
-  public record OreData(
-    Material dropType,
-    long cooldownSeconds,
-    int minXp,
-    int maxXp
-  ) { }
   
-  static public final Map<Material, OreData> ores = Map.ofEntries(
-    Map.entry(Material.COAL_ORE,     new OreData(Material.COAL,          5, 5, 10)),
-    Map.entry(Material.IRON_ORE,     new OreData(Material.RAW_IRON,      7, 0, 0)),
-    Map.entry(Material.GOLD_ORE,     new OreData(Material.RAW_GOLD,      8, 0, 0)),
-    Map.entry(Material.REDSTONE_ORE, new OreData(Material.REDSTONE,      5, 2, 6)),
-    Map.entry(Material.LAPIS_ORE,    new OreData(Material.LAPIS_LAZULI, 10, 2, 6)),
-    Map.entry(Material.EMERALD_ORE,  new OreData(Material.EMERALD,      13, 3, 8)),
-    Map.entry(Material.DIAMOND_ORE,  new OreData(Material.DIAMOND,      60, 3, 12))
+  public record OreData(
+                        Material dropType,
+                        long cooldownSeconds,
+                        int minXp,
+                        int maxXp
+  ) {
+  }
+  
+  public static final Map<Material, OreData> ores = Map.ofEntries(
+    Map.entry(Material.COAL_ORE, new OreData(Material.COAL, 5, 5, 10)),
+    Map.entry(Material.IRON_ORE, new OreData(Material.RAW_IRON, 7, 0, 0)),
+    Map.entry(Material.GOLD_ORE, new OreData(Material.RAW_GOLD, 8, 0, 0)),
+    Map.entry(Material.REDSTONE_ORE, new OreData(Material.REDSTONE, 5, 2, 6)),
+    Map.entry(Material.LAPIS_ORE, new OreData(Material.LAPIS_LAZULI, 10, 2, 6)),
+    Map.entry(Material.EMERALD_ORE, new OreData(Material.EMERALD, 13, 3, 8)),
+    Map.entry(Material.DIAMOND_ORE, new OreData(Material.DIAMOND, 60, 3, 12))
   );
   
   /** To be dropped when needed */
-  static public final List<Material> oreItems = List.of(
+  public static final List<Material> oreItems = List.of(
     Material.COAL,
     Material.LAPIS_LAZULI,
     Material.DIAMOND,
@@ -33,12 +35,11 @@ public class Constants {
     Material.REDSTONE,
     Material.IRON_INGOT,
     Material.GOLD_INGOT,
-    
     Material.RAW_IRON,
     Material.RAW_GOLD
   );
   
-  static public final Map<Villager.Type, Material> villagerIcons = Map.ofEntries(
+  public static final Map<Villager.Type, Material> villagerIcons = Map.ofEntries(
     Map.entry(Villager.Type.PLAINS, Material.GRASS_BLOCK),
     Map.entry(Villager.Type.DESERT, Material.CHISELED_SANDSTONE),
     Map.entry(Villager.Type.TAIGA, Material.PODZOL),
@@ -48,7 +49,7 @@ public class Constants {
     Map.entry(Villager.Type.SWAMP, Material.MANGROVE_ROOTS)
   );
   
-  static public final Map<Villager.Profession, Material> villagerJobSites = Map.ofEntries(
+  public static final Map<Villager.Profession, Material> villagerJobSites = Map.ofEntries(
     Map.entry(Villager.Profession.ARMORER, Material.BLAST_FURNACE),
     Map.entry(Villager.Profession.BUTCHER, Material.SMOKER),
     Map.entry(Villager.Profession.CARTOGRAPHER, Material.CARTOGRAPHY_TABLE),
@@ -62,7 +63,6 @@ public class Constants {
     Map.entry(Villager.Profession.SHEPHERD, Material.LOOM),
     Map.entry(Villager.Profession.TOOLSMITH, Material.SMITHING_TABLE),
     Map.entry(Villager.Profession.WEAPONSMITH, Material.GRINDSTONE),
-    
     Map.entry(Villager.Profession.NITWIT, Material.RED_BED),
     Map.entry(Villager.Profession.NONE, Material.GRASS_BLOCK)
   );

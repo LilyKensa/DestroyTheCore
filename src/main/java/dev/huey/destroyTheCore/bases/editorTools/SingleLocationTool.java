@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 public class SingleLocationTool extends EditorTool {
+  
   Location loc;
   Color col;
   
@@ -32,7 +33,6 @@ public class SingleLocationTool extends EditorTool {
   
   /** @implNote Required - To update the current location */
   public void setLoc(Location loc) {
-  
   }
   
   @Override
@@ -53,21 +53,12 @@ public class SingleLocationTool extends EditorTool {
   
   @Override
   public void onRightClickBlock(Player pl, Block block) {
-    handleLoc(
-      block.getLocation()
-        .setRotation(
-          pl.getYaw(),
-          pl.getPitch()
-        )
-    );
+    handleLoc(block.getLocation().setRotation(pl.getYaw(), pl.getPitch()));
   }
   
   @Override
   public void onBreakBlock(Player pl, Block block) {
-    if (LocationUtils.isSameBlock(
-      block.getLocation(),
-      loc
-    )) {
+    if (LocationUtils.isSameBlock(block.getLocation(), loc)) {
       handleLoc(null);
     }
   }

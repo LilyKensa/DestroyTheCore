@@ -11,6 +11,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class PoisonArrowGen extends ProjItemGen {
+  
   public PoisonArrowGen() {
     super(
       ItemsManager.ItemKey.POISON_ARROW,
@@ -25,12 +26,9 @@ public class PoisonArrowGen extends ProjItemGen {
     
     meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
     meta.setColor(Color.fromRGB(75, 125, 0));
-    meta.addCustomEffect(new PotionEffect(
-      PotionEffectType.POISON,
-      8 * 20,
-      0,
-      false,
+    meta.addCustomEffect(
+      new PotionEffect(PotionEffectType.POISON, 8 * 20, 0, false, true),
       true
-    ), true);
+    );
   }
 }

@@ -15,12 +15,9 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 public class CoreInvulnGen extends UsableItemGen {
+  
   public CoreInvulnGen() {
-    super(
-      ItemsManager.ItemKey.CORE_INVULN,
-      Material.OAK_SIGN,
-      true
-    );
+    super(ItemsManager.ItemKey.CORE_INVULN, Material.OAK_SIGN, true);
   }
   
   @Override
@@ -39,10 +36,13 @@ public class CoreInvulnGen extends UsableItemGen {
     );
     
     PlayerUtils.broadcast(
-      TextUtils.$("items.core-invuln.announce", List.of(
-        Placeholder.component("player", PlayerUtils.getName(pl)),
-        Placeholder.component("item", getItem().effectiveName())
-      ))
+      TextUtils.$(
+        "items.core-invuln.announce",
+        List.of(
+          Placeholder.component("player", PlayerUtils.getName(pl)),
+          Placeholder.component("item", getItem().effectiveName())
+        )
+      )
     );
   }
 }

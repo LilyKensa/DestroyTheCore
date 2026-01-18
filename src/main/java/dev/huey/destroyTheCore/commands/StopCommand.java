@@ -4,12 +4,12 @@ import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.bases.Subcommand;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
+import java.util.List;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.entity.Player;
 
-import java.util.List;
-
 public class StopCommand extends Subcommand {
+  
   public StopCommand() {
     super("stop");
   }
@@ -22,8 +22,11 @@ public class StopCommand extends Subcommand {
     }
     
     DestroyTheCore.game.stop();
-    PlayerUtils.prefixedBroadcast(TextUtils.$("commands.stop.announce", List.of(
-      Placeholder.component("player", PlayerUtils.getName(pl))
-    )));
+    PlayerUtils.prefixedBroadcast(
+      TextUtils.$(
+        "commands.stop.announce",
+        List.of(Placeholder.component("player", PlayerUtils.getName(pl)))
+      )
+    );
   }
 }

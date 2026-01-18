@@ -7,6 +7,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 
 public class StartButtonTool extends SingleLocationTool {
+  
   public StartButtonTool() {
     super("start-button", Material.BLAZE_ROD, Color.YELLOW);
   }

@@ -11,6 +11,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class WeaknessArrowGen extends ProjItemGen {
+  
   public WeaknessArrowGen() {
     super(
       ItemsManager.ItemKey.WEAKNESS_ARROW,
@@ -25,12 +26,9 @@ public class WeaknessArrowGen extends ProjItemGen {
     
     meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
     meta.setColor(Color.fromRGB(80, 25, 80));
-    meta.addCustomEffect(new PotionEffect(
-      PotionEffectType.WEAKNESS,
-      8 * 20,
-      0,
-      false,
+    meta.addCustomEffect(
+      new PotionEffect(PotionEffectType.WEAKNESS, 8 * 20, 0, false, true),
       true
-    ), true);
+    );
   }
 }

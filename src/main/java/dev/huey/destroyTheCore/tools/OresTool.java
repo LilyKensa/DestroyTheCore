@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import java.util.Set;
 
 public class OresTool extends MultipleLocationsTool {
+  
   public OresTool() {
     super("ores", Material.IRON_PICKAXE, Color.WHITE);
   }

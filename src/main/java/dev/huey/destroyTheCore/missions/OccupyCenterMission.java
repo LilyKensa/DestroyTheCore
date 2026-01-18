@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class OccupyCenterMission extends ProgressiveMission {
+  
   public OccupyCenterMission() {
     super("occupy-center");
   }
@@ -37,20 +38,15 @@ public class OccupyCenterMission extends ProgressiveMission {
         if (occupied.contains(d.side)) continue;
         
         if (LocationUtils.near(p.getLocation(), loc, 30)) {
-          seconds.put(
-            d.side,
-            seconds.getOrDefault(d.side, 0) + 1
-          );
+          seconds.put(d.side, seconds.getOrDefault(d.side, 0) + 1);
           occupied.add(d.side);
         }
       }
       
-      for (Game.Side side : new Game.Side[] {Game.Side.RED, Game.Side.GREEN}) {
+      for (Game.Side side : new Game.Side[]{Game.Side.RED, Game.Side.GREEN,
+      }) {
         if (!occupied.contains(side)) {
-          seconds.put(
-            side,
-            Math.max(seconds.getOrDefault(side, 0) - 1, 0)
-          );
+          seconds.put(side, Math.max(seconds.getOrDefault(side, 0) - 1, 0));
         }
         
         float ratio = seconds.get(side) / 30F;
@@ -66,7 +62,7 @@ public class OccupyCenterMission extends ProgressiveMission {
   
   @Override
   public void innerFinish() {
-    for (Game.Side side : new Game.Side[] {Game.Side.RED, Game.Side.GREEN}) {
+    for (Game.Side side : new Game.Side[]{Game.Side.RED, Game.Side.GREEN}) {
       if (seconds.get(side).equals(seconds.get(side.opposite()))) {
         declareDraw();
         return;

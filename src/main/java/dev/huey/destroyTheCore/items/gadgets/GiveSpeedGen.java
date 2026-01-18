@@ -14,19 +14,17 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.List;
 
 public class GiveSpeedGen extends UsableItemGen {
+  
   public GiveSpeedGen() {
-    super(
-      ItemsManager.ItemKey.GIVE_SPEED,
-      Material.FEATHER
-    );
+    super(ItemsManager.ItemKey.GIVE_SPEED, Material.FEATHER);
   }
   
-  static public final List<ItemsManager.ItemKey> group = List.of(
+  public static final List<ItemsManager.ItemKey> group = List.of(
     ItemsManager.ItemKey.GIVE_SPEED,
     ItemsManager.ItemKey.GIVE_JUMP_BOOST,
     ItemsManager.ItemKey.GIVE_STRENGTH
   );
-  static public final int cooldown = 180 * 20;
+  public static final int cooldown = 180 * 20;
   
   @Override
   public void use(Player pl, Block block) {
@@ -36,20 +34,17 @@ public class GiveSpeedGen extends UsableItemGen {
     PlayerUtils.takeOneItemFromHand(pl);
     
     pl.addPotionEffect(
-      new PotionEffect(
-        PotionEffectType.SPEED,
-        6 * 20,
-        9,
-        false,
-        true
-      )
+      new PotionEffect(PotionEffectType.SPEED, 6 * 20, 9, false, true)
     );
     
     PlayerUtils.broadcast(
-      TextUtils.$("items.give-speed.announce", List.of(
-        Placeholder.component("player", PlayerUtils.getName(pl)),
-        Placeholder.component("item", getItem().effectiveName())
-      ))
+      TextUtils.$(
+        "items.give-speed.announce",
+        List.of(
+          Placeholder.component("player", PlayerUtils.getName(pl)),
+          Placeholder.component("item", getItem().effectiveName())
+        )
+      )
     );
   }
 }

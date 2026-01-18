@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class FreeMoneyMission extends InstantMission {
+  
   public FreeMoneyMission() {
     super("free-money");
   }

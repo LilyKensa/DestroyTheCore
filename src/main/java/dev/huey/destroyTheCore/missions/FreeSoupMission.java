@@ -13,6 +13,7 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.List;
 
 public class FreeSoupMission extends InstantMission {
+  
   public FreeSoupMission() {
     super("free-soup");
   }

@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 public class DefaultRole extends Role {
+  
   public DefaultRole() {
     super(RolesManager.RoleKey.DEFAULT);
     addInfo(Material.VILLAGER_SPAWN_EGG);
@@ -21,8 +22,11 @@ public class DefaultRole extends Role {
   public void useSkill(Player pl) {
     skillFeedback(pl);
     
-    PlayerUtils.broadcast(TextUtils.$("roles.default.skill.announce", List.of(
-      Placeholder.component("player", PlayerUtils.getName(pl))
-    )));
+    PlayerUtils.broadcast(
+      TextUtils.$(
+        "roles.default.skill.announce",
+        List.of(Placeholder.component("player", PlayerUtils.getName(pl)))
+      )
+    );
   }
 }

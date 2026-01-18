@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import java.util.Set;
 
 public class DiamondsTool extends MultipleLocationsTool {
+  
   public DiamondsTool() {
     super("diamonds", Material.DIAMOND_PICKAXE, Color.AQUA);
   }

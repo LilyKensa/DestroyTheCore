@@ -8,14 +8,18 @@ import java.util.Map;
 import java.util.UUID;
 
 public class DamageManager {
-  static public class DamageRecord {
-    static public class Damage {
+  
+  public static class DamageRecord {
+    
+    public static class Damage {
+      
       double amount = 0;
       Date time = new Date(0);
       
       public Damage() {
         refresh();
       }
+      
       public Damage(double amount) {
         this();
         this.amount = amount;
@@ -26,7 +30,7 @@ public class DamageManager {
       }
       
       public boolean isWithin(long seconds) {
-        return new Date().getTime() - time.getTime() < seconds * 1000;
+        return (new Date().getTime() - time.getTime() < seconds * 1000);
       }
       
       public void add(double amount) {
@@ -44,10 +48,7 @@ public class DamageManager {
       
       Damage damage = damageMap.getOrDefault(id, new Damage(0));
       damage.add(amount);
-      damageMap.put(
-        id,
-        damage
-      );
+      damageMap.put(id, damage);
     }
     
     public UUID getMostDamage() {
@@ -71,8 +72,7 @@ public class DamageManager {
   
   public DamageRecord getRecord(Player victim) {
     UUID id = victim.getUniqueId();
-    if (!records.containsKey(id))
-      records.put(id, new DamageRecord());
+    if (!records.containsKey(id)) records.put(id, new DamageRecord());
     return records.get(id);
   }
   

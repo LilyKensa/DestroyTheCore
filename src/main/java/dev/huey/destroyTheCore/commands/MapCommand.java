@@ -12,6 +12,7 @@ import java.io.File;
 import java.util.List;
 
 public class MapCommand extends Subcommand {
+  
   public MapCommand() {
     super("map");
     addArgument("map", () -> List.of("<map>"));
@@ -25,9 +26,15 @@ public class MapCommand extends Subcommand {
     }
     
     if (args.isEmpty()) {
-      PlayerUtils.send(pl, TextUtils.$("commands.map.info", List.of(
-        Placeholder.unparsed("map", DestroyTheCore.worldsManager.mapName)
-      )));
+      PlayerUtils.send(
+        pl,
+        TextUtils.$(
+          "commands.map.info",
+          List.of(
+            Placeholder.unparsed("map", DestroyTheCore.worldsManager.mapName)
+          )
+        )
+      );
       return;
     }
     
@@ -48,9 +55,14 @@ public class MapCommand extends Subcommand {
     DestroyTheCore.configManager.save();
     DestroyTheCore.configManager.load();
     
-    PlayerUtils.prefixedBroadcast(TextUtils.$("commands.map.announce", List.of(
-      Placeholder.unparsed("map", mapName),
-      Placeholder.component("player", PlayerUtils.getName(pl))
-    )));
+    PlayerUtils.prefixedBroadcast(
+      TextUtils.$(
+        "commands.map.announce",
+        List.of(
+          Placeholder.unparsed("map", mapName),
+          Placeholder.component("player", PlayerUtils.getName(pl))
+        )
+      )
+    );
   }
 }

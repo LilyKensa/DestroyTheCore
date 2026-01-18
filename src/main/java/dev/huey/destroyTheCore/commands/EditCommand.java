@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 public class EditCommand extends Subcommand {
+  
   public EditCommand() {
     super("edit");
     addArgument(

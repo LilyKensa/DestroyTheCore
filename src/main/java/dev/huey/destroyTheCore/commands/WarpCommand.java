@@ -6,18 +6,15 @@ import dev.huey.destroyTheCore.utils.LocationUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.RandomUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
+import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import java.util.List;
-
 public class WarpCommand extends Subcommand {
+  
   public WarpCommand() {
     super("warp");
-    addArgument(
-      "place",
-      () -> List.of("lobby", "spawn")
-    );
+    addArgument("place", () -> List.of("lobby", "spawn"));
   }
   
   @Override
@@ -41,9 +38,7 @@ public class WarpCommand extends Subcommand {
       case "spawn" -> {
         loc = LocationUtils.live(
           LocationUtils.toSpawnPoint(
-            RandomUtils.pick(
-              DestroyTheCore.game.map.spawnpoints
-            )
+            RandomUtils.pick(DestroyTheCore.game.map.spawnpoints)
           )
         );
       }

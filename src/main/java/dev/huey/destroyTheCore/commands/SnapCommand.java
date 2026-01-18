@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 public class SnapCommand extends Subcommand {
+  
   public SnapCommand() {
     super("snap");
   }

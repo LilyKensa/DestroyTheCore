@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Set;
 
 public class MultipleLocationsTool extends EditorTool {
+  
   Set<Location> locs;
   Color col;
   
@@ -33,13 +34,11 @@ public class MultipleLocationsTool extends EditorTool {
   
   /** @implNote Required - To update the current locations list */
   public void setLocs(Set<Location> locs) {
-  
   }
   
   @Override
   public void onParticleTick(Player pl) {
-    for (Location loc : locs)
-      ParticleUtils.block(List.of(pl), loc, col);
+    for (Location loc : locs) ParticleUtils.block(List.of(pl), loc, col);
   }
   
   void handleAddLoc(Location loc) {
@@ -59,13 +58,7 @@ public class MultipleLocationsTool extends EditorTool {
   
   @Override
   public void onRightClickBlock(Player pl, Block block) {
-    handleAddLoc(
-      block.getLocation()
-        .setRotation(
-          pl.getYaw(),
-          pl.getPitch()
-        )
-    );
+    handleAddLoc(block.getLocation().setRotation(pl.getYaw(), pl.getPitch()));
   }
   
   @Override

@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class EatCakeMission extends ProgressiveMission implements Listener {
+  
   public EatCakeMission() {
     super("eat-cake");
   }
@@ -39,21 +40,17 @@ public class EatCakeMission extends ProgressiveMission implements Listener {
     if (ev.getClickedBlock().getType() != Material.CAKE) return;
     if (pl.getFoodLevel() >= 20) return;
     
-    count.put(
-      data.side,
-      count.get(data.side) + 1
-    );
+    count.put(data.side, count.get(data.side) + 1);
     progress(data.side, (float) Math.min(count.get(data.side) / 30D, 1));
   }
   
   @Override
   public void tick() {
-  
   }
   
   @Override
   public void innerFinish() {
-    for (Game.Side side : new Game.Side[] {Game.Side.RED, Game.Side.GREEN}) {
+    for (Game.Side side : new Game.Side[]{Game.Side.RED, Game.Side.GREEN}) {
       if (count.get(side) > count.get(side.opposite())) {
         declareWinner(side);
         return;

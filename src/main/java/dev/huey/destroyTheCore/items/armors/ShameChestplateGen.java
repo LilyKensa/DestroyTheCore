@@ -10,11 +10,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 public class ShameChestplateGen extends ItemGen {
+  
   public ShameChestplateGen() {
-    super(
-      ItemsManager.ItemKey.SHAME_CHESTPLATE,
-      Material.LEATHER_CHESTPLATE
-    );
+    super(ItemsManager.ItemKey.SHAME_CHESTPLATE, Material.LEATHER_CHESTPLATE);
     setVanish();
   }
   

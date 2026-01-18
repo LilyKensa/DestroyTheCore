@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 public class RegionTool extends EditorTool {
+  
   Location loc1, loc2;
   Region region;
   Color col1, col2;
@@ -38,7 +39,6 @@ public class RegionTool extends EditorTool {
   
   /** @implNote Required - To update the current region */
   public void setRegion(Region region) {
-    
   }
   
   @Override

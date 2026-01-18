@@ -18,19 +18,16 @@ import java.util.List;
 import java.util.function.BiConsumer;
 
 public class LastDitchGen extends UsableItemGen {
+  
   public LastDitchGen() {
-    super(
-      ItemsManager.ItemKey.LAST_DITCH,
-      Material.ACACIA_SIGN,
-      true
-    );
+    super(ItemsManager.ItemKey.LAST_DITCH, Material.ACACIA_SIGN, true);
   }
   
   @Override
   public void use(Player pl, Block block) {
     PlayerData data = DestroyTheCore.game.getPlayerData(pl);
     SideData self = DestroyTheCore.game.getSideData(data.side),
-            enemy = DestroyTheCore.game.getSideData(data.side.opposite());
+      enemy = DestroyTheCore.game.getSideData(data.side.opposite());
     
     if (self.coreHealth > enemy.coreHealth - 30) {
       pl.sendActionBar(TextUtils.$("items.last-ditch.health-too-high"));
@@ -46,13 +43,7 @@ public class LastDitchGen extends UsableItemGen {
       
       BiConsumer<PotionEffectType, Integer> effectAdder = (type, amplifier) -> {
         p.addPotionEffect(
-          new PotionEffect(
-            type,
-            120 * 20,
-            amplifier,
-            true,
-            true
-          )
+          new PotionEffect(type, 120 * 20, amplifier, true, true)
         );
       };
       
@@ -62,10 +53,13 @@ public class LastDitchGen extends UsableItemGen {
     }
     
     PlayerUtils.broadcast(
-      TextUtils.$("items.last-ditch.announce", List.of(
-        Placeholder.component("player", PlayerUtils.getName(pl)),
-        Placeholder.component("item", getItem().effectiveName())
-      ))
+      TextUtils.$(
+        "items.last-ditch.announce",
+        List.of(
+          Placeholder.component("player", PlayerUtils.getName(pl)),
+          Placeholder.component("item", getItem().effectiveName())
+        )
+      )
     );
   }
 }

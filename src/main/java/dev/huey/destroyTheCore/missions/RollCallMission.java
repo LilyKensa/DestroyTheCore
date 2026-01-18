@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RollCallMission extends ProgressiveMission {
+  
   Map<Game.Side, Float> progress = new HashMap<>();
   Game.Side winner;
   
@@ -34,36 +35,27 @@ public class RollCallMission extends ProgressiveMission {
       for (Player p : Bukkit.getOnlinePlayers()) {
         PlayerData d = DestroyTheCore.game.getPlayerData(p);
         
-        all.put(
-          d.side,
-          all.getOrDefault(d.side, 0) + 1
-        );
+        all.put(d.side, all.getOrDefault(d.side, 0) + 1);
         
-        if (LocationUtils.near(
-          p.getLocation(),
-          LocationUtils.live(
-            LocationUtils.selfSide(
-              DestroyTheCore.game.map.core,
-              p
-            )
-          ),
-          6
-        )) {
-          attended.put(
-            d.side,
-            attended.getOrDefault(d.side, 0) + 1
-          );
+        if (
+          LocationUtils.near(
+            p.getLocation(),
+            LocationUtils.live(
+              LocationUtils.selfSide(DestroyTheCore.game.map.core, p)
+            ),
+            6
+          )
+        ) {
+          attended.put(d.side, attended.getOrDefault(d.side, 0) + 1);
         }
       }
       
-      for (Game.Side side : new Game.Side[] {Game.Side.RED, Game.Side.GREEN}) {
+      for (Game.Side side : new Game.Side[]{Game.Side.RED, Game.Side.GREEN,
+      }) {
         int allCount = all.getOrDefault(side, 0);
         if (allCount == 0) allCount = 1;
         
-        progress.put(
-          side,
-          1F * attended.getOrDefault(side, 0) / allCount
-        );
+        progress.put(side, 1F * attended.getOrDefault(side, 0) / allCount);
         progress(side, progress.get(side));
         
         if (progress.get(side) >= 1F) {

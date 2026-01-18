@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import java.util.Set;
 
 public class SpawnpointsTool extends MultipleLocationsTool {
+  
   public SpawnpointsTool() {
     super("spawnpoints", Material.NETHERITE_SWORD, Color.BLACK);
   }

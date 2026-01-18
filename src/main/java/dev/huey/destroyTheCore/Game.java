@@ -59,9 +59,11 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class Game {
+  
   public boolean isPlaying = false;
   
-  static public class LobbyLocs implements ConfigurationSerializable {
+  public static class LobbyLocs implements ConfigurationSerializable {
+    
     public Location spawn = null;
     public Location startButton = null;
     public Region joinRed = null;
@@ -85,20 +87,21 @@ public class Game {
       return map;
     }
     
-    static public LobbyLocs deserialize(Map<String, Object> map) {
+    public static LobbyLocs deserialize(Map<String, Object> map) {
       LobbyLocs locs = new LobbyLocs();
       
-      locs.spawn         = (Location) map.getOrDefault("spawn", null);
-      locs.startButton   = (Location) map.getOrDefault("start-button", null);
-      locs.joinRed       = (Region)   map.getOrDefault("join-red", null);
-      locs.joinGreen     = (Region)   map.getOrDefault("join-green", null);
-      locs.joinSpectator = (Region)   map.getOrDefault("join-spectator", null);
+      locs.spawn = (Location) map.getOrDefault("spawn", null);
+      locs.startButton = (Location) map.getOrDefault("start-button", null);
+      locs.joinRed = (Region) map.getOrDefault("join-red", null);
+      locs.joinGreen = (Region) map.getOrDefault("join-green", null);
+      locs.joinSpectator = (Region) map.getOrDefault("join-spectator", null);
       
       return locs;
     }
   }
   
-  static public class MapLocs implements ConfigurationSerializable {
+  public static class MapLocs implements ConfigurationSerializable {
+    
     public Location restArea = null;
     public Location core = null;
     public Location mission = null;
@@ -121,29 +124,30 @@ public class Game {
       pusher.accept("mission", mission);
       
       pusher.accept("spawnpoints", new ArrayList<>(spawnpoints));
-      pusher.accept("woods",    new ArrayList<>(woods));
-      pusher.accept("ores",     new ArrayList<>(ores));
+      pusher.accept("woods", new ArrayList<>(woods));
+      pusher.accept("ores", new ArrayList<>(ores));
       pusher.accept("diamonds", new ArrayList<>(diamonds));
-      pusher.accept("shops",    new ArrayList<>(shops));
-
+      pusher.accept("shops", new ArrayList<>(shops));
+      
       return map;
     }
     
-    static public MapLocs deserialize(Map<String, Object> map) {
+    public static MapLocs deserialize(Map<String, Object> map) {
       MapLocs locs = new MapLocs();
       
       locs.restArea = (Location) map.getOrDefault("rest-area", null);
-      locs.core     = (Location) map.getOrDefault("core", null);
-      locs.mission  = (Location) map.getOrDefault("mission", null);
+      locs.core = (Location) map.getOrDefault("core", null);
+      locs.mission = (Location) map.getOrDefault("mission", null);
       
-      Function<String, List<Location>> loader = CoreUtils.listLoader(Location.class)
-        .compose(map::get);
+      Function<String, List<Location>> loader = CoreUtils.listLoader(
+        Location.class).compose(
+          map::get);
       
       locs.spawnpoints = new HashSet<>(loader.apply("spawnpoints"));
-      locs.woods       = new HashSet<>(loader.apply("woods"));
-      locs.ores        = new HashSet<>(loader.apply("ores"));
-      locs.diamonds    = new HashSet<>(loader.apply("diamonds"));
-      locs.shops       = new HashSet<>(loader.apply("shops"));
+      locs.woods = new HashSet<>(loader.apply("woods"));
+      locs.ores = new HashSet<>(loader.apply("ores"));
+      locs.diamonds = new HashSet<>(loader.apply("diamonds"));
+      locs.shops = new HashSet<>(loader.apply("shops"));
       
       return locs;
     }
@@ -152,7 +156,9 @@ public class Game {
   public LobbyLocs lobby = new LobbyLocs();
   public MapLocs map = new MapLocs();
   
-  record VillagerData(Location loc, Villager villager) {}
+  record VillagerData(Location loc, Villager villager) {
+  }
+  
   List<VillagerData> villagers = new ArrayList<>();
   
   public void updateVillagers() {
@@ -162,20 +168,21 @@ public class Game {
       Location loc = vd.loc.clone();
       Villager villager = vd.villager;
       
-      PlayerUtils.allGaming().stream()
-        .filter(p -> LocationUtils.near(p, villager, 5))
-        .map(p ->
-          LocationUtils.hitboxCenter(p).toVector()
-            .subtract(LocationUtils.hitboxCenter(villager).toVector())
-        )
-        .min(Comparator.comparing(Vector::lengthSquared))
-        .ifPresent(loc::setDirection);
+      PlayerUtils.allGaming().stream().filter(p -> LocationUtils.near(p,
+        villager,
+        5)).map(
+          p -> LocationUtils.hitboxCenter(p).toVector().subtract(
+            LocationUtils.hitboxCenter(
+              villager).toVector())
+        ).min(Comparator.comparing(Vector::lengthSquared)).ifPresent(
+          loc::setDirection);
       
       villager.setRotation(loc.getYaw(), loc.getPitch());
     }
   }
   
-  static public class Shop implements ConfigurationSerializable {
+  public static class Shop implements ConfigurationSerializable {
+    
     public String name = "Anonymous Shop";
     public Villager.Type biome = Villager.Type.PLAINS;
     public Villager.Profession prof = Villager.Profession.NONE;
@@ -186,7 +193,10 @@ public class Game {
     public Villager summonVillager(Location loc) {
       World world = loc.getWorld();
       
-      Villager villager = (Villager) world.spawnEntity(loc, EntityType.VILLAGER);
+      Villager villager = (Villager) world.spawnEntity(
+        loc,
+        EntityType.VILLAGER
+      );
       
       villager.setAI(false);
       villager.setNoPhysics(true);
@@ -240,37 +250,47 @@ public class Game {
       return map;
     }
     
-    static public Shop deserialize(Map<String, Object> map) {
+    public static Shop deserialize(Map<String, Object> map) {
       Shop shop = new Shop();
       
-      if (map.containsKey("name"))
-        shop.name = (String) map.get("name");
-      if (map.containsKey("biome"))
-        shop.biome = Registry.VILLAGER_TYPE.get(Key.key((String) map.get("biome")));
+      if (map.containsKey("name")) shop.name = (String) map.get("name");
+      if (map.containsKey("biome")) shop.biome = Registry.VILLAGER_TYPE.get(
+        Key.key(
+          (String) map.get("biome")));
       if (map.containsKey("profession"))
-        shop.prof = Registry.VILLAGER_PROFESSION.get(Key.key((String) map.get("profession")));
-      if (map.containsKey("block-type"))
-        shop.blockType = Material.valueOf((String) map.get("block-type"));
+        shop.prof = Registry.VILLAGER_PROFESSION.get(
+          Key.key((String) map.get("profession"))
+        );
+      if (map.containsKey("block-type")) shop.blockType = Material.valueOf(
+        (String) map.get(
+          "block-type"));
       
-      Function<String, List<MaybeGen>> loader = CoreUtils.listLoader(MaybeGen.class)
-        .compose(map::get);
+      Function<String, List<MaybeGen>> loader = CoreUtils.listLoader(
+        MaybeGen.class).compose(
+          map::get);
       
       shop.items = loader.apply("items");
       
       return shop;
     }
   }
+  
   public List<Shop> shops = new ArrayList<>();
   
   public Map<UUID, Stats> stats = new HashMap<>();
   
   public enum Phase {
-    CoreWilting(5, "core-wilting", null),
-    DoubleDamage(4, "double-core-damage", CoreWilting),
-    DeathPenalty(3, "death-penalty", DoubleDamage),
-    MissionsStarted(2, "missions-started", DeathPenalty),
-    ShopOpened(1, "shop-opened", MissionsStarted),
-    CoreProtected(0, "core-protected", ShopOpened);
+    CoreWilting(5, "core-wilting", null), DoubleDamage(4,
+      "double-core-damage",
+      CoreWilting), DeathPenalty(3,
+        "death-penalty",
+        DoubleDamage), MissionsStarted(2,
+          "missions-started",
+          DeathPenalty), ShopOpened(1,
+            "shop-opened",
+            MissionsStarted), CoreProtected(0,
+              "core-protected",
+              ShopOpened);
     
     public final int index;
     public final String translationKey;
@@ -295,9 +315,10 @@ public class Game {
     }
     
     public Component title() {
-      return TextUtils.$("game.phase-title", List.of(
-        Placeholder.component("index", Component.text(index + 1))
-      ));
+      return TextUtils.$(
+        "game.phase-title",
+        List.of(Placeholder.component("index", Component.text(index + 1)))
+      );
     }
     
     public int minRespawnTime() {
@@ -313,14 +334,15 @@ public class Game {
   public int phaseTimer;
   
   public int truceTimer = 0;
+  
   public boolean isInTruce() {
     return truceTimer > 0;
   }
   
   public enum Side {
-    RED("red", NamedTextColor.RED, Color.RED),
-    GREEN("green", NamedTextColor.GREEN, Color.LIME),
-    SPECTATOR("spectator", NamedTextColor.GRAY, Color.GRAY);
+    RED("red", NamedTextColor.RED, Color.RED), GREEN("green",
+      NamedTextColor.GREEN,
+      Color.LIME), SPECTATOR("spectator", NamedTextColor.GRAY, Color.GRAY);
     
     public final String id;
     public final String translateKey;
@@ -337,9 +359,11 @@ public class Game {
     public String title() {
       return TextUtils.$r(translateKey);
     }
+    
     public String pureTitle() {
       return CoreUtils.stripColor(title());
     }
+    
     public Component titleComp() {
       return TextUtils.$(translateKey);
     }
@@ -359,21 +383,22 @@ public class Game {
   }
   
   public Map<Side, SideData> sideData;
+  
   public SideData getSideData(Side side) {
     return sideData.get(side);
   }
+  
   public SideData getSideData(Player pl) {
     return getSideData(getPlayerData(pl).side);
   }
   
   public class BarSet {
+    
     String id;
     Function<SideData, Integer> current, max;
     
     public BarSet(
-      String id,
-      Function<SideData, Integer> current,
-      Function<SideData, Integer> max
+                  String id, Function<SideData, Integer> current, Function<SideData, Integer> max
     ) {
       this.id = id;
       this.current = current;
@@ -383,34 +408,40 @@ public class Game {
     Map<Side, BossBar> bars = new HashMap<>();
     
     public Component getTitle(Side side) {
-      return TextUtils.$("game.bars." + id, List.of(
-        Placeholder.component(
-          "time",
-          CoreUtils.formatTimeComp(
-            Math.ceilDiv(current.apply(getSideData(side)), 20),
-            NamedTextColor.AQUA
+      return TextUtils.$(
+        "game.bars." + id,
+        List.of(
+          Placeholder.component(
+            "time",
+            CoreUtils.formatTimeComp(
+              Math.ceilDiv(current.apply(getSideData(side)), 20),
+              NamedTextColor.AQUA
+            )
           )
         )
-      ));
+      );
     }
     
     public void show(Side side) {
-      bars.put(side, BossBar.bossBar(
-        getTitle(side),
-        1F,
-        BossBar.Color.WHITE,
-        BossBar.Overlay.PROGRESS
-      ));
+      bars.put(
+        side,
+        BossBar.bossBar(
+          getTitle(side),
+          1F,
+          BossBar.Color.WHITE,
+          BossBar.Overlay.PROGRESS
+        )
+      );
       
-      for (Player p : PlayerUtils.getTeammates(side))
-        bars.get(side).addViewer(p);
+      for (Player p : PlayerUtils.getTeammates(side)) bars.get(side).addViewer(
+        p);
     }
     
     public void hide(Side side) {
       if (!bars.containsKey(side)) return;
       
-      for (Player p : PlayerUtils.getTeammates(side))
-        bars.get(side).removeViewer(p);
+      for (Player p : PlayerUtils.getTeammates(side)) bars.get(
+        side).removeViewer(p);
     }
     
     public void update(Side side) {
@@ -440,6 +471,7 @@ public class Game {
     
     return teams.get(side).get(role.id);
   }
+  
   public Team getTeam(Player pl) {
     PlayerData data = getPlayerData(pl);
     return getTeam(data.side, data.role);
@@ -462,22 +494,31 @@ public class Game {
     
     spectatorTeam.color(Side.SPECTATOR.color);
     spectatorTeam.displayName(Side.SPECTATOR.titleComp());
-    spectatorTeam.prefix(Component.text("[%s] ".formatted(Side.SPECTATOR.pureTitle())));
-    spectatorTeam.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
+    spectatorTeam.prefix(
+      Component.text("[%s] ".formatted(Side.SPECTATOR.pureTitle()))
+    );
+    spectatorTeam.setOption(
+      Team.Option.COLLISION_RULE,
+      Team.OptionStatus.NEVER
+    );
     
-    for (Side side : new Side[] {Side.RED, Side.GREEN}) {
+    for (Side side : new Side[]{Side.RED, Side.GREEN}) {
       Map<RolesManager.RoleKey, Team> sideTeams = new HashMap<>();
       
       for (Role role : DestroyTheCore.rolesManager.roles.values()) {
-        Team team = board.registerNewTeam(side.id + "-" + role.id.name().toLowerCase());
+        Team team = board.registerNewTeam(
+          side.id + "-" + role.id.name().toLowerCase()
+        );
         
         team.color(side.color);
-        team.displayName(Component.join(
-          JoinConfiguration.spaces(),
-          side.titleComp(),
-          Component.text("-"),
-          Component.text(role.name)
-        ));
+        team.displayName(
+          Component.join(
+            JoinConfiguration.spaces(),
+            side.titleComp(),
+            Component.text("-"),
+            Component.text(role.name)
+          )
+        );
         team.prefix(Component.text("[%s] ".formatted(role.name)));
         
         sideTeams.put(role.id, team);
@@ -497,8 +538,7 @@ public class Game {
       respawnTimeBoard = board.registerNewObjective(
         "respawn-time",
         Criteria.DUMMY,
-        Component.text("Sin Display")
-          .color(NamedTextColor.RED)
+        Component.text("Sin Display").color(NamedTextColor.RED)
       );
     }
     
@@ -507,8 +547,7 @@ public class Game {
       healthBoard = board.registerNewObjective(
         "health",
         Criteria.HEALTH,
-        Component.text("❤")
-          .color(NamedTextColor.RED)
+        Component.text("❤").color(NamedTextColor.RED)
       );
       
       healthBoard.setDisplaySlot(DisplaySlot.BELOW_NAME);
@@ -531,13 +570,14 @@ public class Game {
     PlayerData data = getPlayerData(pl);
     Score score = respawnTimeBoard.getScore(pl);
     
-    if (data.side.equals(Side.SPECTATOR))
-      score.resetScore();
-    else
-      score.setScore(data.respawnTime);
+    if (
+      data.side.equals(Side.SPECTATOR)
+    ) score.resetScore();
+    else score.setScore(data.respawnTime);
   }
   
   public Map<UUID, PlayerData> playerData = new HashMap<>();
+  
   public PlayerData getPlayerData(Player pl) {
     return playerData.get(pl.getUniqueId());
   }
@@ -545,15 +585,13 @@ public class Game {
   public void handleJoinedPlayer(Player pl) {
     UUID id = pl.getUniqueId();
     
-    if (!stats.containsKey(id))
-      stats.put(id, new Stats());
-    if (getPlayerData(pl) == null)
-      playerData.put(id, new PlayerData(pl));
+    if (!stats.containsKey(id)) stats.put(id, new Stats());
+    if (getPlayerData(pl) == null) playerData.put(id, new PlayerData(pl));
     
     Iterator<Recipe> rit = Bukkit.recipeIterator();
-    while (rit.hasNext())
-      if (rit.next() instanceof Keyed keyed)
-        pl.discoverRecipe(keyed.getKey());
+    while (rit.hasNext()) if (
+      rit.next() instanceof Keyed keyed
+    ) pl.discoverRecipe(keyed.getKey());
     
     pl.clearActivePotionEffects();
     PlayerUtils.enforceNightVision(pl);
@@ -573,8 +611,11 @@ public class Game {
     if (PlayerUtils.shouldHandle(pl)) {
       DestroyTheCore.inventoriesManager.store(pl);
       
-      pl.getInventory().setItem(4, DestroyTheCore.itemsManager.gens
-        .get(ItemsManager.ItemKey.CHOOSE_ROLE).getItem());
+      pl.getInventory().setItem(
+        4,
+        DestroyTheCore.itemsManager.gens.get(
+          ItemsManager.ItemKey.CHOOSE_ROLE).getItem()
+      );
       
       PlayerUtils.backToLobby(pl);
     }
@@ -593,33 +634,32 @@ public class Game {
   }
   
   public void handleChat(AsyncChatEvent ev) {
-    ev.renderer(ChatRenderer.viewerUnaware(
-      (Player p, Component name, Component message) ->
-        TextUtils.$("chat.format", List.of(
-          Placeholder.component("player", PlayerUtils.getName(p)),
-          Placeholder.component("message", message.color(null))
-        ))
-    ));
+    ev.renderer(
+      ChatRenderer.viewerUnaware(
+        (Player p, Component name, Component message) -> TextUtils.$(
+          "chat.format",
+          List.of(
+            Placeholder.component("player", PlayerUtils.getName(p)),
+            Placeholder.component("message", message.color(null))
+          )
+        )
+      )
+    );
     
     if (!isPlaying) return;
     
     Player pl = ev.getPlayer();
     Game.Side side = DestroyTheCore.game.getPlayerData(pl).side;
     
-    ev.viewers().removeIf(audience ->
-      audience instanceof Player p &&
-      side != Side.SPECTATOR &&
-      DestroyTheCore.game.getPlayerData(p)
-        .side.equals(side.opposite())
+    ev.viewers().removeIf(
+      audience -> audience instanceof Player p && side != Side.SPECTATOR && DestroyTheCore.game.getPlayerData(
+        p).side.equals(side.opposite())
     );
   }
   
   public void handleEntityDamage(EntityDamageByEntityEvent ev) {
     if (ev.getDamager() instanceof Player attacker) {
-      if (
-        isPlaying &&
-        getPlayerData(attacker).side == Side.SPECTATOR
-      ) {
+      if (isPlaying && getPlayerData(attacker).side == Side.SPECTATOR) {
         attacker.sendActionBar(TextUtils.$("game.banned.attack.spectator"));
         ev.setCancelled(true);
         return;
@@ -631,17 +671,14 @@ public class Game {
     }
     
     if (
-      ev.getDamager() instanceof Projectile proj &&
-      proj.getShooter() instanceof Player shooter &&
-      ev.getEntity() instanceof Player victim
+      ev.getDamager() instanceof Projectile proj && proj.getShooter() instanceof Player shooter && ev.getEntity() instanceof Player victim
     ) {
       handlePlayerDamage(shooter, victim, proj, ev);
     }
   }
   
   public void handlePlayerDamage(
-    Player attacker, Player victim, Projectile proj,
-    EntityDamageByEntityEvent ev
+                                 Player attacker, Player victim, Projectile proj, EntityDamageByEntityEvent ev
   ) {
     if (isPlaying) {
       double damage = ev.getDamage(), finalDamage = ev.getFinalDamage();
@@ -664,7 +701,9 @@ public class Game {
       if (getPlayerData(victim).role.id != RolesManager.RoleKey.PROVOCATEUR) {
         List<Player> provocateurs = new ArrayList<>();
         for (Player p : PlayerUtils.getTeammates(victim)) {
-          if (getPlayerData(p).role.id != RolesManager.RoleKey.PROVOCATEUR) continue;
+          if (
+            getPlayerData(p).role.id != RolesManager.RoleKey.PROVOCATEUR
+          ) continue;
           if (!LocationUtils.near(p, victim, 10)) continue;
           
           provocateurs.add(p);
@@ -672,20 +711,22 @@ public class Game {
         
         double damageReduced = 0;
         for (Player p : provocateurs) {
-          double ratio = p.hasPotionEffect(PotionEffectType.ABSORPTION)
-            ? 0.9
-            : 0.6;
+          double ratio = p.hasPotionEffect(
+            PotionEffectType.ABSORPTION) ? 0.9 : 0.6;
           double amount = Math.max(1, damage * ratio / provocateurs.size());
           
-          PlayerUtils.delayAssign(victim, p, Particle.CRIT, () -> {
-            p.damage(
-              amount,
-              DamageSource.builder(DamageType.PLAYER_ATTACK)
-                .withDirectEntity(attacker)
-                .withCausingEntity(attacker)
-                .build()
-            );
-          });
+          PlayerUtils.delayAssign(
+            victim,
+            p,
+            Particle.CRIT,
+            () -> {
+              p.damage(
+                amount,
+                DamageSource.builder(DamageType.PLAYER_ATTACK).withDirectEntity(
+                  attacker).withCausingEntity(attacker).build()
+              );
+            }
+          );
           damageReduced += amount;
         }
         
@@ -696,13 +737,14 @@ public class Game {
       DestroyTheCore.damageManager.addDamage(attacker, victim, finalDamage);
     }
     
-    if (ev.getFinalDamage() >= 2)
-      victim.removePotionEffect(PotionEffectType.INVISIBILITY);
+    if (ev.getFinalDamage() >= 2) victim.removePotionEffect(
+      PotionEffectType.INVISIBILITY
+    );
     
     DestroyTheCore.itemsManager.onPlayerDamage(attacker, victim);
   }
   
-  static public Component bountyPrefix;
+  public static Component bountyPrefix;
   
   public boolean nextPlayerDropAll = false;
   
@@ -749,9 +791,10 @@ public class Game {
     UUID killerId = DestroyTheCore.damageManager.getMostDamage(pl);
     if (killerId == null) {
       Component message = ev.deathMessage();
-      if (message == null) message = TextUtils.$("game.death.messages.unknown", List.of(
-        Placeholder.component("player", PlayerUtils.getName(pl))
-      ));
+      if (message == null) message = TextUtils.$(
+        "game.death.messages.unknown",
+        List.of(Placeholder.component("player", PlayerUtils.getName(pl)))
+      );
       
       PlayerUtils.broadcast(message.colorIfAbsent(NamedTextColor.GRAY));
     }
@@ -759,87 +802,82 @@ public class Game {
       Player killer = Bukkit.getPlayer(killerId);
       assert killer != null;
       
-      PlayerUtils.broadcast(TextUtils.$("game.death.messages.kill", List.of(
-        Placeholder.component("player", PlayerUtils.getName(pl)),
-        Placeholder.unparsed(
-          "action",
-          RandomUtils.pick(
-            TextUtils.translateRaw("game.death.messages.kill-actions")
-              .split("\\|")
+      PlayerUtils.broadcast(
+        TextUtils.$(
+          "game.death.messages.kill",
+          List.of(
+            Placeholder.component("player", PlayerUtils.getName(pl)),
+            Placeholder.unparsed(
+              "action",
+              RandomUtils.pick(
+                TextUtils.translateRaw(
+                  "game.death.messages.kill-actions").split("\\|")
+              )
+            ),
+            Placeholder.component("killer", PlayerUtils.getName(killer))
           )
-        ),
-        Placeholder.component("killer", PlayerUtils.getName(killer))
-      )));
+        )
+      );
       
-      new ParticleBuilder(Particle.SOUL)
-        .allPlayers()
-        .location(LocationUtils.hitboxCenter(pl))
-        .offset(0.1, 0.3, 0.1)
-        .count(15)
-        .extra(0.2)
-        .spawn();
+      new ParticleBuilder(Particle.SOUL).allPlayers().location(
+        LocationUtils.hitboxCenter(
+          pl)).offset(0.1, 0.3, 0.1).count(15).extra(0.2).spawn();
       
-      new ParticleBuilder(Particle.TRIAL_SPAWNER_DETECTION_OMINOUS)
-        .allPlayers()
-        .location(LocationUtils.hitboxCenter(pl))
-        .offset(0.5, 0.6, 0.5)
-        .count(20)
-        .extra(0)
-        .spawn();
+      new ParticleBuilder(
+        Particle.TRIAL_SPAWNER_DETECTION_OMINOUS).allPlayers().location(
+          LocationUtils.hitboxCenter(pl)).offset(0.5, 0.6, 0.5).count(20).extra(
+            0).spawn();
       
       killer.sendActionBar(TextUtils.$("game.death.killer-sin"));
       
-      killer.addPotionEffect(new PotionEffect(
-        PotionEffectType.GLOWING,
-        5 * 20,
-        0,
-        false,
-        false
-      ));
-      killer.addPotionEffect(new PotionEffect(
-        PotionEffectType.SLOWNESS,
-        5 * 20,
-        0,
-        false,
-        false
-      ));
-      killer.addPotionEffect(new PotionEffect(
-        PotionEffectType.BLINDNESS,
-        5 * 20,
-        0,
-        false,
-        false
-      ));
-      killer.addPotionEffect(new PotionEffect(
-        PotionEffectType.WEAKNESS,
-        5 * 20,
-        2,
-        false,
-        false
-      ));
+      killer.addPotionEffect(
+        new PotionEffect(PotionEffectType.GLOWING, 5 * 20, 0, false, false)
+      );
+      killer.addPotionEffect(
+        new PotionEffect(PotionEffectType.SLOWNESS, 5 * 20, 0, false, false)
+      );
+      killer.addPotionEffect(
+        new PotionEffect(PotionEffectType.BLINDNESS, 5 * 20, 0, false, false)
+      );
+      killer.addPotionEffect(
+        new PotionEffect(PotionEffectType.WEAKNESS, 5 * 20, 2, false, false)
+      );
       
-      killer.give(DestroyTheCore.itemsManager.gens.get(ItemsManager.ItemKey.SOUL).getItem());
+      killer.give(
+        DestroyTheCore.itemsManager.gens.get(
+          ItemsManager.ItemKey.SOUL).getItem()
+      );
       
       if (data.killStreak >= 10) {
         killer.give(new ItemStack(Material.EMERALD, data.killStreak));
         
-        PlayerUtils.broadcast(bountyPrefix.append(
-          TextUtils.$("game.bounty.reward", List.of(
-            Placeholder.component("player", PlayerUtils.getName(killer)),
-            Placeholder.component("amount", Component.text(data.killStreak))
-          ))
-        ));
+        PlayerUtils.broadcast(
+          bountyPrefix.append(
+            TextUtils.$(
+              "game.bounty.reward",
+              List.of(
+                Placeholder.component("player", PlayerUtils.getName(killer)),
+                Placeholder.component("amount", Component.text(data.killStreak))
+              )
+            )
+          )
+        );
       }
       
       PlayerData killerData = getPlayerData(killer);
       killerData.addKill();
       
       if (killerData.killStreak == 10) {
-        PlayerUtils.broadcast(bountyPrefix.append(
-          TextUtils.$("game.bounty.appear", List.of(
-            Placeholder.component("player", PlayerUtils.getName(killer))
-          ))
-        ));
+        PlayerUtils.broadcast(
+          bountyPrefix.append(
+            TextUtils.$(
+              "game.bounty.appear",
+              List.of(
+                Placeholder.component("player", PlayerUtils.getName(killer))
+              )
+            )
+          )
+        );
       }
       
       DestroyTheCore.boardsManager.refresh(killer);
@@ -848,10 +886,7 @@ public class Game {
     data.kill();
     
     PlayerUtils.normalTitleTimes(pl);
-    pl.sendTitlePart(
-      TitlePart.TITLE,
-      TextUtils.$("game.death.title")
-    );
+    pl.sendTitlePart(TitlePart.TITLE, TextUtils.$("game.death.title"));
     
     DestroyTheCore.boardsManager.refresh(pl);
     PlayerUtils.scheduleRespawn(pl);
@@ -860,10 +895,7 @@ public class Game {
   public void handleHungry(FoodLevelChangeEvent ev) {
     if (!(ev.getEntity() instanceof Player pl)) return;
     
-    if (
-      PlayerUtils.inLobby(pl) ||
-      !getPlayerData(pl).isGaming()
-    ) {
+    if (PlayerUtils.inLobby(pl) || !getPlayerData(pl).isGaming()) {
       PlayerUtils.resetHunger(pl);
       ev.setCancelled(true);
       return;
@@ -878,18 +910,18 @@ public class Game {
     ItemStack item = ev.getItem(),
       mainhandItem = ev.getPlayer().getInventory().getItemInMainHand();
     
-    if (ev.getAction() == Action.LEFT_CLICK_BLOCK)
-      handleLeftClickBlock(ev);
+    if (ev.getAction() == Action.LEFT_CLICK_BLOCK) handleLeftClickBlock(ev);
     
-    if (ev.getAction() == Action.RIGHT_CLICK_BLOCK)
-      handleRightClickBlock(ev);
+    if (ev.getAction() == Action.RIGHT_CLICK_BLOCK) handleRightClickBlock(ev);
     
-    if (List.of(Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK).contains(ev.getAction())) {
+    if (
+      List.of(Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK).contains(
+        ev.getAction())
+    ) {
       if (
-        !PlayerUtils.checkUsingBlock(pl, ev.getClickedBlock()) &&
-        item != null &&
-        !item.isEmpty() &&
-        item.getType().equals(Material.KNOWLEDGE_BOOK)
+        !PlayerUtils.checkUsingBlock(pl,
+          ev.getClickedBlock()) && item != null && !item.isEmpty() && item.getType().equals(
+            Material.KNOWLEDGE_BOOK)
       ) ev.setCancelled(true);
       
       if (!data.alive && !PlayerUtils.inLobby(pl)) {
@@ -901,11 +933,8 @@ public class Game {
       }
       
       if (
-        ev.getHand() == EquipmentSlot.HAND &&
-        item != null &&
-        item.hasItemMeta() &&
-        item.getItemMeta().getPersistentDataContainer()
-          .has(Role.skillNamespace)
+        ev.getHand() == EquipmentSlot.HAND && item != null && item.hasItemMeta() && item.getItemMeta().getPersistentDataContainer().has(
+          Role.skillNamespace)
       ) {
         if (!PlayerUtils.checkHandCooldown(pl, data.extraSkillReload)) return;
         PlayerUtils.setHandCooldown(pl, data.role.skillCooldown);
@@ -928,9 +957,8 @@ public class Game {
     ItemStack item = pl.getInventory().getItemInMainHand();
     
     if (
-      Tag.ITEMS_SWORDS.isTagged(item.getType()) ||
-      Tag.ITEMS_AXES.isTagged(item.getType()) ||
-      Tag.ITEMS_PICKAXES.isTagged(item.getType())
+      Tag.ITEMS_SWORDS.isTagged(item.getType()) || Tag.ITEMS_AXES.isTagged(
+        item.getType()) || Tag.ITEMS_PICKAXES.isTagged(item.getType())
     ) return;
     
     Map<Integer, ItemStack> leftovers = sd.enderChest.addItem(item);
@@ -962,11 +990,16 @@ public class Game {
     Block block = ev.getClickedBlock();
     if (block == null) return;
     
-    if (LocationUtils.isSameWorld(block.getWorld(), DestroyTheCore.worldsManager.lobby)) {
+    if (
+      LocationUtils.isSameWorld(
+        block.getWorld(),
+        DestroyTheCore.worldsManager.lobby
+      )
+    ) {
       if (
-        DestroyTheCore.worldsManager.isReady &&
-        lobby.startButton != null &&
-        LocationUtils.isSameBlock(block.getLocation(), lobby.startButton)
+        DestroyTheCore.worldsManager.isReady && lobby.startButton != null && LocationUtils.isSameBlock(
+          block.getLocation(),
+          lobby.startButton)
       ) {
         if (startingTask == null || startingTask.isCancelled()) {
           scheduleStart();
@@ -977,8 +1010,9 @@ public class Game {
         return;
       }
       else if (PlayerUtils.shouldHandle(pl)) {
-        if (PlayerUtils.checkUsingBlock(pl, block))
-          pl.sendActionBar(TextUtils.$("game.banned.use.lobby"));
+        if (PlayerUtils.checkUsingBlock(pl, block)) pl.sendActionBar(
+          TextUtils.$("game.banned.use.lobby")
+        );
         ev.setCancelled(true);
       }
     }
@@ -991,11 +1025,12 @@ public class Game {
       return;
     }
     
-    for (Location rest : new Location[] {
-      DestroyTheCore.game.map.restArea,
-      LocationUtils.flip(DestroyTheCore.game.map.restArea)
+    for (Location rest : new Location[]{DestroyTheCore.game.map.restArea, LocationUtils.flip(
+      DestroyTheCore.game.map.restArea),
     }) {
-      if (LocationUtils.near(block.getLocation(), LocationUtils.live(rest), 6)) {
+      if (
+        LocationUtils.near(block.getLocation(), LocationUtils.live(rest), 6)
+      ) {
         ev.getPlayer().sendActionBar(TextUtils.$("game.banned.use.rest-area"));
         ev.setCancelled(true);
         return;
@@ -1042,9 +1077,8 @@ public class Game {
     }
     
     if (
-      List.of(Material.OBSIDIAN, Material.CRYING_OBSIDIAN)
-        .contains(block.getType()) &&
-      LocationUtils.nearAnyCore(blockLoc, 3)
+      List.of(Material.OBSIDIAN, Material.CRYING_OBSIDIAN).contains(
+        block.getType()) && LocationUtils.nearAnyCore(blockLoc, 3)
     ) {
       pl.sendActionBar(TextUtils.$("game.banned.place.obsidian"));
       ev.setCancelled(true);
@@ -1070,36 +1104,44 @@ public class Game {
     
     ItemStack tool = pl.getInventory().getItemInMainHand();
     if (block.isPreferredTool(tool)) {
-      double amount = CoreUtils.applyFortune(tool.getEnchantmentLevel(Enchantment.FORTUNE));
+      double amount = CoreUtils.applyFortune(
+        tool.getEnchantmentLevel(Enchantment.FORTUNE)
+      );
       if (pl.hasPotionEffect(PotionEffectType.LUCK)) {
-        if (RandomUtils.hit(
-          (pl.getPotionEffect(PotionEffectType.LUCK).getAmplifier() + 1) * 0.25
-        )) amount *= 2;
+        if (
+          RandomUtils.hit(
+            (pl.getPotionEffect(
+              PotionEffectType.LUCK).getAmplifier() + 1) * 0.25
+          )
+        ) amount *= 2;
       }
       if (pl.hasPotionEffect(PotionEffectType.UNLUCK)) {
-        if (RandomUtils.hit(
-          (pl.getPotionEffect(PotionEffectType.UNLUCK).getAmplifier() + 1) * 0.25
-        )) amount *= 0.5;
+        if (
+          RandomUtils.hit(
+            (pl.getPotionEffect(
+              PotionEffectType.UNLUCK).getAmplifier() + 1) * 0.25
+          )
+        ) amount *= 0.5;
       }
       if (amount >= 1) {
-        pl.give(new ItemStack(
-          ore.dropType(),
-          (int) amount
-        ));
+        pl.give(new ItemStack(ore.dropType(), (int) amount));
         
         if (amount >= 2) {
-          pl.sendActionBar(TextUtils.$("game.ores.luck", List.of(
-            Placeholder.component("amount", Component.text((int) amount))
-          )));
+          pl.sendActionBar(
+            TextUtils.$(
+              "game.ores.luck",
+              List.of(
+                Placeholder.component("amount", Component.text((int) amount))
+              )
+            )
+          );
         }
       }
       else {
         pl.sendActionBar(TextUtils.$("game.ores.bad-luck"));
       }
       
-      int orbsCount = ore.maxXp() > 0
-        ? RandomUtils.range(5, 8)
-        : 0;
+      int orbsCount = ore.maxXp() > 0 ? RandomUtils.range(5, 8) : 0;
       for (int i = 0; i < orbsCount; ++i) {
         ExperienceOrb orb = (ExperienceOrb) block.getWorld().spawnEntity(
           LocationUtils.toBlockCenter(block.getLocation()),
@@ -1117,24 +1159,34 @@ public class Game {
             ItemStack item = new ItemStack(ore.dropType());
             p.give(item);
             
-            p.sendActionBar(TextUtils.$("roles.gold-digger.ores-bonus", List.of(
-              Placeholder.component("ore", item.effectiveName().color(null)),
-              Placeholder.component("player", PlayerUtils.getName(pl).color(null))
-            )));
+            p.sendActionBar(
+              TextUtils.$(
+                "roles.gold-digger.ores-bonus",
+                List.of(
+                  Placeholder.component("ore",
+                    item.effectiveName().color(null)),
+                  Placeholder.component("player",
+                    PlayerUtils.getName(pl).color(null))
+                )
+              )
+            );
           }
         }
       }
     }
     
     if (
-      Mission.loc != null &&
-      InfiniteOresMission.check(block.getLocation())
+      Mission.loc != null && InfiniteOresMission.check(block.getLocation())
     ) return;
     
     block.setType(Material.BEDROCK);
     
     ProtocolManager manager = ProtocolLibrary.getProtocolManager();
-    BlockPosition pos = new BlockPosition(block.getX(), block.getY(), block.getZ());
+    BlockPosition pos = new BlockPosition(
+      block.getX(),
+      block.getY(),
+      block.getZ()
+    );
     int breakerId = fakeBreakerId.getAndIncrement();
     
     int kekkaiBonus = KekkaiMasterRole.checkFastOres(
@@ -1157,8 +1209,10 @@ public class Game {
         
         try {
           for (Player p : Bukkit.getOnlinePlayers()) {
-            if (LocationUtils.isSameWorld(p, pl))
-              manager.sendServerPacket(p, packet);
+            if (LocationUtils.isSameWorld(p, pl)) manager.sendServerPacket(
+              p,
+              packet
+            );
           }
         }
         catch (Exception e) {
@@ -1180,41 +1234,26 @@ public class Game {
       }
     }.runTaskTimer(
       DestroyTheCore.instance,
-      0, ore.cooldownSeconds() * 2 / kekkaiBonus
+      0,
+      ore.cooldownSeconds() * 2 / kekkaiBonus
     );
   }
   
   public void handleCoreAttack(Player pl, Block block) {
     PlayerUtils.damageHandItem(pl);
     
-    pl.addPotionEffect(new PotionEffect(
-      PotionEffectType.GLOWING,
-      10 * 20,
-      0,
-      false,
-      false
-    ));
-    pl.addPotionEffect(new PotionEffect(
-      PotionEffectType.SLOWNESS,
-      10 * 20,
-      0,
-      false,
-      true
-    ));
-    pl.addPotionEffect(new PotionEffect(
-      PotionEffectType.MINING_FATIGUE,
-      10 * 20,
-      0,
-      false,
-      true
-    ));
-    pl.addPotionEffect(new PotionEffect(
-      PotionEffectType.WEAKNESS,
-      10 * 20,
-      0,
-      false,
-      true
-    ));
+    pl.addPotionEffect(
+      new PotionEffect(PotionEffectType.GLOWING, 10 * 20, 0, false, false)
+    );
+    pl.addPotionEffect(
+      new PotionEffect(PotionEffectType.SLOWNESS, 10 * 20, 0, false, true)
+    );
+    pl.addPotionEffect(
+      new PotionEffect(PotionEffectType.MINING_FATIGUE, 10 * 20, 0, false, true)
+    );
+    pl.addPotionEffect(
+      new PotionEffect(PotionEffectType.WEAKNESS, 10 * 20, 0, false, true)
+    );
     
     PlayerData data = getPlayerData(pl);
     data.addCoreAttack();
@@ -1234,9 +1273,10 @@ public class Game {
         );
         p.sendTitlePart(
           TitlePart.SUBTITLE,
-          TextUtils.$("game.core-attack.subtitle", List.of(
-            Placeholder.component("player", PlayerUtils.getName(pl))
-          ))
+          TextUtils.$(
+            "game.core-attack.subtitle",
+            List.of(Placeholder.component("player", PlayerUtils.getName(pl)))
+          )
         );
         p.playSound(
           p.getLocation(),
@@ -1266,11 +1306,16 @@ public class Game {
       }
     }
     
-    PlayerUtils.broadcast(TextUtils.$("game.core-attack.message", List.of(
-      Placeholder.component("player", PlayerUtils.getName(pl)),
-      Placeholder.component("side", oppositeSide.titleComp()),
-      Placeholder.component("health", Component.text(ocd.coreHealth))
-    )));
+    PlayerUtils.broadcast(
+      TextUtils.$(
+        "game.core-attack.message",
+        List.of(
+          Placeholder.component("player", PlayerUtils.getName(pl)),
+          Placeholder.component("side", oppositeSide.titleComp()),
+          Placeholder.component("health", Component.text(ocd.coreHealth))
+        )
+      )
+    );
     
     checkWinner();
   }
@@ -1299,11 +1344,12 @@ public class Game {
       return;
     }
     
-    for (Location rest : new Location[] {
-      DestroyTheCore.game.map.restArea,
-      LocationUtils.flip(DestroyTheCore.game.map.restArea)
+    for (Location rest : new Location[]{DestroyTheCore.game.map.restArea, LocationUtils.flip(
+      DestroyTheCore.game.map.restArea),
     }) {
-      if (LocationUtils.near(block.getLocation(), LocationUtils.live(rest), 6)) {
+      if (
+        LocationUtils.near(block.getLocation(), LocationUtils.live(rest), 6)
+      ) {
         pl.sendActionBar(TextUtils.$("game.banned.break.rest-area"));
         ev.setCancelled(true);
         return;
@@ -1324,27 +1370,30 @@ public class Game {
     
     if (block.getType().equals(Material.DIAMOND_ORE)) {
       PlayerUtils.broadcast(
-        TextUtils.$("chat.format", List.of(
-          Placeholder.component("player", PlayerUtils.getName(pl)),
-          Placeholder.unparsed(
-            "message",
-            RandomUtils.pick(
-              TextUtils.translateRaw("game.diamond-broadcast")
-                .split("\\|")
+        TextUtils.$(
+          "chat.format",
+          List.of(
+            Placeholder.component("player", PlayerUtils.getName(pl)),
+            Placeholder.unparsed(
+              "message",
+              RandomUtils.pick(
+                TextUtils.translateRaw("game.diamond-broadcast").split("\\|")
+              )
             )
           )
-        ))
+        )
       );
     }
     
-    if (map.woods.stream()
-      .anyMatch(loc -> LocationUtils.isSameBlock(
+    if (
+      map.woods.stream().anyMatch(loc -> LocationUtils.isSameBlock(
         LocationUtils.live(loc),
         block.getLocation()
       ) || LocationUtils.isSameBlock(
         LocationUtils.live(LocationUtils.flip(loc)),
         block.getLocation()
-      ))
+      )
+      )
     ) {
       PlayerUtils.damageHandItem(pl);
       
@@ -1362,26 +1411,30 @@ public class Game {
       return;
     }
     
-//    if (block.getState() instanceof InventoryHolder && !LocationUtils.canAccess(pl, block)) {
-//      pl.sendActionBar(TextUtils.$("game.banned.break.enemy-container"));
-//      getPlayerData(pl).addRespawnTime(10);
-//      DestroyTheCore.boardsManager.refresh(pl);
-//      return;
-//    }
+    //    if (block.getState() instanceof InventoryHolder && !LocationUtils.canAccess(pl, block)) {
+    //      pl.sendActionBar(TextUtils.$("game.banned.break.enemy-container"));
+    //      getPlayerData(pl).addRespawnTime(10);
+    //      DestroyTheCore.boardsManager.refresh(pl);
+    //      return;
+    //    }
     
     if (map.core != null && data.side != Side.SPECTATOR) {
-      if (LocationUtils.isSameBlock(
-        block.getLocation(),
-        LocationUtils.live(LocationUtils.selfSide(map.core, pl))
-      )) {
+      if (
+        LocationUtils.isSameBlock(
+          block.getLocation(),
+          LocationUtils.live(LocationUtils.selfSide(map.core, pl))
+        )
+      ) {
         pl.sendActionBar(TextUtils.$("game.banned.break.own-core"));
         ev.setCancelled(true);
         return;
       }
-      if (LocationUtils.isSameBlock(
-        block.getLocation(),
-        LocationUtils.live(LocationUtils.enemySide(map.core, pl))
-      )) {
+      if (
+        LocationUtils.isSameBlock(
+          block.getLocation(),
+          LocationUtils.live(LocationUtils.enemySide(map.core, pl))
+        )
+      ) {
         ev.setCancelled(true);
         if (!isPlaying) return;
         
@@ -1405,9 +1458,10 @@ public class Game {
   
   public void handleBlockForm(BlockFormEvent ev) {
     if (
-      List.of(Material.OBSIDIAN, Material.CRYING_OBSIDIAN)
-        .contains(ev.getBlock().getType()) &&
-      LocationUtils.nearAnyCore(ev.getBlock().getLocation(), 3)
+      List.of(Material.OBSIDIAN, Material.CRYING_OBSIDIAN).contains(
+        ev.getBlock().getType()) && LocationUtils.nearAnyCore(
+          ev.getBlock().getLocation(),
+          3)
     ) {
       ev.setCancelled(true);
     }
@@ -1429,47 +1483,38 @@ public class Game {
   }
   
   public boolean unmovable(Block block) {
-    Predicate<Location> checker = loc ->
-      loc != null && (
-        LocationUtils.isSameBlock(
-          block.getLocation(),
-          LocationUtils.live(loc)
-        ) ||
-        LocationUtils.isSameBlock(
-          block.getLocation(),
-          LocationUtils.live(LocationUtils.flip(loc))
-        )
-      );
+    Predicate<Location> checker = loc -> loc != null && (LocationUtils.isSameBlock(
+      block.getLocation(),
+      LocationUtils.live(loc)
+    ) || LocationUtils.isSameBlock(
+      block.getLocation(),
+      LocationUtils.live(LocationUtils.flip(loc))
+    ));
     
-    Predicate<Set<Location>> listChecker = locs ->
-      locs != null &&
-        locs.stream().anyMatch(checker);
+    Predicate<Set<Location>> listChecker = locs -> locs != null && locs.stream().anyMatch(
+      checker);
     
-    return
-      checker.test(map.core) ||
-      listChecker.test(map.woods) ||
-      listChecker.test(map.ores) ||
-      listChecker.test(map.diamonds);
+    return (checker.test(map.core) || listChecker.test(
+      map.woods) || listChecker.test(
+        map.ores) || listChecker.test(map.diamonds));
   }
+  
   public boolean unmovable(List<Block> blocks) {
     return blocks.stream().anyMatch(this::unmovable);
   }
   
   public void handleExplosion(EntityExplodeEvent ev) {
-    ev.blockList().removeIf(block ->
-      unmovable(block) ||
-      block.getState() instanceof Container
+    ev.blockList().removeIf(block -> unmovable(
+      block) || block.getState() instanceof Container
     );
   }
   
   public void handlePistonExtend(BlockPistonExtendEvent ev) {
-    if (unmovable(ev.getBlocks()))
-      ev.setCancelled(true);
+    if (unmovable(ev.getBlocks())) ev.setCancelled(true);
   }
   
   public void handlePistonRetract(BlockPistonRetractEvent ev) {
-    if (unmovable(ev.getBlocks()))
-      ev.setCancelled(true);
+    if (unmovable(ev.getBlocks())) ev.setCancelled(true);
   }
   
   public void handlePickupItem(PlayerAttemptPickupItemEvent ev) {
@@ -1497,11 +1542,7 @@ public class Game {
   }
   
   public void handleInventoryClick(
-    Inventory inv,
-    Player pl,
-    ItemStack item,
-    ClickType click,
-    InventoryClickEvent ev
+                                   Inventory inv, Player pl, ItemStack item, ClickType click, InventoryClickEvent ev
   ) {
     if (!PlayerUtils.shouldHandle(pl)) return;
     
@@ -1521,18 +1562,22 @@ public class Game {
           
           ugen.use(pl, null);
           
-          BiConsumer<Integer, ItemStack> consumeItemFromSlot
-            = (slot, recipeIngredient) -> {
-              ItemStack slotItem = inv.getItem(slot);
-              if (slotItem != null && slotItem.getType() == recipeIngredient.getType()) {
-                int newAmount = slotItem.getAmount() - recipeIngredient.getAmount();
-                if (newAmount <= 0) {
-                  inv.setItem(slot, null);
-                } else {
-                  slotItem.setAmount(newAmount);
-                }
+          BiConsumer<Integer, ItemStack> consumeItemFromSlot = (
+                                                                slot, recipeIngredient
+          ) -> {
+            ItemStack slotItem = inv.getItem(slot);
+            if (
+              slotItem != null && slotItem.getType() == recipeIngredient.getType()
+            ) {
+              int newAmount = slotItem.getAmount() - recipeIngredient.getAmount();
+              if (newAmount <= 0) {
+                inv.setItem(slot, null);
               }
-            };
+              else {
+                slotItem.setAmount(newAmount);
+              }
+            }
+          };
           
           for (ItemStack ingredient : recipe.getIngredients()) {
             if (ingredient.isEmpty()) continue;
@@ -1566,10 +1611,7 @@ public class Game {
     }
     
     if (ev.getInventory() instanceof MerchantInventory) {
-      if (
-        !phase.isAfter(Phase.ShopOpened) ||
-        getSideData(pl).noShopTicks > 0
-      ) {
+      if (!phase.isAfter(Phase.ShopOpened) || getSideData(pl).noShopTicks > 0) {
         pl.sendActionBar(TextUtils.$("game.banned.shop"));
         ev.setCancelled(true);
       }
@@ -1588,8 +1630,9 @@ public class Game {
     if (loc == null) return;
     
     sd.removeEnderChestViewer(loc, pl);
-    if (sd.enderChestViewers.get(loc).isEmpty())
-      LocationUtils.playChestAnimation(loc, false);
+    if (
+      sd.enderChestViewers.get(loc).isEmpty()
+    ) LocationUtils.playChestAnimation(loc, false);
   }
   
   public void handleCrafting(PrepareItemCraftEvent ev) {
@@ -1609,13 +1652,10 @@ public class Game {
     
     if (result == null || left == null || right == null) return;
     
-    if (
-      left.isRepairableBy(right) ||
-        left.getType() == right.getType()
-    ) {
+    if (left.isRepairableBy(right) || left.getType() == right.getType()) {
       if (
-        DestroyTheCore.itemsManager.isGen(left) ||
-        DestroyTheCore.itemsManager.isGen(right)
+        DestroyTheCore.itemsManager.isGen(
+          left) || DestroyTheCore.itemsManager.isGen(right)
       ) {
         ev.setResult(null);
       }
@@ -1636,9 +1676,13 @@ public class Game {
         return;
       }
       
-      PlayerUtils.prefixedSend(pl, TextUtils.$("game.side.join.success", List.of(
-        Placeholder.component("side", side.titleComp())
-      )));
+      PlayerUtils.prefixedSend(
+        pl,
+        TextUtils.$(
+          "game.side.join.success",
+          List.of(Placeholder.component("side", side.titleComp()))
+        )
+      );
       getPlayerData(pl).join(side);
       enforceTeam(pl);
       DestroyTheCore.boardsManager.refresh(pl);
@@ -1651,57 +1695,50 @@ public class Game {
     }
     
     if (isPlaying && map.restArea != null) {
-      playerLoop: for (Player p : Bukkit.getOnlinePlayers()) {
+      playerLoop:
+      for (Player p : Bukkit.getOnlinePlayers()) {
         PlayerData pd = getPlayerData(p);
         if (pd.alive || pd.side == Side.SPECTATOR) continue;
         
-        for (Location rest : new Location[] {
-          DestroyTheCore.game.map.restArea,
-          LocationUtils.flip(DestroyTheCore.game.map.restArea)
+        for (Location rest : new Location[]{DestroyTheCore.game.map.restArea, LocationUtils.flip(
+          DestroyTheCore.game.map.restArea),
         }) {
-          if (LocationUtils.near(p.getLocation(), LocationUtils.live(rest), 6))
-            continue playerLoop;
+          if (
+            LocationUtils.near(p.getLocation(), LocationUtils.live(rest), 6)
+          ) continue playerLoop;
         }
         
         p.damage(Double.MAX_VALUE);
       }
     }
     
-    if (
-      isPlaying &&
-      data.side != Side.SPECTATOR
-    ) {
+    if (isPlaying && data.side != Side.SPECTATOR) {
       if (map.core != null && isInTruce()) {
-        double coreX = LocationUtils.toBlockCenter(
-          LocationUtils.enemySide(map.core, pl)
-        ).getX();
+        double coreX = LocationUtils.toBlockCenter(LocationUtils.enemySide(
+          map.core,
+          pl)).getX();
         
         if (Math.abs(pl.getX() - coreX) <= 30) {
           pl.sendActionBar(TextUtils.$("game.truce.warning"));
           
-          pl.addPotionEffect(new PotionEffect(
-            PotionEffectType.BLINDNESS,
-            40,
-            0,
-            true,
-            false
-          ));
-          pl.addPotionEffect(new PotionEffect(
-            PotionEffectType.SLOWNESS,
-            40,
-            2,
-            true,
-            false
-          ));
+          pl.addPotionEffect(
+            new PotionEffect(PotionEffectType.BLINDNESS, 40, 0, true, false)
+          );
+          pl.addPotionEffect(
+            new PotionEffect(PotionEffectType.SLOWNESS, 40, 2, true, false)
+          );
         }
         
         if (Math.abs(pl.getX() - coreX) <= 20) {
           pl.setHealth(1);
           PlayerUtils.teleportToSpawnPoint(pl);
           
-          PlayerUtils.broadcast(TextUtils.$("game.truce.sent-spawn", List.of(
-            Placeholder.component("player", PlayerUtils.getName(pl))
-          )));
+          PlayerUtils.broadcast(
+            TextUtils.$(
+              "game.truce.sent-spawn",
+              List.of(Placeholder.component("player", PlayerUtils.getName(pl)))
+            )
+          );
         }
       }
       
@@ -1713,24 +1750,16 @@ public class Game {
         }
         
         if (pl.getY() >= restY) {
-          if (!pl.hasPotionEffect(PotionEffectType.NAUSEA))
-            pl.addPotionEffect(new PotionEffect(
-              PotionEffectType.NAUSEA,
-              10 * 20,
-              0,
-              true,
-              false
-            ));
-          pl.addPotionEffect(new PotionEffect(
-            PotionEffectType.DARKNESS,
-            40,
-            0,
-            true,
-            false
-          ));
+          if (!pl.hasPotionEffect(PotionEffectType.NAUSEA)) pl.addPotionEffect(
+            new PotionEffect(PotionEffectType.NAUSEA, 10 * 20, 0, true, false)
+          );
+          pl.addPotionEffect(
+            new PotionEffect(PotionEffectType.DARKNESS, 40, 0, true, false)
+          );
           
-          if (pl.getFreezeTicks() < 40 * 20)
-            pl.setFreezeTicks(pl.getFreezeTicks() + 20);
+          if (pl.getFreezeTicks() < 40 * 20) pl.setFreezeTicks(
+            pl.getFreezeTicks() + 20
+          );
         }
       }
     }
@@ -1739,10 +1768,12 @@ public class Game {
   public void init() {
     bountyPrefix = TextUtils.$("game.bounty.prefix");
     
-    sideData = new HashMap<>(Map.ofEntries(
-      Map.entry(Side.RED, new SideData()),
-      Map.entry(Side.GREEN, new SideData())
-    ));
+    sideData = new HashMap<>(
+      Map.ofEntries(
+        Map.entry(Side.RED, new SideData()),
+        Map.entry(Side.GREEN, new SideData())
+      )
+    );
     
     recreateTeams();
     createScoreboards();
@@ -1750,7 +1781,8 @@ public class Game {
   }
   
   public void setBothCoreMaterial(Material type) {
-    for (Location loc : new Location[] {map.core, LocationUtils.flip(map.core)}) {
+    for (Location loc : new Location[]{map.core, LocationUtils.flip(map.core),
+    }) {
       LocationUtils.setLiveBlock(loc, type);
     }
   }
@@ -1787,28 +1819,28 @@ public class Game {
       loc.setY(loc.getBlockY());
       
       for (Villager e : loc.getNearbyEntitiesByType(Villager.class, 2)) {
-        if (LocationUtils.near(loc, e.getLocation(), 1))
-          e.remove();
+        if (LocationUtils.near(loc, e.getLocation(), 1)) e.remove();
       }
       
-      offsetLoop: for (Vector offset : new Vector[] {
-        new Vector(0, -2, 0),
-        new Vector(1, 0, 0),
-        new Vector(-1, 0, 0),
-        new Vector(0, 0, 1),
-        new Vector(0, 0, -1)
+      offsetLoop:
+      for (Vector offset : new Vector[]{new Vector(0, -2, 0), new Vector(1,
+        0,
+        0), new Vector(-1,
+          0,
+          0), new Vector(0, 0, 1), new Vector(0, 0, -1),
       }) {
         for (Shop shop : shops) {
-          if (shop.blockType != loc.clone().add(offset).getBlock().getType()) continue;
+          if (
+            shop.blockType != loc.clone().add(offset).getBlock().getType()
+          ) continue;
           
-          villagers.add(new VillagerData(
-            loc,
-            shop.summonVillager(loc)
-          ));
-          villagers.add(new VillagerData(
-            LocationUtils.flip(loc),
-            shop.summonVillager(LocationUtils.flip(loc))
-          ));
+          villagers.add(new VillagerData(loc, shop.summonVillager(loc)));
+          villagers.add(
+            new VillagerData(
+              LocationUtils.flip(loc),
+              shop.summonVillager(LocationUtils.flip(loc))
+            )
+          );
           
           break offsetLoop;
         }
@@ -1837,10 +1869,7 @@ public class Game {
             }
             
             PlayerUtils.longTitleTimes(p);
-            p.sendTitlePart(
-              TitlePart.TITLE,
-              TextUtils.$("general.title")
-            );
+            p.sendTitlePart(TitlePart.TITLE, TextUtils.$("general.title"));
             p.sendTitlePart(
               TitlePart.SUBTITLE,
               TextUtils.$("general.subtitle")
@@ -1853,11 +1882,9 @@ public class Game {
             );
           }
           
-          Bukkit.getScheduler().runTaskLater(
-            DestroyTheCore.instance,
+          Bukkit.getScheduler().runTaskLater(DestroyTheCore.instance,
             Game.this::start,
-            100
-          );
+            100);
           
           cancel();
           return;
@@ -1868,15 +1895,10 @@ public class Game {
           p.sendTitlePart(
             TitlePart.TITLE,
             Component.text(countdown).color(
-              countdown <= 3
-                ? NamedTextColor.GOLD
-                : NamedTextColor.GRAY
+              countdown <= 3 ? NamedTextColor.GOLD : NamedTextColor.GRAY
             )
           );
-          p.sendTitlePart(
-            TitlePart.SUBTITLE,
-            Component.empty()
-          );
+          p.sendTitlePart(TitlePart.SUBTITLE, Component.empty());
           p.playSound(
             p.getLocation(),
             Sound.BLOCK_NOTE_BLOCK_BELL,
@@ -1895,23 +1917,13 @@ public class Game {
     
     for (Player p : Bukkit.getOnlinePlayers()) {
       PlayerUtils.normalTitleTimes(p);
-      p.sendTitlePart(
-        TitlePart.TITLE,
-        TextUtils.$("game.start-canceled")
-      );
+      p.sendTitlePart(TitlePart.TITLE, TextUtils.$("game.start-canceled"));
     }
   }
   
   public void start() {
     if (
-      map.restArea == null ||
-      map.core == null ||
-      map.mission == null ||
-      map.spawnpoints == null ||
-      map.woods == null ||
-      map.ores == null ||
-      map.diamonds == null ||
-      map.shops == null
+      map.restArea == null || map.core == null || map.mission == null || map.spawnpoints == null || map.woods == null || map.ores == null || map.diamonds == null || map.shops == null
     ) {
       PlayerUtils.prefixedBroadcast(TextUtils.$("game.missing-loc"));
       return;
@@ -1941,7 +1953,10 @@ public class Game {
       if (!PlayerUtils.shouldHandle(p)) continue;
       
       PlayerData oldData = getPlayerData(p);
-      playerData.put(p.getUniqueId(), new PlayerData(p, oldData.side, oldData.role));
+      playerData.put(
+        p.getUniqueId(),
+        new PlayerData(p, oldData.side, oldData.role)
+      );
       
       PlayerUtils.refreshSpectatorAbilities(p);
       PlayerUtils.hideSpectators(p);
@@ -1950,7 +1965,10 @@ public class Game {
     DestroyTheCore.boardsManager.refresh();
     
     // After 0: respawn, 1: give essential items
-    CoreUtils.setTickOut(() -> DestroyTheCore.rolesManager.onPhaseChange(phase), 2);
+    CoreUtils.setTickOut(
+      () -> DestroyTheCore.rolesManager.onPhaseChange(phase),
+      2
+    );
   }
   
   public void nextPhase() {
@@ -1978,14 +1996,8 @@ public class Game {
     
     for (Player p : Bukkit.getOnlinePlayers()) {
       PlayerUtils.longTitleTimes(p);
-      p.sendTitlePart(
-        TitlePart.TITLE,
-        phase.title()
-      );
-      p.sendTitlePart(
-        TitlePart.SUBTITLE,
-        phase.description()
-      );
+      p.sendTitlePart(TitlePart.TITLE, phase.title());
+      p.sendTitlePart(TitlePart.SUBTITLE, phase.description());
       
       p.playSound(
         p.getLocation(),
@@ -1996,10 +2008,7 @@ public class Game {
     }
     
     for (PlayerData data : playerData.values()) {
-      data.setRespawnTime(Math.max(
-        data.respawnTime,
-        phase.minRespawnTime()
-      ));
+      data.setRespawnTime(Math.max(data.respawnTime, phase.minRespawnTime()));
     }
   }
   
@@ -2010,7 +2019,10 @@ public class Game {
     
     PlayerUtils.showAllPlayers();
     for (Player p : Bukkit.getOnlinePlayers())
-      PlayerUtils.refreshSpectatorAbilities(p, false);
+      PlayerUtils.refreshSpectatorAbilities(
+        p,
+        false
+      );
     
     hideRTScore();
     
@@ -2036,8 +2048,11 @@ public class Game {
       
       if (PlayerUtils.shouldHandle(p)) {
         p.getInventory().clear();
-        p.getInventory().setItem(4, DestroyTheCore.itemsManager.gens
-          .get(ItemsManager.ItemKey.CHOOSE_ROLE).getItem());
+        p.getInventory().setItem(
+          4,
+          DestroyTheCore.itemsManager.gens.get(
+            ItemsManager.ItemKey.CHOOSE_ROLE).getItem()
+        );
       }
     }
     
@@ -2048,8 +2063,9 @@ public class Game {
   }
   
   public void checkWinner() {
-    int redHealth = getSideData(Side.RED).coreHealth,
-      greenHealth = getSideData(Side.GREEN).coreHealth;
+    int redHealth = getSideData(Side.RED).coreHealth, greenHealth = getSideData(
+      Side.GREEN
+    ).coreHealth;
     
     if (phase == null) {
       if (redHealth == greenHealth) {
@@ -2067,7 +2083,7 @@ public class Game {
         reflectResult(Side.RED, "destroyed");
       }
       else if (redHealth <= 0) {
-        reflectResult(Side.GREEN,"destroyed");
+        reflectResult(Side.GREEN, "destroyed");
       }
       else {
         return;
@@ -2077,7 +2093,8 @@ public class Game {
     stop();
   }
   
-  static public class TopThree {
+  public static class TopThree {
+    
     // Top 3 scores
     int v1 = Integer.MIN_VALUE;
     int v2 = Integer.MIN_VALUE;
@@ -2142,18 +2159,23 @@ public class Game {
     void sendLine(Player pl, String id, List<Player> tops, int value) {
       if (tops.isEmpty()) return;
       
-      PlayerUtils.send(pl, TextUtils.$("game.credits.list." + id, List.of(
-        Placeholder.component(
-          "players",
-          Component.join(
-            JoinConfiguration.separator(Component.text(", ")),
-            tops.stream()
-              .map(PlayerUtils::getName)
-              .toList().toArray(new Component[0])
+      PlayerUtils.send(
+        pl,
+        TextUtils.$(
+          "game.credits.list." + id,
+          List.of(
+            Placeholder.component(
+              "players",
+              Component.join(
+                JoinConfiguration.separator(Component.text(", ")),
+                tops.stream().map(PlayerUtils::getName).toList().toArray(
+                  new Component[0])
+              )
+            ),
+            Placeholder.component("count", Component.text(value))
           )
-        ),
-        Placeholder.component("count", Component.text(value))
-      )));
+        )
+      );
     }
     
     public void send(Player pl) {
@@ -2170,8 +2192,9 @@ public class Game {
   public void showCredits() {
     TopThree topAttackers = new TopThree("top-attackers"),
       topKillers = new TopThree("top-killers"),
-      topDyers = new TopThree("top-dyers"),
-      topMiners = new TopThree("top-miners");
+      topDyers = new TopThree(
+        "top-dyers"
+      ), topMiners = new TopThree("top-miners");
     
     for (Player p : Bukkit.getOnlinePlayers()) {
       PlayerData data = getPlayerData(p);
@@ -2185,12 +2208,21 @@ public class Game {
     for (Player p : Bukkit.getOnlinePlayers()) {
       PlayerUtils.send(p, Component.empty());
       PlayerUtils.send(p, TextUtils.$("game.credits.title"));
-      PlayerUtils.send(p, TextUtils.$("game.credits.time", List.of(
-        Placeholder.component("time", CoreUtils.formatTimeComp(
-          Math.ceilDiv(DestroyTheCore.ticksManager.ticksCount, 20),
-          NamedTextColor.GREEN
-        ))
-      )));
+      PlayerUtils.send(
+        p,
+        TextUtils.$(
+          "game.credits.time",
+          List.of(
+            Placeholder.component(
+              "time",
+              CoreUtils.formatTimeComp(
+                Math.ceilDiv(DestroyTheCore.ticksManager.ticksCount, 20),
+                NamedTextColor.GREEN
+              )
+            )
+          )
+        )
+      );
       PlayerUtils.send(p, Component.empty());
       topKillers.send(p);
       PlayerUtils.send(p, Component.empty());
@@ -2209,14 +2241,8 @@ public class Game {
   public void draw() {
     for (Player p : Bukkit.getOnlinePlayers()) {
       PlayerUtils.longTitleTimes(p);
-      p.sendTitlePart(
-        TitlePart.TITLE,
-        TextUtils.$("game.result.titles.draw")
-      );
-      p.sendTitlePart(
-        TitlePart.SUBTITLE,
-        Component.empty()
-      );
+      p.sendTitlePart(TitlePart.TITLE, TextUtils.$("game.result.titles.draw"));
+      p.sendTitlePart(TitlePart.SUBTITLE, Component.empty());
       p.playSound(
         p.getLocation(),
         Sound.BLOCK_ANVIL_USE,
@@ -2260,9 +2286,10 @@ public class Game {
       );
       p.sendTitlePart(
         TitlePart.SUBTITLE,
-        TextUtils.$("game.result.subtitles." + reasonKey, List.of(
-          Placeholder.component("side", winner.titleComp())
-        ))
+        TextUtils.$(
+          "game.result.subtitles." + reasonKey,
+          List.of(Placeholder.component("side", winner.titleComp()))
+        )
       );
       p.playSound(
         p.getLocation(),
@@ -2339,42 +2366,36 @@ public class Game {
       }
     }
     
-    if (
-      isPlaying &&
-      DestroyTheCore.ticksManager.isUpdateTick()
-    ) {
+    if (isPlaying && DestroyTheCore.ticksManager.isUpdateTick()) {
       for (Player p : Bukkit.getOnlinePlayers()) {
         PlayerData data = getPlayerData(p);
         if (PlayerUtils.inLobby(p)) continue;
         
         if (
-          p.getInventory().contains(Material.ENCHANTING_TABLE) ||
-          p.getInventory().contains(Material.ENDER_CHEST)
+          p.getInventory().contains(
+            Material.ENCHANTING_TABLE) || p.getInventory().contains(
+              Material.ENDER_CHEST)
         ) {
-          p.addPotionEffect(new PotionEffect(
-            PotionEffectType.SLOWNESS,
-            30,
-            2,
-            true,
-            false
-          ));
-          p.addPotionEffect(new PotionEffect(
-            PotionEffectType.WEAKNESS,
-            30,
-            9,
-            true,
-            false
-          ));
+          p.addPotionEffect(
+            new PotionEffect(PotionEffectType.SLOWNESS, 30, 2, true, false)
+          );
+          p.addPotionEffect(
+            new PotionEffect(PotionEffectType.WEAKNESS, 30, 9, true, false)
+          );
         }
         
-        if (DestroyTheCore.itemsManager.checkGen(
-          p.getInventory().getItemInOffHand(),
-          ItemsManager.ItemKey.SKILL_COOLDOWN_ASSIST
-        )) {
+        if (
+          DestroyTheCore.itemsManager.checkGen(
+            p.getInventory().getItemInOffHand(),
+            ItemsManager.ItemKey.SKILL_COOLDOWN_ASSIST
+          )
+        ) {
           data.extraSkillReload += TicksManager.updateRate;
         }
         
-        if (p.getCooldown(Material.KNOWLEDGE_BOOK) - data.extraSkillReload <= 0) {
+        if (
+          p.getCooldown(Material.KNOWLEDGE_BOOK) - data.extraSkillReload <= 0
+        ) {
           p.setCooldown(Material.KNOWLEDGE_BOOK, 0);
           data.extraSkillReload = 0;
         }
@@ -2384,24 +2405,18 @@ public class Game {
     updateVillagers();
     
     if (
-      map.core != null &&
-      phase.isAfter(Phase.CoreWilting) &&
-      DestroyTheCore.ticksManager.ticksCount % (15 * 20) == 0
+      map.core != null && phase.isAfter(
+        Phase.CoreWilting) && DestroyTheCore.ticksManager.ticksCount % (15 * 20) == 0
     ) {
       getSideData(Side.RED).directAttackCore();
       getSideData(Side.GREEN).directAttackCore();
       checkWinner();
       
-      for (Location loc : new Location[] {map.core, LocationUtils.flip(map.core)}) {
-        new ParticleBuilder(Particle.WITCH)
-          .allPlayers()
-          .location(LocationUtils.live(
-            LocationUtils.toBlockCenter(loc)
-          ).add(0, -0.2, 0))
-          .offset(0, 0, 0)
-          .count(20)
-          .extra(1)
-          .spawn();
+      for (Location loc : new Location[]{map.core, LocationUtils.flip(map.core),
+      }) {
+        new ParticleBuilder(Particle.WITCH).allPlayers().location(
+          LocationUtils.live(LocationUtils.toBlockCenter(loc)).add(0, -0.2, 0)
+        ).offset(0, 0, 0).count(20).extra(1).spawn();
       }
       
       for (Player p : Bukkit.getOnlinePlayers()) {
@@ -2424,8 +2439,7 @@ public class Game {
       PlayerData d = getPlayerData(p);
       if (d.side == Side.SPECTATOR) continue;
       
-      if (d.shoutCooldown > 0)
-        d.shoutCooldown--;
+      if (d.shoutCooldown > 0) d.shoutCooldown--;
       
       d.role.onTick(p);
     }
@@ -2440,8 +2454,9 @@ public class Game {
       PlayerData data = getPlayerData(p);
       
       if (
-        p.getInventory().contains(Material.ENCHANTING_TABLE) ||
-        p.getInventory().contains(Material.ENDER_CHEST)
+        p.getInventory().contains(
+          Material.ENCHANTING_TABLE) || p.getInventory().contains(
+            Material.ENDER_CHEST)
       ) {
         ParticleUtils.dust(
           PlayerUtils.all(),
@@ -2460,16 +2475,11 @@ public class Game {
     }
     
     if (isPlaying && map.core != null) {
-      for (Location loc : new Location[] {map.core, LocationUtils.flip(map.core)}) {
-        new ParticleBuilder(Particle.ENCHANT)
-          .allPlayers()
-          .location(LocationUtils.live(
-            LocationUtils.toBlockCenter(loc)
-          ).add(0, 0.6, 0))
-          .count(2)
-          .offset(0.3, 0.2, 0.3)
-          .extra(1.5)
-          .spawn();
+      for (Location loc : new Location[]{map.core, LocationUtils.flip(map.core),
+      }) {
+        new ParticleBuilder(Particle.ENCHANT).allPlayers().location(
+          LocationUtils.live(LocationUtils.toBlockCenter(loc)).add(0, 0.6, 0)
+        ).count(2).offset(0.3, 0.2, 0.3).extra(1.5).spawn();
       }
     }
   }

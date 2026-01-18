@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 public class AssignMoreRespawnTimeGen extends UsableItemGen {
+  
   public AssignMoreRespawnTimeGen() {
     super(
       ItemsManager.ItemKey.ASSIGN_MORE_RESPAWN_TIME,
@@ -52,11 +53,14 @@ public class AssignMoreRespawnTimeGen extends UsableItemGen {
           Color.AQUA
         );
         PlayerUtils.broadcast(
-          TextUtils.$("items.assign-more-respawn-time.announce", List.of(
-            Placeholder.component("player", PlayerUtils.getName(pl)),
-            Placeholder.component("item", getItem().effectiveName()),
-            Placeholder.component("target", PlayerUtils.getName(target))
-          ))
+          TextUtils.$(
+            "items.assign-more-respawn-time.announce",
+            List.of(
+              Placeholder.component("player", PlayerUtils.getName(pl)),
+              Placeholder.component("item", getItem().effectiveName()),
+              Placeholder.component("target", PlayerUtils.getName(target))
+            )
+          )
         );
       }
     );

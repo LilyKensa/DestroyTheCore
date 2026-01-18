@@ -19,17 +19,18 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 
 public class DiscountTraderMission extends InstantMission {
+  
   public DiscountTraderMission() {
     super("discount-trader");
   }
   
   @Override
   public void run() {
-    WanderingTrader trader = (WanderingTrader) loc.getWorld().spawnEntity(
-      loc,
-      EntityType.WANDERING_TRADER
+    WanderingTrader trader = (WanderingTrader) loc.getWorld().spawnEntity(loc,
+      EntityType.WANDERING_TRADER);
+    trader.customName(
+      TextUtils.$("missions.discount-trader.trader").color(null)
     );
-    trader.customName(TextUtils.$("missions.discount-trader.trader").color(null));
     trader.setCustomNameVisible(true);
     trader.setInvulnerable(true);
     
@@ -42,32 +43,24 @@ public class DiscountTraderMission extends InstantMission {
     BiConsumer<Integer, ItemStack> adder = (price, item) -> {
       if (RandomUtils.hit(0.8)) return;
       
-      MerchantRecipe recipe = new MerchantRecipe(
-        item,
-        0,
-        1,
-        true,
-        0,
-        1
-      );
+      MerchantRecipe recipe = new MerchantRecipe(item, 0, 1, true, 0, 1);
       recipe.addIngredient(new ItemStack(Material.GOLD_INGOT, price));
       
       trades.add(recipe);
     };
     
-    BiFunction<ItemsManager.ItemKey, Integer, ItemStack> customGen
-      = (key, count) ->
-        DestroyTheCore.itemsManager.gens.get(key).getItem(count);
+    BiFunction<ItemsManager.ItemKey, Integer, ItemStack> customGen = (
+                                                                      key, count
+    ) -> DestroyTheCore.itemsManager.gens.get(key).getItem(count);
     
-    BiFunction<Enchantment, Integer, ItemStack> bookGen
-      = (enchant, level) -> {
-        ItemStack item = new ItemStack(Material.ENCHANTED_BOOK);
-        item.editMeta(uncastedMeta -> {
-          EnchantmentStorageMeta meta = (EnchantmentStorageMeta) uncastedMeta;
-          meta.addStoredEnchant(enchant, level, true);
-        });
-        return item;
-      };
+    BiFunction<Enchantment, Integer, ItemStack> bookGen = (enchant, level) -> {
+      ItemStack item = new ItemStack(Material.ENCHANTED_BOOK);
+      item.editMeta(uncastedMeta -> {
+        EnchantmentStorageMeta meta = (EnchantmentStorageMeta) uncastedMeta;
+        meta.addStoredEnchant(enchant, level, true);
+      });
+      return item;
+    };
     
     adder.accept(10, new ItemStack(Material.EXPERIENCE_BOTTLE, 64));
     adder.accept(30, new ItemStack(Material.DIAMOND, 5));

@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 public class NightVisionCommand extends Subcommand {
+  
   public NightVisionCommand() {
     super("night-vision");
   }
@@ -21,8 +22,9 @@ public class NightVisionCommand extends Subcommand {
     stats.nightVision = !stats.nightVision;
     PlayerUtils.enforceNightVision(pl);
     
-    PlayerUtils.prefixedSend(pl, TextUtils.$(
-      "commands.night-vision." + (stats.nightVision ? "on" : "off")
-    ));
+    PlayerUtils.prefixedSend(
+      pl,
+      TextUtils.$("commands.night-vision." + (stats.nightVision ? "on" : "off"))
+    );
   }
 }

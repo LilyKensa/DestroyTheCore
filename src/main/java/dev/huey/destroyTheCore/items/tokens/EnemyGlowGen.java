@@ -17,12 +17,9 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.List;
 
 public class EnemyGlowGen extends UsableItemGen {
+  
   public EnemyGlowGen() {
-    super(
-      ItemsManager.ItemKey.ENEMY_GLOW,
-      Material.BIRCH_SIGN,
-      true
-    );
+    super(ItemsManager.ItemKey.ENEMY_GLOW, Material.BIRCH_SIGN, true);
   }
   
   @Override
@@ -52,10 +49,13 @@ public class EnemyGlowGen extends UsableItemGen {
     }
     
     PlayerUtils.broadcast(
-      TextUtils.$("items.enemy-glow.announce", List.of(
-        Placeholder.component("player", PlayerUtils.getName(pl)),
-        Placeholder.component("item", getItem().effectiveName())
-      ))
+      TextUtils.$(
+        "items.enemy-glow.announce",
+        List.of(
+          Placeholder.component("player", PlayerUtils.getName(pl)),
+          Placeholder.component("item", getItem().effectiveName())
+        )
+      )
     );
   }
 }

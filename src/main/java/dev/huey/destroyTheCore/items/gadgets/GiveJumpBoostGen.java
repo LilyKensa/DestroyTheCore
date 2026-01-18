@@ -14,11 +14,9 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.List;
 
 public class GiveJumpBoostGen extends UsableItemGen {
+  
   public GiveJumpBoostGen() {
-    super(
-      ItemsManager.ItemKey.GIVE_JUMP_BOOST,
-      Material.SLIME_BALL
-    );
+    super(ItemsManager.ItemKey.GIVE_JUMP_BOOST, Material.SLIME_BALL);
   }
   
   @Override
@@ -29,20 +27,17 @@ public class GiveJumpBoostGen extends UsableItemGen {
     PlayerUtils.takeOneItemFromHand(pl);
     
     pl.addPotionEffect(
-      new PotionEffect(
-        PotionEffectType.JUMP_BOOST,
-        6 * 20,
-        9,
-        false,
-        true
-      )
+      new PotionEffect(PotionEffectType.JUMP_BOOST, 6 * 20, 9, false, true)
     );
     
     PlayerUtils.broadcast(
-      TextUtils.$("items.give-jump-boost.announce", List.of(
-        Placeholder.component("player", PlayerUtils.getName(pl)),
-        Placeholder.component("item", getItem().effectiveName())
-      ))
+      TextUtils.$(
+        "items.give-jump-boost.announce",
+        List.of(
+          Placeholder.component("player", PlayerUtils.getName(pl)),
+          Placeholder.component("item", getItem().effectiveName())
+        )
+      )
     );
   }
 }

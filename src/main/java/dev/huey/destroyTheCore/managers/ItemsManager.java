@@ -41,81 +41,39 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class ItemsManager {
+  
   /** Every item-gen's unique key */
   public enum ItemKey {
     // Armors
-    ELYTRA,
-    STARTER_HELMET,
-    STARTER_CHESTPLATE,
-    STARTER_LEGGINGS,
-    STARTER_BOOTS,
-    GOD_HELMET,
-    GOD_CHESTPLATE,
-    GOD_LEGGINGS,
-    GOD_BOOTS,
-    ABSORPTION_HELMET,
-    SHAME_CHESTPLATE,
+    ELYTRA, STARTER_HELMET, STARTER_CHESTPLATE, STARTER_LEGGINGS, STARTER_BOOTS, GOD_HELMET, GOD_CHESTPLATE, GOD_LEGGINGS, GOD_BOOTS, ABSORPTION_HELMET, SHAME_CHESTPLATE,
     // Weapons
-    TRIDENT,
-    NETHERITE_SWORD,
-    NETHERITE_AXE,
-    STARTER_SWORD,
-    KB_STICK,
+    TRIDENT, NETHERITE_SWORD, NETHERITE_AXE, STARTER_SWORD, KB_STICK,
     // Assists,
-    DAMAGE_ASSIST,
-    INK_ASSIST,
-    SKILL_COOLDOWN_ASSIST,
+    DAMAGE_ASSIST, INK_ASSIST, SKILL_COOLDOWN_ASSIST,
     // Gadgets
-    ASSIGN_RESPAWN_TIME,
-    ADD_CORE_HEALTH,
-    BRIDGE_HELPER,
-    GIVE_SPEED,
-    GIVE_JUMP_BOOST,
-    GIVE_STRENGTH,
-    GRENADE,
-    RANDOM_ROLE,
+    ASSIGN_RESPAWN_TIME, ADD_CORE_HEALTH, BRIDGE_HELPER, GIVE_SPEED, GIVE_JUMP_BOOST, GIVE_STRENGTH, GRENADE, RANDOM_ROLE,
     // Wands
     LEVI_STICK,
     // Tokens
-    ASSIGN_CLEAR_INV,
-    ENEMY_GLOW,
-    CORE_INVULN,
-    IGNORE_CORE_INVULN,
-    ASSIGN_MORE_RESPAWN_TIME,
-    LAST_DITCH,
-    RESPAWN_TEAMMATES,
-    TRUCE,
+    ASSIGN_CLEAR_INV, ENEMY_GLOW, CORE_INVULN, IGNORE_CORE_INVULN, ASSIGN_MORE_RESPAWN_TIME, LAST_DITCH, RESPAWN_TEAMMATES, TRUCE,
     // Projectiles
-    ICE_ARROW,
-    WEAKNESS_ARROW,
-    POISON_ARROW,
+    ICE_ARROW, WEAKNESS_ARROW, POISON_ARROW,
     // Misc
-    ABSORPTION_POTION,
-    INVIS_POTION,
-    LOTTERY,
-    WITCHCRAFT,
+    ABSORPTION_POTION, INVIS_POTION, LOTTERY, WITCHCRAFT,
     // Fragments
-    PLACEHOLDER,
-    SOUL,
+    PLACEHOLDER, SOUL,
     // GUI
-    CHOOSE_ROLE,
-    SPECTATOR_TELEPORTER,
+    CHOOSE_ROLE, SPECTATOR_TELEPORTER,
     // Roles
-    GOLD_DIGGER_CHESTPLATE,
-    RANGER_HELMET,
-    KEKKAI_MASTER_LEGGINGS,
-    CONSTRUCTOR_HELMET,
-    PROVOCATEUR_HELMET
+    GOLD_DIGGER_CHESTPLATE, RANGER_HELMET, KEKKAI_MASTER_LEGGINGS, CONSTRUCTOR_HELMET, PROVOCATEUR_HELMET,
   }
   
   /** Filter item-gens by type */
   <T extends ItemGen> Map<ItemKey, T> filterGens(Class<T> clazz) {
-    return gens.entrySet().stream()
-      .filter(e -> clazz.isInstance(e.getValue()))
-      .collect(Collectors.toMap(
-        Map.Entry::getKey,
-        e -> clazz.cast(e.getValue())
-      ));
+    return gens.entrySet().stream().filter(e -> clazz.isInstance(
+      e.getValue())).collect(
+        Collectors.toMap(Map.Entry::getKey, e -> clazz.cast(e.getValue()))
+      );
   }
   
   public Map<ItemKey, ItemGen> gens;
@@ -196,25 +154,25 @@ public class ItemsManager {
   }
   
   public boolean isGen(ItemStack item) {
-    return item != null &&
-      item.hasItemMeta() &&
-      item.getItemMeta().getPersistentDataContainer().has(ItemGen.dataNamespace);
+    return (item != null && item.hasItemMeta() && item.getItemMeta().getPersistentDataContainer().has(
+      ItemGen.dataNamespace));
   }
   
   /** Check if the item stack is an instance of the specific item-gen */
   public boolean checkGen(ItemStack item, ItemKey key) {
-    return isGen(item) && key.name().equals(
-      item.getItemMeta().getPersistentDataContainer()
-        .get(ItemGen.dataNamespace, PersistentDataType.STRING)
-    );
+    return (isGen(item) && key.name().equals(
+      item.getItemMeta().getPersistentDataContainer().get(ItemGen.dataNamespace,
+        PersistentDataType.STRING)
+    ));
   }
   
   /** Get an instance of a item-gen */
   public ItemGen getGen(ItemStack item) {
     if (!isGen(item)) return null;
     
-    String id = item.getItemMeta().getPersistentDataContainer()
-      .get(ItemGen.dataNamespace, PersistentDataType.STRING);
+    String id = item.getItemMeta().getPersistentDataContainer().get(
+      ItemGen.dataNamespace,
+      PersistentDataType.STRING);
     return gens.get(ItemKey.valueOf(id));
   }
   
@@ -224,30 +182,26 @@ public class ItemsManager {
       if (item.getType().isAir()) continue;
       
       for (AssistItemGen ig : assistGens.values()) {
-        if (ig.checkItem(item))
-          ig.onEquippingTick(pl);
+        if (ig.checkItem(item)) ig.onEquippingTick(pl);
       }
     }
   }
   
   public void onPlayerDamage(Player attacker, Player victim) {
-    if (!PlayerUtils.shouldHandle(attacker) || !PlayerUtils.shouldHandle(victim)) return;
+    if (
+      !PlayerUtils.shouldHandle(attacker) || !PlayerUtils.shouldHandle(victim)
+    ) return;
     
     ItemStack item = victim.getInventory().getItemInOffHand();
     
     for (AssistItemGen ig : assistGens.values()) {
-      if (ig.checkItem(item))
-        ig.onAttack(victim, attacker);
+      if (ig.checkItem(item)) ig.onAttack(victim, attacker);
     }
   }
   
   public void onPlayerInteract(PlayerInteractEvent ev) {
     if (
-      ev.getHand() != EquipmentSlot.HAND ||
-      !(
-        ev.getAction() == Action.RIGHT_CLICK_AIR ||
-        ev.getAction() == Action.RIGHT_CLICK_BLOCK
-      )
+      ev.getHand() != EquipmentSlot.HAND || !(ev.getAction() == Action.RIGHT_CLICK_AIR || ev.getAction() == Action.RIGHT_CLICK_BLOCK)
     ) return;
     
     Player pl = ev.getPlayer();

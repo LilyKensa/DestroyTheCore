@@ -7,11 +7,9 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class KbStickGen extends ItemGen {
+  
   public KbStickGen() {
-    super(
-      ItemsManager.ItemKey.KB_STICK,
-      Material.STICK
-    );
+    super(ItemsManager.ItemKey.KB_STICK, Material.STICK);
   }
   
   @Override

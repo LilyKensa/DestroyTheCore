@@ -17,8 +17,11 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class CargoMission extends Mission implements Listener {
-  public static final NamespacedKey dataNamespace
-    = new NamespacedKey(DestroyTheCore.instance, "cargo-mission-package");
+  
+  public static final NamespacedKey dataNamespace = new NamespacedKey(
+    DestroyTheCore.instance,
+    "cargo-mission-package"
+  );
   
   public static ItemStack getItem() {
     ItemStack item = new ItemStack(Material.VAULT);
@@ -26,8 +29,9 @@ public class CargoMission extends Mission implements Listener {
     item.editMeta(meta -> {
       meta.displayName(TextUtils.$("missions.cargo.item"));
       
-      meta.getPersistentDataContainer()
-        .set(dataNamespace, PersistentDataType.BOOLEAN, true);
+      meta.getPersistentDataContainer().set(dataNamespace,
+        PersistentDataType.BOOLEAN,
+        true);
     });
     
     return item;
@@ -38,8 +42,9 @@ public class CargoMission extends Mission implements Listener {
       if (item == null || item.isEmpty()) continue;
       if (!item.hasItemMeta()) continue;
       
-      if (item.getItemMeta().getPersistentDataContainer().has(dataNamespace))
-        return true;
+      if (
+        item.getItemMeta().getPersistentDataContainer().has(dataNamespace)
+      ) return true;
     }
     
     return false;
@@ -60,7 +65,7 @@ public class CargoMission extends Mission implements Listener {
     Player a = randomPlayer(Game.Side.RED), b = randomPlayer(Game.Side.GREEN);
     if (a == null || b == null) return;
     
-    for (Player pl : new Player[] {a, b}) {
+    for (Player pl : new Player[]{a, b}) {
       if (pl == null) continue;
       
       pl.give(getItem());
@@ -73,24 +78,20 @@ public class CargoMission extends Mission implements Listener {
       for (Player p : PlayerUtils.allGaming()) {
         if (!hasItem(p)) continue;
         
-        p.addPotionEffect(new PotionEffect(
-          PotionEffectType.SLOWNESS,
-          20,
-          9,
-          true,
-          false
-        ));
-        p.addPotionEffect(new PotionEffect(
-          PotionEffectType.GLOWING,
-          20,
-          0,
-          true,
-          false
-        ));
+        p.addPotionEffect(
+          new PotionEffect(PotionEffectType.SLOWNESS, 20, 9, true, false)
+        );
+        p.addPotionEffect(
+          new PotionEffect(PotionEffectType.GLOWING, 20, 0, true, false)
+        );
         
-        if (LocationUtils.near(p.getLocation(), LocationUtils.live(
-          DestroyTheCore.game.map.mission
-        ), 5)) {
+        if (
+          LocationUtils.near(
+            p.getLocation(),
+            LocationUtils.live(DestroyTheCore.game.map.mission),
+            5
+          )
+        ) {
           draw = false;
           declareWinner(p);
           end();
@@ -102,8 +103,7 @@ public class CargoMission extends Mission implements Listener {
   
   @Override
   public void finish() {
-    if (draw)
-      declareDraw();
+    if (draw) declareDraw();
     
     for (Player p : PlayerUtils.allGaming()) {
       p.getInventory().remove(Material.VAULT);

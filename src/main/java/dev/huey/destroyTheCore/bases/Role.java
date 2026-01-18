@@ -37,19 +37,23 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class Role extends GUIItem {
+  
   /** Used to distinguish skill items, stored data is {@code true} */
-  static public final NamespacedKey skillNamespace = new NamespacedKey(
+  public static final NamespacedKey skillNamespace = new NamespacedKey(
     DestroyTheCore.instance,
     "skill"
   );
-  /** Used to distinguish role-exclusive items, stored data is the name of {@link #id} */
-  static public final NamespacedKey exclusiveItemNamespace = new NamespacedKey(
+  /**
+   * Used to distinguish role-exclusive items, stored data is the name of
+   * {@link #id}
+   */
+  public static final NamespacedKey exclusiveItemNamespace = new NamespacedKey(
     DestroyTheCore.instance,
     "exclusive-item"
   );
   
   /** Prefixed send */
-  static public void send(Player pl, Component message) {
+  public static void send(Player pl, Component message) {
     PlayerUtils.send(pl, TextUtils.$("role.prefix").append(message));
   }
   
@@ -81,12 +85,10 @@ public class Role extends GUIItem {
     for (int i = 1; true; ++i) {
       key = translateRoot.formatted(translationName) + "-" + i;
       
-      if (DestroyTheCore.translationsManager.has(key))
-        list.add(TextUtils.miniToRawCodes(
-          DestroyTheCore.translationsManager.getRaw(key)
-        ));
-      else
-        break;
+      if (DestroyTheCore.translationsManager.has(key)) list.add(
+        TextUtils.miniToRawCodes(DestroyTheCore.translationsManager.getRaw(key))
+      );
+      else break;
     }
     
     return list;
@@ -123,8 +125,10 @@ public class Role extends GUIItem {
     itemDesc = $r("roles.%s.item.detail");
     itemMetaEditor = editor;
   }
+  
   public void addExclusiveItem(Material type) {
-    addExclusiveItem(type, meta -> {});
+    addExclusiveItem(type, meta -> {
+    });
   }
   
   public void addSkill(int cd) {
@@ -136,10 +140,13 @@ public class Role extends GUIItem {
   /** Announce that a player has changed to this role */
   public void announce(Player pl) {
     PlayerUtils.prefixedBroadcast(
-      TextUtils.$("role.change", List.of(
-        Placeholder.component("player", PlayerUtils.getName(pl)),
-        Placeholder.unparsed("role", name)
-      ))
+      TextUtils.$(
+        "role.change",
+        List.of(
+          Placeholder.component("player", PlayerUtils.getName(pl)),
+          Placeholder.unparsed("role", name)
+        )
+      )
     );
   }
   
@@ -148,19 +155,31 @@ public class Role extends GUIItem {
     item.editMeta(meta -> {
       meta.setEnchantmentGlintOverride(true);
       
-      meta.displayName(TextUtils.$("role.skill.title", List.of(
-        Placeholder.unparsed("name", skillName)
-      )));
+      meta.displayName(
+        TextUtils.$(
+          "role.skill.title",
+          List.of(Placeholder.unparsed("name", skillName))
+        )
+      );
       
       List<Component> lore = new ArrayList<>();
-      for (String line : skillDesc)
-        lore.add(Component.text(line)
-          .decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE));
+      for (String line : skillDesc) lore.add(
+        Component.text(line).decoration(TextDecoration.ITALIC,
+          TextDecoration.State.FALSE)
+      );
       meta.lore(lore);
       
-      lore.add(TextUtils.$("role.skill.cooldown", List.of(
-        Placeholder.component("cooldown", Component.text(skillCooldown / 20))
-      )));
+      lore.add(
+        TextUtils.$(
+          "role.skill.cooldown",
+          List.of(
+            Placeholder.component(
+              "cooldown",
+              Component.text(skillCooldown / 20)
+            )
+          )
+        )
+      );
       
       meta.addItemFlags(
         ItemFlag.HIDE_ATTRIBUTES,
@@ -169,8 +188,9 @@ public class Role extends GUIItem {
         ItemFlag.HIDE_ADDITIONAL_TOOLTIP
       );
       
-      meta.getPersistentDataContainer()
-        .set(skillNamespace, PersistentDataType.BOOLEAN, true);
+      meta.getPersistentDataContainer().set(skillNamespace,
+        PersistentDataType.BOOLEAN,
+        true);
     });
     return item;
   }
@@ -183,17 +203,20 @@ public class Role extends GUIItem {
       meta.setUnbreakable(true);
       
       meta.displayName(Component.text(itemName));
-      meta.lore(List.of(TextUtils.$("role.item-lore", List.of(
-        Placeholder.unparsed("role", name)
-      ))));
+      meta.lore(
+        List.of(
+          TextUtils.$(
+            "role.item-lore",
+            List.of(Placeholder.unparsed("role", name))
+          )
+        )
+      );
       
       itemMetaEditor.accept(meta);
       
-      meta.getPersistentDataContainer().set(
-        exclusiveItemNamespace,
+      meta.getPersistentDataContainer().set(exclusiveItemNamespace,
         PersistentDataType.STRING,
-        this.id.name()
-      );
+        this.id.name());
     });
     return item;
   }
@@ -202,14 +225,17 @@ public class Role extends GUIItem {
   public ItemsManager.ItemKey defHelmet() {
     return ItemsManager.ItemKey.STARTER_HELMET;
   }
+  
   /** Chestplate on spawn, default to {@link StarterChestplateGen} */
   public ItemsManager.ItemKey defChestplate() {
     return ItemsManager.ItemKey.STARTER_CHESTPLATE;
   }
+  
   /** Leggings on spawn, default to {@link StarterLeggingsGen} */
   public ItemsManager.ItemKey defLeggings() {
     return ItemsManager.ItemKey.STARTER_LEGGINGS;
   }
+  
   /** Boots on spawn, default to {@link StarterBootsGen} */
   public ItemsManager.ItemKey defBoots() {
     return ItemsManager.ItemKey.STARTER_BOOTS;
@@ -217,12 +243,10 @@ public class Role extends GUIItem {
   
   /** Used in {@link Game#onTick} */
   public void onTick(Player pl) {
-  
   }
   
   /** @implNote Optional */
   public void onPhaseChange(Game.Phase phase, Player pl) {
-  
   }
   
   /** Call this if the skill is successfully used */
@@ -233,19 +257,24 @@ public class Role extends GUIItem {
       1, // Volume
       1 // Pitch
     );
-    LocationUtils.ring(pl.getLocation().add(0, 0.1, 0), 0.8, loc -> {
-      new ParticleBuilder(Particle.END_ROD)
-        .allPlayers()
-        .location(loc)
-        .extra(0)
-        .spawn();
-    });
+    LocationUtils.ring(
+      pl.getLocation().add(0, 0.1, 0),
+      0.8,
+      loc -> {
+        new ParticleBuilder(Particle.END_ROD).allPlayers().location(loc).extra(
+          0).spawn();
+      }
+    );
     pl.swingMainHand();
   }
   
   /** @implNote Required - The skill callback */
   public void useSkill(Player pl) {
-    PlayerUtils.prefixedSend(pl, "This skill is not implemented yet!", NamedTextColor.RED);
+    PlayerUtils.prefixedSend(
+      pl,
+      "This skill is not implemented yet!",
+      NamedTextColor.RED
+    );
   }
   
   /** @see GUIManager */
@@ -260,37 +289,51 @@ public class Role extends GUIItem {
       String type = "first";
       
       for (String line : featureDesc) {
-        combinedLore.add(TextUtils.$r("role.desc.feature." + type, List.of(
-          Placeholder.unparsed("desc", line)
-        )));
+        combinedLore.add(
+          TextUtils.$r(
+            "role.desc.feature." + type,
+            List.of(Placeholder.unparsed("desc", line))
+          )
+        );
         
         type = "others";
       }
     }
     if (itemName != null) {
-      combinedLore.add(TextUtils.$r("role.desc.item", List.of(
-        Placeholder.unparsed("name", CoreUtils.stripColor(itemName)),
-        Placeholder.unparsed("detail", CoreUtils.stripColor(itemDesc))
-      )));
+      combinedLore.add(
+        TextUtils.$r(
+          "role.desc.item",
+          List.of(
+            Placeholder.unparsed("name", CoreUtils.stripColor(itemName)),
+            Placeholder.unparsed("detail", CoreUtils.stripColor(itemDesc))
+          )
+        )
+      );
     }
-    if (!combinedLore.isEmpty() && !combinedLore.getLast().isEmpty())
-      combinedLore.add("");
+    if (
+      !combinedLore.isEmpty() && !combinedLore.getLast().isEmpty()
+    ) combinedLore.add("");
     if (skillName != null && skillDesc != null) {
-      combinedLore.add(TextUtils.$r("role.skill.title", List.of(
-        Placeholder.unparsed("name", skillName)
-      )));
+      combinedLore.add(
+        TextUtils.$r(
+          "role.skill.title",
+          List.of(Placeholder.unparsed("name", skillName))
+        )
+      );
       combinedLore.addAll(skillDesc);
     }
     
-    return new ItemBuilder(iconType)
-      .setDisplayName("§e" + name)
-      .addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ADDITIONAL_TOOLTIP)
-      .addLoreLines(combinedLore.toArray(new String[0]));
+    return new ItemBuilder(iconType).setDisplayName("§e" + name).addItemFlags(
+      ItemFlag.HIDE_ATTRIBUTES,
+      ItemFlag.HIDE_ADDITIONAL_TOOLTIP).addLoreLines(combinedLore.toArray(
+        new String[0]));
   }
   
   /** @see GUIManager */
   @Override
-  public void handleClick(ClickType clickType, Player pl, InventoryClickEvent ev) {
+  public void handleClick(
+                          ClickType clickType, Player pl, InventoryClickEvent ev
+  ) {
     announce(pl);
     pl.playSound(
       pl.getLocation(),

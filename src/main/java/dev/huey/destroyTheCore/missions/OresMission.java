@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class OresMission extends ProgressiveMission implements Listener {
+  
   public OresMission() {
     super("ores");
   }
@@ -35,21 +36,17 @@ public class OresMission extends ProgressiveMission implements Listener {
     
     if (block.getType() != Material.BEDROCK) return;
     
-    count.put(
-      data.side,
-      count.get(data.side) + 1
-    );
+    count.put(data.side, count.get(data.side) + 1);
     progress(data.side, (float) Math.min(count.get(data.side) / 50D, 1));
   }
   
   @Override
   public void tick() {
-  
   }
   
   @Override
   public void innerFinish() {
-    for (Game.Side side : new Game.Side[] {Game.Side.RED, Game.Side.GREEN}) {
+    for (Game.Side side : new Game.Side[]{Game.Side.RED, Game.Side.GREEN}) {
       if (count.get(side) > count.get(side.opposite())) {
         declareWinner(side);
         return;

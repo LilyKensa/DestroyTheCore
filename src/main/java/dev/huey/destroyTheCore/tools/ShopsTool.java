@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import java.util.Set;
 
 public class ShopsTool extends MultipleLocationsTool {
+  
   public ShopsTool() {
     super("shops", Material.VILLAGER_SPAWN_EGG, Color.MAROON);
   }

@@ -4,6 +4,7 @@ import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.bases.missions.InstantMission;
 
 public class NextDropAllMission extends InstantMission {
+  
   public NextDropAllMission() {
     super("drop-all");
   }

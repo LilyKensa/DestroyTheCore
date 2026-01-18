@@ -13,11 +13,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 public class ProvocateurHelmetGen extends ItemGen {
+  
   public ProvocateurHelmetGen() {
-    super(
-      ItemsManager.ItemKey.PROVOCATEUR_HELMET,
-      Material.LEATHER_HELMET
-    );
+    super(ItemsManager.ItemKey.PROVOCATEUR_HELMET, Material.LEATHER_HELMET);
     setNeverDrop();
     setTrash();
   }
@@ -31,10 +29,10 @@ public class ProvocateurHelmetGen extends ItemGen {
     
     meta.addEnchant(Enchantment.BINDING_CURSE, 1, true);
     
-//    meta.addAttributeModifier(
-//      Attribute.ARMOR,
-//      AttributeUtils.multiply("armor", EquipmentSlotGroup.HEAD, 0.8)
-//    );
+    //    meta.addAttributeModifier(
+    //      Attribute.ARMOR,
+    //      AttributeUtils.multiply("armor", EquipmentSlotGroup.HEAD, 0.8)
+    //    );
     meta.addAttributeModifier(
       Attribute.ATTACK_DAMAGE,
       AttributeUtils.multiply("damage", EquipmentSlotGroup.HEAD, 0.6)

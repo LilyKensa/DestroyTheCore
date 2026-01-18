@@ -14,6 +14,7 @@ import org.bukkit.damage.DamageType;
 import org.bukkit.entity.Player;
 
 public class ExplodeMission extends TimedMission {
+  
   public ExplodeMission() {
     super("explode", 60 * 20);
   }
@@ -33,18 +34,16 @@ public class ExplodeMission extends TimedMission {
   @Override
   public void innerTick() {
     if (DestroyTheCore.ticksManager.isUpdateTick()) {
-      for (Player pl : new Player[] {a, b})
-        pl.sendActionBar(TextUtils.$("missions.explode.warning"));
+      for (Player pl : new Player[]{a, b}) pl.sendActionBar(
+        TextUtils.$("missions.explode.warning")
+      );
     }
     
     if (DestroyTheCore.ticksManager.isParticleTick()) {
-      for (Player pl : new Player[] {a, b})
-        new ParticleBuilder(Particle.CAMPFIRE_COSY_SMOKE)
-          .allPlayers()
-          .location(LocationUtils.hitboxCenter(pl))
-          .count(RandomUtils.range(1, 4))
-          .extra(0.1)
-          .spawn();
+      for (Player pl : new Player[]{a, b}) new ParticleBuilder(
+        Particle.CAMPFIRE_COSY_SMOKE
+      ).allPlayers().location(LocationUtils.hitboxCenter(pl)).count(
+        RandomUtils.range(1, 4)).extra(0.1).spawn();
     }
   }
   
@@ -52,7 +51,7 @@ public class ExplodeMission extends TimedMission {
   public void innerFinish() {
     if (a == null || b == null) return;
     
-    for (Player pl : new Player[] {a, b}) {
+    for (Player pl : new Player[]{a, b}) {
       pl.getWorld().createExplosion(
         pl,
         pl.getLocation(),

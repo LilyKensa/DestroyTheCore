@@ -14,13 +14,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class CovidMission extends TimedMission {
+  
   public CovidMission() {
     super("covid");
   }
   
   @Override
   public void innerStart() {
-  
   }
   
   Set<Player> isClose = new HashSet<>();
@@ -32,37 +32,34 @@ public class CovidMission extends TimedMission {
       
       for (Player p : PlayerUtils.allGaming()) {
         if (
-          PlayerUtils.allGaming()
-            .stream().anyMatch(e -> !e.equals(p) && LocationUtils.near(e, p, 5))
+          PlayerUtils.allGaming().stream().anyMatch(e -> !e.equals(
+            p) && LocationUtils.near(e, p, 5))
         ) {
           isClose.add(p);
         }
       }
       
       for (Player p : isClose) {
-        p.addPotionEffect(new PotionEffect(
-          PotionEffectType.POISON,
-          40,
-          0,
-          true,
-          false
-        ));
+        p.addPotionEffect(
+          new PotionEffect(PotionEffectType.POISON, 40, 0, true, false)
+        );
       }
       
       for (Player p : PlayerUtils.allGaming()) {
-        LocationUtils.ring(LocationUtils.hitboxCenter(p), 5, loc -> {
-          new ParticleBuilder(isClose.contains(p) ? Particle.WAX_ON : Particle.COMPOSTER)
-            .receivers(p)
-            .location(loc)
-            .extra(0)
-            .spawn();
-        });
+        LocationUtils.ring(
+          LocationUtils.hitboxCenter(p),
+          5,
+          loc -> {
+            new ParticleBuilder(
+              isClose.contains(p) ? Particle.WAX_ON : Particle.COMPOSTER
+            ).receivers(p).location(loc).extra(0).spawn();
+          }
+        );
       }
     }
   }
   
   @Override
   public void innerFinish() {
-  
   }
 }

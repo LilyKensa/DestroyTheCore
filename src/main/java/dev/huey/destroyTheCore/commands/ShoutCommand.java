@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 public class ShoutCommand extends Subcommand {
+  
   public ShoutCommand() {
     super("shout");
   }
@@ -22,25 +23,38 @@ public class ShoutCommand extends Subcommand {
     PlayerData data = DestroyTheCore.game.getPlayerData(pl);
     
     if (data.shoutCooldown > 0 && !PlayerUtils.isAdmin(pl)) {
-      PlayerUtils.send(pl, TextUtils.$("chat.shout.cooldown", List.of(
-        Placeholder.component("value", Component.text(Math.ceilDiv(data.shoutCooldown, 20)))
-      )));
+      PlayerUtils.send(
+        pl,
+        TextUtils.$(
+          "chat.shout.cooldown",
+          List.of(
+            Placeholder.component(
+              "value",
+              Component.text(Math.ceilDiv(data.shoutCooldown, 20))
+            )
+          )
+        )
+      );
       return;
     }
     
     data.shoutCooldown = PlayerData.shoutCooldownDuration;
     
-    Component message = args.isEmpty()
-      ? TextUtils.$("chat.shout.empty")
-      : Component.text(String.join(" ", args));
-      
-    PlayerUtils.broadcast(Component.join(
-      JoinConfiguration.noSeparators(),
-      TextUtils.$("chat.shout.prefix"),
-      TextUtils.$("chat.format", List.of(
-        Placeholder.component("player", PlayerUtils.getName(pl)),
-        Placeholder.component("message", message.color(null))
-      ))
-    ));
+    Component message = args.isEmpty() ? TextUtils.$(
+      "chat.shout.empty") : Component.text(String.join(" ", args));
+    
+    PlayerUtils.broadcast(
+      Component.join(
+        JoinConfiguration.noSeparators(),
+        TextUtils.$("chat.shout.prefix"),
+        TextUtils.$(
+          "chat.format",
+          List.of(
+            Placeholder.component("player", PlayerUtils.getName(pl)),
+            Placeholder.component("message", message.color(null))
+          )
+        )
+      )
+    );
   }
 }

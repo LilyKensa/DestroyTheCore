@@ -18,12 +18,16 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.List;
 
 public class ProvocateurRole extends Role {
+  
   public ProvocateurRole() {
     super(RolesManager.RoleKey.PROVOCATEUR);
     addInfo(Material.HEAVY_CORE);
-    addExclusiveItem(Material.PUMPKIN_PIE, meta -> {
-      meta.addEnchant(Enchantment.SWEEPING_EDGE, 3, true);
-    });
+    addExclusiveItem(
+      Material.PUMPKIN_PIE,
+      meta -> {
+        meta.addEnchant(Enchantment.SWEEPING_EDGE, 3, true);
+      }
+    );
     addSkill(180 * 20);
   }
   
@@ -34,24 +38,22 @@ public class ProvocateurRole extends Role {
   
   @Override
   public void onTick(Player pl) {
-//    if (DestroyTheCore.ticksManager.isSeconds()) {
-//      pl.addPotionEffect(new PotionEffect(
-//        PotionEffectType.WEAKNESS,
-//        30,
-//        0,
-//        true,
-//        false
-//      ));
-//    }
+    //    if (DestroyTheCore.ticksManager.isSeconds()) {
+    //      pl.addPotionEffect(new PotionEffect(
+    //        PotionEffectType.WEAKNESS,
+    //        30,
+    //        0,
+    //        true,
+    //        false
+    //      ));
+    //    }
     
-    if (PlayerUtils.getTeammates(pl).stream()
-      .anyMatch(p -> !p.equals(pl) && LocationUtils.near(p, pl, 10))
+    if (
+      PlayerUtils.getTeammates(pl).stream().anyMatch(p -> !p.equals(
+        pl) && LocationUtils.near(p, pl, 10))
     ) {
-      new ParticleBuilder(Particle.PORTAL)
-        .allPlayers()
-        .location(LocationUtils.hitboxCenter(pl))
-        .extra(2)
-        .spawn();
+      new ParticleBuilder(Particle.PORTAL).allPlayers().location(
+        LocationUtils.hitboxCenter(pl)).extra(2).spawn();
     }
   }
   
@@ -59,35 +61,26 @@ public class ProvocateurRole extends Role {
   public void useSkill(Player pl) {
     skillFeedback(pl);
     
-    pl.addPotionEffect(new PotionEffect(
-      PotionEffectType.ABSORPTION,
-      10 * 20,
-      9,
-      false,
-      true
-    ));
-    pl.addPotionEffect(new PotionEffect(
-      PotionEffectType.RESISTANCE,
-      10 * 20,
-      2,
-      false,
-      true
-    ));
-    pl.addPotionEffect(new PotionEffect(
-      PotionEffectType.WEAKNESS,
-      30 * 20,
-      9,
-      false,
-      true
-    ));
+    pl.addPotionEffect(
+      new PotionEffect(PotionEffectType.ABSORPTION, 10 * 20, 9, false, true)
+    );
+    pl.addPotionEffect(
+      new PotionEffect(PotionEffectType.RESISTANCE, 10 * 20, 2, false, true)
+    );
+    pl.addPotionEffect(
+      new PotionEffect(PotionEffectType.WEAKNESS, 30 * 20, 9, false, true)
+    );
     
     PlayerUtils.auraBroadcast(
       pl.getLocation(),
       10,
-      TextUtils.$("roles.provocateur.skill.announce", List.of(
-        Placeholder.component("player", PlayerUtils.getName(pl)),
-        Placeholder.unparsed("role", name)
-      ))
+      TextUtils.$(
+        "roles.provocateur.skill.announce",
+        List.of(
+          Placeholder.component("player", PlayerUtils.getName(pl)),
+          Placeholder.unparsed("role", name)
+        )
+      )
     );
   }
 }

@@ -9,11 +9,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MaybeGen implements ConfigurationSerializable {
+  
   ItemsManager.ItemKey key;
   int amount = 1;
   ItemStack stack;
   
-  static public MaybeGen fromItem(ItemStack item) {
+  public static MaybeGen fromItem(ItemStack item) {
     MaybeGen mg = new MaybeGen();
     
     if (DestroyTheCore.itemsManager.isGen(item)) {
@@ -28,8 +29,8 @@ public class MaybeGen implements ConfigurationSerializable {
   }
   
   public ItemStack get() {
-    if (key != null)
-      return DestroyTheCore.itemsManager.gens.get(key).getItem(amount);
+    if (key != null) return DestroyTheCore.itemsManager.gens.get(key).getItem(
+      amount);
     
     return stack;
   }
@@ -49,7 +50,7 @@ public class MaybeGen implements ConfigurationSerializable {
     return map;
   }
   
-  static public MaybeGen deserialize(Map<String, Object> map) {
+  public static MaybeGen deserialize(Map<String, Object> map) {
     MaybeGen mg = new MaybeGen();
     
     if (map.containsKey("gen") && map.containsKey("count")) {

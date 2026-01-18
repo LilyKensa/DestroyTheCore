@@ -15,6 +15,7 @@ import xyz.xenondevs.invui.item.builder.ItemBuilder;
 import java.util.List;
 
 public class RenameShopItem extends GUIItem {
+  
   Game.Shop shop;
   
   public RenameShopItem(Game.Shop shop) {
@@ -23,11 +24,13 @@ public class RenameShopItem extends GUIItem {
   
   @Override
   public ItemProvider getItemProvider() {
-    return new ItemBuilder(Material.NAME_TAG)
-      .setDisplayName(TextUtils.$r("gui.buttons.rename-shop.title"))
-      .addLoreLines(TextUtils.$r("gui.buttons.rename-shop.desc", List.of(
-        Placeholder.unparsed("name", shop.name)
-      )));
+    return new ItemBuilder(Material.NAME_TAG).setDisplayName(TextUtils.$r(
+      "gui.buttons.rename-shop.title")).addLoreLines(
+        TextUtils.$r(
+          "gui.buttons.rename-shop.desc",
+          List.of(Placeholder.unparsed("name", shop.name))
+        )
+      );
   }
   
   @Override

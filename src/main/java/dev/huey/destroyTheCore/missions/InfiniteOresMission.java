@@ -10,11 +10,12 @@ import org.bukkit.Material;
 import org.bukkit.event.Listener;
 
 public class InfiniteOresMission extends TimedMission implements Listener {
-  static public void set(Material type) {
+  
+  public static void set(Material type) {
     loc.clone().add(0, -1, 0).getBlock().setType(type);
   }
   
-  static public boolean check(Location toCheck) {
+  public static boolean check(Location toCheck) {
     return LocationUtils.isSameBlock(toCheck, loc.clone().add(0, -1, 0));
   }
   
@@ -24,16 +25,12 @@ public class InfiniteOresMission extends TimedMission implements Listener {
   
   @Override
   public void innerStart() {
-  
   }
   
   @Override
   public void innerTick() {
     if (DestroyTheCore.ticksManager.ticksCount % 2 == 0) {
-      set(RandomUtils.pick(
-        Constants.ores.keySet()
-          .toArray(new Material[0])
-      ));
+      set(RandomUtils.pick(Constants.ores.keySet().toArray(new Material[0])));
     }
   }
   

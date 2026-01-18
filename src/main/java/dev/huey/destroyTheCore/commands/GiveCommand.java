@@ -11,10 +11,14 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 public class GiveCommand extends Subcommand {
+  
   public GiveCommand() {
     super("give");
-    addArgument("item", () -> DestroyTheCore.itemsManager.gens.keySet().stream()
-      .map(key -> key.name().toLowerCase()).toList());
+    addArgument(
+      "item",
+      () -> DestroyTheCore.itemsManager.gens.keySet().stream().map(
+        key -> key.name().toLowerCase()).toList()
+    );
   }
   
   @Override

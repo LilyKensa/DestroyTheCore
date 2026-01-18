@@ -18,11 +18,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.Set;
 
 public class BridgeHelperGen extends UsableItemGen {
+  
   public BridgeHelperGen() {
-    super(
-      ItemsManager.ItemKey.BRIDGE_HELPER,
-      Material.BRICK
-    );
+    super(ItemsManager.ItemKey.BRIDGE_HELPER, Material.BRICK);
   }
   
   public static boolean growPillar(Location loc) {
@@ -36,9 +34,7 @@ public class BridgeHelperGen extends UsableItemGen {
     );
     
     if (
-      !centerBlock.getType().isAir() ||
-      centerBlock.getY() < centerBlock.getWorld().getMinHeight() ||
-      centerBlock.getY() > centerBlock.getWorld().getMaxHeight()
+      !centerBlock.getType().isAir() || centerBlock.getY() < centerBlock.getWorld().getMinHeight() || centerBlock.getY() > centerBlock.getWorld().getMaxHeight()
     ) {
       return false;
     }

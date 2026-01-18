@@ -12,6 +12,7 @@ import java.util.HashMap;
 
 /** A fix for {@link ScrollItem} */
 public abstract class FixedScrollItem extends ControlItem<ScrollGui<?>> {
+  
   private final HashMap<ClickType, Integer> scroll;
   
   public FixedScrollItem(int linesOnLeftClick) {
@@ -19,13 +20,14 @@ public abstract class FixedScrollItem extends ControlItem<ScrollGui<?>> {
     this.scroll.put(ClickType.LEFT, linesOnLeftClick);
   }
   
-  public void handleClick(@NotNull ClickType clickType, @NotNull Player player, @NotNull InventoryClickEvent event) {
+  public void handleClick(
+                          @NotNull ClickType clickType, @NotNull Player player, @NotNull InventoryClickEvent event
+  ) {
     if (this.scroll.containsKey(clickType)) {
       ScrollGui<?> gui = this.getGui();
       int offset = this.scroll.get(clickType);
       
-      if (gui.canScroll(offset)) // Added this check
-        gui.scroll(offset);
+      if (gui.canScroll(offset)) gui.scroll(offset); // Added this check
     }
   }
 }

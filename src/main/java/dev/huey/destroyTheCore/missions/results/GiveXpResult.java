@@ -6,6 +6,7 @@ import dev.huey.destroyTheCore.utils.PlayerUtils;
 import org.bukkit.entity.Player;
 
 public class GiveXpResult extends Mission.Result {
+  
   public GiveXpResult() {
     super("give-xp");
   }

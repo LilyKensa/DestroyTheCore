@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 public class RejoinCommand extends Subcommand {
+  
   public RejoinCommand() {
     super("rejoin");
   }
@@ -27,15 +28,17 @@ public class RejoinCommand extends Subcommand {
       return;
     }
     
-    PlayerUtils.broadcast(TextUtils.$("commands.rejoin.announce", List.of(
-      Placeholder.component("player", PlayerUtils.getName(pl))
-    )));
+    PlayerUtils.broadcast(
+      TextUtils.$(
+        "commands.rejoin.announce",
+        List.of(Placeholder.component("player", PlayerUtils.getName(pl)))
+      )
+    );
     
     PlayerData data = DestroyTheCore.game.getPlayerData(pl);
     data.kill();
     
-    if (PlayerUtils.shouldHandle(pl))
-      pl.getInventory().clear();
+    if (PlayerUtils.shouldHandle(pl)) pl.getInventory().clear();
     PlayerUtils.teleportToRestArea(pl);
     PlayerUtils.scheduleRespawn(pl);
   }

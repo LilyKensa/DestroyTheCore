@@ -14,6 +14,7 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.List;
 
 public class AttackerRole extends Role {
+  
   public AttackerRole() {
     super(RolesManager.RoleKey.ATTACKER);
     addInfo(Material.WOODEN_SWORD);
@@ -31,28 +32,23 @@ public class AttackerRole extends Role {
   public void useSkill(Player pl) {
     skillFeedback(pl);
     
-    pl.addPotionEffect(new PotionEffect(
-      PotionEffectType.SPEED,
-      5 * 20,
-      0,
-      false,
-      true
-    ));
-    pl.addPotionEffect(new PotionEffect(
-      PotionEffectType.RESISTANCE,
-      10 * 20,
-      0,
-      false,
-      true
-    ));
+    pl.addPotionEffect(
+      new PotionEffect(PotionEffectType.SPEED, 5 * 20, 0, false, true)
+    );
+    pl.addPotionEffect(
+      new PotionEffect(PotionEffectType.RESISTANCE, 10 * 20, 0, false, true)
+    );
     
     PlayerUtils.auraBroadcast(
       pl.getLocation(),
       10,
-      TextUtils.$("roles.attacker.skill.announce", List.of(
-        Placeholder.component("player", PlayerUtils.getName(pl)),
-        Placeholder.unparsed("role", name)
-      ))
+      TextUtils.$(
+        "roles.attacker.skill.announce",
+        List.of(
+          Placeholder.component("player", PlayerUtils.getName(pl)),
+          Placeholder.unparsed("role", name)
+        )
+      )
     );
   }
 }

@@ -12,6 +12,7 @@ import xyz.xenondevs.invui.item.impl.controlitem.PageItem;
 import java.util.List;
 
 public class NextPageItem extends PageItem {
+  
   public NextPageItem() {
     super(true);
   }
@@ -19,18 +20,20 @@ public class NextPageItem extends PageItem {
   @Override
   public ItemProvider getItemProvider(PagedGui<?> gui) {
     ItemBuilder builder = new ItemBuilder(
-      gui.hasNextPage()
-        ? Material.GLOWSTONE_DUST
-        :Material.GUNPOWDER
+      gui.hasNextPage() ? Material.GLOWSTONE_DUST : Material.GUNPOWDER
     );
-    builder.setDisplayName(TextUtils.$r("gui.buttons.next-page.title"))
-      .addLoreLines(
-        gui.hasNextPage()
-          ? TextUtils.$r("gui.buttons.next-page.desc", List.of(
-            Placeholder.component("next", Component.text(gui.getCurrentPage() + 2)),
+    builder.setDisplayName(TextUtils.$r(
+      "gui.buttons.next-page.title")).addLoreLines(
+        gui.hasNextPage() ? TextUtils.$r(
+          "gui.buttons.next-page.desc",
+          List.of(
+            Placeholder.component(
+              "next",
+              Component.text(gui.getCurrentPage() + 2)
+            ),
             Placeholder.component("max", Component.text(gui.getPageAmount()))
-          ))
-          : TextUtils.$r("gui.buttons.next-page.desc-end")
+          )
+        ) : TextUtils.$r("gui.buttons.next-page.desc-end")
       );
     
     return builder;

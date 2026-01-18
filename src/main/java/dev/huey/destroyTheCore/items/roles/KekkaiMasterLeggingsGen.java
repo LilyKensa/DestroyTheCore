@@ -7,6 +7,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class KekkaiMasterLeggingsGen extends ItemGen {
+  
   public KekkaiMasterLeggingsGen() {
     super(
       ItemsManager.ItemKey.KEKKAI_MASTER_LEGGINGS,

@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 public class ResetCommand extends Subcommand {
+  
   public ResetCommand() {
     super("reset");
   }
@@ -22,8 +23,11 @@ public class ResetCommand extends Subcommand {
     }
     
     DestroyTheCore.game.reset();
-    PlayerUtils.prefixedBroadcast(TextUtils.$("commands.reset.announce", List.of(
-      Placeholder.component("player", PlayerUtils.getName(pl))
-    )));
+    PlayerUtils.prefixedBroadcast(
+      TextUtils.$(
+        "commands.reset.announce",
+        List.of(Placeholder.component("player", PlayerUtils.getName(pl)))
+      )
+    );
   }
 }

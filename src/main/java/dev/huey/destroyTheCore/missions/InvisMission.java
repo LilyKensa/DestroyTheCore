@@ -10,6 +10,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class InvisMission extends InstantMission {
+  
   public InvisMission() {
     super("invis");
   }
@@ -17,21 +18,19 @@ public class InvisMission extends InstantMission {
   @Override
   public void run() {
     for (Player p : PlayerUtils.allGaming()) {
-      new ParticleBuilder(Particle.CLOUD)
-        .allPlayers()
-        .location(LocationUtils.hitboxCenter(p))
-        .offset(0.2, 0.4, 0.2)
-        .count(10)
-        .extra(0.02)
-        .spawn();
+      new ParticleBuilder(Particle.CLOUD).allPlayers().location(
+        LocationUtils.hitboxCenter(p)).offset(0.2, 0.4, 0.2).count(10).extra(
+          0.02).spawn();
       
-      p.addPotionEffect(new PotionEffect(
-        PotionEffectType.INVISIBILITY,
-        PotionEffect.INFINITE_DURATION,
-        0,
-        true,
-        false
-      ));
+      p.addPotionEffect(
+        new PotionEffect(
+          PotionEffectType.INVISIBILITY,
+          PotionEffect.INFINITE_DURATION,
+          0,
+          true,
+          false
+        )
+      );
     }
   }
 }

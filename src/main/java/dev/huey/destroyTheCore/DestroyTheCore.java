@@ -9,30 +9,31 @@ import org.bukkit.plugin.java.JavaPlugin;
 import xyz.xenondevs.invui.InvUI;
 
 public final class DestroyTheCore extends JavaPlugin {
-  static public DestroyTheCore instance;
-  static public String version;
   
-  static public Component prefix;
+  public static DestroyTheCore instance;
+  public static String version;
   
-  static public TranslationsManager translationsManager;
-  static public ConfigManager configManager;
-  static public ToolsManager toolsManager;
-  static public CommandsManager commandsManager;
-  static public EventsManager eventsManager;
-  static public DamageManager damageManager;
-  static public InventoriesManager inventoriesManager;
-  static public ItemsManager itemsManager;
-  static public GlowManager glowManager;
-  static public WorldsManager worldsManager;
-  static public RecipesManager recipesManager;
-  static public RolesManager rolesManager;
-  static public QuizManager quizManager;
-  static public MissionsManager missionsManager;
-  static public GUIManager guiManager;
-  static public BoardsManager boardsManager;
-  static public TicksManager ticksManager;
+  public static Component prefix;
   
-  static public Game game = new Game();
+  public static TranslationsManager translationsManager;
+  public static ConfigManager configManager;
+  public static ToolsManager toolsManager;
+  public static CommandsManager commandsManager;
+  public static EventsManager eventsManager;
+  public static DamageManager damageManager;
+  public static InventoriesManager inventoriesManager;
+  public static ItemsManager itemsManager;
+  public static GlowManager glowManager;
+  public static WorldsManager worldsManager;
+  public static RecipesManager recipesManager;
+  public static RolesManager rolesManager;
+  public static QuizManager quizManager;
+  public static MissionsManager missionsManager;
+  public static GUIManager guiManager;
+  public static BoardsManager boardsManager;
+  public static TicksManager ticksManager;
+  
+  public static Game game = new Game();
   
   @Override
   public void onEnable() {
@@ -59,10 +60,7 @@ public final class DestroyTheCore extends JavaPlugin {
     configManager = new ConfigManager();
     ticksManager = new TicksManager();
     
-    for (String commandName : new String[] {
-      "dtc",
-      "rejoin", "night-vision", "shout", "shuffle-team",
-      "warp", "skip", "edit", "reset", "revive", "language"
+    for (String commandName : new String[]{"dtc", "rejoin", "night-vision", "shout", "shuffle-team", "warp", "skip", "edit", "reset", "revive", "language",
     }) {
       PluginCommand command = getCommand(commandName);
       if (command == null) {

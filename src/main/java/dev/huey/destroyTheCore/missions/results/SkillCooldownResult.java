@@ -7,6 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 public class SkillCooldownResult extends Mission.Result {
+  
   public SkillCooldownResult() {
     super("skill-cooldown");
   }

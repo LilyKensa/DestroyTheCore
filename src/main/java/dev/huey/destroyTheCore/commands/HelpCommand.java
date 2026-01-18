@@ -8,13 +8,13 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 public class HelpCommand extends Subcommand {
+  
   public HelpCommand() {
     super("help");
     addArgument(
       "command",
-      () -> DestroyTheCore.commandsManager.subcommands.stream()
-        .map(c -> c.name)
-        .toList()
+      () -> DestroyTheCore.commandsManager.subcommands.stream().map(
+        c -> c.name).toList()
     );
   }
   

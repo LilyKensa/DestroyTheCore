@@ -12,6 +12,7 @@ import org.bukkit.inventory.PlayerInventory;
 import java.util.*;
 
 public class InventoriesManager {
+  
   final Map<UUID, ItemStack[]> savedInventories = new HashMap<>();
   
   /** Store the player's inventory, use {@link #restore} to restore */
@@ -45,7 +46,8 @@ public class InventoriesManager {
     List<ItemStack> hotbar = savedHotbars.get(pl.getUniqueId());
     
     for (int i = 0; i < 9; ++i) {
-      pl.getInventory().setItem(i, hotbar == null ? ItemStack.empty() : hotbar.get(i));
+      pl.getInventory().setItem(i,
+        hotbar == null ? ItemStack.empty() : hotbar.get(i));
     }
     
     savedHotbars.remove(pl.getUniqueId());
@@ -63,7 +65,9 @@ public class InventoriesManager {
     ItemStack[] contents = inv.getContents();
     for (int i = 0; i < contents.length; i++) {
       ItemStack item = contents[i];
-      if (item != null && item.containsEnchantment(Enchantment.VANISHING_CURSE)) {
+      if (
+        item != null && item.containsEnchantment(Enchantment.VANISHING_CURSE)
+      ) {
         contents[i] = null;
       }
     }
@@ -74,42 +78,36 @@ public class InventoriesManager {
   public void dropSome(Player pl, double chance) {
     PlayerInventory inv = pl.getInventory();
     
-    ItemStack placeholder = DestroyTheCore.itemsManager.gens
-      .get(ItemsManager.ItemKey.PLACEHOLDER).getItem();
+    ItemStack placeholder = DestroyTheCore.itemsManager.gens.get(
+      ItemsManager.ItemKey.PLACEHOLDER).getItem();
     
     ItemStack[] contents = inv.getContents();
     for (int i = 0; i < contents.length; i++) {
       ItemStack item = contents[i];
       if (item == null) continue;
       
-      if (List.of(
-        Material.SHIELD,
-        Material.KNOWLEDGE_BOOK
-      ).contains(item.getType())) continue;
+      if (
+        List.of(Material.SHIELD, Material.KNOWLEDGE_BOOK).contains(
+          item.getType())
+      ) continue;
       if (DestroyTheCore.rolesManager.isExclusiveItem(item)) continue;
       if (
-        DestroyTheCore.itemsManager.isGen(item) &&
-        DestroyTheCore.itemsManager.getGen(item)
-          .willNeverDrop()
+        DestroyTheCore.itemsManager.isGen(
+          item) && DestroyTheCore.itemsManager.getGen(item).willNeverDrop()
       ) continue;
       
       if (
-        DestroyTheCore.itemsManager.isGen(item) &&
-        DestroyTheCore.itemsManager.getGen(item)
-          .willVanish()
+        DestroyTheCore.itemsManager.isGen(
+          item) && DestroyTheCore.itemsManager.getGen(item).willVanish()
       ) {
         contents[i] = placeholder;
       }
       else if (
-        item.getType() == Material.ENCHANTING_TABLE ||
-        item.getType() == Material.ENDER_CHEST ||
-        Constants.oreItems.contains(item.getType()) ||
-        RandomUtils.hit(chance)
+        item.getType() == Material.ENCHANTING_TABLE || item.getType() == Material.ENDER_CHEST || Constants.oreItems.contains(
+          item.getType()) || RandomUtils.hit(chance)
       ) {
-        pl.getWorld().dropItemNaturally(
-          pl.getLocation(),
-          item
-        ).setPickupDelay(20);
+        pl.getWorld().dropItemNaturally(pl.getLocation(), item).setPickupDelay(
+          20);
         contents[i] = placeholder;
       }
     }
@@ -126,10 +124,8 @@ public class InventoriesManager {
       if (item == null) continue;
       
       if (Constants.oreItems.contains(item.getType())) {
-        pl.getWorld().dropItemNaturally(
-          pl.getLocation(),
-          item
-        ).setPickupDelay(20);
+        pl.getWorld().dropItemNaturally(pl.getLocation(), item).setPickupDelay(
+          20);
         contents[i] = null;
       }
     }

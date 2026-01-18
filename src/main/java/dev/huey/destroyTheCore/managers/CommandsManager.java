@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class CommandsManager implements TabCompleter, CommandExecutor {
+  
   public List<Subcommand> subcommands;
   
   public void init() {
@@ -49,26 +50,19 @@ public class CommandsManager implements TabCompleter, CommandExecutor {
   public List<String> checkCompletion(List<String> fullList, String lastArg) {
     if (fullList.contains(lastArg)) return List.of();
     
-    return fullList.stream()
-      .filter(s -> s.contains(lastArg))
-      .toList();
+    return fullList.stream().filter(s -> s.contains(lastArg)).toList();
   }
   
   @Override
   public List<String> onTabComplete(
-    CommandSender sender,
-    Command command,
-    String label,
-    String[] args
+                                    CommandSender sender, Command command, String label, String[] args
   ) {
     String lastArg = args[args.length - 1];
     
     if (command.getName().equals("dtc")) {
       if (args.length == 1) {
         return checkCompletion(
-          subcommands.stream()
-            .map(c -> c.name)
-            .toList(),
+          subcommands.stream().map(c -> c.name).toList(),
           lastArg
         );
       }
@@ -79,32 +73,27 @@ public class CommandsManager implements TabCompleter, CommandExecutor {
       );
     }
     
-    return checkCompletion(
-      complete(command.getName(), List.of(args)),
-      lastArg
-    );
+    return checkCompletion(complete(command.getName(), List.of(args)), lastArg);
   }
   
   @Override
   public boolean onCommand(
-    CommandSender sender,
-    Command command,
-    String label,
-    String[] args
+                           CommandSender sender, Command command, String label, String[] args
   ) {
     if (!(sender instanceof Player pl)) return true;
     
     if (command.getName().equals("dtc")) {
       if (args.length < 1) {
-        PlayerUtils.prefixedSend(pl, Component.join(
-          JoinConfiguration.noSeparators(),
-          TextUtils.$("general.title")
-            .color(NamedTextColor.GOLD),
-          Component.text(" "),
-          Component.text("v"),
-          Component.text(DestroyTheCore.version)
-            .color(NamedTextColor.YELLOW)
-        ).colorIfAbsent(NamedTextColor.GRAY));
+        PlayerUtils.prefixedSend(
+          pl,
+          Component.join(
+            JoinConfiguration.noSeparators(),
+            TextUtils.$("general.title").color(NamedTextColor.GOLD),
+            Component.text(" "),
+            Component.text("v"),
+            Component.text(DestroyTheCore.version).color(NamedTextColor.YELLOW)
+          ).colorIfAbsent(NamedTextColor.GRAY)
+        );
         return true;
       }
       
@@ -118,16 +107,14 @@ public class CommandsManager implements TabCompleter, CommandExecutor {
   }
   
   public List<String> complete(String name, List<String> args) {
-    Optional<Subcommand> findSubcommand = subcommands.stream()
-      .filter(c -> c.name.equals(name))
-      .findAny();
+    Optional<Subcommand> findSubcommand = subcommands.stream().filter(
+      c -> c.name.equals(name)).findAny();
     
     if (findSubcommand.isEmpty()) return List.of();
     if (findSubcommand.get().arguments.size() < args.size()) return List.of();
     
-    return findSubcommand.get()
-      .arguments.get(args.size() - 1)
-      .completionsSupplier.get();
+    return findSubcommand.get().arguments.get(
+      args.size() - 1).completionsSupplier.get();
   }
   
   public void dispatch(Player pl, String name, List<String> args) {

@@ -5,6 +5,7 @@ import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.Mission;
 
 public class BanOresResult extends Mission.Result {
+  
   public BanOresResult() {
     super("ban-ores");
   }

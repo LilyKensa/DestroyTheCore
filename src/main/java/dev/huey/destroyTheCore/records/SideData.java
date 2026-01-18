@@ -11,14 +11,12 @@ import org.bukkit.inventory.Inventory;
 import java.util.*;
 
 public class SideData {
+  
   /** Constants */
-  static public final int maxCoreHealth = 75;
+  public static final int maxCoreHealth = 75;
   
   public int coreHealth = maxCoreHealth;
-  public int
-    invulnTicks = 0,
-    clearInvCooldown = 0,
-    extraDamageTicks = 0,
+  public int invulnTicks = 0, clearInvCooldown = 0, extraDamageTicks = 0,
     noOresTicks = 0, maxNoOresTicks = 0,
     noShopTicks = 0, maxNoShopTicks = 0;
   public boolean usedTruce = false;
@@ -29,21 +27,25 @@ public class SideData {
     TextUtils.$("game.side.ender-chest").color(null)
   );
   public Map<Location, Set<UUID>> enderChestViewers = new HashMap<>();
+  
   public void addEnderChestViewer(Location loc, Player pl) {
-    if (!enderChestViewers.containsKey(loc))
-      enderChestViewers.put(loc, new HashSet<>());
+    if (!enderChestViewers.containsKey(loc)) enderChestViewers.put(
+      loc,
+      new HashSet<>()
+    );
     
     enderChestViewers.get(loc).add(pl.getUniqueId());
   }
+  
   public void removeEnderChestViewer(Location loc, Player pl) {
     if (!enderChestViewers.containsKey(loc)) return;
     
     enderChestViewers.get(loc).remove(pl.getUniqueId());
   }
+  
   public Location getEnderChestViewer(Player pl) {
     for (Location loc : enderChestViewers.keySet()) {
-      if (enderChestViewers.get(loc).contains(pl.getUniqueId()))
-        return loc;
+      if (enderChestViewers.get(loc).contains(pl.getUniqueId())) return loc;
     }
     
     return null;
@@ -54,6 +56,7 @@ public class SideData {
     coreHealth -= amount;
     if (coreHealth < 0) coreHealth = 0;
   }
+  
   public void directAttackCore() {
     directAttackCore(1);
   }

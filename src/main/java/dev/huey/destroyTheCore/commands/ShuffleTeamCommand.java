@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class ShuffleTeamCommand extends Subcommand {
+  
   public ShuffleTeamCommand() {
     super("shuffle-team");
   }
@@ -50,8 +51,11 @@ public class ShuffleTeamCommand extends Subcommand {
     }
     DestroyTheCore.boardsManager.refresh();
     
-    PlayerUtils.prefixedBroadcast(TextUtils.$("commands.shuffle-team.announce", List.of(
-      Placeholder.component("player", PlayerUtils.getName(pl))
-    )));
+    PlayerUtils.prefixedBroadcast(
+      TextUtils.$(
+        "commands.shuffle-team.announce",
+        List.of(Placeholder.component("player", PlayerUtils.getName(pl)))
+      )
+    );
   }
 }

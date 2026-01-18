@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 
 public class RecipesManager {
+  
   public NamespacedKey getKey(String id) {
     return new NamespacedKey(DestroyTheCore.instance, id);
   }
@@ -32,18 +33,13 @@ public class RecipesManager {
       }
     }
     
-    for (Recipe r : recipesToAdd)
-      Bukkit.getServer().addRecipe(r);
+    for (Recipe r : recipesToAdd) Bukkit.getServer().addRecipe(r);
     
     ShapedRecipe goldenCarrotRecipe = new ShapedRecipe(
       getKey("expensive_golden_carrot"),
       new ItemStack(Material.GOLDEN_CARROT)
     );
-    goldenCarrotRecipe.shape(
-      "GGG",
-      "GCG",
-      "GGG"
-    );
+    goldenCarrotRecipe.shape("GGG", "GCG", "GGG");
     goldenCarrotRecipe.setIngredient('G', Material.GOLD_INGOT);
     goldenCarrotRecipe.setIngredient('C', Material.CARROT);
     

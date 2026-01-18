@@ -17,12 +17,9 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.List;
 
 public class RespawnTeammatesGen extends UsableItemGen {
+  
   public RespawnTeammatesGen() {
-    super(
-      ItemsManager.ItemKey.RESPAWN_TEAMMATES,
-      Material.MANGROVE_SIGN,
-      true
-    );
+    super(ItemsManager.ItemKey.RESPAWN_TEAMMATES, Material.MANGROVE_SIGN, true);
   }
   
   @Override
@@ -34,26 +31,22 @@ public class RespawnTeammatesGen extends UsableItemGen {
       PlayerData d = DestroyTheCore.game.getPlayerData(p);
       if (!d.side.equals(data.side)) continue;
       
-      if (!d.alive)
-        PlayerUtils.respawn(p);
+      if (!d.alive) PlayerUtils.respawn(p);
       
       PlayerUtils.fullyHeal(p);
       p.addPotionEffect(
-        new PotionEffect(
-          PotionEffectType.ABSORPTION,
-          120 * 20,
-          4,
-          true,
-          true
-        )
+        new PotionEffect(PotionEffectType.ABSORPTION, 120 * 20, 4, true, true)
       );
     }
     
     PlayerUtils.broadcast(
-      TextUtils.$("items.respawn-teammates.announce", List.of(
-        Placeholder.component("player", PlayerUtils.getName(pl)),
-        Placeholder.component("item", getItem().effectiveName())
-      ))
+      TextUtils.$(
+        "items.respawn-teammates.announce",
+        List.of(
+          Placeholder.component("player", PlayerUtils.getName(pl)),
+          Placeholder.component("item", getItem().effectiveName())
+        )
+      )
     );
   }
 }

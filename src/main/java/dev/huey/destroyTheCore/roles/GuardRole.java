@@ -21,10 +21,13 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.List;
 
 public class GuardRole extends Role {
-  static public void onEnchant(Player pl) {
+  
+  public static void onEnchant(Player pl) {
     for (Player e : PlayerUtils.getEnemies(pl)) {
-      if (DestroyTheCore.game.getPlayerData(e).role.id == RolesManager.RoleKey.GUARD)
-        send(e, TextUtils.$("roles.guard.enchanting-alarm"));
+      if (
+        DestroyTheCore.game.getPlayerData(
+          e).role.id == RolesManager.RoleKey.GUARD
+      ) send(e, TextUtils.$("roles.guard.enchanting-alarm"));
     }
   }
   
@@ -49,36 +52,37 @@ public class GuardRole extends Role {
     if (DestroyTheCore.game.map.core == null) return;
     
     if (
-      LocationUtils.near(pl.getLocation(), LocationUtils.live(
-        LocationUtils.selfSide(DestroyTheCore.game.map.core, pl)
-      ), 15)
+      LocationUtils.near(
+        pl.getLocation(),
+        LocationUtils.live(
+          LocationUtils.selfSide(DestroyTheCore.game.map.core, pl)
+        ),
+        15
+      )
     ) {
-      if (DestroyTheCore.ticksManager.ticksCount % 25 == 0) // Regen 2 = every 25 ticks
-        pl.addPotionEffect(new PotionEffect(
-          PotionEffectType.REGENERATION,
-          50,
-          1,
-          true,
-          false
-        ));
+      if (DestroyTheCore.ticksManager.ticksCount % 25 == 0) pl.addPotionEffect(
+        new PotionEffect(PotionEffectType.REGENERATION, 50, 1, true, false)
+      ); // Regen 2 = every 25 ticks
     }
     
     if (
-      LocationUtils.near(pl.getLocation(), LocationUtils.live(
-        LocationUtils.enemySide(DestroyTheCore.game.map.core, pl)
-      ), 15)
+      LocationUtils.near(
+        pl.getLocation(),
+        LocationUtils.live(
+          LocationUtils.enemySide(DestroyTheCore.game.map.core, pl)
+        ),
+        15
+      )
     ) {
-      pl.sendActionBar(TextUtils.$("roles.guard.near-enemy-core-warning", List.of(
-        Placeholder.unparsed("role", name)
-      )));
-      if (DestroyTheCore.ticksManager.isUpdateTick()) // Wither 3 = every 10 ticks
-        pl.addPotionEffect(new PotionEffect(
-          PotionEffectType.WITHER,
-          60,
-          2,
-          true,
-          false
-        ));
+      pl.sendActionBar(
+        TextUtils.$(
+          "roles.guard.near-enemy-core-warning",
+          List.of(Placeholder.unparsed("role", name))
+        )
+      );
+      if (DestroyTheCore.ticksManager.isUpdateTick()) pl.addPotionEffect(
+        new PotionEffect(PotionEffectType.WITHER, 60, 2, true, false)
+      ); // Wither 3 = every 10 ticks
     }
   }
   
@@ -86,20 +90,19 @@ public class GuardRole extends Role {
   public void useSkill(Player pl) {
     skillFeedback(pl);
     
-    pl.addPotionEffect(new PotionEffect(
-      PotionEffectType.STRENGTH,
-      5 * 20,
-      0,
-      false,
-      true
-    ));
+    pl.addPotionEffect(
+      new PotionEffect(PotionEffectType.STRENGTH, 5 * 20, 0, false, true)
+    );
     PlayerUtils.auraBroadcast(
       pl.getLocation(),
       10,
-      TextUtils.$("roles.guard.skill.announce", List.of(
-        Placeholder.component("player", PlayerUtils.getName(pl)),
-        Placeholder.unparsed("role", name)
-      ))
+      TextUtils.$(
+        "roles.guard.skill.announce",
+        List.of(
+          Placeholder.component("player", PlayerUtils.getName(pl)),
+          Placeholder.unparsed("role", name)
+        )
+      )
     );
     
     if (DestroyTheCore.game.map.core == null) return;
@@ -107,57 +110,77 @@ public class GuardRole extends Role {
     boolean found = false;
     for (Player e : PlayerUtils.getEnemies(pl)) {
       if (
-        LocationUtils.near(e.getLocation(), LocationUtils.live(
-          LocationUtils.selfSide(DestroyTheCore.game.map.core, pl)
-        ), 15)
+        LocationUtils.near(
+          e.getLocation(),
+          LocationUtils.live(
+            LocationUtils.selfSide(DestroyTheCore.game.map.core, pl)
+          ),
+          15
+        )
       ) {
         found = true;
         
-        send(pl, TextUtils.$("roles.guard.skill.found-enemy.self", List.of(
-          Placeholder.component("enemy", PlayerUtils.getName(e))
-        )));
-        send(e, TextUtils.$("roles.guard.skill.found-enemy.enemy", List.of(
-          Placeholder.component("player", PlayerUtils.getName(pl))
-        )));
+        send(
+          pl,
+          TextUtils.$(
+            "roles.guard.skill.found-enemy.self",
+            List.of(Placeholder.component("enemy", PlayerUtils.getName(e)))
+          )
+        );
+        send(
+          e,
+          TextUtils.$(
+            "roles.guard.skill.found-enemy.enemy",
+            List.of(Placeholder.component("player", PlayerUtils.getName(pl)))
+          )
+        );
         
-        PlayerUtils.delayAssign(pl, e, Particle.ENCHANTED_HIT, () -> {
-          e.addPotionEffect(new PotionEffect(
-            PotionEffectType.GLOWING,
-            60 * 20,
-            0,
-            true,
-            false
-          ));
-          e.addPotionEffect(new PotionEffect(
-            PotionEffectType.SLOWNESS,
-            5 * 20,
-            4,
-            true,
-            false
-          ));
-          e.addPotionEffect(new PotionEffect(
-            PotionEffectType.MINING_FATIGUE,
-            5 * 20,
-            4,
-            true,
-            false
-          ));
-          
-          new ParticleBuilder(Particle.ELDER_GUARDIAN)
-            .receivers(e)
-            .location(e.getLocation())
-            .spawn();
-          e.playSound(
-            e.getLocation(),
-            Sound.ENTITY_ELDER_GUARDIAN_CURSE,
-            1,
-            1
-          );
-        });
+        PlayerUtils.delayAssign(
+          pl,
+          e,
+          Particle.ENCHANTED_HIT,
+          () -> {
+            e.addPotionEffect(
+              new PotionEffect(
+                PotionEffectType.GLOWING,
+                60 * 20,
+                0,
+                true,
+                false
+              )
+            );
+            e.addPotionEffect(
+              new PotionEffect(
+                PotionEffectType.SLOWNESS,
+                5 * 20,
+                4,
+                true,
+                false
+              )
+            );
+            e.addPotionEffect(
+              new PotionEffect(
+                PotionEffectType.MINING_FATIGUE,
+                5 * 20,
+                4,
+                true,
+                false
+              )
+            );
+            
+            new ParticleBuilder(Particle.ELDER_GUARDIAN).receivers(e).location(
+              e.getLocation()).spawn();
+            e.playSound(
+              e.getLocation(),
+              Sound.ENTITY_ELDER_GUARDIAN_CURSE,
+              1,
+              1
+            );
+          }
+        );
       }
     }
     
-    if (!found)
-      send(pl, TextUtils.$("roles.guard.skill.found-enemy.none"));
+    if (!found) send(pl, TextUtils.$("roles.guard.skill.found-enemy.none"));
   }
 }

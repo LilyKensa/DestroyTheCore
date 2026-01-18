@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 public class NextPhaseCommand extends Subcommand {
+  
   public NextPhaseCommand() {
     super("skip");
   }
@@ -24,9 +25,12 @@ public class NextPhaseCommand extends Subcommand {
     if (!DestroyTheCore.game.isPlaying) return;
     
     DestroyTheCore.game.nextPhase();
-    PlayerUtils.prefixedBroadcast(TextUtils.$("commands.skip.announce", List.of(
-      Placeholder.component("player", PlayerUtils.getName(pl))
-    )));
+    PlayerUtils.prefixedBroadcast(
+      TextUtils.$(
+        "commands.skip.announce",
+        List.of(Placeholder.component("player", PlayerUtils.getName(pl)))
+      )
+    );
     DestroyTheCore.boardsManager.refresh();
   }
 }

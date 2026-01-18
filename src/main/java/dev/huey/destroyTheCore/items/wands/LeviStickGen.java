@@ -15,11 +15,9 @@ import org.bukkit.potion.PotionEffectType;
 import java.util.List;
 
 public class LeviStickGen extends UsableItemGen {
+  
   public LeviStickGen() {
-    super(
-      ItemsManager.ItemKey.LEVI_STICK,
-      Material.BREEZE_ROD
-    );
+    super(ItemsManager.ItemKey.LEVI_STICK, Material.BREEZE_ROD);
   }
   
   @Override
@@ -35,17 +33,16 @@ public class LeviStickGen extends UsableItemGen {
       target,
       Particle.WHITE_SMOKE,
       () -> {
-        target.addPotionEffect(new PotionEffect(
-          PotionEffectType.LEVITATION,
-          20,
-          4,
-          false,
-          true
-        ));
+        target.addPotionEffect(
+          new PotionEffect(PotionEffectType.LEVITATION, 20, 4, false, true)
+        );
         
-        pl.sendActionBar(TextUtils.$("items.levi-stick.success", List.of(
-          Placeholder.unparsed("target", target.getName())
-        )));
+        pl.sendActionBar(
+          TextUtils.$(
+            "items.levi-stick.success",
+            List.of(Placeholder.unparsed("target", target.getName()))
+          )
+        );
       }
     );
   }

@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 
 public class Stats implements ConfigurationSerializable {
+  
   public boolean nightVision = false;
   public int games = 0, wins = 0, kills = 0, deaths = 0, coreAttacks = 0;
   public Map<Material, Integer> ores = new HashMap<>();
@@ -19,13 +20,12 @@ public class Stats implements ConfigurationSerializable {
     deaths += data.deaths;
     coreAttacks += data.coreAttacks;
     
-    for (Material type : data.ores.keySet())
-      ores.put(
-        type,
-        ores.getOrDefault(type, 0)
-          + data.ores.getOrDefault(type, 0)
-      );
+    for (Material type : data.ores.keySet()) ores.put(
+      type,
+      ores.getOrDefault(type, 0) + data.ores.getOrDefault(type, 0)
+    );
   }
+  
   public void addFromPlayerData(PlayerData data) {
     addFromPlayerData(data, false);
   }
@@ -54,18 +54,20 @@ public class Stats implements ConfigurationSerializable {
     return map;
   }
   
-  static public Stats deserialize(Map<String, Object> map) {
+  public static Stats deserialize(Map<String, Object> map) {
     Stats stats = new Stats();
     
     stats.nightVision = (boolean) map.getOrDefault("night-vision", false);
-    stats.games       = (int)     map.getOrDefault("games", 0);
-    stats.wins        = (int)     map.getOrDefault("wins", 0);
-    stats.kills       = (int)     map.getOrDefault("kills", 0);
-    stats.deaths      = (int)     map.getOrDefault("deaths", 0);
-    stats.coreAttacks = (int)     map.getOrDefault("core-attacks", 0);
+    stats.games = (int) map.getOrDefault("games", 0);
+    stats.wins = (int) map.getOrDefault("wins", 0);
+    stats.kills = (int) map.getOrDefault("kills", 0);
+    stats.deaths = (int) map.getOrDefault("deaths", 0);
+    stats.coreAttacks = (int) map.getOrDefault("core-attacks", 0);
     
-    Map<String, Integer> stringOres = (Map<String, Integer>)
-      map.getOrDefault("ores", new HashMap<>());
+    Map<String, Integer> stringOres = (Map<String, Integer>) map.getOrDefault(
+      "ores",
+      new HashMap<>()
+    );
     stats.ores = new HashMap<>();
     for (Map.Entry<String, Integer> entry : stringOres.entrySet()) {
       stats.ores.put(Material.valueOf(entry.getKey()), entry.getValue());

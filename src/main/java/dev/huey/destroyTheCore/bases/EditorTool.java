@@ -16,11 +16,14 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 public class EditorTool {
+  
   static final Component toolPrefix = TextUtils.$("tool.prefix");
   
   /** Used to distinguish tools, stored data is {@link #id} */
   static final NamespacedKey dataNamespace = new NamespacedKey(
-    DestroyTheCore.instance, "editor-tool");
+    DestroyTheCore.instance,
+    "editor-tool"
+  );
   
   public String id;
   public Material iconType;
@@ -37,15 +40,15 @@ public class EditorTool {
     ItemStack item = new ItemStack(iconType);
     ItemMeta meta = item.getItemMeta();
     
-    meta.displayName(toolPrefix.append(TextUtils.$("tools." + id).color(NamedTextColor.GOLD))
-      .decoration(TextDecoration.ITALIC, false));
+    meta.displayName(
+      toolPrefix.append(TextUtils.$("tools." + id).color(
+        NamedTextColor.GOLD)).decoration(TextDecoration.ITALIC, false)
+    );
     meta.setEnchantmentGlintOverride(true);
     
-    meta.getPersistentDataContainer().set(
-      dataNamespace,
+    meta.getPersistentDataContainer().set(dataNamespace,
       PersistentDataType.STRING,
-      id
-    );
+      id);
     
     item.setItemMeta(meta);
     return item;
@@ -60,37 +63,36 @@ public class EditorTool {
     
     PersistentDataContainer container = meta.getPersistentDataContainer();
     if (!container.has(dataNamespace)) return false;
-    return this.id.equals(container.get(dataNamespace, PersistentDataType.STRING));
+    return this.id.equals(
+      container.get(dataNamespace, PersistentDataType.STRING)
+    );
   }
   
   /**
    * Used to refresh the tool when reloading data from config files
+   * 
    * @implNote Optional
    */
   public void refresh() {
-  
   }
   
   /**
    * Used in {@link TicksManager.TicksRunnable}
+   * 
    * @implNote Optional
    */
   public void onParticleTick(Player pl) {
-    
   }
   
   /** @implNote Optional */
   public void onRightClickAir(Player pl) {
-  
   }
   
   /** @implNote Optional */
   public void onRightClickBlock(Player pl, Block block) {
-    
   }
   
   /** @implNote Optional */
   public void onBreakBlock(Player pl, Block block) {
-  
   }
 }

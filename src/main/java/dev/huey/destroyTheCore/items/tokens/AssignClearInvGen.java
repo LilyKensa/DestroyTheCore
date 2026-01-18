@@ -20,16 +20,14 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.List;
 
 public class AssignClearInvGen extends UsableItemGen {
+  
   public AssignClearInvGen() {
-    super(
-      ItemsManager.ItemKey.ASSIGN_CLEAR_INV,
-      Material.BAMBOO_SIGN,
-      true
-    );
+    super(ItemsManager.ItemKey.ASSIGN_CLEAR_INV, Material.BAMBOO_SIGN, true);
   }
   
   public Allay summonAllayWithItem(Location location, ItemStack item) {
-    Allay allay = (Allay) location.getWorld().spawnEntity(location, EntityType.ALLAY);
+    Allay allay = (Allay) location.getWorld().spawnEntity(location,
+      EntityType.ALLAY);
     
     allay.customName(TextUtils.$("items.assign-clear-inv.allay"));
     
@@ -50,12 +48,17 @@ public class AssignClearInvGen extends UsableItemGen {
     if (side.equals(Game.Side.SPECTATOR)) return;
     
     if (sideData.clearInvCooldown > 0) {
-      pl.sendActionBar(TextUtils.$("items.assign-clear-inv.cooldown", List.of(
-        Placeholder.unparsed(
-          "cooldown",
-          CoreUtils.toFixed(sideData.clearInvCooldown / 20D, 1)
+      pl.sendActionBar(
+        TextUtils.$(
+          "items.assign-clear-inv.cooldown",
+          List.of(
+            Placeholder.unparsed(
+              "cooldown",
+              CoreUtils.toFixed(sideData.clearInvCooldown / 20D, 1)
+            )
+          )
         )
-      )));
+      );
       return;
     }
     
@@ -84,24 +87,28 @@ public class AssignClearInvGen extends UsableItemGen {
           
           @Override
           public void run() {
-            for (int max = index + RandomUtils.range(3, 6); index < max; ++index) {
+            for (
+                 int max = index + RandomUtils.range(3, 6); index < max; ++index
+            ) {
               if (index >= items.length) {
                 cancel();
                 return;
               }
               
-              summonAllayWithItem(LocationUtils.hitboxCenter(target), items[index]);
+              summonAllayWithItem(
+                LocationUtils.hitboxCenter(target),
+                items[index]
+              );
             }
           }
         }.runTaskTimer(DestroyTheCore.instance, 0, 2);
         
-        for (Player p : Bukkit.getOnlinePlayers())
-          p.playSound(
-            p.getLocation(),
-            Sound.ENTITY_WITHER_SPAWN,
-            1, // Volume
-            1 // Pitch
-          );
+        for (Player p : Bukkit.getOnlinePlayers()) p.playSound(
+          p.getLocation(),
+          Sound.ENTITY_WITHER_SPAWN,
+          1, // Volume
+          1 // Pitch
+        );
         
         ParticleUtils.ring(
           PlayerUtils.all(),
@@ -110,21 +117,26 @@ public class AssignClearInvGen extends UsableItemGen {
           Color.ORANGE
         );
         PlayerUtils.broadcast(
-          TextUtils.$("items.assign-clear-inv.announce", List.of(
-            Placeholder.component("player", PlayerUtils.getName(pl)),
-            Placeholder.component("item", getItem().effectiveName()),
-            Placeholder.component("target", PlayerUtils.getName(target))
-          ))
+          TextUtils.$(
+            "items.assign-clear-inv.announce",
+            List.of(
+              Placeholder.component("player", PlayerUtils.getName(pl)),
+              Placeholder.component("item", getItem().effectiveName()),
+              Placeholder.component("target", PlayerUtils.getName(target))
+            )
+          )
         );
         PlayerUtils.broadcast(
-          TextUtils.$("chat.format", List.of(
-            Placeholder.component("player", PlayerUtils.getName(target)),
-            Placeholder.component(
-              "message",
-              TextUtils.$("items.assign-clear-inv.post-announce")
-                .color(null)
+          TextUtils.$(
+            "chat.format",
+            List.of(
+              Placeholder.component("player", PlayerUtils.getName(target)),
+              Placeholder.component(
+                "message",
+                TextUtils.$("items.assign-clear-inv.post-announce").color(null)
+              )
             )
-          ))
+          )
         );
       }
     );

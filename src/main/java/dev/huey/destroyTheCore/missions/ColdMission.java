@@ -12,13 +12,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class ColdMission extends TimedMission {
+  
   public ColdMission() {
     super("cold");
   }
   
   @Override
   public void innerStart() {
-  
   }
   
   Set<Player> isClose = new HashSet<>();
@@ -32,8 +32,7 @@ public class ColdMission extends TimedMission {
           p.setFreezeTicks(freeze / 2);
         }
         else {
-          if (freeze < 20 * 20)
-            p.setFreezeTicks(freeze + 20);
+          if (freeze < 20 * 20) p.setFreezeTicks(freeze + 20);
         }
       }
     }
@@ -43,27 +42,28 @@ public class ColdMission extends TimedMission {
       
       for (Player p : PlayerUtils.allGaming()) {
         if (
-          PlayerUtils.allGaming()
-            .stream().anyMatch(e -> !e.equals(p) && LocationUtils.near(e, p, 5))
+          PlayerUtils.allGaming().stream().anyMatch(e -> !e.equals(
+            p) && LocationUtils.near(e, p, 5))
         ) {
           isClose.add(p);
         }
       }
       
       for (Player p : PlayerUtils.allGaming()) {
-        LocationUtils.ring(LocationUtils.hitboxCenter(p), 5, loc -> {
-          new ParticleBuilder(isClose.contains(p) ? Particle.COMPOSTER : Particle.WAX_ON)
-            .receivers(p)
-            .location(loc)
-            .extra(0)
-            .spawn();
-        });
+        LocationUtils.ring(
+          LocationUtils.hitboxCenter(p),
+          5,
+          loc -> {
+            new ParticleBuilder(
+              isClose.contains(p) ? Particle.COMPOSTER : Particle.WAX_ON
+            ).receivers(p).location(loc).extra(0).spawn();
+          }
+        );
       }
     }
   }
   
   @Override
   public void innerFinish() {
-  
   }
 }

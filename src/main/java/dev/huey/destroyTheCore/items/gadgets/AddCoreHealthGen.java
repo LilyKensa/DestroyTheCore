@@ -15,11 +15,9 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 public class AddCoreHealthGen extends UsableItemGen {
+  
   public AddCoreHealthGen() {
-    super(
-      ItemsManager.ItemKey.ADD_CORE_HEALTH,
-      Material.DRAGON_BREATH
-    );
+    super(ItemsManager.ItemKey.ADD_CORE_HEALTH, Material.DRAGON_BREATH);
   }
   
   @Override
@@ -39,10 +37,13 @@ public class AddCoreHealthGen extends UsableItemGen {
     sideData.coreHealth++;
     
     PlayerUtils.broadcast(
-      TextUtils.$("items.add-core-health.announce", List.of(
-        Placeholder.component("player", PlayerUtils.getName(pl)),
-        Placeholder.component("item", getItem().effectiveName())
-      ))
+      TextUtils.$(
+        "items.add-core-health.announce",
+        List.of(
+          Placeholder.component("player", PlayerUtils.getName(pl)),
+          Placeholder.component("item", getItem().effectiveName())
+        )
+      )
     );
     
     DestroyTheCore.boardsManager.refresh();

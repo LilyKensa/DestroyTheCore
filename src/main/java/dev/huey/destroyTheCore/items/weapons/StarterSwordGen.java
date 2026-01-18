@@ -5,11 +5,9 @@ import dev.huey.destroyTheCore.managers.ItemsManager;
 import org.bukkit.Material;
 
 public class StarterSwordGen extends ItemGen {
+  
   public StarterSwordGen() {
-    super(
-      ItemsManager.ItemKey.STARTER_SWORD,
-      Material.WOODEN_SWORD
-    );
+    super(ItemsManager.ItemKey.STARTER_SWORD, Material.WOODEN_SWORD);
     setNeverDrop();
     setTrash();
   }

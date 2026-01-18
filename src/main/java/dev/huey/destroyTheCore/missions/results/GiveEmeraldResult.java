@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class GiveEmeraldResult extends Mission.Result {
+  
   public GiveEmeraldResult() {
     super("give-emerald");
   }
