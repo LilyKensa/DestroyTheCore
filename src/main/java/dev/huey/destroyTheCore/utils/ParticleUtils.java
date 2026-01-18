@@ -1,14 +1,13 @@
 package dev.huey.destroyTheCore.utils;
 
 import com.destroystokyo.paper.ParticleBuilder;
+import java.util.List;
 import org.apache.logging.log4j.util.TriConsumer;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-
-import java.util.List;
 
 public class ParticleUtils {
   

@@ -5,12 +5,11 @@ import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.missions.ProgressiveMission;
 import dev.huey.destroyTheCore.records.PlayerData;
+import java.util.HashMap;
+import java.util.Map;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class JumpMission extends ProgressiveMission implements Listener {
   

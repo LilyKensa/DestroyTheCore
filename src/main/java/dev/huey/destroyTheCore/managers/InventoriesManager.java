@@ -3,13 +3,12 @@ package dev.huey.destroyTheCore.managers;
 import dev.huey.destroyTheCore.Constants;
 import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.utils.RandomUtils;
+import java.util.*;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-
-import java.util.*;
 
 public class InventoriesManager {
   

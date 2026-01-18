@@ -4,11 +4,10 @@ import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.managers.RolesManager;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
-
 import java.util.HashMap;
 import java.util.Map;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
 
 public class PlayerData {
   

@@ -1,11 +1,10 @@
 package dev.huey.destroyTheCore.managers;
 
-import org.bukkit.entity.Player;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import org.bukkit.entity.Player;
 
 public class DamageManager {
   

@@ -4,13 +4,12 @@ import dev.huey.destroyTheCore.bases.missions.InstantMission;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.RandomUtils;
 import io.papermc.paper.potion.SuspiciousEffectEntry;
+import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SuspiciousStewMeta;
 import org.bukkit.potion.PotionEffectType;
-
-import java.util.List;
 
 public class FreeSoupMission extends InstantMission {
   

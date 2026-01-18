@@ -1,11 +1,10 @@
 package dev.huey.destroyTheCore.records;
 
-import org.bukkit.Material;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
+import org.bukkit.Material;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
 public class Stats implements ConfigurationSerializable {
   

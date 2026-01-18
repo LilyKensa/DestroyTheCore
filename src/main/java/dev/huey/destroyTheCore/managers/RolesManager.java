@@ -6,6 +6,12 @@ import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.records.PlayerData;
 import dev.huey.destroyTheCore.roles.*;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.apache.logging.log4j.util.TriConsumer;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -15,13 +21,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.persistence.PersistentDataType;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class RolesManager {
   

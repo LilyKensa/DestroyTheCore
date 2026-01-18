@@ -5,13 +5,12 @@ import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.Mission;
 import dev.huey.destroyTheCore.records.PlayerData;
 import dev.huey.destroyTheCore.utils.TextUtils;
+import java.util.HashMap;
+import java.util.Map;
 import net.kyori.adventure.bossbar.BossBar;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public abstract class ProgressiveMission extends Mission implements Listener {
   

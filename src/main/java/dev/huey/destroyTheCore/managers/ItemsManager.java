@@ -25,6 +25,9 @@ import dev.huey.destroyTheCore.items.tokens.*;
 import dev.huey.destroyTheCore.items.wands.LeviStickGen;
 import dev.huey.destroyTheCore.items.weapons.*;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Item;
@@ -35,10 +38,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
-
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class ItemsManager {
   

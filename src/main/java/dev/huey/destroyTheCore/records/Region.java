@@ -1,13 +1,12 @@
 package dev.huey.destroyTheCore.records;
 
 import dev.huey.destroyTheCore.utils.LocationUtils;
+import java.util.Map;
+import java.util.function.Consumer;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Map;
-import java.util.function.Consumer;
 
 public record Region(Location loc1,
                      Location loc2) implements ConfigurationSerializable {

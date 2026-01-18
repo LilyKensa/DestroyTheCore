@@ -5,6 +5,8 @@ import dev.huey.destroyTheCore.bases.Subcommand;
 import dev.huey.destroyTheCore.commands.*;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
+import java.util.List;
+import java.util.Optional;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -13,9 +15,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
-
-import java.util.List;
-import java.util.Optional;
 
 public class CommandsManager implements TabCompleter, CommandExecutor {
   

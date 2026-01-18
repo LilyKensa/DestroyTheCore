@@ -1,14 +1,13 @@
 package dev.huey.destroyTheCore.managers;
 
 import dev.huey.destroyTheCore.DestroyTheCore;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.*;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 public class RecipesManager {
   

@@ -1,10 +1,9 @@
 package dev.huey.destroyTheCore;
 
-import org.bukkit.Material;
-import org.bukkit.entity.Villager;
-
 import java.util.List;
 import java.util.Map;
+import org.bukkit.Material;
+import org.bukkit.entity.Villager;
 
 public class Constants {
   

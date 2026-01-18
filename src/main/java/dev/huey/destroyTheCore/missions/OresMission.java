@@ -4,15 +4,14 @@ import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.missions.ProgressiveMission;
 import dev.huey.destroyTheCore.records.PlayerData;
+import java.util.HashMap;
+import java.util.Map;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class OresMission extends ProgressiveMission implements Listener {
   

@@ -5,13 +5,12 @@ import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.missions.ProgressiveMission;
 import dev.huey.destroyTheCore.records.PlayerData;
 import dev.huey.destroyTheCore.utils.LocationUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 public class OccupyCenterMission extends ProgressiveMission {
   

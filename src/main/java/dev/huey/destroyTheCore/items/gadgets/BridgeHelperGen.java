@@ -7,6 +7,7 @@ import dev.huey.destroyTheCore.utils.LocationUtils;
 import dev.huey.destroyTheCore.utils.ParticleUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
+import java.util.Set;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -14,8 +15,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.type.Ladder;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import java.util.Set;
 
 public class BridgeHelperGen extends UsableItemGen {
   

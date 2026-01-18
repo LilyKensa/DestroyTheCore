@@ -6,6 +6,7 @@ import dev.huey.destroyTheCore.items.gadgets.GrenadeGen;
 import dev.huey.destroyTheCore.roles.*;
 import dev.huey.destroyTheCore.utils.LocationUtils;
 import io.papermc.paper.event.player.AsyncChatEvent;
+import java.util.List;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -18,8 +19,6 @@ import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.List;
 
 public class EventsManager implements Listener {
   

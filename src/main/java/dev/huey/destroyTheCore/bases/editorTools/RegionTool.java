@@ -3,13 +3,12 @@ package dev.huey.destroyTheCore.bases.editorTools;
 import dev.huey.destroyTheCore.bases.EditorTool;
 import dev.huey.destroyTheCore.records.Region;
 import dev.huey.destroyTheCore.utils.ParticleUtils;
+import java.util.List;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-
-import java.util.List;
 
 public class RegionTool extends EditorTool {
   

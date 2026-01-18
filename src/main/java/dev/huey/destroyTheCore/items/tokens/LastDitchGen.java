@@ -7,15 +7,14 @@ import dev.huey.destroyTheCore.records.PlayerData;
 import dev.huey.destroyTheCore.records.SideData;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
+import java.util.List;
+import java.util.function.BiConsumer;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-
-import java.util.List;
-import java.util.function.BiConsumer;
 
 public class LastDitchGen extends UsableItemGen {
   

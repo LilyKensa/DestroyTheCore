@@ -3,14 +3,13 @@ package dev.huey.destroyTheCore.bases.editorTools;
 import dev.huey.destroyTheCore.bases.EditorTool;
 import dev.huey.destroyTheCore.utils.LocationUtils;
 import dev.huey.destroyTheCore.utils.ParticleUtils;
+import java.util.List;
+import java.util.Set;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-
-import java.util.List;
-import java.util.Set;
 
 public class MultipleLocationsTool extends EditorTool {
   

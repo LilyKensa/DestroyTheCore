@@ -4,12 +4,11 @@ import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.bases.Subcommand;
 import dev.huey.destroyTheCore.managers.TranslationsManager;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
+import java.util.List;
+import java.util.Locale;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
-
-import java.util.List;
-import java.util.Locale;
 
 public class LanguageCommand extends Subcommand {
   

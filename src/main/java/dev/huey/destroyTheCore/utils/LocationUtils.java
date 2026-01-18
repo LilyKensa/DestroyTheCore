@@ -7,13 +7,12 @@ import com.comphenix.protocol.wrappers.BlockPosition;
 import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.records.PlayerData;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
 
 public class LocationUtils {
   

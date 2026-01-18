@@ -1,6 +1,9 @@
 package dev.huey.destroyTheCore.utils;
 
 import dev.huey.destroyTheCore.DestroyTheCore;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -10,10 +13,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Function;
 
 public class CoreUtils {
   
