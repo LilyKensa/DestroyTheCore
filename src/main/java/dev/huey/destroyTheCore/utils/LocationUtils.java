@@ -258,14 +258,19 @@ public class LocationUtils {
   /** If a block is in their own half of the map */
   static public boolean canAccess(Player pl, Block block)  {
     if (DestroyTheCore.game.map.core == null) return true;
-    if (!isSameWorld(pl.getLocation(), DestroyTheCore.game.map.core)) return true;
+    if (!DestroyTheCore.worldsManager.checkLiveWorld(block.getLocation())) return true;
+    
     PlayerData data = DestroyTheCore.game.getPlayerData(pl);
     
-    double selfDistSq = pl.getLocation().distanceSquared(
-      LocationUtils.selfSide(LocationUtils.toBlockCenter(block.getLocation()), data.side)
+    double selfDistSq = LocationUtils.toBlockCenter(block.getLocation()).distanceSquared(
+      LocationUtils.live(
+        LocationUtils.selfSide(DestroyTheCore.game.map.core, data.side)
+      )
     );
-    double enemyDistSq = pl.getLocation().distanceSquared(
-      LocationUtils.enemySide(LocationUtils.toBlockCenter(block.getLocation()), data.side)
+    double enemyDistSq = LocationUtils.toBlockCenter(block.getLocation()).distanceSquared(
+      LocationUtils.live(
+        LocationUtils.enemySide(DestroyTheCore.game.map.core, data.side)
+      )
     );
     
     return selfDistSq <= enemyDistSq;
