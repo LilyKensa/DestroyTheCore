@@ -480,6 +480,8 @@ items:
   kekkai-master-leggings:
     name: "<aqua>符文褲</aqua>"
     desc-1: "- <red>結界師綁定物品</red>"
+  noble-helmet:
+    name: "<aqua>貴族頭盔</aqua>"
   assign-clear-inv:
     name: "[<white>令牌</white>] <light_purple>盜賊集結</light_purple>"
     desc-1: "清空隨機敵人的背包"
@@ -877,12 +879,23 @@ roles:
       announce: "<player> 使用了<yellow><role></yellow>技能, 血量增加!"
   jockey:
     name: "騎士"
-    desc-1: "<gold>在馬上面變強壯，但只要下馬就變智障！</gold>"
-    feature-1: "<yellow>馬鞭(栓繩)</yellow>"
-    feature-2: "<green>身邊無馬時召喚一匹馬、身邊有馬時強化這匹馬(冷卻60秒、下馬後冷卻30秒)</green>"
-    feature-3: "<aqua>在馬上擁有力量I、抗性II。</aqua>"
+    desc-1: "<gold>在馬上面變強壯, 但只要下馬就變智障！</gold>"
+    feature-1: "馬鞭 (栓繩)"
+    feature-2: "身邊無馬時召喚一匹馬、身邊有馬時強化這匹馬(冷卻 60秒、下馬後冷卻 30秒)"
+    feature-3: "在馬上擁有力量I、抗性II。"
     item:
       name: "<aqua>馬鞭</aqua>"
-  skill:
-    name: "召喚一匹馬"
-    desc-1: "如果已經有馬, 升級你的馬兒"
+    skill:
+      name: "召喚一匹馬"
+      desc-1: "如果已經有馬, 升級你的馬兒"
+  noble:
+    name: "貴族"
+    desc-1: "<gold>一個尊貴的存在，在他旁邊感覺很榮幸！</gold>"
+    feature-1: "皇家寶劍(金劍、燃燒 I)"
+    feature-2: "給予所有友軍黃愛心 6顆 ( 60秒) (冷卻 180秒)"
+    feature-3: "給予附近 (10 格內)非貴族隊友抗性 I、附近 (15 格內)的敵人死亡時獲得金錠。"
+    item:
+      name: "<aqua>皇家寶劍</aqua>"
+      desc-1: "燃燒 I"
+    skill:
+      name: "隊友額外增加血量"

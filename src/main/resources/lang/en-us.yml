@@ -476,6 +476,8 @@ items:
   kekkai-master-leggings:
     name: "<aqua>Rune Pants</aqua>"
     desc-1: "- <red>Bound item for Kekkai Masters</red>"
+  noble-helmet:
+    name: "<aqua>Royal Helmet</aqua>"
   assign-clear-inv:
     name: "[<white>Token</white>] <light_purple>Thieves Gather</light_purple>"
     desc-1: "Clears a random enemy's inventory"
@@ -877,3 +879,13 @@ roles:
     skill:
       name: "Summon a Horse"
       desc-1: "If you got one already. Upgrade your old one!"
+  noble:
+    name: "Noble"
+    desc-1: "A luxurious being, you should be proud after"
+    feature-1: "Royal Sword(Fire Aspect I)"
+    feature-2: "Give all your Allies 3 Hearts Protection(60 Second)(Cooldown 180 Second)"
+    feature-3: "In 10 block radius, gives allies resistance I. Enemy died within 15 blocks will earn you a gold."
+    item:
+      name: "Royal Sword"
+    skill:
+      name: "Health Boost"

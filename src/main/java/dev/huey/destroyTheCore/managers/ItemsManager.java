@@ -64,7 +64,7 @@ public class ItemsManager {
     // GUI
     CHOOSE_ROLE, SPECTATOR_TELEPORTER,
     // Roles
-    GOLD_DIGGER_CHESTPLATE, RANGER_HELMET, KEKKAI_MASTER_LEGGINGS, CONSTRUCTOR_HELMET, PROVOCATEUR_HELMET,
+    GOLD_DIGGER_CHESTPLATE, RANGER_HELMET, KEKKAI_MASTER_LEGGINGS, CONSTRUCTOR_HELMET, PROVOCATEUR_HELMET, NOBLE_HELMET
   }
   
   /** Filter item-gens by type */
@@ -144,7 +144,8 @@ public class ItemsManager {
       new RangerHelmetGen(),
       new KekkaiMasterLeggingsGen(),
       new ConstructorHelmetGen(),
-      new ProvocateurHelmetGen()
+      new ProvocateurHelmetGen(),
+      new NobleHelmetGen()
     ).collect(Collectors.toMap(ci -> ci.id, ci -> ci));
     
     usableGens = filterGens(UsableItemGen.class);
