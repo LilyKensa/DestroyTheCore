@@ -10,11 +10,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 public class RangerHelmetGen extends ItemGen {
+  
   public RangerHelmetGen() {
-    super(
-      ItemsManager.ItemKey.RANGER_HELMET,
-      Material.LEATHER_HELMET
-    );
+    super(ItemsManager.ItemKey.RANGER_HELMET, Material.LEATHER_HELMET);
     setNeverDrop();
     setTrash();
   }

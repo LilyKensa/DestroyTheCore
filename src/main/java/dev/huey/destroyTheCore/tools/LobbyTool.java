@@ -8,6 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 
 public class LobbyTool extends SingleLocationTool {
+  
   public LobbyTool() {
     super("lobby", Material.BREEZE_ROD, Color.AQUA);
   }

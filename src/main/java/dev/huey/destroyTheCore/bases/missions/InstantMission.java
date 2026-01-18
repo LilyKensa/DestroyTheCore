@@ -4,6 +4,7 @@ import dev.huey.destroyTheCore.bases.Mission;
 import dev.huey.destroyTheCore.utils.CoreUtils;
 
 public abstract class InstantMission extends Mission {
+  
   public InstantMission(String id) {
     super(id);
   }
@@ -15,7 +16,6 @@ public abstract class InstantMission extends Mission {
   
   @Override
   public void tick() {
-  
   }
   
   @Override

@@ -10,11 +10,9 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class InvisPotionGen extends ItemGen {
+  
   public InvisPotionGen() {
-    super(
-      ItemsManager.ItemKey.INVIS_POTION,
-      Material.SPLASH_POTION
-    );
+    super(ItemsManager.ItemKey.INVIS_POTION, Material.SPLASH_POTION);
   }
   
   @Override
@@ -22,12 +20,15 @@ public class InvisPotionGen extends ItemGen {
     PotionMeta meta = (PotionMeta) uncastedMeta;
     
     meta.setColor(Color.fromRGB(255, 255, 255));
-    meta.addCustomEffect(new PotionEffect(
-      PotionEffectType.INVISIBILITY,
-      5 * 60 * 20,
-      0,
-      false,
+    meta.addCustomEffect(
+      new PotionEffect(
+        PotionEffectType.INVISIBILITY,
+        5 * 60 * 20,
+        0,
+        false,
+        true
+      ),
       true
-    ), true);
+    );
   }
 }

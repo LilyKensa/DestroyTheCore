@@ -8,6 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class DropOresMission extends InstantMission {
+  
   public DropOresMission() {
     super("drop-ores");
   }

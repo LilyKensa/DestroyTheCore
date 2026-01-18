@@ -7,12 +7,9 @@ import org.bukkit.Color;
 import org.bukkit.Material;
 
 public class JoinSpectatorTool extends RegionTool {
+  
   public JoinSpectatorTool() {
-    super(
-      "join-spectator",
-      Material.FIREWORK_STAR,
-      Color.WHITE, Color.SILVER
-    );
+    super("join-spectator", Material.FIREWORK_STAR, Color.WHITE, Color.SILVER);
   }
   
   @Override

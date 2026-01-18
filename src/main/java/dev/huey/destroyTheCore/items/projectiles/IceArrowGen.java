@@ -13,12 +13,9 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class IceArrowGen extends ProjItemGen {
+  
   public IceArrowGen() {
-    super(
-      ItemsManager.ItemKey.ICE_ARROW,
-      Material.TIPPED_ARROW,
-      "ice-arrow"
-    );
+    super(ItemsManager.ItemKey.ICE_ARROW, Material.TIPPED_ARROW, "ice-arrow");
   }
   
   @Override
@@ -27,13 +24,10 @@ public class IceArrowGen extends ProjItemGen {
     
     meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
     meta.setColor(Color.fromRGB(100, 255, 255));
-    meta.addCustomEffect(new PotionEffect(
-      PotionEffectType.SLOWNESS,
-      5 * 20,
-      0,
-      false,
+    meta.addCustomEffect(
+      new PotionEffect(PotionEffectType.SLOWNESS, 5 * 20, 0, false, true),
       true
-    ), true);
+    );
   }
   
   @Override

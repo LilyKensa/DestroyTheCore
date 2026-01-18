@@ -5,6 +5,12 @@ import dev.huey.destroyTheCore.utils.CoreUtils;
 import dev.huey.destroyTheCore.utils.LocationUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
+import java.io.File;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Set;
+import java.util.function.Consumer;
 import net.kyori.adventure.bossbar.BossBar;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.*;
@@ -12,24 +18,21 @@ import org.bukkit.entity.Player;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.generator.WorldInfo;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
-import java.util.function.Consumer;
-
 public class WorldsManager {
-  static public class VoidGenerator extends ChunkGenerator {
+  
+  public static class VoidGenerator extends ChunkGenerator {
+    
     @Override
     public void generateNoise(
-      WorldInfo worldInfo, Random random,
-      int x, int z,
-      ChunkData chunkData
+                              WorldInfo worldInfo, Random random, int x, int z, ChunkData chunkData
     ) {
       chunkData.setRegion(
-        0, chunkData.getMinHeight(), 0, // Min x, y, z
-        16, chunkData.getMaxHeight(),16, // Max x, y, z
+        0,
+        chunkData.getMinHeight(),
+        0, // Min x, y, z
+        16,
+        chunkData.getMaxHeight(),
+        16, // Max x, y, z
         Material.AIR
       );
     }
@@ -101,10 +104,12 @@ public class WorldsManager {
   public void clearLiveWorldPlayers() {
     for (Player p : Bukkit.getOnlinePlayers()) {
       if (p.getWorld().equals(live)) {
-        p.teleport(CoreUtils.def(
-          DestroyTheCore.game.lobby.spawn,
-          new Location(lobby, 0, 100, 0)
-        ));
+        p.teleport(
+          CoreUtils.def(
+            DestroyTheCore.game.lobby.spawn,
+            new Location(lobby, 0, 100, 0)
+          )
+        );
       }
     }
   }
@@ -137,24 +142,27 @@ public class WorldsManager {
     PlayerUtils.prefixedNotice(TextUtils.$("world.deleting-live"));
     deleteLive();
     
-    File sourceFolder = new File(Bukkit.getWorldContainer(), "template-" + mapName);;
+    File sourceFolder = new File(
+      Bukkit.getWorldContainer(),
+      "template-" + mapName
+    );
     File targetFolder = new File(Bukkit.getWorldContainer(), "live");
-    
     PlayerUtils.prefixedNotice(TextUtils.$("world.copying-template"));
+    
     try {
       FileUtils.copyDirectory(sourceFolder, targetFolder);
     }
     catch (IOException e) {
       e.printStackTrace();
     }
-    
     new File(targetFolder, "uid.dat").delete();
+    
     new File(targetFolder, "session.lock").delete();
-    
     template = getTemplateWorld();
-    live = getLiveWorld();
     
+    live = getLiveWorld();
     PlayerUtils.prefixedNotice(TextUtils.$("world.copied"));
+    
     isReady = true;
   }
   
@@ -163,7 +171,7 @@ public class WorldsManager {
     live = getLiveWorld();
     
     Set<Chunk> toLoad = new HashSet<>();
-    Consumer<Location> addForceLoad = (loc) -> {
+    Consumer<Location> addForceLoad = loc -> {
       if (loc == null) return;
       
       toLoad.add(loc.getChunk());
@@ -175,32 +183,35 @@ public class WorldsManager {
     addForceLoad.accept(DestroyTheCore.game.map.restArea);
     addForceLoad.accept(DestroyTheCore.game.map.core);
     for (Location loc : DestroyTheCore.game.map.spawnpoints)
-      addForceLoad.accept(loc);
+      addForceLoad.accept(
+        loc
+      );
     
     for (Chunk chunk : toLoad) {
       chunk.addPluginChunkTicket(DestroyTheCore.instance);
     }
     
     for (Chunk chunk : template.getForceLoadedChunks()) {
-      if (!toLoad.contains(chunk))
-        chunk.removePluginChunkTicket(DestroyTheCore.instance);
+      if (!toLoad.contains(chunk)) chunk.removePluginChunkTicket(
+        DestroyTheCore.instance
+      );
     }
     for (Chunk chunk : live.getForceLoadedChunks()) {
-      if (!toLoad.contains(chunk))
-        chunk.removePluginChunkTicket(DestroyTheCore.instance);
+      if (!toLoad.contains(chunk)) chunk.removePluginChunkTicket(
+        DestroyTheCore.instance
+      );
     }
   }
   
   public void onPlayerChangeWorld(Player pl, World world) {
     if (template == null) return;
     
-    if (templateWarningBar == null)
-      templateWarningBar = BossBar.bossBar(
-        TextUtils.$("world.template-warning"),
-        1.0F,
-        BossBar.Color.RED,
-        BossBar.Overlay.PROGRESS
-      );
+    if (templateWarningBar == null) templateWarningBar = BossBar.bossBar(
+      TextUtils.$("world.template-warning"),
+      1.0F,
+      BossBar.Color.RED,
+      BossBar.Overlay.PROGRESS
+    );
     
     if (LocationUtils.isSameWorld(world, template)) {
       pl.showBossBar(templateWarningBar);

@@ -3,18 +3,14 @@ package dev.huey.destroyTheCore.tools;
 import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.bases.editorTools.RegionTool;
 import dev.huey.destroyTheCore.records.Region;
-import org.bukkit.*;
-
 import java.util.HashSet;
 import java.util.Set;
+import org.bukkit.*;
 
 public class WoodsTool extends RegionTool {
+  
   public WoodsTool() {
-    super(
-      "woods",
-      Material.WOODEN_SWORD,
-      Color.ORANGE, Color.MAROON
-    );
+    super("woods", Material.WOODEN_SWORD, Color.ORANGE, Color.MAROON);
   }
   
   @Override
@@ -23,9 +19,8 @@ public class WoodsTool extends RegionTool {
     if (set.isEmpty()) return null;
     World world = set.iterator().next().getWorld();
     
-    int
-      minX =  9999, minY =  9999, minZ =  9999,
-      maxX = -9999, maxY = -9999, maxZ = -9999;
+    int minX = 9999, minY = 9999, minZ = 9999, maxX = -9999, maxY = -9999,
+      maxZ = -9999;
     for (Location loc : set) {
       int x = loc.getBlockX(), y = loc.getBlockY(), z = loc.getBlockZ();
       if (x < minX) minX = x;
@@ -51,9 +46,8 @@ public class WoodsTool extends RegionTool {
     
     Set<Location> set = new HashSet<>();
     
-    region.forEachBlock((block) -> {
-      if (Tag.LOGS.isTagged(block.getType()))
-        set.add(block.getLocation());
+    region.forEachBlock(block -> {
+      if (Tag.LOGS.isTagged(block.getType())) set.add(block.getLocation());
     });
     DestroyTheCore.game.map.woods = set;
   }

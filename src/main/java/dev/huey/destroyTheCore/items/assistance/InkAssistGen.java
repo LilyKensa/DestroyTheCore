@@ -10,11 +10,9 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class InkAssistGen extends AssistItemGen {
+  
   public InkAssistGen() {
-    super(
-      ItemsManager.ItemKey.INK_ASSIST,
-      Material.INK_SAC
-    );
+    super(ItemsManager.ItemKey.INK_ASSIST, Material.INK_SAC);
   }
   
   @Override
@@ -24,13 +22,9 @@ public class InkAssistGen extends AssistItemGen {
       attacker,
       Particle.SQUID_INK,
       () -> {
-        attacker.addPotionEffect(new PotionEffect(
-          PotionEffectType.BLINDNESS,
-          5 * 20,
-          0,
-          false,
-          true
-        ));
+        attacker.addPotionEffect(
+          new PotionEffect(PotionEffectType.BLINDNESS, 5 * 20, 0, false, true)
+        );
       }
     );
   }

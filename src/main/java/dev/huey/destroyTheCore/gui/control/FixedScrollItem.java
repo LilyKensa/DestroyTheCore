@@ -1,5 +1,6 @@
 package dev.huey.destroyTheCore.gui.control;
 
+import java.util.HashMap;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -8,10 +9,9 @@ import xyz.xenondevs.invui.gui.ScrollGui;
 import xyz.xenondevs.invui.item.impl.controlitem.ControlItem;
 import xyz.xenondevs.invui.item.impl.controlitem.ScrollItem;
 
-import java.util.HashMap;
-
 /** A fix for {@link ScrollItem} */
 public abstract class FixedScrollItem extends ControlItem<ScrollGui<?>> {
+  
   private final HashMap<ClickType, Integer> scroll;
   
   public FixedScrollItem(int linesOnLeftClick) {
@@ -19,13 +19,14 @@ public abstract class FixedScrollItem extends ControlItem<ScrollGui<?>> {
     this.scroll.put(ClickType.LEFT, linesOnLeftClick);
   }
   
-  public void handleClick(@NotNull ClickType clickType, @NotNull Player player, @NotNull InventoryClickEvent event) {
+  public void handleClick(
+                          @NotNull ClickType clickType, @NotNull Player player, @NotNull InventoryClickEvent event
+  ) {
     if (this.scroll.containsKey(clickType)) {
       ScrollGui<?> gui = this.getGui();
       int offset = this.scroll.get(clickType);
       
-      if (gui.canScroll(offset)) // Added this check
-        gui.scroll(offset);
+      if (gui.canScroll(offset)) gui.scroll(offset); // Added this check
     }
   }
 }

@@ -10,11 +10,9 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class AbsorptionPotionGen extends ItemGen {
+  
   public AbsorptionPotionGen() {
-    super(
-      ItemsManager.ItemKey.ABSORPTION_POTION,
-      Material.SPLASH_POTION
-    );
+    super(ItemsManager.ItemKey.ABSORPTION_POTION, Material.SPLASH_POTION);
   }
   
   @Override
@@ -22,12 +20,9 @@ public class AbsorptionPotionGen extends ItemGen {
     PotionMeta meta = (PotionMeta) uncastedMeta;
     
     meta.setColor(Color.fromRGB(255, 250, 75));
-    meta.addCustomEffect(new PotionEffect(
-      PotionEffectType.ABSORPTION,
-      60 * 20,
-      9,
-      false,
+    meta.addCustomEffect(
+      new PotionEffect(PotionEffectType.ABSORPTION, 60 * 20, 9, false, true),
       true
-    ), true);
+    );
   }
 }

@@ -17,6 +17,7 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
 public class MissionsManager {
+  
   public static Component prefix;
   public static final int waitingTicks = 60 * 20;
   
@@ -36,9 +37,9 @@ public class MissionsManager {
     Scoreboard board = Bukkit.getServer().getScoreboardManager().getMainScoreboard();
     team = board.registerNewTeam("mission");
     team.color(NamedTextColor.YELLOW);
-    team.prefix(Component.text(
-      PlainTextComponentSerializer.plainText().serialize(prefix)
-    ));
+    team.prefix(
+      Component.text(PlainTextComponentSerializer.plainText().serialize(prefix))
+    );
     
     restart();
     active = true;
@@ -46,8 +47,7 @@ public class MissionsManager {
   
   public void restart() {
     if (waitingBar != null) {
-      for (Player p : Bukkit.getOnlinePlayers())
-        waitingBar.removeViewer(p);
+      for (Player p : Bukkit.getOnlinePlayers()) waitingBar.removeViewer(p);
     }
     
     mission = RandomUtils.pick(
@@ -101,8 +101,7 @@ public class MissionsManager {
       BossBar.Color.WHITE,
       BossBar.Overlay.PROGRESS
     );
-    for (Player p : Bukkit.getOnlinePlayers())
-      waitingBar.addViewer(p);
+    for (Player p : Bukkit.getOnlinePlayers()) waitingBar.addViewer(p);
     
     final int step = 20;
     new BukkitRunnable() {

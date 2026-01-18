@@ -7,6 +7,7 @@ import dev.huey.destroyTheCore.utils.PlayerUtils;
 import org.bukkit.entity.Player;
 
 public class RemoveRespawnTimeResult extends Mission.Result {
+  
   public RemoveRespawnTimeResult() {
     super("remove-respawn-time");
   }

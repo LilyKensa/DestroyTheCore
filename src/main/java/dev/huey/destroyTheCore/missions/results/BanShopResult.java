@@ -5,6 +5,7 @@ import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.Mission;
 
 public class BanShopResult extends Mission.Result {
+  
   public BanShopResult() {
     super("ban-shop");
   }

@@ -11,6 +11,9 @@ import dev.huey.destroyTheCore.utils.LocationUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.RandomUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -24,12 +27,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
 public class RangerRole extends Role {
-  static public class Mine {
+  
+  public static class Mine {
+    
     boolean active = true;
     public Location loc;
     public UUID ownerId;
@@ -42,55 +43,51 @@ public class RangerRole extends Role {
     }
   }
   
-  static public List<Mine> mines = new ArrayList<>();
+  public static List<Mine> mines = new ArrayList<>();
   
-  static public void onPlayerMove(Player pl) {
+  public static void onPlayerMove(Player pl) {
     for (Mine mine : mines) {
-      if (!DestroyTheCore.game.getPlayerData(pl).side
-        .equals(mine.side.opposite())) continue;
+      if (
+        !DestroyTheCore.game.getPlayerData(pl).side.equals(mine.side.opposite())
+      ) continue;
       
       if (!LocationUtils.near(pl.getLocation(), mine.loc, 1.5)) continue;
       
-      new ParticleBuilder(Particle.LAVA)
-        .allPlayers()
-        .location(mine.loc)
-        .count(25)
-        .extra(0)
-        .spawn();
+      new ParticleBuilder(Particle.LAVA).allPlayers().location(mine.loc).count(
+        25).extra(0).spawn();
       
       Player owner = Bukkit.getPlayer(mine.ownerId);
       
-      if (owner != null) pl.damage(1, DamageSource.builder(DamageType.ARROW)
-        .withDamageLocation(mine.loc)
-        .withDirectEntity(owner)
-        .withCausingEntity(owner)
-        .build()
+      if (owner != null) pl.damage(
+        1,
+        DamageSource.builder(DamageType.ARROW).withDamageLocation(
+          mine.loc).withDirectEntity(owner).withCausingEntity(owner).build()
       );
-      pl.addPotionEffect(new PotionEffect(
-        PotionEffectType.POISON,
-        10 * 20,
-        9,
-        false,
-        true
-      ));
+      pl.addPotionEffect(
+        new PotionEffect(PotionEffectType.POISON, 10 * 20, 9, false, true)
+      );
       
       if (owner == null) {
-        PlayerUtils.send(pl, TextUtils.$(
-          "roles.ranger.skill.trap-hit.enemy-unknown"));
+        PlayerUtils.send(
+          pl,
+          TextUtils.$("roles.ranger.skill.trap-hit.enemy-unknown")
+        );
       }
       else {
-        PlayerUtils.send(pl, TextUtils.$(
-          "roles.ranger.skill.trap-hit.enemy",
-          List.of(
-            Placeholder.component("owner", PlayerUtils.getName(owner))
+        PlayerUtils.send(
+          pl,
+          TextUtils.$(
+            "roles.ranger.skill.trap-hit.enemy",
+            List.of(Placeholder.component("owner", PlayerUtils.getName(owner)))
           )
-        ));
-        PlayerUtils.send(owner, TextUtils.$(
-          "roles.ranger.skill.trap-hit.owner",
-          List.of(
-            Placeholder.component("enemy", PlayerUtils.getName(pl))
+        );
+        PlayerUtils.send(
+          owner,
+          TextUtils.$(
+            "roles.ranger.skill.trap-hit.owner",
+            List.of(Placeholder.component("enemy", PlayerUtils.getName(pl)))
           )
-        ));
+        );
       }
       
       mine.active = false;
@@ -99,23 +96,21 @@ public class RangerRole extends Role {
     mines.removeIf(m -> !m.active);
   }
   
-  static public void onParticleTick() {
+  public static void onParticleTick() {
     for (Mine mine : mines) {
-      LocationUtils.ring(mine.loc, 1.5, loc -> {
-        new ParticleBuilder(Particle.SMALL_FLAME)
-          .receivers(PlayerUtils.getNonEnemies(mine.side))
-          .location(loc)
-          .extra(0)
-          .spawn();
-      });
+      LocationUtils.ring(
+        mine.loc,
+        1.5,
+        loc -> {
+          new ParticleBuilder(Particle.SMALL_FLAME).receivers(
+            PlayerUtils.getNonEnemies(mine.side)).location(loc).extra(
+              0).spawn();
+        }
+      );
       
       if (RandomUtils.hit(0.01))
-        new ParticleBuilder(Particle.LAVA)
-          .allPlayers()
-          .location(mine.loc)
-          .count(RandomUtils.range(3) + 1)
-          .extra(0)
-          .spawn();
+        new ParticleBuilder(Particle.LAVA).allPlayers().location(
+          mine.loc).count(RandomUtils.range(3) + 1).extra(0).spawn();
       
       mine.loc.addRotation(1, 0);
     }
@@ -142,14 +137,12 @@ public class RangerRole extends Role {
   @Override
   public void onTick(Player pl) {
     if (DestroyTheCore.ticksManager.isSeconds()) {
-      if (pl.getInventory().getItemInMainHand().getType().equals(Material.CROSSBOW))
-        pl.addPotionEffect(new PotionEffect(
-          PotionEffectType.RESISTANCE,
-          30,
-          0,
-          true,
-          false
-        ));
+      if (
+        pl.getInventory().getItemInMainHand().getType().equals(
+          Material.CROSSBOW)
+      ) pl.addPotionEffect(
+        new PotionEffect(PotionEffectType.RESISTANCE, 30, 0, true, false)
+      );
     }
   }
   
@@ -167,7 +160,7 @@ public class RangerRole extends Role {
         LocationUtils.live(
           LocationUtils.selfSide(
             LocationUtils.toSpawnPoint(
-            RandomUtils.pick(DestroyTheCore.game.map.spawnpoints)
+              RandomUtils.pick(DestroyTheCore.game.map.spawnpoints)
             ),
             data.side
           )
@@ -186,10 +179,13 @@ public class RangerRole extends Role {
     PlayerUtils.auraBroadcast(
       pl.getLocation(),
       10,
-      TextUtils.$("roles.ranger.skill.announce", List.of(
-        Placeholder.component("player", PlayerUtils.getName(pl)),
-        Placeholder.unparsed("role", name)
-      ))
+      TextUtils.$(
+        "roles.ranger.skill.announce",
+        List.of(
+          Placeholder.component("player", PlayerUtils.getName(pl)),
+          Placeholder.unparsed("role", name)
+        )
+      )
     );
   }
 }

@@ -4,24 +4,21 @@ import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.Mission;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.RandomUtils;
+import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.List;
-
 public class GoodEffectResult extends Mission.Result {
-  public static PotionEffect getEffect(PotionEffectType type, int amplifier, int seconds) {
-    return new PotionEffect(
-      type,
-      seconds * 20,
-      amplifier,
-      false,
-      true
-    );
+  
+  public static PotionEffect getEffect(
+                                       PotionEffectType type, int amplifier, int seconds
+  ) {
+    return new PotionEffect(type, seconds * 20, amplifier, false, true);
   }
+  
   public static PotionEffect getEffect(PotionEffectType type, int amplifier) {
     return getEffect(type, amplifier, 90);
   }
@@ -46,9 +43,15 @@ public class GoodEffectResult extends Mission.Result {
   public void forWinner(Game.Side side) {
     PotionEffect effect = RandomUtils.pick(effects);
     
-    announce(side, List.of(
-      Placeholder.component("effect", Component.translatable(effect.getType().translationKey()))
-    ));
+    announce(
+      side,
+      List.of(
+        Placeholder.component(
+          "effect",
+          Component.translatable(effect.getType().translationKey())
+        )
+      )
+    );
     
     for (Player p : PlayerUtils.getTeammates(side)) {
       p.addPotionEffect(effect);

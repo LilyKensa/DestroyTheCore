@@ -8,18 +8,17 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 public class SwapPosMission extends TimedMission {
+  
   public SwapPosMission() {
     super("swap-pos", 10 * 20);
   }
   
   @Override
   public void innerStart() {
-  
   }
   
   @Override
   public void innerTick() {
-  
   }
   
   public Player randomPlayer(Game.Side side) {

@@ -7,11 +7,9 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class ConstructorHelmetGen extends ItemGen {
+  
   public ConstructorHelmetGen() {
-    super(
-      ItemsManager.ItemKey.CONSTRUCTOR_HELMET,
-      Material.TURTLE_HELMET
-    );
+    super(ItemsManager.ItemKey.CONSTRUCTOR_HELMET, Material.TURTLE_HELMET);
     setNeverDrop();
     setTrash();
   }

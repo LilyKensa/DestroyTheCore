@@ -6,6 +6,7 @@ import dev.huey.destroyTheCore.items.gadgets.GrenadeGen;
 import dev.huey.destroyTheCore.roles.*;
 import dev.huey.destroyTheCore.utils.LocationUtils;
 import io.papermc.paper.event.player.AsyncChatEvent;
+import java.util.List;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -19,9 +20,8 @@ import org.bukkit.event.player.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.List;
-
 public class EventsManager implements Listener {
+  
   @EventHandler
   public void onPlayerInteract(PlayerInteractEvent ev) {
     DestroyTheCore.game.handleInteract(ev);
@@ -53,7 +53,9 @@ public class EventsManager implements Listener {
   
   @EventHandler
   public void onBlockFromTo(BlockFromToEvent ev) {
-    if (List.of(Material.WATER, Material.LAVA).contains(ev.getBlock().getType())) {
+    if (
+      List.of(Material.WATER, Material.LAVA).contains(ev.getBlock().getType())
+    ) {
       DestroyTheCore.game.handleLiquidFlow(ev);
     }
   }
@@ -177,9 +179,13 @@ public class EventsManager implements Listener {
   @EventHandler
   public void onEntityShootBow(EntityShootBowEvent ev) {
     for (ProjItemGen g : DestroyTheCore.itemsManager.projGens.values())
-      g.outerOnEntityShootBow(ev);
-    if (ev.getEntity() instanceof Player pl)
-      AssassinRole.onPlayerShootBow(pl, ev);
+      g.outerOnEntityShootBow(
+        ev
+      );
+    if (ev.getEntity() instanceof Player pl) AssassinRole.onPlayerShootBow(
+      pl,
+      ev
+    );
   }
   
   @EventHandler
@@ -188,7 +194,9 @@ public class EventsManager implements Listener {
     GrenadeGen.onProjectileHit(ev);
     
     for (ProjItemGen g : DestroyTheCore.itemsManager.projGens.values())
-      g.outerOnProjectileHit(ev);
+      g.outerOnProjectileHit(
+        ev
+      );
   }
   
   @EventHandler
@@ -204,14 +212,19 @@ public class EventsManager implements Listener {
   
   @EventHandler
   public void onAsyncChat(AsyncChatEvent ev) {
-    if (ev.message() instanceof TextComponent tc)
-      DestroyTheCore.quizManager.onPlayerChat(ev.getPlayer(), tc.content());
+    if (
+      ev.message() instanceof TextComponent tc
+    ) DestroyTheCore.quizManager.onPlayerChat(ev.getPlayer(), tc.content());
     DestroyTheCore.game.handleChat(ev);
   }
   
   @EventHandler
   public void onBlockPhysics(BlockPhysicsEvent ev) {
-    if (LocationUtils.isSameWorld(ev.getBlock().getWorld(), DestroyTheCore.worldsManager.lobby))
-      ev.setCancelled(true);
+    if (
+      LocationUtils.isSameWorld(
+        ev.getBlock().getWorld(),
+        DestroyTheCore.worldsManager.lobby
+      )
+    ) ev.setCancelled(true);
   }
 }

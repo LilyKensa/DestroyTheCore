@@ -7,6 +7,11 @@ import dev.huey.destroyTheCore.utils.LocationUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.RandomUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.BiConsumer;
 import net.kyori.adventure.bossbar.BossBar;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -28,28 +33,19 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.BiConsumer;
-
 public class EarthquakeCowMission extends Mission implements Listener {
-  static public Location getFloorBlock(Location originalLoc) {
+  
+  public static Location getFloorBlock(Location originalLoc) {
     Location loc = LocationUtils.toBlockCenter(originalLoc);
     
     while (
-      loc.getY() > loc.getWorld().getMinHeight() &&
-      loc.getY() < loc.getWorld().getMaxHeight() &&
-      loc.getBlock().isCollidable()
+      loc.getY() > loc.getWorld().getMinHeight() && loc.getY() < loc.getWorld().getMaxHeight() && loc.getBlock().isCollidable()
     ) {
       loc.add(0, 1, 0);
     }
     
     while (
-      loc.getY() > loc.getWorld().getMinHeight() &&
-      loc.getY() < loc.getWorld().getMaxHeight() &&
-      !loc.getBlock().isCollidable()
+      loc.getY() > loc.getWorld().getMinHeight() && loc.getY() < loc.getWorld().getMaxHeight() && !loc.getBlock().isCollidable()
     ) {
       loc.add(0, -1, 0);
     }
@@ -57,7 +53,7 @@ public class EarthquakeCowMission extends Mission implements Listener {
     return loc;
   }
   
-  static public void flyBlock(Location loc, double strength) {
+  public static void flyBlock(Location loc, double strength) {
     Block block = loc.getBlock();
     if (block.getType().isAir() || !block.getType().isSolid()) return;
     if (block.getType().equals(Material.NETHERITE_BLOCK)) return;
@@ -68,15 +64,14 @@ public class EarthquakeCowMission extends Mission implements Listener {
     
     FallingBlock fallingBlock = (FallingBlock) loc.getWorld().spawnEntity(
       loc.clone().add(0, 0.01, 0),
-      EntityType.FALLING_BLOCK
-    );
+      EntityType.FALLING_BLOCK);
     fallingBlock.setBlockData(data);
     fallingBlock.setBlockState(state);
     
     fallingBlock.setVelocity(new Vector(0, strength, 0));
   }
   
-  static public Set<Vector> getMidpointCirclePoints(int radius) {
+  public static Set<Vector> getMidpointCirclePoints(int radius) {
     Set<Vector> points = new HashSet<>();
     if (radius <= 0) return points;
     
@@ -131,31 +126,25 @@ public class EarthquakeCowMission extends Mission implements Listener {
           if (history.contains(offset)) continue;
           
           Location flyLoc = center.clone().add(offset.getX(), 0, offset.getZ());
-          flyBlock(
-            getFloorBlock(flyLoc),
-            0.1 + 0.3 * r / maxRadius
-          );
+          flyBlock(getFloorBlock(flyLoc), 0.1 + 0.3 * r / maxRadius);
           history.add(offset);
           
           for (Player p : flyLoc.getNearbyPlayers(1)) {
             if (!PlayerUtils.shouldHandle(p)) continue;
-            if (DestroyTheCore.game.getPlayerData(p).side == Game.Side.SPECTATOR) continue;
+            if (
+              DestroyTheCore.game.getPlayerData(p).side == Game.Side.SPECTATOR
+            ) continue;
             
             p.damage(
               (maxRadius - r) * 0.5,
-              DamageSource.builder(DamageType.MOB_ATTACK)
-                .withDirectEntity(cow)
-                .withCausingEntity(cow)
-                .build()
+              DamageSource.builder(DamageType.MOB_ATTACK).withDirectEntity(
+                cow).withCausingEntity(cow).build()
             );
             p.setVelocity(
               p.getVelocity().add(
-                p.getLocation()
-                  .subtract(cow.getLocation())
-                  .toVector()
-                  .normalize()
-                  .multiply(0.5)
-                  .add(new Vector(0, 0.1, 0))
+                p.getLocation().subtract(
+                  cow.getLocation()).toVector().normalize().multiply(0.5).add(
+                    new Vector(0, 0.1, 0))
               )
             );
           }
@@ -169,20 +158,21 @@ public class EarthquakeCowMission extends Mission implements Listener {
   boolean killed = false;
   
   int earthquakeCooldown = 0;
+  
   public void addCooldown() {
     earthquakeCooldown += RandomUtils.range(5 * 20, 20 * 20 + 1);
   }
   
   Map<Game.Side, Double> scores = new HashMap<>();
+  
   public double getScore(Game.Side side) {
     return scores.getOrDefault(side, 0D);
   }
+  
   void addScore(Game.Side side, double amount) {
-    scores.put(
-      side,
-      getScore(side) + amount
-    );
+    scores.put(side, getScore(side) + amount);
   }
+  
   void addScore(Player pl, double amount) {
     addScore(DestroyTheCore.game.getPlayerData(pl).side, amount);
   }
@@ -192,11 +182,9 @@ public class EarthquakeCowMission extends Mission implements Listener {
   }
   
   public void move() {
-    cow.getPathfinder().moveTo(loc.clone().add(
-      RandomUtils.aroundZero(30),
-      0,
-      RandomUtils.aroundZero(30)
-    ));
+    cow.getPathfinder().moveTo(
+      loc.clone().add(RandomUtils.aroundZero(30), 0, RandomUtils.aroundZero(30))
+    );
   }
   
   @Override
@@ -207,13 +195,9 @@ public class EarthquakeCowMission extends Mission implements Listener {
       BossBar.Color.YELLOW,
       BossBar.Overlay.PROGRESS
     );
-    for (Player p : Bukkit.getOnlinePlayers())
-      healthBar.addViewer(p);
+    for (Player p : Bukkit.getOnlinePlayers()) healthBar.addViewer(p);
     
-    cow = (Cow) loc.getWorld().spawnEntity(
-      loc,
-      EntityType.COW
-    );
+    cow = (Cow) loc.getWorld().spawnEntity(loc, EntityType.COW);
     
     cow.customName(TextUtils.$("missions.earthquake-cow.cow"));
     cow.setCustomNameVisible(true);
@@ -239,9 +223,10 @@ public class EarthquakeCowMission extends Mission implements Listener {
     if (!(ev.getDamager() instanceof Player pl)) return;
     if (ev.getEntity().getUniqueId() != cow.getUniqueId()) return;
     
-    healthBar.progress((float) (
-      cow.getHealth() / cow.getAttribute(Attribute.MAX_HEALTH).getValue()
-    ));
+    healthBar.progress(
+      (float) (cow.getHealth() / cow.getAttribute(
+        Attribute.MAX_HEALTH).getValue())
+    );
     
     addScore(pl, ev.getFinalDamage());
     
@@ -277,11 +262,11 @@ public class EarthquakeCowMission extends Mission implements Listener {
   
   @Override
   public void finish() {
-    for (Player p : Bukkit.getOnlinePlayers())
-      healthBar.removeViewer(p);
+    for (Player p : Bukkit.getOnlinePlayers()) healthBar.removeViewer(p);
     
-    double redScore = getScore(Game.Side.RED),
-      greenScore = getScore(Game.Side.GREEN);
+    double redScore = getScore(Game.Side.RED), greenScore = getScore(
+      Game.Side.GREEN
+    );
     
     Game.Side winner = Game.Side.SPECTATOR;
     

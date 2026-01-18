@@ -4,6 +4,7 @@ import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.bases.Mission;
 import dev.huey.destroyTheCore.utils.CoreUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
+import java.util.List;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -12,9 +13,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
-import java.util.List;
-
 public abstract class TimedMission extends Mission implements Listener {
+  
   int ticks, maxTicks;
   BossBar timeBar;
   
@@ -23,17 +23,21 @@ public abstract class TimedMission extends Mission implements Listener {
     this.maxTicks = ticks;
     this.ticks = ticks;
   }
+  
   public TimedMission(String id) {
     this(id, 60 * 20);
   }
   
   public Component getTitle() {
-    return TextUtils.$("missions.%s.bar".formatted(id), List.of(
-      Placeholder.component("time", CoreUtils.formatTimeComp(
-        Math.ceilDiv(ticks, 20),
-        NamedTextColor.GOLD
-      ))
-    ));
+    return TextUtils.$(
+      "missions.%s.bar".formatted(id),
+      List.of(
+        Placeholder.component(
+          "time",
+          CoreUtils.formatTimeComp(Math.ceilDiv(ticks, 20), NamedTextColor.GOLD)
+        )
+      )
+    );
   }
   
   @Override
@@ -46,9 +50,8 @@ public abstract class TimedMission extends Mission implements Listener {
       BossBar.Color.YELLOW,
       BossBar.Overlay.PROGRESS
     );
-    for (Player p : Bukkit.getOnlinePlayers())
-      timeBar.addViewer(p);
-
+    for (Player p : Bukkit.getOnlinePlayers()) timeBar.addViewer(p);
+    
     innerStart();
   }
   
@@ -69,13 +72,14 @@ public abstract class TimedMission extends Mission implements Listener {
   
   @Override
   public void finish() {
-    for (Player p : Bukkit.getOnlinePlayers())
-      timeBar.removeViewer(p);
+    for (Player p : Bukkit.getOnlinePlayers()) timeBar.removeViewer(p);
     
     innerFinish();
   }
   
   public abstract void innerStart();
+  
   public abstract void innerTick();
+  
   public abstract void innerFinish();
 }

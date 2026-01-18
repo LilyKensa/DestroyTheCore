@@ -11,11 +11,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class ChooseRoleGen extends UsableItemGen {
+  
   public ChooseRoleGen() {
-    super(
-      ItemsManager.ItemKey.CHOOSE_ROLE,
-      Material.ENDER_CHEST
-    );
+    super(ItemsManager.ItemKey.CHOOSE_ROLE, Material.ENDER_CHEST);
     setBound();
   }
   
@@ -26,7 +24,9 @@ public class ChooseRoleGen extends UsableItemGen {
   
   @Override
   public void use(Player pl, Block block) {
-    if (DestroyTheCore.game.getPlayerData(pl).side.equals(Game.Side.SPECTATOR)) {
+    if (
+      DestroyTheCore.game.getPlayerData(pl).side.equals(Game.Side.SPECTATOR)
+    ) {
       pl.sendActionBar(TextUtils.$("items.choose-role.no-team"));
       return;
     }

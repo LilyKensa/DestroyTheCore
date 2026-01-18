@@ -6,22 +6,24 @@ import dev.huey.destroyTheCore.bases.Subcommand;
 import dev.huey.destroyTheCore.managers.RolesManager;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
+import java.util.List;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.util.List;
-
 public class SetRoleCommand extends Subcommand {
+  
   public SetRoleCommand() {
     super("role");
-    addArgument("role", () ->
-      DestroyTheCore.rolesManager.roles.values().stream()
-        .map(s -> s.id.name().toLowerCase()).toList()
+    addArgument(
+      "role",
+      () -> DestroyTheCore.rolesManager.roles.values().stream().map(
+        s -> s.id.name().toLowerCase()).toList()
     );
-    addArgument("player", () ->
-      Bukkit.getOnlinePlayers().stream()
-        .map(Player::getName).toList());
+    addArgument(
+      "player",
+      () -> Bukkit.getOnlinePlayers().stream().map(Player::getName).toList()
+    );
   }
   
   @Override
@@ -51,29 +53,42 @@ public class SetRoleCommand extends Subcommand {
       
       target = Bukkit.getPlayer(args.get(1));
       if (target == null) {
-        PlayerUtils.prefixedSend(pl, TextUtils.$("commands.role.player-not-found"));
+        PlayerUtils.prefixedSend(
+          pl,
+          TextUtils.$("commands.role.player-not-found")
+        );
         return;
       }
-      PlayerUtils.prefixedBroadcast(TextUtils.$("commands.role.made-other", List.of(
-        Placeholder.component("player", PlayerUtils.getName(pl)),
-        Placeholder.component("target", PlayerUtils.getName(target)),
-        Placeholder.unparsed("role", role.name)
-      )));
+      PlayerUtils.prefixedBroadcast(
+        TextUtils.$(
+          "commands.role.made-other",
+          List.of(
+            Placeholder.component("player", PlayerUtils.getName(pl)),
+            Placeholder.component("target", PlayerUtils.getName(target)),
+            Placeholder.unparsed("role", role.name)
+          )
+        )
+      );
     }
     else {
       if (
-        !PlayerUtils.isAdmin(pl) &&
-          DestroyTheCore.worldsManager.checkLiveWorld(pl.getLocation())
+        !PlayerUtils.isAdmin(pl) && DestroyTheCore.worldsManager.checkLiveWorld(
+          pl.getLocation())
       ) {
         PlayerUtils.prefixedSend(pl, TextUtils.$("commands.role.only-lobby"));
         return;
       }
       
       target = pl;
-      PlayerUtils.prefixedBroadcast(TextUtils.$("commands.role.made-self", List.of(
-        Placeholder.component("player", PlayerUtils.getName(pl)),
-        Placeholder.unparsed("role", role.name)
-      )));
+      PlayerUtils.prefixedBroadcast(
+        TextUtils.$(
+          "commands.role.made-self",
+          List.of(
+            Placeholder.component("player", PlayerUtils.getName(pl)),
+            Placeholder.unparsed("role", role.name)
+          )
+        )
+      );
     }
     
     DestroyTheCore.rolesManager.setRole(target, role);

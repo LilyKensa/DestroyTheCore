@@ -4,12 +4,12 @@ import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.bases.Subcommand;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
+import java.util.List;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.entity.Player;
 
-import java.util.List;
-
 public class NextPhaseCommand extends Subcommand {
+  
   public NextPhaseCommand() {
     super("skip");
   }
@@ -24,9 +24,12 @@ public class NextPhaseCommand extends Subcommand {
     if (!DestroyTheCore.game.isPlaying) return;
     
     DestroyTheCore.game.nextPhase();
-    PlayerUtils.prefixedBroadcast(TextUtils.$("commands.skip.announce", List.of(
-      Placeholder.component("player", PlayerUtils.getName(pl))
-    )));
+    PlayerUtils.prefixedBroadcast(
+      TextUtils.$(
+        "commands.skip.announce",
+        List.of(Placeholder.component("player", PlayerUtils.getName(pl)))
+      )
+    );
     DestroyTheCore.boardsManager.refresh();
   }
 }

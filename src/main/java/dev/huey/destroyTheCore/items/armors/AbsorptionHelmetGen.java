@@ -10,11 +10,9 @@ import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class AbsorptionHelmetGen extends ItemGen {
+  
   public AbsorptionHelmetGen() {
-    super(
-      ItemsManager.ItemKey.ABSORPTION_HELMET,
-      Material.TURTLE_HELMET
-    );
+    super(ItemsManager.ItemKey.ABSORPTION_HELMET, Material.TURTLE_HELMET);
   }
   
   @Override

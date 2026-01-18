@@ -5,11 +5,11 @@ import dev.huey.destroyTheCore.bases.Subcommand;
 import dev.huey.destroyTheCore.records.Stats;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
+import java.util.List;
 import org.bukkit.entity.Player;
 
-import java.util.List;
-
 public class NightVisionCommand extends Subcommand {
+  
   public NightVisionCommand() {
     super("night-vision");
   }
@@ -21,8 +21,9 @@ public class NightVisionCommand extends Subcommand {
     stats.nightVision = !stats.nightVision;
     PlayerUtils.enforceNightVision(pl);
     
-    PlayerUtils.prefixedSend(pl, TextUtils.$(
-      "commands.night-vision." + (stats.nightVision ? "on" : "off")
-    ));
+    PlayerUtils.prefixedSend(
+      pl,
+      TextUtils.$("commands.night-vision." + (stats.nightVision ? "on" : "off"))
+    );
   }
 }

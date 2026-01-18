@@ -4,6 +4,7 @@ import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.Mission;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
+import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
@@ -17,9 +18,8 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
-import java.util.List;
-
 public class SummonPigResult extends Mission.Result {
+  
   public SummonPigResult() {
     super("summon-pig");
   }
@@ -28,15 +28,11 @@ public class SummonPigResult extends Mission.Result {
   public void forLoser(Game.Side side) {
     Component name = TextUtils.$("mission.results.pig-name").color(null);
     
-    announce(side, List.of(
-      Placeholder.component("name", name)
-    ));
+    announce(side, List.of(Placeholder.component("name", name)));
     
     for (Player p : PlayerUtils.getTeammates(side)) {
-      PigZombie piggy = (PigZombie) p.getWorld().spawnEntity(
-        p.getLocation(),
-        EntityType.ZOMBIFIED_PIGLIN
-      );
+      PigZombie piggy = (PigZombie) p.getWorld().spawnEntity(p.getLocation(),
+        EntityType.ZOMBIFIED_PIGLIN);
       
       piggy.setBaby();
       

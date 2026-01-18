@@ -8,6 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class TeleportCoreMission extends InstantMission {
+  
   public TeleportCoreMission() {
     super("teleport-core");
   }
@@ -15,14 +16,16 @@ public class TeleportCoreMission extends InstantMission {
   @Override
   public void run() {
     for (Player p : Bukkit.getOnlinePlayers()) {
-      p.teleport(LocationUtils.live(
-        LocationUtils.selfSide(
-          LocationUtils.toSpawnPoint(
-            RandomUtils.pick(DestroyTheCore.game.map.spawnpoints)
-          ),
-          p
+      p.teleport(
+        LocationUtils.live(
+          LocationUtils.selfSide(
+            LocationUtils.toSpawnPoint(
+              RandomUtils.pick(DestroyTheCore.game.map.spawnpoints)
+            ),
+            p
+          )
         )
-      ));
+      );
     }
   }
 }

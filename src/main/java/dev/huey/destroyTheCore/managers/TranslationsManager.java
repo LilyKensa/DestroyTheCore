@@ -2,6 +2,13 @@ package dev.huey.destroyTheCore.managers;
 
 import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.utils.CoreUtils;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -10,22 +17,19 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
 public class TranslationsManager {
-  static public final Key key = Key.key("destroy-the-core:translations");
   
-  static public final List<Locale> availableLocales = List.of(Locale.US, Locale.TAIWAN);
-  static public final List<String> availableLocaleTags = availableLocales.stream()
-    .map(locale -> locale.toLanguageTag().toLowerCase()).toList();
+  public static final Key key = Key.key("destroy-the-core:translations");
   
-  static public class Translator {
+  public static final List<Locale> availableLocales = List.of(
+    Locale.US,
+    Locale.TAIWAN
+  );
+  public static final List<String> availableLocaleTags = availableLocales.stream().map(
+    locale -> locale.toLanguageTag().toLowerCase()).toList();
+  
+  public static class Translator {
+    
     public MiniMessage mm = MiniMessage.miniMessage();
     
     Map<Locale, Map<String, String>> store = new HashMap<>();
@@ -37,19 +41,25 @@ public class TranslationsManager {
     }
     
     public boolean has(Locale locale, String key) {
-      return store.containsKey(locale) && store.get(locale).containsKey(key);
+      return (store.containsKey(locale) && store.get(locale).containsKey(key));
     }
     
     public String get(Locale locale, String key) {
-      String notFound = "%s:%s".formatted(locale.toLanguageTag().toLowerCase(), key);
+      String notFound = "%s:%s".formatted(locale.toLanguageTag().toLowerCase(),
+        key);
       if (!store.containsKey(locale)) return notFound;
       Map<String, String> map = store.get(locale);
       if (!map.containsKey(key)) return notFound;
       return map.get(key);
     }
     
-    public Component translate(Locale locale, String key, List<TagResolver> placeholders) {
-      return mm.deserialize(get(locale, key), TagResolver.resolver(placeholders));
+    public Component translate(
+                               Locale locale, String key, List<TagResolver> placeholders
+    ) {
+      return mm.deserialize(
+        get(locale, key),
+        TagResolver.resolver(placeholders)
+      );
     }
   }
   
@@ -57,8 +67,7 @@ public class TranslationsManager {
   public Translator translator = new Translator();
   
   public void init() {
-    for (Locale locale : availableLocales)
-      loadTranslations(locale);
+    for (Locale locale : availableLocales) loadTranslations(locale);
   }
   
   void loadTranslations(Locale locale) {
@@ -95,8 +104,8 @@ public class TranslationsManager {
   }
   
   public Component get(String key, List<TagResolver> placeholders) {
-    return translator.translate(currentLocale, key, placeholders)
-      .colorIfAbsent(NamedTextColor.GRAY)
-      .decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE);
+    return translator.translate(currentLocale, key, placeholders).colorIfAbsent(
+      NamedTextColor.GRAY).decorationIfAbsent(TextDecoration.ITALIC,
+        TextDecoration.State.FALSE);
   }
 }
