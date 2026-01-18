@@ -35,7 +35,8 @@ public class RolesManager {
     ASSASSIN,
     CONSTRUCTOR,
     EATER,
-    PROVOCATEUR
+    PROVOCATEUR,
+    JOCKEY
   }
   
   public Map<RoleKey, Role> roles;
