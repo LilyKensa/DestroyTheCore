@@ -20,7 +20,7 @@ public abstract class FixedScrollItem extends ControlItem<ScrollGui<?>> {
   }
   
   public void handleClick(
-                          @NotNull ClickType clickType, @NotNull Player player, @NotNull InventoryClickEvent event
+    @NotNull ClickType clickType, @NotNull Player player, @NotNull InventoryClickEvent event
   ) {
     if (this.scroll.containsKey(clickType)) {
       ScrollGui<?> gui = this.getGui();

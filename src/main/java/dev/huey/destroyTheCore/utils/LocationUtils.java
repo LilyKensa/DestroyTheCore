@@ -34,7 +34,7 @@ public class LocationUtils {
   }
   
   static Location compareEachAxis(
-                                  Location loc1, Location loc2, BiFunction<Integer, Integer, Integer> func
+    Location loc1, Location loc2, BiFunction<Integer, Integer, Integer> func
   ) {
     return new Location(
       loc1.getWorld(),
@@ -124,7 +124,7 @@ public class LocationUtils {
   
   /** Do something several times in a circle */
   public static void ring(
-                          Location centerLoc, double radius, int count, Consumer<Location> task
+    Location centerLoc, double radius, int count, Consumer<Location> task
   ) {
     double step = (2 * Math.PI) / count;
     
@@ -140,7 +140,7 @@ public class LocationUtils {
   }
   
   public static void ring(
-                          Location centerLoc, double radius, Consumer<Location> task
+    Location centerLoc, double radius, Consumer<Location> task
   ) {
     ring(centerLoc, radius, 16, task);
   }

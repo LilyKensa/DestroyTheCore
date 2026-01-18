@@ -54,7 +54,7 @@ public class CommandsManager implements TabCompleter, CommandExecutor {
   
   @Override
   public List<String> onTabComplete(
-                                    CommandSender sender, Command command, String label, String[] args
+    CommandSender sender, Command command, String label, String[] args
   ) {
     String lastArg = args[args.length - 1];
     
@@ -77,7 +77,7 @@ public class CommandsManager implements TabCompleter, CommandExecutor {
   
   @Override
   public boolean onCommand(
-                           CommandSender sender, Command command, String label, String[] args
+    CommandSender sender, Command command, String label, String[] args
   ) {
     if (!(sender instanceof Player pl)) return true;
     

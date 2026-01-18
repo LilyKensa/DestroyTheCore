@@ -397,7 +397,7 @@ public class Game {
     Function<SideData, Integer> current, max;
     
     public BarSet(
-                  String id, Function<SideData, Integer> current, Function<SideData, Integer> max
+      String id, Function<SideData, Integer> current, Function<SideData, Integer> max
     ) {
       this.id = id;
       this.current = current;
@@ -677,7 +677,7 @@ public class Game {
   }
   
   public void handlePlayerDamage(
-                                 Player attacker, Player victim, Projectile proj, EntityDamageByEntityEvent ev
+    Player attacker, Player victim, Projectile proj, EntityDamageByEntityEvent ev
   ) {
     if (isPlaying) {
       double damage = ev.getDamage(), finalDamage = ev.getFinalDamage();
@@ -1541,7 +1541,7 @@ public class Game {
   }
   
   public void handleInventoryClick(
-                                   Inventory inv, Player pl, ItemStack item, ClickType click, InventoryClickEvent ev
+    Inventory inv, Player pl, ItemStack item, ClickType click, InventoryClickEvent ev
   ) {
     if (!PlayerUtils.shouldHandle(pl)) return;
     
@@ -1562,7 +1562,7 @@ public class Game {
           ugen.use(pl, null);
           
           BiConsumer<Integer, ItemStack> consumeItemFromSlot = (
-                                                                slot, recipeIngredient
+            slot, recipeIngredient
           ) -> {
             ItemStack slotItem = inv.getItem(slot);
             if (

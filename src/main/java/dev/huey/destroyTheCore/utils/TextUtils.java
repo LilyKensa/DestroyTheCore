@@ -19,7 +19,7 @@ public class TextUtils {
   }
   
   public static String miniToCodes(
-                                   String input, List<TagResolver> placeholders
+    String input, List<TagResolver> placeholders
   ) {
     if (input == null) return null;
     
@@ -31,7 +31,7 @@ public class TextUtils {
   }
   
   public static Component translate(
-                                    String key, List<TagResolver> placeholders
+    String key, List<TagResolver> placeholders
   ) {
     return DestroyTheCore.translationsManager.get(key, placeholders);
   }

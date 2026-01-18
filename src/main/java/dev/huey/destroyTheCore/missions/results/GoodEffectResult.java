@@ -14,7 +14,7 @@ import org.bukkit.potion.PotionEffectType;
 public class GoodEffectResult extends Mission.Result {
   
   public static PotionEffect getEffect(
-                                       PotionEffectType type, int amplifier, int seconds
+    PotionEffectType type, int amplifier, int seconds
   ) {
     return new PotionEffect(type, seconds * 20, amplifier, false, true);
   }

@@ -132,7 +132,7 @@ public class CoreUtils {
   
   /** Pure math, by Gemini */
   public static Vector calculateBounce(
-                                       Location center, Location pos, Vector speed, double restitution
+    Location center, Location pos, Vector speed, double restitution
   ) {
     Vector normal = pos.toVector().subtract(center.toVector());
     Vector unitNormal = normal.normalize();
@@ -144,7 +144,7 @@ public class CoreUtils {
   }
   
   public static Vector calculateBounce(
-                                       Location center, Location pos, Vector speed
+    Location center, Location pos, Vector speed
   ) {
     return calculateBounce(center, pos, speed, 0.6);
   }

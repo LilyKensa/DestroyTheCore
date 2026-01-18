@@ -16,6 +16,6 @@ public abstract class GUIItem extends AbstractItem {
   
   @Override
   public abstract void handleClick(
-                                   ClickType click, Player pl, InventoryClickEvent ev
+    ClickType click, Player pl, InventoryClickEvent ev
   );
 }

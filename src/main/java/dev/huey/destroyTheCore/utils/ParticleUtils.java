@@ -26,7 +26,7 @@ public class ParticleUtils {
   }
   
   public static void simpleRegion(
-                                  List<Player> players, Location loc1, Location loc2, Color color
+    List<Player> players, Location loc1, Location loc2, Color color
   ) {
     if (!loc1.getWorld().getName().equals(loc2.getWorld().getName())) return;
     World world = loc1.getWorld();
@@ -86,7 +86,7 @@ public class ParticleUtils {
   
   /** Region with 2 corners */
   public static void region(
-                            List<Player> players, Location loc1, Location loc2, Color color0, Color color1, Color color2
+    List<Player> players, Location loc1, Location loc2, Color color0, Color color1, Color color2
   ) {
     if (!LocationUtils.isSameWorld(loc1, loc2)) return;
     World world = loc1.getWorld();
@@ -140,13 +140,13 @@ public class ParticleUtils {
   }
   
   public static void region(
-                            List<Player> players, Location loc1, Location loc2
+    List<Player> players, Location loc1, Location loc2
   ) {
     region(players, loc1, loc2, Color.GRAY, Color.YELLOW, Color.AQUA);
   }
   
   public static void ring(
-                          List<Player> players, Location centerLoc, double radius, int count, Color color
+    List<Player> players, Location centerLoc, double radius, int count, Color color
   ) {
     LocationUtils.ring(
       centerLoc,
@@ -159,14 +159,14 @@ public class ParticleUtils {
   }
   
   public static void ring(
-                          List<Player> players, Location loc, double radius, Color color
+    List<Player> players, Location loc, double radius, Color color
   ) {
     ring(players, loc, radius, 16, color);
   }
   
   /** By Gemini */
   public static void spiralSphere(
-                                  Location center, double radius, Particle particleType, int turns, int pointsPerTurn
+    Location center, double radius, Particle particleType, int turns, int pointsPerTurn
   ) {
     final int totalPoints = turns * pointsPerTurn;
     
@@ -206,7 +206,7 @@ public class ParticleUtils {
   }
   
   public static void spiralSphere(
-                                  Location center, double radius, Particle particleType
+    Location center, double radius, Particle particleType
   ) {
     spiralSphere(center, radius, particleType, 15, 30);
   }

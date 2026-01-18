@@ -54,7 +54,7 @@ public class TranslationsManager {
     }
     
     public Component translate(
-                               Locale locale, String key, List<TagResolver> placeholders
+      Locale locale, String key, List<TagResolver> placeholders
     ) {
       return mm.deserialize(
         get(locale, key),

@@ -49,7 +49,7 @@ public class DiscountTraderMission extends InstantMission {
     };
     
     BiFunction<ItemsManager.ItemKey, Integer, ItemStack> customGen = (
-                                                                      key, count
+      key, count
     ) -> DestroyTheCore.itemsManager.gens.get(key).getItem(count);
     
     BiFunction<Enchantment, Integer, ItemStack> bookGen = (enchant, level) -> {

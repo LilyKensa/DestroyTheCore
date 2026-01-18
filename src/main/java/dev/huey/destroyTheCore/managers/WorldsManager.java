@@ -24,7 +24,7 @@ public class WorldsManager {
     
     @Override
     public void generateNoise(
-                              WorldInfo worldInfo, Random random, int x, int z, ChunkData chunkData
+      WorldInfo worldInfo, Random random, int x, int z, ChunkData chunkData
     ) {
       chunkData.setRegion(
         0,

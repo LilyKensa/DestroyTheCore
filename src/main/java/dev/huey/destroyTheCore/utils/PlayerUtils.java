@@ -83,7 +83,7 @@ public class PlayerUtils {
   
   /** Broadcast to nearby players */
   public static void auraBroadcast(
-                                   Location center, double dist, Component comp
+    Location center, double dist, Component comp
   ) {
     for (Player pl : Bukkit.getOnlinePlayers()) if (
       LocationUtils.near(pl.getLocation(), center, dist)
@@ -192,7 +192,7 @@ public class PlayerUtils {
   }
   
   public static void setGroupCooldown(
-                                      Player pl, List<ItemsManager.ItemKey> keys, int ticks
+    Player pl, List<ItemsManager.ItemKey> keys, int ticks
   ) {
     for (ItemsManager.ItemKey key : keys) {
       pl.setCooldown(
@@ -203,7 +203,7 @@ public class PlayerUtils {
   }
   
   public static int getGroupCooldown(
-                                     Player pl, List<ItemsManager.ItemKey> keys
+    Player pl, List<ItemsManager.ItemKey> keys
   ) {
     return pl.getCooldown(
       DestroyTheCore.itemsManager.gens.get(keys.getFirst()).getItem().getType()
@@ -211,7 +211,7 @@ public class PlayerUtils {
   }
   
   public static boolean checkGroupCooldown(
-                                           Player pl, List<ItemsManager.ItemKey> keys
+    Player pl, List<ItemsManager.ItemKey> keys
   ) {
     if (!shouldHandle(pl)) return true;
     
@@ -701,7 +701,7 @@ public class PlayerUtils {
   
   /** Use a particle trial to delay assign a task between 2 players */
   public static void delayAssign(
-                                 Player from, Player to, Particle particle, Runnable task
+    Player from, Player to, Particle particle, Runnable task
   ) {
     new BukkitRunnable() {
       int duration = 100;
@@ -805,7 +805,7 @@ public class PlayerUtils {
   
   /** Pure math, by Gemini */
   static Double rayIntersectsBox(
-                                 Vector origin, Vector dir, double maxDist, BoundingBox box
+    Vector origin, Vector dir, double maxDist, BoundingBox box
   ) {
     double tmin = 0.0;
     double tmax = maxDist;

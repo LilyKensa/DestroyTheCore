@@ -106,7 +106,7 @@ public class GUIManager {
             
             @Override
             public void handleClick(
-                                    ClickType click, Player pl, InventoryClickEvent ev
+              ClickType click, Player pl, InventoryClickEvent ev
             ) {
               pl.teleport(p);
             }
@@ -166,7 +166,7 @@ public class GUIManager {
                 
                 @Override
                 public void handleClick(
-                                        ClickType click, Player pl, InventoryClickEvent ev
+                  ClickType click, Player pl, InventoryClickEvent ev
                 ) {
                   postClick = true;
                   DestroyTheCore.guiManager.openShopTradesEditor(pl, shop);
@@ -289,7 +289,7 @@ public class GUIManager {
         
         @Override
         public void handleClick(
-                                ClickType click, Player pl, InventoryClickEvent ev
+          ClickType click, Player pl, InventoryClickEvent ev
         ) {
           shop.biome = type;
           
@@ -328,7 +328,7 @@ public class GUIManager {
           
           @Override
           public void handleClick(
-                                  ClickType click, Player pl, InventoryClickEvent ev
+            ClickType click, Player pl, InventoryClickEvent ev
           ) {
             shop.prof = prof;
             

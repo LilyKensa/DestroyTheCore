@@ -34,7 +34,7 @@ public class Subcommand {
    * @see CommandsManager#checkCompletion
    */
   public void addArgument(
-                          String name, Supplier<List<String>> completionsSupplier
+    String name, Supplier<List<String>> completionsSupplier
   ) {
     arguments.add(new Argument(name, completionsSupplier));
   }

@@ -12,7 +12,7 @@ import org.bukkit.inventory.EquipmentSlotGroup;
 public class AttributeUtils {
   
   public static AttributeModifier addition(
-                                           String name, EquipmentSlotGroup slot, double amount
+    String name, EquipmentSlotGroup slot, double amount
   ) {
     return new AttributeModifier(
       new NamespacedKey(
@@ -26,7 +26,7 @@ public class AttributeUtils {
   }
   
   public static AttributeModifier multiply(
-                                           String name, EquipmentSlotGroup slot, double ratio
+    String name, EquipmentSlotGroup slot, double ratio
   ) {
     return new AttributeModifier(
       new NamespacedKey(

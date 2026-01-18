@@ -331,7 +331,7 @@ public class Role extends GUIItem {
   /** @see GUIManager */
   @Override
   public void handleClick(
-                          ClickType clickType, Player pl, InventoryClickEvent ev
+    ClickType clickType, Player pl, InventoryClickEvent ev
   ) {
     announce(pl);
     pl.playSound(

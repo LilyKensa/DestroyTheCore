@@ -16,7 +16,7 @@ public class UsableItemGen extends ItemGen {
   boolean instantUse;
   
   public UsableItemGen(
-                       ItemsManager.ItemKey id, Material iconType, boolean instantUse
+    ItemsManager.ItemKey id, Material iconType, boolean instantUse
   ) {
     super(id, iconType);
     this.instantUse = instantUse;
