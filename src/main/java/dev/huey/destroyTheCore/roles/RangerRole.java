@@ -165,7 +165,12 @@ public class RangerRole extends Role {
     else {
       pl.getWorld().dropItemNaturally(
         LocationUtils.live(
-          LocationUtils.selfSide(DestroyTheCore.game.map.spawnPoint, data.side)
+          LocationUtils.selfSide(
+            LocationUtils.toSpawnPoint(
+            RandomUtils.pick(DestroyTheCore.game.map.spawnpoints)
+            ),
+            data.side
+          )
         ),
         item
       ).setPickupDelay(20);

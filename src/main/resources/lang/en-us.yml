@@ -96,6 +96,7 @@ game:
   truce:
     warning: "<red>You feel like you shouldn't go any further</red>"
     sent-spawn: "<player> was <yellow>lost</yellow> and was sent home with half a heart"
+  diamond-broadcast: "I love diamonds!|Time for some diamonds!|Yay! I got diamonds!|Diamonds are so nice!|Diamonds! Diamonds! Diamonds!|I like mining diamonds!"
   height-warning: "<red>You're about to experience altitude sickness!</red>"
   start-canceled: "<red>Start Canceled</red>"
   missing-loc: "<red>Map setup isn't complete!</red>"
@@ -134,8 +135,14 @@ game:
     no-ores: "<white>Ores Banned: <time></white>"
     no-shop: "<white>Shop Banned: <time></white>"
 
+anti-cheat:
+  prefix: "[<light_purple>Anti-cheat</light_purple>] "
+  reaction-time: "<red>Illegal reaction time</red>"
+  auto-click: "<red>Auto clicker</red>"
+
 item-gen:
   right-click-to-use: "- <yellow>Right click to use</yellow>"
+  instant-use: "- <aqua>Effective immediately upon purchase</aqua>"
 
 tool:
   prefix: "[<yellow>Editor</yellow>] "
@@ -143,7 +150,9 @@ tool:
 role:
   prefix: "[<light_purple>Role</light_purple>] "
   change: "<player> changed role to <yellow><role></yellow>"
-  skill: "[<white>Skill</white>] <light_purple><name></light_purple>"
+  skill:
+    title: "[<white>Skill</white>] <light_purple><name></light_purple>"
+    cooldown: "- <light_purple>Cooldown: <cooldown>s</light_purple>"
   desc:
     feature:
       first: "<white>Feature</white>: <aqua><desc></aqua>"
@@ -177,6 +186,7 @@ mission:
     skill-cooldown: "As <side> team failed the mission, their skill cooldown was <light_purple>increased by 120 seconds</light_purple>"
 
 gui:
+  in-use: "<red>The window is currently used by someone else!</red>"
   buttons:
     next-page:
       title: "<yellow>Next Page</yellow>"
@@ -186,12 +196,43 @@ gui:
       title: "<yellow>Previous Page</yellow>"
       desc: "Go to page <gold><prev></gold>/<max>"
       desc-end: "<dark_purple>You can't go further back</dark_purple>"
+    scroll-down:
+      title: "<yellow>Scroll Down</yellow>"
+      desc-end: "<dark_purple>You can't scroll further down</dark_purple>"
+    scroll-up:
+      title: "<yellow>Scroll Up</yellow>"
+      desc-end: "<dark_purple>You've reached the top</dark_purple>"
     pick-random:
       title: "<yellow>Pick Random</yellow>"
       announce: "<player> randomly changed role to <yellow><role></yellow>"
+    new-shop:
+      title: "<yellow>New Shop</yellow>"
+    rename-shop:
+      title: "<yellow>Rename Shop</yellow>"
+      desc: "Current name: <name>"
+    delete-shop:
+      title: "<yellow>Delete Shop</yellow>"
+      title-confirm: "<red>Delete Shop - Confirm</red>"
+    detail-shop:
+      title: "<yellow>Edit Shop Villager</yellow>"
+      desc: "Current: <type> <profession>"
+      selected: "Selected"
   titles:
     choose-role: "Choose a Role"
-    teleporter: "Teleport to Player"
+    teleporter: "Teleport to a Player"
+    shop:
+      list: "Click to Edit a Shop"
+      trades: "Editing Shop"
+      rename: "Renaming Shop"
+      villager: "Villager Options"
+  villagers:
+    snow: "Snow"
+    plains: "Plains"
+    jungle: "Jungle"
+    taiga: "Taiga"
+    desert: "Desert"
+    savanna: "Savanna"
+    swamp: "Swamp"
 
 board:
   title: "<red>Destroy</red><white>The</white><yellow>Core</yellow>"
@@ -279,19 +320,19 @@ items:
     name: "<aqua>Safety Helmet</aqua>"
     desc-1: "A random turtle shell, seems cool to wear it on your head"
     desc-2: "With so much health, you can definitely last a long time when attacking the core!"
-  golden-helmet:
+  god-helmet:
     name: "<aqua>Suzaku Helmet</aqua>"
     desc-1: "Crafted from Suzaku feathers, it possesses powerful resistance!"
     desc-2: "Its defense is identical to that of iron!"
-  golden-chestplate:
+  god-chestplate:
     name: "<aqua>Black Tortoise Armor</aqua>"
     desc-1: "Made from basalt shield, it has the effect of increasing life!"
     desc-2: "Its defense is identical to that of iron!"
-  golden-leggings:
+  god-leggings:
     name: "<aqua>Teal Dragon Trousers</aqua>"
     desc-1: "Crafted from the sharp teeth of the teal dragon, it can increase attack damage!"
     desc-2: "Its defense is identical to that of iron!"
-  golden-boots:
+  god-boots:
     name: "<aqua>White Tiger Boots</aqua>"
     desc-1: "Made from white tiger claws, it has the effect of increasing running speed!"
     desc-2: "Its defense is identical to that of iron!"
@@ -316,6 +357,9 @@ items:
   damage-assist:
     name: "<aqua>Dark Memories Unveiler</aqua>"
     desc-1: "Strengthen! Memories release!"
+  skill-cooldown-assist:
+    name: "<light_purple>Skill Accelerator</light_purple>"
+    desc-1: "Holding it in off hand reduces skill cooldown by half!"
   ink-assist:
     name: "<aqua>Cuttlefish Amulet</aqua>"
     desc-1: "The cyst of a giant deep-sea squid"
@@ -359,6 +403,7 @@ items:
     name: "<light_purple>Job Changing Book</light_purple>"
     desc-1: "After the blessing of the great bodhisattva!"
     desc-2: "By using this, you will be randomly assigned to another role"
+    confirm: "<yellow>Crouch to confirm!</yellow>"
     announce: "<player> used <item> and became <yellow><role></yellow>"
   choose-role:
     name: "<aqua>Role Selection</aqua>"
@@ -419,8 +464,8 @@ items:
   gold-digger-chestplate:
     name: "<aqua>Luminous Warning Shirt</aqua>"
     desc-1: "- <red>Bound item for Gold Diggers</red>"
-  provocateur-chestplate:
-    name: "<aqua>Cardboard Jacket</aqua>"
+  provocateur-helmet:
+    name: "<aqua>Cardboard Box</aqua>"
     desc-1: "- <red>Bound item for Provocateurs</red>"
   ranger-helmet:
     name: "<aqua>Ranger Hat</aqua>"
@@ -436,8 +481,9 @@ items:
     desc-1: "Clears a random enemy's inventory"
     cooldown: "<red>You need to wait for <cooldown>s to use this again!</red>"
     not-found: "<red>Can't find a valid target</red>"
-    announce: "<player> used <item>, cleared <target>'s inventory"
+    announce: "<player> used <item>, robbed <target>'s inventory"
     post-announce: "boo-hoo!"
+    allay: "<aqua>Thief</aqua>"
   assign-more-respawn-time:
     name: "[<white>Token</white>] <light_purple>Heinous Sins</light_purple>"
     desc-1: "Increases the sin value of a random enemy by 60!"
@@ -506,11 +552,12 @@ tools:
   join-spectator: "Spectator Join Platform"
   lobby: "Lobby Spawn"
   rest-area: "Rest Area"
-  spawn-point: "Spawnpoint"
+  spawnpoints: "Spawnpoint"
   start-button: "Start Button"
   woods: "Woods"
   ores: "Ores"
   diamonds: "Diamonds"
+  shops: "Villagers"
   mission: "Mission Center"
 
 missions:

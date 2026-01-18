@@ -7,6 +7,8 @@ depend: [ ProtocolLib ]
 commands:
   dtc:
     description: Main command of Destroy the Core 3
+  language:
+    description: Set the language
   rejoin:
     description: Rejoin the game
   night-vision:

@@ -2,7 +2,6 @@ package dev.huey.destroyTheCore.roles;
 
 import com.destroystokyo.paper.ParticleBuilder;
 import dev.huey.destroyTheCore.DestroyTheCore;
-import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.managers.RolesManager;
 import dev.huey.destroyTheCore.utils.LocationUtils;
@@ -13,6 +12,9 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
+import org.bukkit.entity.Snowball;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -20,22 +22,17 @@ import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class WandererRole extends Role {
   static public class Elevator {
     final double radius = 2.5;
-    final double height = 9;
+    final double height = 10;
     
     Location loc;
     public int duration = 20 * 20;
-    public UUID ownerId;
-    public Game.Side side;
     
-    public Elevator(Location loc, Player owner) {
+    public Elevator(Location loc) {
       this.loc = loc;
-      this.ownerId = owner.getUniqueId();
-      this.side = DestroyTheCore.game.getPlayerData(owner).side;
     }
     
     public boolean contains(Location thatLoc) {
@@ -137,7 +134,7 @@ public class WandererRole extends Role {
         pl.addPotionEffect(new PotionEffect(
           PotionEffectType.SPEED,
           20,
-          1,
+          0,
           true,
           false
         ));
@@ -175,6 +172,17 @@ public class WandererRole extends Role {
   public void useSkill(Player pl) {
     skillFeedback(pl);
     
-    elevators.add(new Elevator(pl.getLocation().add(0, -0.1, 0), pl));
+    Projectile proj = pl.launchProjectile(
+      Snowball.class,
+      pl.getLocation().getDirection()
+    );
+    proj.addScoreboardTag("wanderer-elevator");
+  }
+  
+  static public void onProjectileHit(ProjectileHitEvent ev) {
+    Projectile proj = ev.getEntity();
+    if (!proj.getScoreboardTags().contains("wanderer-elevator")) return;
+    
+    elevators.add(new Elevator(proj.getLocation().add(0, -0.1, 0)));
   }
 }

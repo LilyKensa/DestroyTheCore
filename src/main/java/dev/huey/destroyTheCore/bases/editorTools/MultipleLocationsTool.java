@@ -61,6 +61,10 @@ public class MultipleLocationsTool extends EditorTool {
   public void onRightClickBlock(Player pl, Block block) {
     handleAddLoc(
       block.getLocation()
+        .setRotation(
+          pl.getYaw(),
+          pl.getPitch()
+        )
     );
   }
   

@@ -1,4 +1,4 @@
-package dev.huey.destroyTheCore.gui;
+package dev.huey.destroyTheCore.gui.role;
 
 import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.bases.GUIItem;
@@ -17,7 +17,7 @@ import xyz.xenondevs.invui.item.builder.ItemBuilder;
 
 import java.util.List;
 
-public class PickRandomItem extends GUIItem {
+public class RandomRoleItem extends GUIItem {
   @Override
   public ItemProvider getItemProvider() {
     return new ItemBuilder(Material.REDSTONE)

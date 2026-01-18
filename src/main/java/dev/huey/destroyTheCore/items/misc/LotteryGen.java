@@ -42,7 +42,7 @@ public class LotteryGen extends UsableItemGen {
     PlayerUtils.takeOneItemFromHand(pl);
     
     final Location centerLoc = pl.getLocation().add(0, 0.1, 0);
-    final int percentage = RandomUtils.nextInt() % 100 + data.lotteryShift;
+    final int percentage = Math.floorMod(RandomUtils.nextInt(), 100) + data.lotteryShift;
     new BukkitRunnable() {
       int age = 0;
       Color color = Color.GRAY;
@@ -145,11 +145,16 @@ public class LotteryGen extends UsableItemGen {
     if (DestroyTheCore.game.getPlayerData(pl).alive) {
       pl.give(item);
     }
-    else if (DestroyTheCore.game.map.spawnPoint != null) {
+    else if (DestroyTheCore.game.map.spawnpoints != null) {
       pl.sendActionBar(TextUtils.$("items.lottery.sent-to-spawn"));
       pl.getWorld().dropItemNaturally(
         LocationUtils.live(
-          LocationUtils.selfSide(DestroyTheCore.game.map.spawnPoint, pl)
+          LocationUtils.selfSide(
+            LocationUtils.toSpawnPoint(
+            RandomUtils.pick(DestroyTheCore.game.map.spawnpoints)
+            ),
+            pl
+          )
         ),
         item
       );
@@ -201,10 +206,10 @@ public class LotteryGen extends UsableItemGen {
   void giveTreasure(Player pl) {    
     giveRandom(pl, List.of(
       getCustomItem(ItemsManager.ItemKey.ELYTRA),
-      getCustomItem(ItemsManager.ItemKey.GOLDEN_HELMET),
-      getCustomItem(ItemsManager.ItemKey.GOLDEN_CHESTPLATE),
-      getCustomItem(ItemsManager.ItemKey.GOLDEN_LEGGINGS),
-      getCustomItem(ItemsManager.ItemKey.GOLDEN_BOOTS),
+      getCustomItem(ItemsManager.ItemKey.GOD_HELMET),
+      getCustomItem(ItemsManager.ItemKey.GOD_CHESTPLATE),
+      getCustomItem(ItemsManager.ItemKey.GOD_LEGGINGS),
+      getCustomItem(ItemsManager.ItemKey.GOD_BOOTS),
       getCustomItem(ItemsManager.ItemKey.TRIDENT),
       new ItemStack(Material.TNT),
       getCustomItem(ItemsManager.ItemKey.ABSORPTION_POTION),

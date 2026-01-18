@@ -2,6 +2,7 @@ package dev.huey.destroyTheCore.managers;
 
 import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.Game;
+import dev.huey.destroyTheCore.records.MaybeGen;
 import dev.huey.destroyTheCore.records.Region;
 import dev.huey.destroyTheCore.records.Stats;
 import dev.huey.destroyTheCore.utils.CoreUtils;
@@ -61,13 +62,15 @@ public class ConfigManager {
     public abstract void write();
   }
   
-  Config config, stats, lobby, map;
+  public Config config, stats, lobby, shops, map;
   
   public void init() {
-    ConfigurationSerialization.registerClass(Game.MapLocs.class);
-    ConfigurationSerialization.registerClass(Game.LobbyLocs.class);
     ConfigurationSerialization.registerClass(Region.class);
     ConfigurationSerialization.registerClass(Stats.class);
+    ConfigurationSerialization.registerClass(MaybeGen.class);
+    ConfigurationSerialization.registerClass(Game.LobbyLocs.class);
+    ConfigurationSerialization.registerClass(Game.MapLocs.class);
+    ConfigurationSerialization.registerClass(Game.Shop.class);
     
     config = new Config("config.yml") {
       @Override
@@ -120,6 +123,18 @@ public class ConfigManager {
         );
       }
     };
+    shops = new Config("shops.yml") {
+      @Override
+      public void read() {
+        DestroyTheCore.game.shops = CoreUtils.listLoader(Game.Shop.class)
+          .apply(config.get("shops"));
+      }
+      
+      @Override
+      public void write() {
+        config.set("shops", DestroyTheCore.game.shops);
+      }
+    };
     lobby = new Config("lobby.yml") {
       @Override
       public void read() {
@@ -152,6 +167,7 @@ public class ConfigManager {
     };
     
     stats.load();
+    shops.load();
     lobby.load();
     map.load();
     
@@ -161,6 +177,7 @@ public class ConfigManager {
   public void save() {
     config.save();
     stats.save();
+    shops.save();
     lobby.save();
     map.save();
   }

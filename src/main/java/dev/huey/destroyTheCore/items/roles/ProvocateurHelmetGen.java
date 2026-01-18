@@ -12,11 +12,11 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
-public class ProvocateurChestplateGen extends ItemGen {
-  public ProvocateurChestplateGen() {
+public class ProvocateurHelmetGen extends ItemGen {
+  public ProvocateurHelmetGen() {
     super(
-      ItemsManager.ItemKey.PROVOCATEUR_CHESTPLATE,
-      Material.LEATHER_CHESTPLATE
+      ItemsManager.ItemKey.PROVOCATEUR_HELMET,
+      Material.LEATHER_HELMET
     );
     setNeverDrop();
     setTrash();
@@ -31,9 +31,13 @@ public class ProvocateurChestplateGen extends ItemGen {
     
     meta.addEnchant(Enchantment.BINDING_CURSE, 1, true);
     
+//    meta.addAttributeModifier(
+//      Attribute.ARMOR,
+//      AttributeUtils.multiply("armor", EquipmentSlotGroup.HEAD, 0.8)
+//    );
     meta.addAttributeModifier(
-      Attribute.ARMOR,
-      AttributeUtils.multiply("protection", EquipmentSlotGroup.CHEST, 0.8)
+      Attribute.ATTACK_DAMAGE,
+      AttributeUtils.multiply("damage", EquipmentSlotGroup.HEAD, 0.6)
     );
   }
 }

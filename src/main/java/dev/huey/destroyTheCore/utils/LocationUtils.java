@@ -6,6 +6,7 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.BlockPosition;
 import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.Game;
+import dev.huey.destroyTheCore.records.PlayerData;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -172,26 +173,26 @@ public class LocationUtils {
   }
   
   public static boolean nearSpawn(Location blockLoc) {
-    if (DestroyTheCore.game.map.spawnPoint == null) return false;
-    
-    for (Location spawnLoc : new Location[] {
-      DestroyTheCore.game.map.spawnPoint,
-      LocationUtils.flip(DestroyTheCore.game.map.spawnPoint)
-    }) {
-      int
-        sx = blockLoc.getBlockX(),
-        sy = blockLoc.getBlockY(),
-        sz = blockLoc.getBlockZ(),
-        tx = spawnLoc.getBlockX(),
-        ty = spawnLoc.getBlockY(),
-        tz = spawnLoc.getBlockZ();
-      
-      if (
-        sx >= tx - 1 && sx <= tx + 1 &&
-          sy >= ty && sy <= ty + 2 &&
-          sz >= tz - 1 && sz <= tz + 1
-      ) {
-        return true;
+    for (Location point : DestroyTheCore.game.map.spawnpoints) {
+      for (Location spawnLoc : new Location[]{
+        point,
+        LocationUtils.flip(point)
+      }) {
+        int
+          sx = blockLoc.getBlockX(),
+          sy = blockLoc.getBlockY(),
+          sz = blockLoc.getBlockZ(),
+          tx = spawnLoc.getBlockX(),
+          ty = spawnLoc.getBlockY(),
+          tz = spawnLoc.getBlockZ();
+        
+        if (
+          sx >= tx - 1 && sx <= tx + 1 &&
+            sy >= ty && sy <= ty + 2 &&
+            sz >= tz - 1 && sz <= tz + 1
+        ) {
+          return true;
+        }
       }
     }
     
@@ -204,10 +205,8 @@ public class LocationUtils {
     boolean hasFloatX = loc.getX() - loc.getBlockX() >= 0.1,
             hasFloatZ = loc.getZ() - loc.getBlockZ() >= 0.1;
     
-    loc.setYaw(90);
-    
     if (flip) {
-      loc.setYaw(-90);
+      loc.setYaw(loc.getYaw() + 180);
       loc.setX(-loc.getX() + (hasFloatX ? 1 : 0));
       loc.setZ(-loc.getZ() + (hasFloatZ ? 1 : 0));
     }
@@ -255,5 +254,20 @@ public class LocationUtils {
     
     return loc;
   }
+  
+  /** If a block is in their own half of the map */
+  static public boolean canAccess(Player pl, Block block)  {
+    if (DestroyTheCore.game.map.core == null) return true;
+    if (!isSameWorld(pl.getLocation(), DestroyTheCore.game.map.core)) return true;
+    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
+    
+    double selfDistSq = pl.getLocation().distanceSquared(
+      LocationUtils.selfSide(LocationUtils.toBlockCenter(block.getLocation()), data.side)
+    );
+    double enemyDistSq = pl.getLocation().distanceSquared(
+      LocationUtils.enemySide(LocationUtils.toBlockCenter(block.getLocation()), data.side)
+    );
+    
+    return selfDistSq <= enemyDistSq;
+  }
 }
-

@@ -1,8 +1,6 @@
 package dev.huey.destroyTheCore.utils;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class RandomUtils {
   static public final Random random = new Random();
@@ -34,6 +32,9 @@ public class RandomUtils {
     if (list.isEmpty()) return null;
     
     return list.get(Math.floorMod(nextInt(), list.size()));
+  }
+  static public <T> T pick(Set<T> set) {
+    return pick(new ArrayList<>(set));
   }
   static public <T> T pick(T... array) {
     return pick(Arrays.asList(array));

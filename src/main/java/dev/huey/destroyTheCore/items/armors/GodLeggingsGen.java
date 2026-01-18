@@ -9,10 +9,10 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class LeggingsGen extends ItemGen {
-  public LeggingsGen() {
+public class GodLeggingsGen extends ItemGen {
+  public GodLeggingsGen() {
     super(
-      ItemsManager.ItemKey.GOLDEN_LEGGINGS,
+      ItemsManager.ItemKey.GOD_LEGGINGS,
       Material.GOLDEN_LEGGINGS
     );
   }

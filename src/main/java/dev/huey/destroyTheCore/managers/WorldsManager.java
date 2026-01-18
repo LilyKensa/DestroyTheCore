@@ -173,22 +173,21 @@ public class WorldsManager {
     };
     
     addForceLoad.accept(DestroyTheCore.game.map.restArea);
-    addForceLoad.accept(DestroyTheCore.game.map.spawnPoint);
     addForceLoad.accept(DestroyTheCore.game.map.core);
-    for (Location loc : DestroyTheCore.game.map.woods)
+    for (Location loc : DestroyTheCore.game.map.spawnpoints)
       addForceLoad.accept(loc);
     
     for (Chunk chunk : toLoad) {
-      chunk.setForceLoaded(true);
+      chunk.addPluginChunkTicket(DestroyTheCore.instance);
     }
     
     for (Chunk chunk : template.getForceLoadedChunks()) {
       if (!toLoad.contains(chunk))
-        chunk.setForceLoaded(false);
+        chunk.removePluginChunkTicket(DestroyTheCore.instance);
     }
     for (Chunk chunk : live.getForceLoadedChunks()) {
       if (!toLoad.contains(chunk))
-        chunk.setForceLoaded(false);
+        chunk.removePluginChunkTicket(DestroyTheCore.instance);
     }
   }
   

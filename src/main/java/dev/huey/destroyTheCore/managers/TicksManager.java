@@ -41,9 +41,12 @@ public class TicksManager {
       
       if (isParticleTick()) {
         DestroyTheCore.toolsManager.onParticleTick();
+        DestroyTheCore.glowManager.onParticleTick();
+        
         KekkaiMasterRole.onParticleTick();
         RangerRole.onParticleTick();
         WandererRole.onParticleTick();
+        
         DestroyTheCore.game.onParticleTick();
       }
       

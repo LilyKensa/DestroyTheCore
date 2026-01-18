@@ -1,6 +1,5 @@
 package dev.huey.destroyTheCore.commands;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.bases.Subcommand;
 import dev.huey.destroyTheCore.utils.LocationUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
@@ -17,11 +16,7 @@ public class WorldCommand extends Subcommand {
     super("world");
     addArgument(
       "world",
-      () -> List.of(
-        "lobby",
-        "template-" + DestroyTheCore.worldsManager.mapName,
-        "live"
-      )
+      () -> Bukkit.getWorlds().stream().map(World::getName).toList()
     );
   }
   

@@ -8,8 +8,14 @@ import dev.huey.destroyTheCore.records.SideData;
 import dev.huey.destroyTheCore.utils.*;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Allay;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.List;
 
@@ -17,8 +23,24 @@ public class AssignClearInvGen extends UsableItemGen {
   public AssignClearInvGen() {
     super(
       ItemsManager.ItemKey.ASSIGN_CLEAR_INV,
-      Material.BAMBOO_SIGN
+      Material.BAMBOO_SIGN,
+      true
     );
+  }
+  
+  public Allay summonAllayWithItem(Location location, ItemStack item) {
+    Allay allay = (Allay) location.getWorld().spawnEntity(location, EntityType.ALLAY);
+    
+    allay.customName(TextUtils.$("items.assign-clear-inv.allay"));
+    
+    allay.getAttribute(Attribute.SCALE).setBaseValue(1.2);
+    allay.getAttribute(Attribute.MAX_HEALTH).setBaseValue(4);
+    allay.setHealth(4);
+    
+    allay.getEquipment().setItemInMainHand(item);
+    allay.getEquipment().setItemInMainHandDropChance(1);
+    
+    return allay;
   }
   
   @Override
@@ -52,9 +74,26 @@ public class AssignClearInvGen extends UsableItemGen {
       target,
       Particle.ENCHANTED_HIT,
       () -> {
-        target.getInventory().clear();
+        PlayerInventory inv = target.getInventory();
         
-        DestroyTheCore.boardsManager.refresh(target);
+        ItemStack[] items = inv.getContents();
+        inv.clear();
+        
+        new BukkitRunnable() {
+          int index = 0;
+          
+          @Override
+          public void run() {
+            for (int max = index + RandomUtils.range(3, 6); index < max; ++index) {
+              if (index >= items.length) {
+                cancel();
+                return;
+              }
+              
+              summonAllayWithItem(LocationUtils.hitboxCenter(target), items[index]);
+            }
+          }
+        }.runTaskTimer(DestroyTheCore.instance, 0, 2);
         
         for (Player p : Bukkit.getOnlinePlayers())
           p.playSound(

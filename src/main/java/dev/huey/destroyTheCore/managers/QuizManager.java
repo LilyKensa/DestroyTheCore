@@ -20,6 +20,7 @@ import java.util.function.Predicate;
 public class QuizManager {
   static public class Quiz {
     Player pl;
+    int startTime;
     
     int answer = RandomUtils.range(200, 1600) + 1;
     int a = RandomUtils.range(100, answer - 100) + 1, b = answer - a;
@@ -28,6 +29,7 @@ public class QuizManager {
     
     public Quiz(Player pl) {
       this.pl = pl;
+      this.startTime = DestroyTheCore.ticksManager.ticksCount;
       send(pl, TextUtils.$("quiz.question", List.of(
         Placeholder.component("a", Component.text(a)),
         Placeholder.component("b", Component.text(b))
@@ -41,12 +43,17 @@ public class QuizManager {
     public void update(int attempt) {
       if (ended) return;
       
+      if (DestroyTheCore.ticksManager.ticksCount - startTime < 10) {
+        PlayerUtils.kickAntiCheat(pl, "reaction-time");
+        return;
+      }
+      
       ended = true;
       correct = check(attempt);
       
       PlayerData data = DestroyTheCore.game.getPlayerData(pl);
       
-      data.quizQuota--;
+      if (correct) data.quizQuota--;
       
       send(pl, TextUtils.$("quiz." + (correct ? "correct" : "wrong"), List.of(
         Placeholder.component("answer", Component.text(answer)),

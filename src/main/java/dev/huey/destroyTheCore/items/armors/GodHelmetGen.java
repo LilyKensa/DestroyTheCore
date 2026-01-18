@@ -9,11 +9,11 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class ChestplateGen extends ItemGen {
-  public ChestplateGen() {
+public class GodHelmetGen extends ItemGen {
+  public GodHelmetGen() {
     super(
-      ItemsManager.ItemKey.GOLDEN_CHESTPLATE,
-      Material.GOLDEN_CHESTPLATE
+      ItemsManager.ItemKey.GOD_HELMET,
+      Material.GOLDEN_HELMET
     );
   }
   
@@ -23,11 +23,7 @@ public class ChestplateGen extends ItemGen {
     
     meta.addAttributeModifier(
       Attribute.ARMOR,
-      AttributeUtils.addition("protection", EquipmentSlotGroup.CHEST, 6)
-    );
-    meta.addAttributeModifier(
-      Attribute.MAX_HEALTH,
-      AttributeUtils.addition("max-health", EquipmentSlotGroup.CHEST, 10)
+      AttributeUtils.addition("protection", EquipmentSlotGroup.HEAD, 2)
     );
   }
 }

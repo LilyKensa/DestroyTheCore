@@ -11,6 +11,10 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
+
 public class CoreUtils {
   /** if {@code value} is null, return {@code defValue} */
   static public <T> T def(Object value, T defValue) {
@@ -40,6 +44,10 @@ public class CoreUtils {
   }
   static public float snapAngle(float angle) {
     return (float) snapAngle((double) angle);
+  }
+  
+  static public String capitalize(String str) {
+    return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
   }
   
   /** This uses legacy color codes, for components, use {@link #formatTimeComp} */
@@ -72,12 +80,29 @@ public class CoreUtils {
   }
   
   /** Empty item for GUIs */
-  static public ItemStack emptyItem() {
-    ItemStack item = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
+  static public ItemStack emptyGuiItem() {
+    ItemStack item = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
     item.editMeta(meta -> {
       meta.setHideTooltip(true);
     });
     return item;
+  }
+  
+  @SuppressWarnings("unchecked")
+  static public <T> Function<Object, List<T>> listLoader(Class<T> elementType) {
+    return unknown -> {
+      List<T> result = new ArrayList<>();
+      
+      if (unknown == null) return result;
+      if (!(unknown instanceof List<?> list)) return result;
+      
+      for (Object element : list) {
+        if (elementType.isInstance(element))
+          result.add((T) element);
+      }
+      
+      return result;
+    };
   }
   
   static public void setTickOut(Runnable task, int ticks) {

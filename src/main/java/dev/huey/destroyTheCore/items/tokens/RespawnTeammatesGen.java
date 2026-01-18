@@ -20,7 +20,8 @@ public class RespawnTeammatesGen extends UsableItemGen {
   public RespawnTeammatesGen() {
     super(
       ItemsManager.ItemKey.RESPAWN_TEAMMATES,
-      Material.MANGROVE_SIGN
+      Material.MANGROVE_SIGN,
+      true
     );
   }
   

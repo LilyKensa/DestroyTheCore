@@ -29,15 +29,15 @@ public class ToolsManager {
         new EmptyTool(),
         new CancelTool()
       )),
-      Map.entry("game", List.of(
+      Map.entry("map", List.of(
         new RestAreaTool(),
-        new SpawnPointTool(),
+        new SpawnpointsTool(),
         new CoreBlockTool(),
         new WoodsTool(),
         new OresTool(),
         new DiamondsTool(),
+        new ShopsTool(),
         new MissionTool(),
-        new EmptyTool(),
         new CancelTool()
       ))
     );

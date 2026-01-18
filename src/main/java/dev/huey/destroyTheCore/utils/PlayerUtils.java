@@ -39,6 +39,12 @@ import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 public class PlayerUtils {
+  static public Player getPlayerByEntityId(int id) {
+    return Bukkit.getOnlinePlayers().stream()
+      .filter(p -> p.getEntityId() == id)
+      .findAny().orElse(null);
+  }
+  
   static public void send(Player pl, Component component) {
     pl.sendMessage(
       component.colorIfAbsent(NamedTextColor.GRAY)
@@ -155,10 +161,10 @@ public class PlayerUtils {
     return pl.getCooldown(getHandItem(pl).getType());
   }
   
-  static public boolean checkHandCooldown(Player pl) {
+  static public boolean checkHandCooldown(Player pl, int offset) {
     if (!shouldHandle(pl)) return true;
     
-    int cooldown = getHandCooldown(pl);
+    int cooldown = getHandCooldown(pl) - offset;
     if (cooldown > 0) {
       pl.sendActionBar(TextUtils.$("player.in-cooldown", List.of(
         Placeholder.unparsed("value", CoreUtils.toFixed(cooldown / 20D, 1))
@@ -167,6 +173,9 @@ public class PlayerUtils {
     }
     
     return true;
+  }
+  static public boolean checkHandCooldown(Player pl) {
+    return checkHandCooldown(pl, 0);
   }
   
   static public void setGroupCooldown(Player pl, List<ItemsManager.ItemKey> keys, int ticks) {
@@ -238,16 +247,11 @@ public class PlayerUtils {
     prefixedSend(pl, TextUtils.$("player.no-perm"));
   }
   
-  /** If a block is in their own half of the map */
-  static public boolean canAccess(Player pl, Block block)  {
-    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
-    
-    if (data.side.equals(Game.Side.RED))
-      return block.getX() >= -5;
-    if (data.side.equals(Game.Side.GREEN))
-      return block.getX() <= 5;
-    
-    return true;
+  static public void kickAntiCheat(Player pl, String path) {
+    pl.kick(
+      TextUtils.$("anti-cheat.prefix")
+        .append(TextUtils.$("anti-cheat." + path))
+    );
   }
   
   static public boolean inLobby(Player pl) {
@@ -285,12 +289,14 @@ public class PlayerUtils {
   }
   
   static public void teleportToSpawnPoint(Player pl) {
-    if (DestroyTheCore.game.map.spawnPoint == null) return;
-    
     pl.teleport(
-      LocationUtils.selfSide(
-        LocationUtils.live(DestroyTheCore.game.map.spawnPoint),
-        pl
+      LocationUtils.live(
+        LocationUtils.selfSide(
+          LocationUtils.toSpawnPoint(
+            RandomUtils.pick(DestroyTheCore.game.map.spawnpoints)
+          ),
+          pl
+        )
       )
     );
   }
