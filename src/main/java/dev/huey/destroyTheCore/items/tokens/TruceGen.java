@@ -7,20 +7,16 @@ import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.records.SideData;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
+import java.util.List;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
-import java.util.List;
-
 public class TruceGen extends UsableItemGen {
+  
   public TruceGen() {
-    super(
-      ItemsManager.ItemKey.TRUCE,
-      Material.CRIMSON_SIGN,
-      true
-    );
+    super(ItemsManager.ItemKey.TRUCE, Material.CRIMSON_SIGN, true);
   }
   
   @Override
@@ -42,10 +38,13 @@ public class TruceGen extends UsableItemGen {
     DestroyTheCore.game.truceTimer += 5 * 60 * 20;
     
     PlayerUtils.broadcast(
-      TextUtils.$("items.truce.announce", List.of(
-        Placeholder.component("player", PlayerUtils.getName(pl)),
-        Placeholder.component("item", getItem().effectiveName())
-      ))
+      TextUtils.$(
+        "items.truce.announce",
+        List.of(
+          Placeholder.component("player", PlayerUtils.getName(pl)),
+          Placeholder.component("item", getItem().effectiveName())
+        )
+      )
     );
   }
 }

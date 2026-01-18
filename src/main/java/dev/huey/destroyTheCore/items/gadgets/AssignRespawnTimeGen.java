@@ -5,6 +5,7 @@ import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.itemGens.UsableItemGen;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.utils.*;
+import java.util.List;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -12,14 +13,10 @@ import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
-import java.util.List;
-
 public class AssignRespawnTimeGen extends UsableItemGen {
+  
   public AssignRespawnTimeGen() {
-    super(
-      ItemsManager.ItemKey.ASSIGN_RESPAWN_TIME,
-      Material.ENDER_EYE
-    );
+    super(ItemsManager.ItemKey.ASSIGN_RESPAWN_TIME, Material.ENDER_EYE);
   }
   
   @Override
@@ -51,11 +48,14 @@ public class AssignRespawnTimeGen extends UsableItemGen {
           Color.ORANGE
         );
         PlayerUtils.broadcast(
-          TextUtils.$("items.assign-respawn-time.announce", List.of(
-            Placeholder.component("player", PlayerUtils.getName(pl)),
-            Placeholder.component("item", getItem().effectiveName()),
-            Placeholder.component("target", PlayerUtils.getName(target))
-          ))
+          TextUtils.$(
+            "items.assign-respawn-time.announce",
+            List.of(
+              Placeholder.component("player", PlayerUtils.getName(pl)),
+              Placeholder.component("item", getItem().effectiveName()),
+              Placeholder.component("target", PlayerUtils.getName(target))
+            )
+          )
         );
       }
     );

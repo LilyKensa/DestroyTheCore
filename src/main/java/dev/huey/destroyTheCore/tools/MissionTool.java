@@ -8,6 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 
 public class MissionTool extends SingleLocationTool {
+  
   public MissionTool() {
     super("mission", Material.BLAZE_ROD, Color.ORANGE);
   }

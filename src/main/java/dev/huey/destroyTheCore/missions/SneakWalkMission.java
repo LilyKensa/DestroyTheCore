@@ -4,15 +4,15 @@ import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.missions.ProgressiveMission;
 import dev.huey.destroyTheCore.records.PlayerData;
+import java.util.HashMap;
+import java.util.Map;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class SneakWalkMission extends ProgressiveMission implements Listener {
+  
   public SneakWalkMission() {
     super("sneak-walk");
   }
@@ -37,19 +37,19 @@ public class SneakWalkMission extends ProgressiveMission implements Listener {
     
     dist.put(
       data.side,
-      dist.get(data.side) + ev.getTo().clone().subtract(ev.getFrom().clone()).length()
+      dist.get(data.side) + ev.getTo().clone().subtract(
+        ev.getFrom().clone()).length()
     );
     progress(data.side, (float) Math.min(dist.get(data.side) / 200D, 1));
   }
   
   @Override
   public void tick() {
-  
   }
   
   @Override
   public void innerFinish() {
-    for (Game.Side side : new Game.Side[] {Game.Side.RED, Game.Side.GREEN}) {
+    for (Game.Side side : new Game.Side[]{Game.Side.RED, Game.Side.GREEN}) {
       if (dist.get(side) > dist.get(side.opposite())) {
         declareWinner(side);
         return;

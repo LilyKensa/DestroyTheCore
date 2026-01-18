@@ -3,11 +3,11 @@ package dev.huey.destroyTheCore.commands;
 import dev.huey.destroyTheCore.bases.Subcommand;
 import dev.huey.destroyTheCore.utils.LocationUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
+import java.util.List;
 import org.bukkit.entity.Player;
 
-import java.util.List;
-
 public class SnapCommand extends Subcommand {
+  
   public SnapCommand() {
     super("snap");
   }

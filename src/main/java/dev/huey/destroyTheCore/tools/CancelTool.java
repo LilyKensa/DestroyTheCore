@@ -7,6 +7,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 public class CancelTool extends EditorTool {
+  
   public CancelTool() {
     super("cancel", Material.BARRIER);
   }

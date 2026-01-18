@@ -12,12 +12,17 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 public class UsableItemGen extends ItemGen {
+  
   boolean instantUse;
   
-  public UsableItemGen(ItemsManager.ItemKey id, Material iconType, boolean instantUse) {
+  public UsableItemGen(
+                       ItemsManager.ItemKey id, Material iconType, boolean instantUse
+  ) {
     super(id, iconType);
+    this.instantUse = instantUse;
     addLore();
   }
+  
   public UsableItemGen(ItemsManager.ItemKey id, Material iconType) {
     this(id, iconType, false);
   }
@@ -28,15 +33,22 @@ public class UsableItemGen extends ItemGen {
   
   void addLore() {
     if (
-      !lore.isEmpty() &&
-        (lore.getLast() instanceof TextComponent lastLore) &&
-        !lastLore.content().startsWith("-")
+      !lore.isEmpty() && (lore.getLast() instanceof TextComponent lastLore) && !lastLore.content().startsWith(
+        "-")
     ) lore.add(Component.empty());
-    lore.add(TextUtils.$("item-gen." + (instantUse ? "instant-use" : "right-click-to-use")));
+    lore.add(
+      TextUtils.$(
+        "item-gen." + (instantUse ? "instant-use" : "right-click-to-use")
+      )
+    );
   }
   
   /** @implNote Required - The functionality when right clicked */
   public void use(Player pl, Block block) {
-    PlayerUtils.prefixedSend(pl, "This item's usage isn't implemented yet!", NamedTextColor.RED);
+    PlayerUtils.prefixedSend(
+      pl,
+      "This item's usage isn't implemented yet!",
+      NamedTextColor.RED
+    );
   }
 }

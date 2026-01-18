@@ -4,6 +4,7 @@ import dev.huey.destroyTheCore.bases.itemGens.UsableItemGen;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
+import java.util.List;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -11,14 +12,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.List;
-
 public class GiveStrengthGen extends UsableItemGen {
+  
   public GiveStrengthGen() {
-    super(
-      ItemsManager.ItemKey.GIVE_STRENGTH,
-      Material.FIREWORK_STAR
-    );
+    super(ItemsManager.ItemKey.GIVE_STRENGTH, Material.FIREWORK_STAR);
   }
   
   @Override
@@ -29,20 +26,17 @@ public class GiveStrengthGen extends UsableItemGen {
     PlayerUtils.takeOneItemFromHand(pl);
     
     pl.addPotionEffect(
-      new PotionEffect(
-        PotionEffectType.STRENGTH,
-        6 * 20,
-        2,
-        false,
-        true
-      )
+      new PotionEffect(PotionEffectType.STRENGTH, 6 * 20, 2, false, true)
     );
     
     PlayerUtils.broadcast(
-      TextUtils.$("items.give-strength.announce", List.of(
-        Placeholder.component("player", PlayerUtils.getName(pl)),
-        Placeholder.component("item", getItem().effectiveName())
-      ))
+      TextUtils.$(
+        "items.give-strength.announce",
+        List.of(
+          Placeholder.component("player", PlayerUtils.getName(pl)),
+          Placeholder.component("item", getItem().effectiveName())
+        )
+      )
     );
   }
 }

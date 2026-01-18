@@ -5,6 +5,7 @@ import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.Mission;
 
 public class AttackCoreResult extends Mission.Result {
+  
   public AttackCoreResult() {
     super("attack-core");
   }

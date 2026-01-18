@@ -7,6 +7,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 
 public class CoreBlockTool extends SingleLocationTool {
+  
   public CoreBlockTool() {
     super("core", Material.GOLDEN_SWORD, Color.YELLOW);
   }

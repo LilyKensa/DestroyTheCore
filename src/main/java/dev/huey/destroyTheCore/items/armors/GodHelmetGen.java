@@ -10,11 +10,9 @@ import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class GodHelmetGen extends ItemGen {
+  
   public GodHelmetGen() {
-    super(
-      ItemsManager.ItemKey.GOD_HELMET,
-      Material.GOLDEN_HELMET
-    );
+    super(ItemsManager.ItemKey.GOD_HELMET, Material.GOLDEN_HELMET);
   }
   
   @Override

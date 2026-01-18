@@ -7,11 +7,9 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class TridentGen extends ItemGen {
+  
   public TridentGen() {
-    super(
-      ItemsManager.ItemKey.TRIDENT,
-      Material.TRIDENT
-    );
+    super(ItemsManager.ItemKey.TRIDENT, Material.TRIDENT);
   }
   
   @Override

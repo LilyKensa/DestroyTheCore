@@ -10,11 +10,9 @@ import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class GodChestplateGen extends ItemGen {
+  
   public GodChestplateGen() {
-    super(
-      ItemsManager.ItemKey.GOD_CHESTPLATE,
-      Material.GOLDEN_CHESTPLATE
-    );
+    super(ItemsManager.ItemKey.GOD_CHESTPLATE, Material.GOLDEN_CHESTPLATE);
   }
   
   @Override

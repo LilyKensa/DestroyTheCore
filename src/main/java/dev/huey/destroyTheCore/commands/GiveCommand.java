@@ -6,15 +6,18 @@ import dev.huey.destroyTheCore.bases.Subcommand;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
+import java.util.List;
 import org.bukkit.entity.Player;
 
-import java.util.List;
-
 public class GiveCommand extends Subcommand {
+  
   public GiveCommand() {
     super("give");
-    addArgument("item", () -> DestroyTheCore.itemsManager.gens.keySet().stream()
-      .map(key -> key.name().toLowerCase()).toList());
+    addArgument(
+      "item",
+      () -> DestroyTheCore.itemsManager.gens.keySet().stream().map(
+        key -> key.name().toLowerCase()).toList()
+    );
   }
   
   @Override

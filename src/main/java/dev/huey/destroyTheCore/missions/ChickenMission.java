@@ -5,6 +5,8 @@ import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.Mission;
 import dev.huey.destroyTheCore.utils.RandomUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
+import java.util.HashMap;
+import java.util.Map;
 import net.kyori.adventure.bossbar.BossBar;
 import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
@@ -16,24 +18,22 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class ChickenMission extends Mission implements Listener {
+  
   BossBar healthBar;
   Chicken chicken;
   boolean killed = false;
   
   Map<Game.Side, Double> scores = new HashMap<>();
+  
   public double getScore(Game.Side side) {
     return scores.getOrDefault(side, 0D);
   }
+  
   void addScore(Game.Side side, double amount) {
-    scores.put(
-      side,
-      getScore(side) + amount
-    );
+    scores.put(side, getScore(side) + amount);
   }
+  
   void addScore(Player pl, double amount) {
     addScore(DestroyTheCore.game.getPlayerData(pl).side, amount);
   }
@@ -43,11 +43,9 @@ public class ChickenMission extends Mission implements Listener {
   }
   
   public void move() {
-    chicken.getPathfinder().moveTo(loc.clone().add(
-      RandomUtils.aroundZero(30),
-      0,
-      RandomUtils.aroundZero(30)
-    ));
+    chicken.getPathfinder().moveTo(
+      loc.clone().add(RandomUtils.aroundZero(30), 0, RandomUtils.aroundZero(30))
+    );
   }
   
   @Override
@@ -58,13 +56,9 @@ public class ChickenMission extends Mission implements Listener {
       BossBar.Color.YELLOW,
       BossBar.Overlay.PROGRESS
     );
-    for (Player p : Bukkit.getOnlinePlayers())
-      healthBar.addViewer(p);
+    for (Player p : Bukkit.getOnlinePlayers()) healthBar.addViewer(p);
     
-    chicken = (Chicken) loc.getWorld().spawnEntity(
-      loc,
-      EntityType.CHICKEN
-    );
+    chicken = (Chicken) loc.getWorld().spawnEntity(loc, EntityType.CHICKEN);
     chicken.customName(TextUtils.$("missions.chicken.chicken"));
     chicken.setCustomNameVisible(true);
     chicken.setGlowing(true);
@@ -86,9 +80,10 @@ public class ChickenMission extends Mission implements Listener {
     if (!(ev.getDamager() instanceof Player pl)) return;
     if (ev.getEntity().getUniqueId() != chicken.getUniqueId()) return;
     
-    healthBar.progress((float) (
-      chicken.getHealth() / chicken.getAttribute(Attribute.MAX_HEALTH).getValue()
-    ));
+    healthBar.progress(
+      (float) (chicken.getHealth() / chicken.getAttribute(
+        Attribute.MAX_HEALTH).getValue())
+    );
     
     addScore(pl, ev.getFinalDamage());
   }
@@ -107,22 +102,22 @@ public class ChickenMission extends Mission implements Listener {
   public void tick() {
     if (DestroyTheCore.ticksManager.isSeconds()) {
       if (RandomUtils.hit(0.5)) {
-        chicken.getPathfinder().moveTo(loc.clone().add(
-          RandomUtils.aroundZero(30),
-          0,
-          RandomUtils.aroundZero(30)
-        ));
+        chicken.getPathfinder().moveTo(
+          loc.clone().add(RandomUtils.aroundZero(30),
+            0,
+            RandomUtils.aroundZero(30))
+        );
       }
     }
   }
   
   @Override
   public void finish() {
-    for (Player p : Bukkit.getOnlinePlayers())
-      healthBar.removeViewer(p);
+    for (Player p : Bukkit.getOnlinePlayers()) healthBar.removeViewer(p);
     
-    double redScore = getScore(Game.Side.RED),
-      greenScore = getScore(Game.Side.GREEN);
+    double redScore = getScore(Game.Side.RED), greenScore = getScore(
+      Game.Side.GREEN
+    );
     
     Game.Side winner = Game.Side.SPECTATOR;
     

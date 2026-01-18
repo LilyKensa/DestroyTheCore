@@ -10,6 +10,7 @@ import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.util.Vector;
 
 public class XpFountainMission extends Mission {
+  
   int count = 0;
   
   public XpFountainMission() {
@@ -18,7 +19,6 @@ public class XpFountainMission extends Mission {
   
   @Override
   public void start() {
-  
   }
   
   @Override
@@ -26,27 +26,24 @@ public class XpFountainMission extends Mission {
     if (!DestroyTheCore.ticksManager.isParticleTick()) return;
     
     for (int i = 0; i < RandomUtils.range(1, 4); ++i) {
-      ExperienceOrb orb = (ExperienceOrb) loc.getWorld().spawnEntity(
-        loc,
-        EntityType.EXPERIENCE_ORB
-      );
+      ExperienceOrb orb = (ExperienceOrb) loc.getWorld().spawnEntity(loc,
+        EntityType.EXPERIENCE_ORB);
       
-      new ParticleBuilder(Particle.CLOUD)
-        .allPlayers()
-        .location(loc)
-        .offset(0.1, 0, 0.1)
-        .extra(0.05)
-        .spawn();
+      new ParticleBuilder(Particle.CLOUD).allPlayers().location(loc).offset(0.1,
+        0,
+        0.1).extra(0.05).spawn();
       
       orb.setExperience(RandomUtils.range(5, 11));
       
       double angle = RandomUtils.nextDouble() * 2 * Math.PI;
       double radius = Math.sqrt(RandomUtils.nextDouble()) * 0.1;
-      orb.setVelocity(new Vector(
-        Math.cos(angle) * radius,
-        0.5 + RandomUtils.nextDouble() * 0.5,
-        Math.sin(angle) * radius
-      ));
+      orb.setVelocity(
+        new Vector(
+          Math.cos(angle) * radius,
+          0.5 + RandomUtils.nextDouble() * 0.5,
+          Math.sin(angle) * radius
+        )
+      );
       
       count++;
     }
@@ -56,6 +53,5 @@ public class XpFountainMission extends Mission {
   
   @Override
   public void finish() {
-  
   }
 }

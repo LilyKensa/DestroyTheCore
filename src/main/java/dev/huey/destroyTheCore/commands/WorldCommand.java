@@ -4,14 +4,14 @@ import dev.huey.destroyTheCore.bases.Subcommand;
 import dev.huey.destroyTheCore.utils.LocationUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
+import java.util.List;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-import java.util.List;
-
 public class WorldCommand extends Subcommand {
+  
   public WorldCommand() {
     super("world");
     addArgument(
@@ -28,9 +28,13 @@ public class WorldCommand extends Subcommand {
     }
     
     if (args.isEmpty()) {
-      PlayerUtils.prefixedSend(pl, TextUtils.$("commands.world.query", List.of(
-        Placeholder.unparsed("world", pl.getWorld().getName())
-      )));
+      PlayerUtils.prefixedSend(
+        pl,
+        TextUtils.$(
+          "commands.world.query",
+          List.of(Placeholder.unparsed("world", pl.getWorld().getName()))
+        )
+      );
       return;
     }
     

@@ -12,6 +12,7 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 
 public class ProjItemGen extends ItemGen {
+  
   String tag;
   
   /** @param tag Scoreboard tag used for arrow entities */
@@ -30,7 +31,6 @@ public class ProjItemGen extends ItemGen {
   
   /** @implNote Optional - When this custom arrow is shot */
   public void onEntityShootBow(EntityShootBowEvent ev) {
-  
   }
   
   /** Used in {@link EventsManager#onProjectileHit} */
@@ -43,12 +43,8 @@ public class ProjItemGen extends ItemGen {
     onProjectileHit(ev);
     
     if (victim == null) {
-      new ParticleBuilder(Particle.WHITE_SMOKE)
-        .allPlayers()
-        .location(ev.getEntity().getLocation())
-        .count(5)
-        .extra(0)
-        .spawn();
+      new ParticleBuilder(Particle.WHITE_SMOKE).allPlayers().location(
+        ev.getEntity().getLocation()).count(5).extra(0).spawn();
       
       proj.remove();
     }
@@ -56,6 +52,5 @@ public class ProjItemGen extends ItemGen {
   
   /** @implNote Optional - When this custom arrow hit the ground */
   public void onProjectileHit(ProjectileHitEvent ev) {
-  
   }
 }

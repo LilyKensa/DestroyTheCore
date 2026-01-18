@@ -9,6 +9,7 @@ import dev.huey.destroyTheCore.utils.RandomUtils;
 import org.bukkit.entity.Player;
 
 public class RandomRoleMission extends InstantMission {
+  
   public RandomRoleMission() {
     super("random-role");
   }
@@ -19,9 +20,8 @@ public class RandomRoleMission extends InstantMission {
     if (pl == null) return;
     
     Role role = RandomUtils.pick(
-      DestroyTheCore.rolesManager.roles.values().stream()
-        .filter(r -> r.id != RolesManager.RoleKey.DEFAULT)
-        .toList()
+      DestroyTheCore.rolesManager.roles.values().stream().filter(
+        r -> r.id != RolesManager.RoleKey.DEFAULT).toList()
     );
     
     DestroyTheCore.rolesManager.setRole(pl, role);

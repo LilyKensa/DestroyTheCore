@@ -8,6 +8,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class GoldDiggerChestplateGen extends ItemGen {
+  
   public GoldDiggerChestplateGen() {
     super(
       ItemsManager.ItemKey.GOLD_DIGGER_CHESTPLATE,

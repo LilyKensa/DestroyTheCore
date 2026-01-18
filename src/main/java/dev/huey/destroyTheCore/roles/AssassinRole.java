@@ -6,6 +6,10 @@ import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.managers.RolesManager;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -16,47 +20,41 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
 public class AssassinRole extends Role {
-  static public final int threshold = 2 * 20;
+  
+  public static final int threshold = 2 * 20;
   
   static Map<UUID, Integer> standingTicks = new HashMap<>();
-  static public void addStanding(Player pl) {
+  
+  public static void addStanding(Player pl) {
     standingTicks.put(
       pl.getUniqueId(),
-      Math.min(
-        standingTicks.getOrDefault(pl.getUniqueId(), 0) + 1,
-        threshold
-      )
+      Math.min(standingTicks.getOrDefault(pl.getUniqueId(), 0) + 1, threshold)
     );
-  }
-  static public void resetStanding(Player pl) {
-    standingTicks.put(
-      pl.getUniqueId(),
-      0
-    );
-  }
-  static public boolean isStanding(Player pl) {
-    return standingTicks.getOrDefault(pl.getUniqueId(), 0) >= threshold;
   }
   
-  static public void onPlayerMove(Player pl) {
+  public static void resetStanding(Player pl) {
+    standingTicks.put(pl.getUniqueId(), 0);
+  }
+  
+  public static boolean isStanding(Player pl) {
+    return (standingTicks.getOrDefault(pl.getUniqueId(), 0) >= threshold);
+  }
+  
+  public static void onPlayerMove(Player pl) {
     resetStanding(pl);
   }
   
-  static public void onPlayerShootBow(Player pl, EntityShootBowEvent ev) {
+  public static void onPlayerShootBow(Player pl, EntityShootBowEvent ev) {
     if (!PlayerUtils.shouldHandle(pl)) return;
     
-    if (DestroyTheCore.game.getPlayerData(pl).role.id == RolesManager.RoleKey.ASSASSIN) {
+    if (
+      DestroyTheCore.game.getPlayerData(
+        pl).role.id == RolesManager.RoleKey.ASSASSIN
+    ) {
       if (ev.getConsumable() != null) {
-        Item itemEntity = pl.getWorld().dropItem(
-          pl.getEyeLocation(),
-          ev.getConsumable()
-        );
+        Item itemEntity = pl.getWorld().dropItem(pl.getEyeLocation(),
+          ev.getConsumable());
         itemEntity.setPickupDelay(20);
         itemEntity.setVelocity(ev.getProjectile().getVelocity());
       }
@@ -86,36 +84,24 @@ public class AssassinRole extends Role {
     addStanding(pl);
     
     if (isStanding(pl)) {
-      pl.addPotionEffect(new PotionEffect(
-        PotionEffectType.INVISIBILITY,
-        5,
-        0,
-        true,
-        false
-      ));
+      pl.addPotionEffect(
+        new PotionEffect(PotionEffectType.INVISIBILITY, 5, 0, true, false)
+      );
     }
     else if (
-      pl.getHealth() >= pl.getAttribute(Attribute.MAX_HEALTH).getValue() &&
-      DestroyTheCore.game.phase != null &&
-      DestroyTheCore.game.phase.isAfter(Game.Phase.DoubleDamage)
+      pl.getHealth() >= pl.getAttribute(
+        Attribute.MAX_HEALTH).getValue() && DestroyTheCore.game.phase != null && DestroyTheCore.game.phase.isAfter(
+          Game.Phase.DoubleDamage)
     ) {
-      pl.addPotionEffect(new PotionEffect(
-        PotionEffectType.INVISIBILITY,
-        5,
-        0,
-        true,
-        true
-      ));
+      pl.addPotionEffect(
+        new PotionEffect(PotionEffectType.INVISIBILITY, 5, 0, true, true)
+      );
     }
     
     if (pl.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
-      pl.addPotionEffect(new PotionEffect(
-        PotionEffectType.STRENGTH,
-        10,
-        0,
-        true,
-        false
-      ));
+      pl.addPotionEffect(
+        new PotionEffect(PotionEffectType.STRENGTH, 10, 0, true, false)
+      );
     }
   }
   
@@ -127,17 +113,14 @@ public class AssassinRole extends Role {
       return;
     }
     
-    Player nearest = Bukkit.getOnlinePlayers().stream()
-      .filter(p ->
-        !p.equals(pl) &&
-        p.getWorld().equals(pl.getWorld()) &&
-        PlayerUtils.shouldHandle(p) &&
-        DestroyTheCore.game.getPlayerData(p).isGaming()
+    Player nearest = Bukkit.getOnlinePlayers().stream().filter(p -> !p.equals(
+      pl) && p.getWorld().equals(pl.getWorld()) && PlayerUtils.shouldHandle(
+        p) && DestroyTheCore.game.getPlayerData(p).isGaming()
+    ).min(
+      Comparator.comparingDouble(p -> p.getLocation().distanceSquared(
+        pl.getLocation())
       )
-      .min(Comparator.comparingDouble(p ->
-        p.getLocation().distanceSquared(pl.getLocation())
-      ))
-      .orElse(null);
+    ).orElse(null);
     
     if (nearest == null) {
       pl.setCooldown(Material.KNOWLEDGE_BOOK, 0);
@@ -149,19 +132,11 @@ public class AssassinRole extends Role {
     
     pl.teleport(nearest);
     
-    pl.addPotionEffect(new PotionEffect(
-      PotionEffectType.INVISIBILITY,
-      4 * 20,
-      0,
-      true,
-      false
-    ));
-    pl.addPotionEffect(new PotionEffect(
-      PotionEffectType.STRENGTH,
-      4 * 20,
-      1,
-      true,
-      false
-    ));
+    pl.addPotionEffect(
+      new PotionEffect(PotionEffectType.INVISIBILITY, 4 * 20, 0, true, false)
+    );
+    pl.addPotionEffect(
+      new PotionEffect(PotionEffectType.STRENGTH, 4 * 20, 1, true, false)
+    );
   }
 }

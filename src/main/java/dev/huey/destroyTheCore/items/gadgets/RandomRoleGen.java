@@ -8,6 +8,7 @@ import dev.huey.destroyTheCore.managers.RolesManager;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.RandomUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
+import java.util.List;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -15,14 +16,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.List;
-
 public class RandomRoleGen extends UsableItemGen {
+  
   public RandomRoleGen() {
-    super(
-      ItemsManager.ItemKey.RANDOM_ROLE,
-      Material.WRITTEN_BOOK
-    );
+    super(ItemsManager.ItemKey.RANDOM_ROLE, Material.WRITTEN_BOOK);
   }
   
   @Override
@@ -42,17 +39,19 @@ public class RandomRoleGen extends UsableItemGen {
     PlayerUtils.takeOneItemFromHand(pl);
     
     Role role = RandomUtils.pick(
-      DestroyTheCore.rolesManager.roles.values().stream()
-        .filter(r -> r.id != RolesManager.RoleKey.DEFAULT)
-        .toList()
+      DestroyTheCore.rolesManager.roles.values().stream().filter(
+        r -> r.id != RolesManager.RoleKey.DEFAULT).toList()
     );
     
     PlayerUtils.broadcast(
-      TextUtils.$("items.random-role.announce", List.of(
-        Placeholder.component("player", PlayerUtils.getName(pl)),
-        Placeholder.component("item", getItem().effectiveName()),
-        Placeholder.unparsed("role", role.name)
-      ))
+      TextUtils.$(
+        "items.random-role.announce",
+        List.of(
+          Placeholder.component("player", PlayerUtils.getName(pl)),
+          Placeholder.component("item", getItem().effectiveName()),
+          Placeholder.unparsed("role", role.name)
+        )
+      )
     );
     
     DestroyTheCore.rolesManager.setRole(pl, role);

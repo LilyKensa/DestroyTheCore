@@ -7,7 +7,8 @@ import dev.huey.destroyTheCore.roles.WandererRole;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class TicksManager {
-  static public final int particleRate = 4, updateRate = 10;
+  
+  public static final int particleRate = 4, updateRate = 10;
   
   /** Ticks elapsed from last game start */
   public int ticksCount = 0;
@@ -29,6 +30,7 @@ public class TicksManager {
   
   /** The {@link BukkitRunnable} that runs every tick */
   public class TicksRunnable extends BukkitRunnable {
+    
     @Override
     public void run() {
       ticksCount++;
@@ -64,7 +66,6 @@ public class TicksManager {
   TicksRunnable task;
   
   public void init() {
-    (task = new TicksRunnable())
-      .runTaskTimer(DestroyTheCore.instance, 0, 1);
+    (task = new TicksRunnable()).runTaskTimer(DestroyTheCore.instance, 0, 1);
   }
 }

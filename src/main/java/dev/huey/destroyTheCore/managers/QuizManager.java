@@ -6,19 +6,20 @@ import dev.huey.destroyTheCore.utils.CoreUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.RandomUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.Sound;
-import org.bukkit.entity.Player;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Predicate;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import org.bukkit.Sound;
+import org.bukkit.entity.Player;
 
 public class QuizManager {
-  static public class Quiz {
+  
+  public static class Quiz {
+    
     Player pl;
     int startTime;
     
@@ -30,10 +31,16 @@ public class QuizManager {
     public Quiz(Player pl) {
       this.pl = pl;
       this.startTime = DestroyTheCore.ticksManager.ticksCount;
-      send(pl, TextUtils.$("quiz.question", List.of(
-        Placeholder.component("a", Component.text(a)),
-        Placeholder.component("b", Component.text(b))
-      )));
+      send(
+        pl,
+        TextUtils.$(
+          "quiz.question",
+          List.of(
+            Placeholder.component("a", Component.text(a)),
+            Placeholder.component("b", Component.text(b))
+          )
+        )
+      );
     }
     
     public boolean check(int attempt) {
@@ -55,10 +62,16 @@ public class QuizManager {
       
       if (correct) data.quizQuota--;
       
-      send(pl, TextUtils.$("quiz." + (correct ? "correct" : "wrong"), List.of(
-        Placeholder.component("answer", Component.text(answer)),
-        Placeholder.component("try", Component.text(data.quizQuota))
-      )));
+      send(
+        pl,
+        TextUtils.$(
+          "quiz." + (correct ? "correct" : "wrong"),
+          List.of(
+            Placeholder.component("answer", Component.text(answer)),
+            Placeholder.component("try", Component.text(data.quizQuota))
+          )
+        )
+      );
       
       pl.playSound(
         pl.getLocation(),
@@ -69,9 +82,9 @@ public class QuizManager {
     }
   }
   
-  static public Component prefix;
+  public static Component prefix;
   
-  static public void send(Player pl, Component message) {
+  public static void send(Player pl, Component message) {
     if (prefix == null) prefix = TextUtils.$("quiz.prefix");
     PlayerUtils.send(pl, prefix.append(message));
   }
@@ -94,7 +107,8 @@ public class QuizManager {
     if (!quizzes.containsKey(id)) return;
     if (!content.matches("^\\d+$")) return;
     
-    CoreUtils.setTickOut(() -> quizzes.get(id).update(Integer.parseInt(content)));
+    CoreUtils.setTickOut(() -> quizzes.get(id).update(Integer.parseInt(content))
+    );
   }
   
   public boolean find(Player pl, Predicate<Quiz> predicate) {

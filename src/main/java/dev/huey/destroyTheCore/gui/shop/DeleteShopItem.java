@@ -12,6 +12,7 @@ import xyz.xenondevs.invui.item.ItemProvider;
 import xyz.xenondevs.invui.item.builder.ItemBuilder;
 
 public class DeleteShopItem extends GUIItem {
+  
   Game.Shop shop;
   boolean confirming = false;
   
@@ -21,10 +22,11 @@ public class DeleteShopItem extends GUIItem {
   
   @Override
   public ItemProvider getItemProvider() {
-    return new ItemBuilder(Material.REDSTONE)
-      .setDisplayName(TextUtils.$r(
+    return new ItemBuilder(Material.REDSTONE).setDisplayName(
+      TextUtils.$r(
         "gui.buttons.delete-shop.title" + (confirming ? "-confirm" : "")
-      ));
+      )
+    );
   }
   
   @Override

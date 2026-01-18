@@ -5,10 +5,8 @@ import dev.huey.destroyTheCore.managers.ItemsManager;
 import org.bukkit.Material;
 
 public class ElytraGen extends ItemGen {
+  
   public ElytraGen() {
-    super(
-      ItemsManager.ItemKey.ELYTRA,
-      Material.ELYTRA
-    );
+    super(ItemsManager.ItemKey.ELYTRA, Material.ELYTRA);
   }
 }

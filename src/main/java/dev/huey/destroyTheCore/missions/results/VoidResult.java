@@ -4,12 +4,12 @@ import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.Mission;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.RandomUtils;
+import java.util.List;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.entity.Player;
 
-import java.util.List;
-
 public class VoidResult extends Mission.Result {
+  
   public VoidResult() {
     super("void");
   }
@@ -21,8 +21,9 @@ public class VoidResult extends Mission.Result {
     
     p.teleport(p.getLocation().add(0, -1000, 0));
     
-    announce(side, List.of(
-      Placeholder.component("player", PlayerUtils.getName(p))
-    ));
+    announce(
+      side,
+      List.of(Placeholder.component("player", PlayerUtils.getName(p)))
+    );
   }
 }

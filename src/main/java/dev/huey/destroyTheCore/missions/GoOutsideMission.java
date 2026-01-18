@@ -8,10 +8,10 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class GoOutsideMission extends TimedMission {
-  static public boolean isUnderSky(Player pl) {
-    return pl.getY() > pl.getWorld()
-      .getHighestBlockAt(pl.getLocation())
-      .getLocation().getY();
+  
+  public static boolean isUnderSky(Player pl) {
+    return (pl.getY() > pl.getWorld().getHighestBlockAt(
+      pl.getLocation()).getLocation().getY());
   }
   
   public GoOutsideMission() {
@@ -20,7 +20,6 @@ public class GoOutsideMission extends TimedMission {
   
   @Override
   public void innerStart() {
-  
   }
   
   @Override
@@ -29,26 +28,17 @@ public class GoOutsideMission extends TimedMission {
       for (Player p : PlayerUtils.allGaming()) {
         if (isUnderSky(p)) continue;
         
-        p.addPotionEffect(new PotionEffect(
-          PotionEffectType.SLOWNESS,
-          40,
-          0,
-          true,
-          false
-        ));
-        p.addPotionEffect(new PotionEffect(
-          PotionEffectType.WITHER,
-          40,
-          0,
-          true,
-          false
-        ));
+        p.addPotionEffect(
+          new PotionEffect(PotionEffectType.SLOWNESS, 40, 0, true, false)
+        );
+        p.addPotionEffect(
+          new PotionEffect(PotionEffectType.WITHER, 40, 0, true, false)
+        );
       }
     }
   }
   
   @Override
   public void innerFinish() {
-  
   }
 }

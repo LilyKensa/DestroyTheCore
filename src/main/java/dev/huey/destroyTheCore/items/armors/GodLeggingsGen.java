@@ -10,11 +10,9 @@ import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class GodLeggingsGen extends ItemGen {
+  
   public GodLeggingsGen() {
-    super(
-      ItemsManager.ItemKey.GOD_LEGGINGS,
-      Material.GOLDEN_LEGGINGS
-    );
+    super(ItemsManager.ItemKey.GOD_LEGGINGS, Material.GOLDEN_LEGGINGS);
   }
   
   @Override

@@ -6,6 +6,7 @@ import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.records.PlayerData;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
+import java.util.List;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -14,15 +15,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.List;
-
 public class RespawnTeammatesGen extends UsableItemGen {
+  
   public RespawnTeammatesGen() {
-    super(
-      ItemsManager.ItemKey.RESPAWN_TEAMMATES,
-      Material.MANGROVE_SIGN,
-      true
-    );
+    super(ItemsManager.ItemKey.RESPAWN_TEAMMATES, Material.MANGROVE_SIGN, true);
   }
   
   @Override
@@ -34,26 +30,22 @@ public class RespawnTeammatesGen extends UsableItemGen {
       PlayerData d = DestroyTheCore.game.getPlayerData(p);
       if (!d.side.equals(data.side)) continue;
       
-      if (!d.alive)
-        PlayerUtils.respawn(p);
+      if (!d.alive) PlayerUtils.respawn(p);
       
       PlayerUtils.fullyHeal(p);
       p.addPotionEffect(
-        new PotionEffect(
-          PotionEffectType.ABSORPTION,
-          120 * 20,
-          4,
-          true,
-          true
-        )
+        new PotionEffect(PotionEffectType.ABSORPTION, 120 * 20, 4, true, true)
       );
     }
     
     PlayerUtils.broadcast(
-      TextUtils.$("items.respawn-teammates.announce", List.of(
-        Placeholder.component("player", PlayerUtils.getName(pl)),
-        Placeholder.component("item", getItem().effectiveName())
-      ))
+      TextUtils.$(
+        "items.respawn-teammates.announce",
+        List.of(
+          Placeholder.component("player", PlayerUtils.getName(pl)),
+          Placeholder.component("item", getItem().effectiveName())
+        )
+      )
     );
   }
 }

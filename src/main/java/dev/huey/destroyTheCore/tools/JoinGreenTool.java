@@ -7,6 +7,7 @@ import org.bukkit.Color;
 import org.bukkit.Material;
 
 public class JoinGreenTool extends RegionTool {
+  
   public JoinGreenTool() {
     super("join-green", Material.EMERALD, Color.LIME, Color.GREEN);
   }

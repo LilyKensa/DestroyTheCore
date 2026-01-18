@@ -9,11 +9,9 @@ import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class DamageAssistGen extends ItemGen {
+  
   public DamageAssistGen() {
-    super(
-      ItemsManager.ItemKey.DAMAGE_ASSIST,
-      Material.DIAMOND_SWORD
-    );
+    super(ItemsManager.ItemKey.DAMAGE_ASSIST, Material.DIAMOND_SWORD);
   }
   
   @Override

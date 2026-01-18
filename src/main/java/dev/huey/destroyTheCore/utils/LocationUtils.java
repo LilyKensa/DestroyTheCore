@@ -7,36 +7,34 @@ import com.comphenix.protocol.wrappers.BlockPosition;
 import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.records.PlayerData;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-
 public class LocationUtils {
+  
   public static boolean isSameWorld(World world1, World world2) {
     return world1.equals(world2);
   }
+  
   public static boolean isSameWorld(Location loc1, Location loc2) {
     return isSameWorld(loc1.getWorld(), loc2.getWorld());
   }
+  
   public static boolean isSameWorld(Entity e1, Entity e2) {
     return e1.getWorld().equals(e2.getWorld());
   }
   
   public static boolean isSameBlock(Location loc1, Location loc2) {
-    return
-      isSameWorld(loc1, loc2) &&
-      loc1.getBlockX() == loc2.getBlockX() &&
-      loc1.getBlockY() == loc2.getBlockY() &&
-      loc1.getBlockZ() == loc2.getBlockZ();
+    return (isSameWorld(loc1,
+      loc2) && loc1.getBlockX() == loc2.getBlockX() && loc1.getBlockY() == loc2.getBlockY() && loc1.getBlockZ() == loc2.getBlockZ());
   }
   
   static Location compareEachAxis(
-    Location loc1, Location loc2,
-    BiFunction<Integer, Integer, Integer> func
+                                  Location loc1, Location loc2, BiFunction<Integer, Integer, Integer> func
   ) {
     return new Location(
       loc1.getWorld(),
@@ -45,9 +43,11 @@ public class LocationUtils {
       func.apply(loc1.getBlockZ(), loc2.getBlockZ())
     );
   }
+  
   public static Location min(Location loc1, Location loc2) {
     return compareEachAxis(loc1, loc2, Math::min);
   }
+  
   public static Location max(Location loc1, Location loc2) {
     return compareEachAxis(loc1, loc2, Math::max);
   }
@@ -63,7 +63,9 @@ public class LocationUtils {
     );
   }
   
-  /** {@link #toBlockCenter}, but it's 0.25 up from the ground, instead of 0.5 */
+  /**
+   * {@link #toBlockCenter}, but it's 0.25 up from the ground, instead of 0.5
+   */
   public static Location toSpawnPoint(Location loc) {
     loc = toBlockCenter(loc).add(0, -0.25, 0);
     loc.setYaw(CoreUtils.snapAngle(loc.getYaw()));
@@ -73,11 +75,10 @@ public class LocationUtils {
   
   public static boolean closeEnough(Location target, Location source) {
     source = toBlockCenter(source);
-    return
-      isSameWorld(target, source) &&
-      Math.abs(target.getX() - source.getX()) < 0.6 &&
-      Math.abs(target.getY() - source.getY()) < 0.6 &&
-      Math.abs(target.getZ() - source.getZ()) < 0.6;
+    return (isSameWorld(target, source) && Math.abs(
+      target.getX() - source.getX()) < 0.6 && Math.abs(
+        target.getY() - source.getY()) < 0.6 && Math.abs(
+          target.getZ() - source.getZ()) < 0.6);
   }
   
   public static Location hitboxCenter(Entity e) {
@@ -88,16 +89,14 @@ public class LocationUtils {
   public static void playChestAnimation(Location loc, boolean open) {
     Block block = loc.getBlock();
     
-    PacketContainer packet = ProtocolLibrary.getProtocolManager()
-      .createPacket(PacketType.Play.Server.BLOCK_ACTION);
+    PacketContainer packet = ProtocolLibrary.getProtocolManager().createPacket(
+      PacketType.Play.Server.BLOCK_ACTION);
     
     // 1. Block Position (Location)
-    packet.getBlockPositionModifier()
-      .write(0, new BlockPosition(
-        loc.getBlockX(),
-        loc.getBlockY(),
-        loc.getBlockZ()
-      ));
+    packet.getBlockPositionModifier().write(
+      0,
+      new BlockPosition(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ())
+    );
     
     // 2. Action ID (1 for chest, door, etc.)
     packet.getIntegers().write(0, 1);
@@ -124,7 +123,9 @@ public class LocationUtils {
   }
   
   /** Do something several times in a circle */
-  public static void ring(Location centerLoc, double radius, int count, Consumer<Location> task) {
+  public static void ring(
+                          Location centerLoc, double radius, int count, Consumer<Location> task
+  ) {
     double step = (2 * Math.PI) / count;
     
     for (int i = 0; i < count; i++) {
@@ -137,7 +138,10 @@ public class LocationUtils {
       task.accept(loc);
     }
   }
-  public static void ring(Location centerLoc, double radius, Consumer<Location> task) {
+  
+  public static void ring(
+                          Location centerLoc, double radius, Consumer<Location> task
+  ) {
     ring(centerLoc, radius, 16, task);
   }
   
@@ -152,11 +156,10 @@ public class LocationUtils {
   }
   
   public static boolean near(Location loc1, Location loc2, double dist) {
-    return
-      isSameWorld(loc1, loc2) &&
-      LocationUtils.toBlockCenter(loc1)
-        .distanceSquared(LocationUtils.toBlockCenter(loc2)) <= dist * dist;
+    return (isSameWorld(loc1, loc2) && LocationUtils.toBlockCenter(
+      loc1).distanceSquared(LocationUtils.toBlockCenter(loc2)) <= dist * dist);
   }
+  
   public static boolean near(Entity e1, Entity e2, double dist) {
     return near(e1.getLocation(), e2.getLocation(), dist);
   }
@@ -165,7 +168,9 @@ public class LocationUtils {
     Location redCoreLoc = DestroyTheCore.game.map.core;
     if (redCoreLoc == null) return false;
     
-    for (Location coreLoc : new Location[]{redCoreLoc, LocationUtils.flip(redCoreLoc)}) {
+    for (Location coreLoc : new Location[]{redCoreLoc, LocationUtils.flip(
+      redCoreLoc),
+    }) {
       if (near(loc, live(coreLoc), dist)) return true;
     }
     
@@ -174,22 +179,15 @@ public class LocationUtils {
   
   public static boolean nearSpawn(Location blockLoc) {
     for (Location point : DestroyTheCore.game.map.spawnpoints) {
-      for (Location spawnLoc : new Location[]{
-        point,
-        LocationUtils.flip(point)
+      for (Location spawnLoc : new Location[]{point, LocationUtils.flip(point),
       }) {
-        int
-          sx = blockLoc.getBlockX(),
-          sy = blockLoc.getBlockY(),
+        int sx = blockLoc.getBlockX(), sy = blockLoc.getBlockY(),
           sz = blockLoc.getBlockZ(),
-          tx = spawnLoc.getBlockX(),
-          ty = spawnLoc.getBlockY(),
+          tx = spawnLoc.getBlockX(), ty = spawnLoc.getBlockY(),
           tz = spawnLoc.getBlockZ();
         
         if (
-          sx >= tx - 1 && sx <= tx + 1 &&
-            sy >= ty && sy <= ty + 2 &&
-            sz >= tz - 1 && sz <= tz + 1
+          sx >= tx - 1 && sx <= tx + 1 && sy >= ty && sy <= ty + 2 && sz >= tz - 1 && sz <= tz + 1
         ) {
           return true;
         }
@@ -203,7 +201,7 @@ public class LocationUtils {
   public static Location flip(Location originalLoc, boolean flip) {
     Location loc = originalLoc.clone();
     boolean hasFloatX = loc.getX() - loc.getBlockX() >= 0.1,
-            hasFloatZ = loc.getZ() - loc.getBlockZ() >= 0.1;
+      hasFloatZ = loc.getZ() - loc.getBlockZ() >= 0.1;
     
     if (flip) {
       loc.setYaw(loc.getYaw() + 180);
@@ -213,36 +211,27 @@ public class LocationUtils {
     
     return loc;
   }
+  
   public static Location flip(Location loc) {
     return flip(loc, true);
   }
   
   /** Flip if {@code side} is green */
   public static Location selfSide(Location loc, Game.Side side) {
-    return flip(
-      loc,
-      side.equals(Game.Side.GREEN)
-    );
+    return flip(loc, side.equals(Game.Side.GREEN));
   }
+  
   public static Location selfSide(Location loc, Player pl) {
-    return selfSide(
-      loc,
-      DestroyTheCore.game.getPlayerData(pl).side
-    );
+    return selfSide(loc, DestroyTheCore.game.getPlayerData(pl).side);
   }
   
   /** Flip if {@code side} is red */
   public static Location enemySide(Location loc, Game.Side side) {
-    return flip(
-      loc,
-      !side.equals(Game.Side.GREEN)
-    );
+    return flip(loc, !side.equals(Game.Side.GREEN));
   }
+  
   public static Location enemySide(Location loc, Player pl) {
-    return enemySide(
-      loc,
-      DestroyTheCore.game.getPlayerData(pl).side
-    );
+    return enemySide(loc, DestroyTheCore.game.getPlayerData(pl).side);
   }
   
   /** A location's live world version */
@@ -256,17 +245,26 @@ public class LocationUtils {
   }
   
   /** If a block is in their own half of the map */
-  static public boolean canAccess(Player pl, Block block)  {
+  public static boolean canAccess(Player pl, Block block) {
     if (DestroyTheCore.game.map.core == null) return true;
-    if (!isSameWorld(pl.getLocation(), DestroyTheCore.game.map.core)) return true;
+    if (
+      !DestroyTheCore.worldsManager.checkLiveWorld(block.getLocation())
+    ) return true;
+    
     PlayerData data = DestroyTheCore.game.getPlayerData(pl);
     
-    double selfDistSq = pl.getLocation().distanceSquared(
-      LocationUtils.selfSide(LocationUtils.toBlockCenter(block.getLocation()), data.side)
-    );
-    double enemyDistSq = pl.getLocation().distanceSquared(
-      LocationUtils.enemySide(LocationUtils.toBlockCenter(block.getLocation()), data.side)
-    );
+    double selfDistSq = LocationUtils.toBlockCenter(
+      block.getLocation()).distanceSquared(
+        LocationUtils.live(
+          LocationUtils.selfSide(DestroyTheCore.game.map.core, data.side)
+        )
+      );
+    double enemyDistSq = LocationUtils.toBlockCenter(
+      block.getLocation()).distanceSquared(
+        LocationUtils.live(
+          LocationUtils.enemySide(DestroyTheCore.game.map.core, data.side)
+        )
+      );
     
     return selfDistSq <= enemyDistSq;
   }

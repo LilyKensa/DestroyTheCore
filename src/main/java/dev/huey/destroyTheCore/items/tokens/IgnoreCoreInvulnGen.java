@@ -8,21 +8,17 @@ import dev.huey.destroyTheCore.records.SideData;
 import dev.huey.destroyTheCore.utils.LocationUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
+import java.util.List;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
-import java.util.List;
-
 public class IgnoreCoreInvulnGen extends UsableItemGen {
+  
   public IgnoreCoreInvulnGen() {
-    super(
-      ItemsManager.ItemKey.IGNORE_CORE_INVULN,
-      Material.SPRUCE_SIGN,
-      true
-    );
+    super(ItemsManager.ItemKey.IGNORE_CORE_INVULN, Material.SPRUCE_SIGN, true);
   }
   
   @Override
@@ -30,7 +26,9 @@ public class IgnoreCoreInvulnGen extends UsableItemGen {
     if (DestroyTheCore.game.map.core == null) return;
     
     PlayerData data = DestroyTheCore.game.getPlayerData(pl);
-    SideData oppositeSideData = DestroyTheCore.game.getSideData(data.side.opposite());
+    SideData oppositeSideData = DestroyTheCore.game.getSideData(
+      data.side.opposite()
+    );
     
     if (!oppositeSideData.isInvuln()) {
       pl.sendActionBar(TextUtils.$("items.ignore-core-invuln.no-effect"));
@@ -48,10 +46,13 @@ public class IgnoreCoreInvulnGen extends UsableItemGen {
     coreLoc.getBlock().setType(Material.END_STONE);
     
     PlayerUtils.broadcast(
-      TextUtils.$("items.ignore-core-invuln.announce", List.of(
-        Placeholder.component("player", PlayerUtils.getName(pl)),
-        Placeholder.component("item", getItem().effectiveName())
-      ))
+      TextUtils.$(
+        "items.ignore-core-invuln.announce",
+        List.of(
+          Placeholder.component("player", PlayerUtils.getName(pl)),
+          Placeholder.component("item", getItem().effectiveName())
+        )
+      )
     );
   }
 }

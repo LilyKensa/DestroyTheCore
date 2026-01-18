@@ -13,11 +13,9 @@ import org.bukkit.entity.Snowball;
 import org.bukkit.event.entity.ProjectileHitEvent;
 
 public class GrenadeGen extends UsableItemGen {
+  
   public GrenadeGen() {
-    super(
-      ItemsManager.ItemKey.GRENADE,
-      Material.POPPED_CHORUS_FRUIT
-    );
+    super(ItemsManager.ItemKey.GRENADE, Material.POPPED_CHORUS_FRUIT);
   }
   
   @Override
@@ -34,24 +32,15 @@ public class GrenadeGen extends UsableItemGen {
     proj.addScoreboardTag("grenade");
   }
   
-  static public void onProjectileHit(ProjectileHitEvent ev) {
+  public static void onProjectileHit(ProjectileHitEvent ev) {
     Projectile proj = ev.getEntity();
     if (!proj.getScoreboardTags().contains("grenade")) return;
     
-    proj.getWorld().createExplosion(
-      proj,
-      1.6F,
-      false,
-      false
-    );
+    proj.getWorld().createExplosion(proj, 1.6F, false, false);
     proj.remove();
     
-    new ParticleBuilder(Particle.EXPLOSION)
-      .allPlayers()
-      .location(proj.getLocation().add(0, 0.2, 0))
-      .offset(1.4, 1.4, 1.4)
-      .count(10)
-      .extra(0.1)
-      .spawn();
+    new ParticleBuilder(Particle.EXPLOSION).allPlayers().location(
+      proj.getLocation().add(0, 0.2, 0)).offset(1.4, 1.4, 1.4).count(10).extra(
+        0.1).spawn();
   }
 }
