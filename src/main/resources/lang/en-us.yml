@@ -819,3 +819,14 @@ roles:
       name: "Become the Shield"
       desc-1: "<dark_purple>Gets Absorption X & Resistance III (10s), Weakness X (30s)</dark_purple>"
       announce: "<player> used <yellow><role></yellow>'s skill, increased health!"
+  jockey:
+    name: "Jockey"
+    desc-1: "<gold>Horse Rider for life</gold>"
+    feature-1: "<yellow>Horse Whip</yellow>"
+    feature-2: "<green>Summon a horse if you don't have one already, buff it if you got one already.</green>"
+    feature-3: "<aqua>When on horse: Resistance II Strength I</aqua>"
+    item:
+      name: "<aqua>Horse Whip</aqua>"
+    skill:
+      name: "Summon a Horse"
+      desc-1: "If you got one already. Upgrade your old one!"

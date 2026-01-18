@@ -826,9 +826,9 @@ roles:
   jockey:
     name: "騎士"
     desc-1: "<gold>在馬上面變強壯，但只要下馬就變智障！</gold>"
-    feature-1: "<red>道具：</red><yellow>馬鞭(栓繩)</yellow>"
-    feature-2: "<red>技能：</red><green>身邊無馬時召喚一匹馬、身邊有馬時強化這匹馬(冷卻60秒、下馬後冷卻30秒)</green>"
-    feature-3: "<red>特色：</red><aqua>在馬上擁有力量I、抗性II。</aqua>"
+    feature-1: "<yellow>馬鞭(栓繩)</yellow>"
+    feature-2: "<green>身邊無馬時召喚一匹馬、身邊有馬時強化這匹馬(冷卻60秒、下馬後冷卻30秒)</green>"
+    feature-3: "<aqua>在馬上擁有力量I、抗性II。</aqua>"
     item:
       name: "<aqua>馬鞭</aqua>"
   skill:

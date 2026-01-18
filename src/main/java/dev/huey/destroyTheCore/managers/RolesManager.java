@@ -52,7 +52,8 @@ public class RolesManager {
       new AssassinRole(),
       new ConstructorRole(),
       new WandererRole(),
-      new ProvocateurRole()
+      new ProvocateurRole(),
+      new JockeyRole()
     ).collect(Collectors.toMap(
       r -> r.id,
       r -> r,
