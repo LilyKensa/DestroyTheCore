@@ -22,39 +22,42 @@ import org.bukkit.potion.PotionEffectType;
 
 public class AssassinRole extends Role {
   
-  public static final int threshold = 2 * 20;
+  static public final int threshold = 2 * 20;
   
   static Map<UUID, Integer> standingTicks = new HashMap<>();
   
-  public static void addStanding(Player pl) {
+  static public void addStanding(Player pl) {
     standingTicks.put(
       pl.getUniqueId(),
       Math.min(standingTicks.getOrDefault(pl.getUniqueId(), 0) + 1, threshold)
     );
   }
   
-  public static void resetStanding(Player pl) {
+  static public void resetStanding(Player pl) {
     standingTicks.put(pl.getUniqueId(), 0);
   }
   
-  public static boolean isStanding(Player pl) {
+  static public boolean isStanding(Player pl) {
     return (standingTicks.getOrDefault(pl.getUniqueId(), 0) >= threshold);
   }
   
-  public static void onPlayerMove(Player pl) {
+  static public void onPlayerMove(Player pl) {
     resetStanding(pl);
   }
   
-  public static void onPlayerShootBow(Player pl, EntityShootBowEvent ev) {
+  static public void onPlayerShootBow(Player pl, EntityShootBowEvent ev) {
     if (!PlayerUtils.shouldHandle(pl)) return;
     
     if (
       DestroyTheCore.game.getPlayerData(
-        pl).role.id == RolesManager.RoleKey.ASSASSIN
+        pl
+      ).role.id == RolesManager.RoleKey.ASSASSIN
     ) {
       if (ev.getConsumable() != null) {
-        Item itemEntity = pl.getWorld().dropItem(pl.getEyeLocation(),
-          ev.getConsumable());
+        Item itemEntity = pl.getWorld().dropItem(
+          pl.getEyeLocation(),
+          ev.getConsumable()
+        );
         itemEntity.setPickupDelay(20);
         itemEntity.setVelocity(ev.getProjectile().getVelocity());
       }
@@ -90,8 +93,12 @@ public class AssassinRole extends Role {
     }
     else if (
       pl.getHealth() >= pl.getAttribute(
-        Attribute.MAX_HEALTH).getValue() && DestroyTheCore.game.phase != null && DestroyTheCore.game.phase.isAfter(
-          Game.Phase.DoubleDamage)
+        Attribute.MAX_HEALTH
+      ).getValue()
+        && DestroyTheCore.game.phase != null
+        && DestroyTheCore.game.phase.isAfter(
+          Game.Phase.DoubleDamage
+        )
     ) {
       pl.addPotionEffect(
         new PotionEffect(PotionEffectType.INVISIBILITY, 5, 0, true, true)
@@ -113,12 +120,20 @@ public class AssassinRole extends Role {
       return;
     }
     
-    Player nearest = Bukkit.getOnlinePlayers().stream().filter(p -> !p.equals(
-      pl) && p.getWorld().equals(pl.getWorld()) && PlayerUtils.shouldHandle(
-        p) && DestroyTheCore.game.getPlayerData(p).isGaming()
+    Player nearest = Bukkit.getOnlinePlayers().stream().filter(
+      p -> !p.equals(
+        pl
+      )
+        && p.getWorld().equals(pl.getWorld())
+        && PlayerUtils.shouldHandle(
+          p
+        )
+        && DestroyTheCore.game.getPlayerData(p).isGaming()
     ).min(
-      Comparator.comparingDouble(p -> p.getLocation().distanceSquared(
-        pl.getLocation())
+      Comparator.comparingDouble(
+        p -> p.getLocation().distanceSquared(
+          pl.getLocation()
+        )
       )
     ).orElse(null);
     

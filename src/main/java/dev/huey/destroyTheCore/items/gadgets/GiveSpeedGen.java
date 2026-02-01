@@ -18,12 +18,12 @@ public class GiveSpeedGen extends UsableItemGen {
     super(ItemsManager.ItemKey.GIVE_SPEED, Material.FEATHER);
   }
   
-  public static final List<ItemsManager.ItemKey> group = List.of(
+  static public final List<ItemsManager.ItemKey> group = List.of(
     ItemsManager.ItemKey.GIVE_SPEED,
     ItemsManager.ItemKey.GIVE_JUMP_BOOST,
     ItemsManager.ItemKey.GIVE_STRENGTH
   );
-  public static final int cooldown = 180 * 20;
+  static public final int cooldown = 180 * 20;
   
   @Override
   public void use(Player pl, Block block) {

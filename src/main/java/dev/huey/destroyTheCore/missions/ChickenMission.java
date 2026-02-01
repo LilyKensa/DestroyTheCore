@@ -44,7 +44,11 @@ public class ChickenMission extends Mission implements Listener {
   
   public void move() {
     chicken.getPathfinder().moveTo(
-      loc.clone().add(RandomUtils.aroundZero(30), 0, RandomUtils.aroundZero(30))
+      centerLoc.clone().add(
+        RandomUtils.aroundZero(30),
+        0,
+        RandomUtils.aroundZero(30)
+      )
     );
   }
   
@@ -58,7 +62,10 @@ public class ChickenMission extends Mission implements Listener {
     );
     for (Player p : Bukkit.getOnlinePlayers()) healthBar.addViewer(p);
     
-    chicken = (Chicken) loc.getWorld().spawnEntity(loc, EntityType.CHICKEN);
+    chicken = (Chicken) centerLoc.getWorld().spawnEntity(
+      centerLoc,
+      EntityType.CHICKEN
+    );
     chicken.customName(TextUtils.$("missions.chicken.chicken"));
     chicken.setCustomNameVisible(true);
     chicken.setGlowing(true);
@@ -82,7 +89,8 @@ public class ChickenMission extends Mission implements Listener {
     
     healthBar.progress(
       (float) (chicken.getHealth() / chicken.getAttribute(
-        Attribute.MAX_HEALTH).getValue())
+        Attribute.MAX_HEALTH
+      ).getValue())
     );
     
     addScore(pl, ev.getFinalDamage());
@@ -103,9 +111,11 @@ public class ChickenMission extends Mission implements Listener {
     if (DestroyTheCore.ticksManager.isSeconds()) {
       if (RandomUtils.hit(0.5)) {
         chicken.getPathfinder().moveTo(
-          loc.clone().add(RandomUtils.aroundZero(30),
+          centerLoc.clone().add(
+            RandomUtils.aroundZero(30),
             0,
-            RandomUtils.aroundZero(30))
+            RandomUtils.aroundZero(30)
+          )
         );
       }
     }

@@ -11,7 +11,7 @@ import org.bukkit.inventory.EquipmentSlotGroup;
  */
 public class AttributeUtils {
   
-  public static AttributeModifier addition(
+  static public AttributeModifier addition(
     String name, EquipmentSlotGroup slot, double amount
   ) {
     return new AttributeModifier(
@@ -25,7 +25,7 @@ public class AttributeUtils {
     );
   }
   
-  public static AttributeModifier multiply(
+  static public AttributeModifier multiply(
     String name, EquipmentSlotGroup slot, double ratio
   ) {
     return new AttributeModifier(

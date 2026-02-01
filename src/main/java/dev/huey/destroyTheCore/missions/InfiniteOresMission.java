@@ -3,7 +3,7 @@ package dev.huey.destroyTheCore.missions;
 import dev.huey.destroyTheCore.Constants;
 import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.bases.missions.TimedMission;
-import dev.huey.destroyTheCore.utils.LocationUtils;
+import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.RandomUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -11,12 +11,12 @@ import org.bukkit.event.Listener;
 
 public class InfiniteOresMission extends TimedMission implements Listener {
   
-  public static void set(Material type) {
-    loc.clone().add(0, -1, 0).getBlock().setType(type);
+  static public void set(Material type) {
+    centerLoc.clone().add(0, -1, 0).getBlock().setType(type);
   }
   
-  public static boolean check(Location toCheck) {
-    return LocationUtils.isSameBlock(toCheck, loc.clone().add(0, -1, 0));
+  static public boolean check(Location toCheck) {
+    return LocUtils.isSameBlock(toCheck, centerLoc.clone().add(0, -1, 0));
   }
   
   public InfiniteOresMission() {

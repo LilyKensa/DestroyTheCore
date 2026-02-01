@@ -10,49 +10,60 @@ import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 public class TextUtils {
+  /** Remove legacy color codes from a string */
+  static public String stripColor(String text) {
+    return text.replaceAll("§[0-9a-fklmnor]", "");
+  }
   
-  static final LegacyComponentSerializer serializer = LegacyComponentSerializer.builder().character(
-    LegacyComponentSerializer.SECTION_CHAR).hexColors().build();
+  static final LegacyComponentSerializer serializer = LegacyComponentSerializer
+    .builder().character(
+      LegacyComponentSerializer.SECTION_CHAR
+    ).hexColors().build();
   
-  public static String miniToRawCodes(String input) {
+  static public String miniToRawCodes(String input) {
     return serializer.serialize(MiniMessage.miniMessage().deserialize(input));
   }
   
-  public static String miniToCodes(
+  static public String miniToCodes(
     String input, List<TagResolver> placeholders
   ) {
     if (input == null) return null;
     
-    Component component = MiniMessage.miniMessage().deserialize(input,
-      placeholders.toArray(new TagResolver[0])).colorIfAbsent(
-        NamedTextColor.GRAY).decorationIfAbsent(TextDecoration.ITALIC,
-          TextDecoration.State.FALSE);
+    Component component = MiniMessage.miniMessage().deserialize(
+      input,
+      placeholders.toArray(new TagResolver[0])
+    ).colorIfAbsent(
+      NamedTextColor.GRAY
+    ).decorationIfAbsent(
+      TextDecoration.ITALIC,
+      TextDecoration.State.FALSE
+    );
     return serializer.serialize(component);
   }
   
-  public static Component translate(
+  static public Component translate(
     String key, List<TagResolver> placeholders
   ) {
     return DestroyTheCore.translationsManager.get(key, placeholders);
   }
   
-  public static Component $(String key, List<TagResolver> placeholders) {
+  static public Component $(String key, List<TagResolver> placeholders) {
     return translate(key, placeholders);
   }
   
-  public static Component $(String key) {
+  static public Component $(String key) {
     return $(key, List.of());
   }
   
-  public static String translateRaw(String key) {
+  static public String translateRaw(String key) {
     return DestroyTheCore.translationsManager.getRaw(key);
   }
   
-  public static String $r(String key, List<TagResolver> placeholders) {
+  static public String $r(String key, List<TagResolver> placeholders) {
     return miniToCodes(translateRaw(key), placeholders);
   }
   
-  public static String $r(String key) {
+  static public String $r(String key) {
     return $r(key, List.of());
   }
 }

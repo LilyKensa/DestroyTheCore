@@ -23,14 +23,14 @@ import org.bukkit.persistence.PersistentDataType;
 
 public class CollectStarsMission extends ProgressiveMission implements Listener {
   
-  public static final int totalCount = 120;
+  static public final int totalCount = 120;
   
-  public static final NamespacedKey dataNamespace = new NamespacedKey(
+  static public final NamespacedKey dataNamespace = new NamespacedKey(
     DestroyTheCore.instance,
     "collect-stars-mission-item"
   );
   
-  public static ItemStack getStarItem() {
+  static public ItemStack getStarItem() {
     ItemStack item = new ItemStack(Material.NETHER_STAR);
     item.editMeta(meta -> {
       meta.displayName(TextUtils.$("missions.collect-stars.item"));
@@ -44,9 +44,13 @@ public class CollectStarsMission extends ProgressiveMission implements Listener 
     return item;
   }
   
-  public static boolean isStarItem(ItemStack item) {
-    return (item != null && !item.isEmpty() && item.hasItemMeta() && item.getItemMeta().getPersistentDataContainer().has(
-      dataNamespace));
+  static public boolean isStarItem(ItemStack item) {
+    return (item != null
+      && !item.isEmpty()
+      && item.hasItemMeta()
+      && item.getItemMeta().getPersistentDataContainer().has(
+        dataNamespace
+      ));
   }
   
   int currentCount = 0;
@@ -55,7 +59,7 @@ public class CollectStarsMission extends ProgressiveMission implements Listener 
     super("collect-stars");
   }
   
-  public static Location randomLocation(Location center, double radius) {
+  static public Location randomLocation(Location center, double radius) {
     double angle = RandomUtils.nextDouble() * 2 * Math.PI;
     double randomRadius = Math.sqrt(RandomUtils.nextDouble()) * radius;
     
@@ -80,7 +84,7 @@ public class CollectStarsMission extends ProgressiveMission implements Listener 
     if (DestroyTheCore.ticksManager.isUpdateTick()) {
       if (currentCount < totalCount) {
         Location starLoc = randomLocation(
-          loc.clone().add(0, RandomUtils.range(20, 30), 0),
+          centerLoc.clone().add(0, RandomUtils.range(20, 30), 0),
           30
         );
         Item itemEntity = starLoc.getWorld().dropItem(starLoc, getStarItem());
@@ -122,14 +126,19 @@ public class CollectStarsMission extends ProgressiveMission implements Listener 
     for (UUID id : starEntities) {
       Entity e = Bukkit.getEntity(id);
       if (e != null) {
-        new ParticleBuilder(Particle.LARGE_SMOKE).allPlayers().location(
-          e.getLocation()).extra(0).spawn();
+        new ParticleBuilder(Particle.LARGE_SMOKE)
+          .allPlayers()
+          .location(e.getLocation())
+          .extra(0)
+          .spawn();
         
         e.remove();
       }
     }
     
-    for (Game.Side side : new Game.Side[]{Game.Side.RED, Game.Side.GREEN}) {
+    for (Game.Side side : new Game.Side[]{
+      Game.Side.RED, Game.Side.GREEN
+    }) {
       if (
         counts.getOrDefault(side, 0) > counts.getOrDefault(side.opposite(), 0)
       ) {

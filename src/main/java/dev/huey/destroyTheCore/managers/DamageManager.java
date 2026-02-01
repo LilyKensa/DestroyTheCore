@@ -8,9 +8,9 @@ import org.bukkit.entity.Player;
 
 public class DamageManager {
   
-  public static class DamageRecord {
+  static public class DamageRecord {
     
-    public static class Damage {
+    static public class Damage {
       
       double amount = 0;
       Date time = new Date(0);

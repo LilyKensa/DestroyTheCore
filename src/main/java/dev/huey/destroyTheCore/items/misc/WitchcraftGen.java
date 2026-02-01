@@ -127,7 +127,8 @@ public class WitchcraftGen extends UsableItemGen {
         Player e = RandomUtils.pick(PlayerUtils.getEnemies(data.side));
         Role role = RandomUtils.pick(
           DestroyTheCore.rolesManager.roles.values().stream().filter(
-            r -> r.id != RolesManager.RoleKey.DEFAULT).toList()
+            r -> r.id != RolesManager.RoleKey.DEFAULT
+          ).toList()
         );
         
         PlayerUtils.delayAssign(
@@ -251,7 +252,8 @@ public class WitchcraftGen extends UsableItemGen {
       }
       case 8 -> {
         DestroyTheCore.game.getSideData(
-          data.side.opposite()).directAttackCore();
+          data.side.opposite()
+        ).directAttackCore();
         DestroyTheCore.game.checkWinner();
         
         announce(
@@ -266,7 +268,8 @@ public class WitchcraftGen extends UsableItemGen {
       }
       case 9 -> {
         for (int i = 0; i < 3; ++i) DestroyTheCore.game.getSideData(
-          data.side.opposite()).directAttackCore();
+          data.side.opposite()
+        ).directAttackCore();
         
         announce(
           TextUtils.$(

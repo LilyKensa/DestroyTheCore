@@ -35,7 +35,7 @@ public class LastDitchGen extends UsableItemGen {
     
     enemy.extraDamageTicks += 120 * 20;
     
-    PlayerUtils.takeOneItemFromHand(pl);
+//    PlayerUtils.takeOneItemFromHand(pl);
     
     for (Player p : PlayerUtils.getTeammates(data.side)) {
       PlayerUtils.fullyHeal(p);

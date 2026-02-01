@@ -1,24 +1,24 @@
 package dev.huey.destroyTheCore.tools;
 
 import dev.huey.destroyTheCore.DestroyTheCore;
-import dev.huey.destroyTheCore.bases.editorTools.SingleLocationTool;
+import dev.huey.destroyTheCore.bases.editorTools.PosTool;
+import dev.huey.destroyTheCore.records.Pos;
 import org.bukkit.Color;
-import org.bukkit.Location;
 import org.bukkit.Material;
 
-public class CoreBlockTool extends SingleLocationTool {
+public class CoreBlockTool extends PosTool {
   
   public CoreBlockTool() {
     super("core", Material.GOLDEN_SWORD, Color.YELLOW);
   }
   
   @Override
-  public Location getLoc() {
+  public Pos getPos() {
     return DestroyTheCore.game.map.core;
   }
   
   @Override
-  public void setLoc(Location loc) {
-    DestroyTheCore.game.map.core = loc;
+  public void setPos(Pos pos) {
+    DestroyTheCore.game.map.core = pos;
   }
 }

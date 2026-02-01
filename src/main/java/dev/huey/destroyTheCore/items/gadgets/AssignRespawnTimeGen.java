@@ -43,7 +43,7 @@ public class AssignRespawnTimeGen extends UsableItemGen {
         
         ParticleUtils.ring(
           PlayerUtils.all(),
-          LocationUtils.hitboxCenter(target),
+          LocUtils.hitboxCenter(target),
           1.2,
           Color.ORANGE
         );

@@ -32,7 +32,7 @@ public class TruceGen extends UsableItemGen {
       return;
     }
     
-    PlayerUtils.takeOneItemFromHand(pl);
+//    PlayerUtils.takeOneItemFromHand(pl);
     sideData.usedTruce = true;
     
     DestroyTheCore.game.truceTimer += 5 * 60 * 20;

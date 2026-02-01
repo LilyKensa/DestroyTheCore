@@ -26,30 +26,69 @@ import org.bukkit.potion.PotionEffectType;
 
 public class KekkaiMasterRole extends Role {
   
-  public static class Kekkai {
+  static public class Kekkai {
     
     public enum Type {
-      SPEED(Material.IRON_INGOT, Particle.WAX_OFF), HEALING(Material.GOLD_INGOT,
-        Particle.HAPPY_VILLAGER), BULLET_PROOF(Material.REDSTONE,
-          Particle.WITCH), RESISTANCE(Material.EMERALD,
-            Particle.CRIT), FAST_ORES(Material.LAPIS_LAZULI,
-              Particle.END_ROD), STRENGTH(Material.DIAMOND,
-                Particle.WAX_ON), SPEED_PLUS(Material.IRON_BLOCK,
-                  Particle.WAX_OFF,
-                  180), SATURATION(Material.GOLD_BLOCK,
-                    Particle.FLAME,
-                    10), BULLET_PROOF_PLUS(Material.REDSTONE_BLOCK,
-                      Particle.WITCH,
-                      180), RESISTANCE_PLUS(Material.EMERALD_BLOCK,
-                        Particle.CRIT,
-                        30), FAST_ORES_PLUS(Material.LAPIS_BLOCK,
-                          Particle.END_ROD,
-                          180), STRENGTH_PLUS(Material.DIAMOND_BLOCK,
-                            Particle.WAX_ON,
-                            180), CHAOS(Material.BARRIER,
-                              Particle.DRAGON_BREATH,
-                              10), SOUL(Material.BARRIER,
-                                Particle.SOUL_FIRE_FLAME);
+      SPEED(Material.IRON_INGOT, Particle.WAX_OFF),
+      HEALING(
+        Material.GOLD_INGOT,
+        Particle.HAPPY_VILLAGER
+      ),
+      BULLET_PROOF(
+        Material.REDSTONE,
+        Particle.WITCH
+      ),
+      RESISTANCE(
+        Material.EMERALD,
+        Particle.CRIT
+      ),
+      FAST_ORES(
+        Material.LAPIS_LAZULI,
+        Particle.END_ROD
+      ),
+      STRENGTH(
+        Material.DIAMOND,
+        Particle.WAX_ON
+      ),
+      SPEED_PLUS(
+        Material.IRON_BLOCK,
+        Particle.WAX_OFF,
+        180
+      ),
+      SATURATION(
+        Material.GOLD_BLOCK,
+        Particle.FLAME,
+        10
+      ),
+      BULLET_PROOF_PLUS(
+        Material.REDSTONE_BLOCK,
+        Particle.WITCH,
+        180
+      ),
+      RESISTANCE_PLUS(
+        Material.EMERALD_BLOCK,
+        Particle.CRIT,
+        30
+      ),
+      FAST_ORES_PLUS(
+        Material.LAPIS_BLOCK,
+        Particle.END_ROD,
+        180
+      ),
+      STRENGTH_PLUS(
+        Material.DIAMOND_BLOCK,
+        Particle.WAX_ON,
+        180
+      ),
+      CHAOS(
+        Material.BARRIER,
+        Particle.DRAGON_BREATH,
+        10
+      ),
+      SOUL(
+        Material.BARRIER,
+        Particle.SOUL_FIRE_FLAME
+      );
       
       public final Material sourceMaterial;
       public final Particle particle;
@@ -140,8 +179,10 @@ public class KekkaiMasterRole extends Role {
       int health = type.name().endsWith("PLUS") ? 30 : 10;
       applyEffect();
       
-      center = (Slime) loc.getWorld().spawnEntity(loc.add(0, -0.25, 0),
-        EntityType.SLIME);
+      center = (Slime) loc.getWorld().spawnEntity(
+        loc.add(0, -0.25, 0),
+        EntityType.SLIME
+      );
       
       center.setAI(false);
       center.setSize(0);
@@ -180,9 +221,9 @@ public class KekkaiMasterRole extends Role {
     }
   }
   
-  public static List<Kekkai> kekkais = new ArrayList<>();
+  static public List<Kekkai> kekkais = new ArrayList<>();
   
-  public static boolean checkFastOres(Location oreLoc) {
+  static public boolean checkFastOres(Location oreLoc) {
     for (Kekkai kekkai : kekkais) {
       if (!kekkai.isFastOres()) continue;
       if (!kekkai.contains(oreLoc)) continue;
@@ -193,7 +234,7 @@ public class KekkaiMasterRole extends Role {
     return false;
   }
   
-  public static void onEntityDeath(EntityDeathEvent ev) {
+  static public void onEntityDeath(EntityDeathEvent ev) {
     for (Kekkai kekkai : kekkais) {
       if (kekkai.center.equals(ev.getEntity())) {
         ev.getDrops().clear();
@@ -212,13 +253,15 @@ public class KekkaiMasterRole extends Role {
     kekkais.removeIf(k -> k.duration <= 0);
   }
   
-  public static void onTick() {
+  static public void onTick() {
     for (Kekkai kekkai : kekkais) {
       if (kekkai.isBulletProof()) {
-        for (Projectile proj : kekkai.loc.getNearbyEntitiesByType(
-          Projectile.class,
-          kekkai.size + 1
-        )) {
+        for (
+          Projectile proj : kekkai.loc.getNearbyEntitiesByType(
+            Projectile.class,
+            kekkai.size + 1
+          )
+        ) {
           if (proj.isOnGround()) continue;
           if (
             proj instanceof Trident trident && trident.hasDealtDamage()
@@ -234,8 +277,12 @@ public class KekkaiMasterRole extends Role {
             )
           );
           
-          new ParticleBuilder(Particle.WHITE_SMOKE).allPlayers().location(
-            proj.getLocation()).count(3).extra(0).spawn();
+          new ParticleBuilder(Particle.WHITE_SMOKE)
+            .allPlayers()
+            .location(proj.getLocation())
+            .count(3)
+            .extra(0)
+            .spawn();
         }
       }
       
@@ -321,7 +368,7 @@ public class KekkaiMasterRole extends Role {
     kekkais.removeIf(k -> k.duration <= 0);
   }
   
-  public static void onParticleTick() {
+  static public void onParticleTick() {
     for (Kekkai kekkai : kekkais) {
       ParticleUtils.spiralSphere(kekkai.loc, kekkai.size, kekkai.type.particle);
     }
@@ -352,9 +399,11 @@ public class KekkaiMasterRole extends Role {
         if (DestroyTheCore.game.getPlayerData(pl).side != kekkai.side) continue;
         
         if (
-          kekkai.type != Kekkai.Type.CHAOS && DestroyTheCore.rolesManager.isExclusiveItem(
-            pl.getInventory().getItemInMainHand()
-          ) && kekkai.contains(pl.getLocation())
+          kekkai.type != Kekkai.Type.CHAOS
+            && DestroyTheCore.rolesManager.isExclusiveItem(
+              pl.getInventory().getItemInMainHand()
+            )
+            && kekkai.contains(pl.getLocation())
         ) {
           kekkai.duration += 10;
         }
@@ -431,7 +480,7 @@ public class KekkaiMasterRole extends Role {
       180 * 20
     );
     
-    kekkais.add(new Kekkai(type, LocationUtils.hitboxCenter(pl), pl));
+    kekkais.add(new Kekkai(type, LocUtils.hitboxCenter(pl), pl));
     
     PlayerUtils.auraBroadcast(
       pl.getLocation(),

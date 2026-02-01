@@ -4,8 +4,9 @@ import com.destroystokyo.paper.ParticleBuilder;
 import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.managers.RolesManager;
+import dev.huey.destroyTheCore.records.Pos;
 import dev.huey.destroyTheCore.utils.AttributeUtils;
-import dev.huey.destroyTheCore.utils.LocationUtils;
+import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import java.util.List;
@@ -21,11 +22,12 @@ import org.bukkit.potion.PotionEffectType;
 
 public class GuardRole extends Role {
   
-  public static void onEnchant(Player pl) {
+  static public void onEnchant(Player pl) {
     for (Player e : PlayerUtils.getEnemies(pl)) {
       if (
         DestroyTheCore.game.getPlayerData(
-          e).role.id == RolesManager.RoleKey.GUARD
+          e
+        ).role.id == RolesManager.RoleKey.GUARD
       ) send(e, TextUtils.$("roles.guard.enchanting-alarm"));
     }
   }
@@ -49,27 +51,26 @@ public class GuardRole extends Role {
   @Override
   public void onTick(Player pl) {
     if (DestroyTheCore.game.map.core == null) return;
+    if (!LocUtils.inLive(pl)) return;
     
     if (
-      LocationUtils.near(
-        pl.getLocation(),
-        LocationUtils.live(
-          LocationUtils.selfSide(DestroyTheCore.game.map.core, pl)
-        ),
+      LocUtils.near(
+        Pos.of(pl),
+        LocUtils.selfSide(DestroyTheCore.game.map.core, pl),
         15
       )
     ) {
-      if (DestroyTheCore.ticksManager.ticksCount % 25 == 0) pl.addPotionEffect(
-        new PotionEffect(PotionEffectType.REGENERATION, 50, 1, true, false)
-      ); // Regen 2 = every 25 ticks
+      if (DestroyTheCore.ticksManager.ticksCount % 25 == 0) {
+        pl.addPotionEffect(
+          new PotionEffect(PotionEffectType.REGENERATION, 50, 1, true, false)
+        ); // Regen 2 = every 25 ticks
+      }
     }
     
     if (
-      LocationUtils.near(
-        pl.getLocation(),
-        LocationUtils.live(
-          LocationUtils.enemySide(DestroyTheCore.game.map.core, pl)
-        ),
+      LocUtils.near(
+        Pos.of(pl),
+        LocUtils.enemySide(DestroyTheCore.game.map.core, pl),
         15
       )
     ) {
@@ -108,12 +109,12 @@ public class GuardRole extends Role {
     
     boolean found = false;
     for (Player e : PlayerUtils.getEnemies(pl)) {
+      if (LocUtils.inLive(e)) continue;
+      
       if (
-        LocationUtils.near(
-          e.getLocation(),
-          LocationUtils.live(
-            LocationUtils.selfSide(DestroyTheCore.game.map.core, pl)
-          ),
+        LocUtils.near(
+          Pos.of(e),
+          LocUtils.selfSide(DestroyTheCore.game.map.core, pl),
           15
         )
       ) {
@@ -167,8 +168,10 @@ public class GuardRole extends Role {
               )
             );
             
-            new ParticleBuilder(Particle.ELDER_GUARDIAN).receivers(e).location(
-              e.getLocation()).spawn();
+            new ParticleBuilder(Particle.ELDER_GUARDIAN)
+              .receivers(e)
+              .location(e.getLocation())
+              .spawn();
             e.playSound(
               e.getLocation(),
               Sound.ENTITY_ELDER_GUARDIAN_CURSE,

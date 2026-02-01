@@ -21,8 +21,10 @@ public class TNTResult extends Mission.Result {
     Player p = RandomUtils.pick(PlayerUtils.getTeammates(side));
     if (p == null) return;
     
-    TNTPrimed tnt = (TNTPrimed) p.getWorld().spawnEntity(p.getLocation(),
-      EntityType.TNT);
+    TNTPrimed tnt = (TNTPrimed) p.getWorld().spawnEntity(
+      p.getLocation(),
+      EntityType.TNT
+    );
     tnt.setFuseTicks(30);
     
     announce(

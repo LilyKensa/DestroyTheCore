@@ -13,17 +13,17 @@ import org.bukkit.potion.PotionEffectType;
 
 public class GoodEffectResult extends Mission.Result {
   
-  public static PotionEffect getEffect(
+  static public PotionEffect getEffect(
     PotionEffectType type, int amplifier, int seconds
   ) {
     return new PotionEffect(type, seconds * 20, amplifier, false, true);
   }
   
-  public static PotionEffect getEffect(PotionEffectType type, int amplifier) {
+  static public PotionEffect getEffect(PotionEffectType type, int amplifier) {
     return getEffect(type, amplifier, 90);
   }
   
-  public static final List<PotionEffect> effects = List.of(
+  static public final List<PotionEffect> effects = List.of(
     getEffect(PotionEffectType.ABSORPTION, 2),
     getEffect(PotionEffectType.FIRE_RESISTANCE, 0),
     getEffect(PotionEffectType.HASTE, 2),

@@ -43,7 +43,8 @@ public abstract class ProgressiveMission extends Mission implements Listener {
     for (Player p : Bukkit.getOnlinePlayers()) {
       PlayerData d = DestroyTheCore.game.getPlayerData(p);
       Game.Side firstSide = d.side.equals(
-        Game.Side.SPECTATOR) ? Game.Side.RED : d.side;
+        Game.Side.SPECTATOR
+      ) ? Game.Side.RED : d.side;
       bars.get(firstSide).addViewer(p);
       bars.get(firstSide.opposite()).addViewer(p);
     }

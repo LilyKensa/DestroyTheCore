@@ -99,7 +99,17 @@ game:
   diamond-broadcast: "I love diamonds!|Time for some diamonds!|Yay! I got diamonds!|Diamonds are so nice!|Diamonds! Diamonds! Diamonds!|I like mining diamonds!"
   height-warning: "<red>You're about to experience altitude sickness!</red>"
   start-canceled: "<red>Start Canceled</red>"
-  missing-loc: "<red>Map setup isn't complete!</red>"
+  missing-locs:
+    message: "<red>Missing map objects: <location>!</red>"
+    locs:
+      rest-area: "Rest Area"
+      core: "Core"
+      mission: "Mission Center"
+      spawnpoints: "Spawnpoints"
+      woods: "Woods"
+      ores: "Ores"
+      diamonds: "Diamonds"
+      shops: "Shops"
   result:
     titles:
       draw: "Draw"
@@ -755,7 +765,7 @@ roles:
     skill:
       name: "Hunter Trap"
       desc-1: "<dark_purple>Places a trap</dark_purple>"
-      desc-2: "<dark_purple>Enemies trapped will get Poison X (10s)</dark_purple>"
+      desc-2: "<dark_purple>Enemies trapped will get Poison X (5s)</dark_purple>"
       announce: "<player> used <yellow><role></yellow>'s skill, placed a trap!"
       trap-hit:
         owner: "<enemy> fell into your trap!"

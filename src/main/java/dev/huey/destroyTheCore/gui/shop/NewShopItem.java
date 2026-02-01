@@ -15,8 +15,11 @@ public class NewShopItem extends GUIItem {
   
   @Override
   public ItemProvider getItemProvider() {
-    return new ItemBuilder(Material.EMERALD).setDisplayName(TextUtils.$r(
-      "gui.buttons.new-shop.title"));
+    return new ItemBuilder(Material.EMERALD).setDisplayName(
+      TextUtils.$r(
+        "gui.buttons.new-shop.title"
+      )
+    );
   }
   
   @Override

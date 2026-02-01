@@ -21,7 +21,9 @@ public class NoJumpMission extends ProgressiveMission implements Listener {
   
   @Override
   public void innerStart() {
-    for (Game.Side side : new Game.Side[]{Game.Side.RED, Game.Side.GREEN}) {
+    for (Game.Side side : new Game.Side[]{
+      Game.Side.RED, Game.Side.GREEN
+    }) {
       quota.put(side, 100);
       progress(side, 1F);
     }
@@ -43,7 +45,9 @@ public class NoJumpMission extends ProgressiveMission implements Listener {
   
   @Override
   public void innerFinish() {
-    for (Game.Side side : new Game.Side[]{Game.Side.RED, Game.Side.GREEN}) {
+    for (Game.Side side : new Game.Side[]{
+      Game.Side.RED, Game.Side.GREEN
+    }) {
       if (quota.get(side) > quota.get(side.opposite())) {
         declareWinner(side);
         return;

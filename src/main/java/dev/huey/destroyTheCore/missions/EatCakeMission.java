@@ -49,7 +49,9 @@ public class EatCakeMission extends ProgressiveMission implements Listener {
   
   @Override
   public void innerFinish() {
-    for (Game.Side side : new Game.Side[]{Game.Side.RED, Game.Side.GREEN}) {
+    for (Game.Side side : new Game.Side[]{
+      Game.Side.RED, Game.Side.GREEN
+    }) {
       if (count.get(side) > count.get(side.opposite())) {
         declareWinner(side);
         return;

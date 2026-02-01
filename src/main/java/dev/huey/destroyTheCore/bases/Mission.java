@@ -5,7 +5,7 @@ import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.managers.MissionsManager;
 import dev.huey.destroyTheCore.missions.results.*;
 import dev.huey.destroyTheCore.utils.CoreUtils;
-import dev.huey.destroyTheCore.utils.LocationUtils;
+import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.RandomUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import java.util.ArrayList;
@@ -21,11 +21,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitTask;
 
 public abstract class Mission implements Listener {
-  
   /** Mission central location, assigned in {@link #init} */
-  public static Location loc;
+  static public Location centerLoc;
   
-  public static class Result {
+  static public class Result {
     
     String id;
     
@@ -62,13 +61,13 @@ public abstract class Mission implements Listener {
   }
   
   /** How long it waits until the mission is automatically ended */
-  public static final int clockDuration = 60 * 20;
+  static public final int clockDuration = 60 * 20;
   
   /** All the result, assigned in {@link #init} */
-  public static List<Result> results;
+  static public List<Result> results;
   
   /** Prefixed broadcast */
-  public static void broadcast(Component comp) {
+  static public void broadcast(Component comp) {
     DestroyTheCore.missionsManager.broadcast(comp);
   }
   
@@ -83,7 +82,7 @@ public abstract class Mission implements Listener {
   }
   
   public void init() {
-    loc = LocationUtils.live(DestroyTheCore.game.map.mission);
+    centerLoc = LocUtils.live(DestroyTheCore.game.map.mission);
     
     results = List.of(
       new ClearXpResult(),
@@ -103,8 +102,10 @@ public abstract class Mission implements Listener {
       new SkillCooldownResult()
     );
     
-    Bukkit.getServer().getPluginManager().registerEvents(this,
-      DestroyTheCore.instance);
+    Bukkit.getServer().getPluginManager().registerEvents(
+      this,
+      DestroyTheCore.instance
+    );
     
     start();
     active = true;
@@ -113,9 +114,11 @@ public abstract class Mission implements Listener {
     broadcast(TextUtils.$("missions.%s.desc".formatted(id)));
     
     cancelClock();
-    clock = Bukkit.getScheduler().runTaskLater(DestroyTheCore.instance,
+    clock = Bukkit.getScheduler().runTaskLater(
+      DestroyTheCore.instance,
       this::end,
-      clockDuration);
+      clockDuration
+    );
   }
   
   /** Used in {@link MissionsManager#onTick} */

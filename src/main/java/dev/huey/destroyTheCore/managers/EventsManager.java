@@ -4,7 +4,7 @@ import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.bases.itemGens.ProjItemGen;
 import dev.huey.destroyTheCore.items.gadgets.GrenadeGen;
 import dev.huey.destroyTheCore.roles.*;
-import dev.huey.destroyTheCore.utils.LocationUtils;
+import dev.huey.destroyTheCore.utils.LocUtils;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import java.util.List;
 import net.kyori.adventure.text.TextComponent;
@@ -80,7 +80,7 @@ public class EventsManager implements Listener {
   
   @EventHandler
   public void onPlayerTeleport(PlayerTeleportEvent ev) {
-    if (!LocationUtils.isSameWorld(ev.getFrom(), ev.getTo())) {
+    if (!LocUtils.isSameWorld(ev.getFrom(), ev.getTo())) {
       DestroyTheCore.worldsManager.onPlayerChangeWorld(
         ev.getPlayer(),
         ev.getTo().getWorld()
@@ -221,7 +221,7 @@ public class EventsManager implements Listener {
   @EventHandler
   public void onBlockPhysics(BlockPhysicsEvent ev) {
     if (
-      LocationUtils.isSameWorld(
+      LocUtils.isSameWorld(
         ev.getBlock().getWorld(),
         DestroyTheCore.worldsManager.lobby
       )

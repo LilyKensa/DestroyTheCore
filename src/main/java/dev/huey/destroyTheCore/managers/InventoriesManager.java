@@ -45,8 +45,10 @@ public class InventoriesManager {
     List<ItemStack> hotbar = savedHotbars.get(pl.getUniqueId());
     
     for (int i = 0; i < 9; ++i) {
-      pl.getInventory().setItem(i,
-        hotbar == null ? ItemStack.empty() : hotbar.get(i));
+      pl.getInventory().setItem(
+        i,
+        hotbar == null ? ItemStack.empty() : hotbar.get(i)
+      );
     }
     
     savedHotbars.remove(pl.getUniqueId());
@@ -78,7 +80,8 @@ public class InventoriesManager {
     PlayerInventory inv = pl.getInventory();
     
     ItemStack placeholder = DestroyTheCore.itemsManager.gens.get(
-      ItemsManager.ItemKey.PLACEHOLDER).getItem();
+      ItemsManager.ItemKey.PLACEHOLDER
+    ).getItem();
     
     ItemStack[] contents = inv.getContents();
     for (int i = 0; i < contents.length; i++) {
@@ -87,26 +90,34 @@ public class InventoriesManager {
       
       if (
         List.of(Material.SHIELD, Material.KNOWLEDGE_BOOK).contains(
-          item.getType())
+          item.getType()
+        )
       ) continue;
       if (DestroyTheCore.rolesManager.isExclusiveItem(item)) continue;
       if (
         DestroyTheCore.itemsManager.isGen(
-          item) && DestroyTheCore.itemsManager.getGen(item).willNeverDrop()
+          item
+        ) && DestroyTheCore.itemsManager.getGen(item).willNeverDrop()
       ) continue;
       
       if (
         DestroyTheCore.itemsManager.isGen(
-          item) && DestroyTheCore.itemsManager.getGen(item).willVanish()
+          item
+        ) && DestroyTheCore.itemsManager.getGen(item).willVanish()
       ) {
         contents[i] = placeholder;
       }
       else if (
-        item.getType() == Material.ENCHANTING_TABLE || item.getType() == Material.ENDER_CHEST || Constants.oreItems.contains(
-          item.getType()) || RandomUtils.hit(chance)
+        item.getType() == Material.ENCHANTING_TABLE
+          || item.getType() == Material.ENDER_CHEST
+          || Constants.oreItems.contains(
+            item.getType()
+          )
+          || RandomUtils.hit(chance)
       ) {
         pl.getWorld().dropItemNaturally(pl.getLocation(), item).setPickupDelay(
-          20);
+          20
+        );
         contents[i] = placeholder;
       }
     }
@@ -124,7 +135,8 @@ public class InventoriesManager {
       
       if (Constants.oreItems.contains(item.getType())) {
         pl.getWorld().dropItemNaturally(pl.getLocation(), item).setPickupDelay(
-          20);
+          20
+        );
         contents[i] = null;
       }
     }

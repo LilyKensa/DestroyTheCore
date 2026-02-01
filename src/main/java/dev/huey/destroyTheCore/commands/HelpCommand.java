@@ -13,7 +13,8 @@ public class HelpCommand extends Subcommand {
     addArgument(
       "command",
       () -> DestroyTheCore.commandsManager.subcommands.stream().map(
-        c -> c.name).toList()
+        c -> c.name
+      ).toList()
     );
   }
   

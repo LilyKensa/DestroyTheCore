@@ -20,15 +20,19 @@ public class RandomRoleItem extends GUIItem {
   
   @Override
   public ItemProvider getItemProvider() {
-    return new ItemBuilder(Material.REDSTONE).setDisplayName(TextUtils.$r(
-      "gui.buttons.pick-random.title"));
+    return new ItemBuilder(Material.REDSTONE).setDisplayName(
+      TextUtils.$r(
+        "gui.buttons.pick-random.title"
+      )
+    );
   }
   
   @Override
   public void handleClick(ClickType click, Player pl, InventoryClickEvent ev) {
     Role role = RandomUtils.pick(
       DestroyTheCore.rolesManager.roles.values().stream().filter(
-        r -> r.id != RolesManager.RoleKey.DEFAULT).toList()
+        r -> r.id != RolesManager.RoleKey.DEFAULT
+      ).toList()
     );
     
     PlayerUtils.prefixedBroadcast(

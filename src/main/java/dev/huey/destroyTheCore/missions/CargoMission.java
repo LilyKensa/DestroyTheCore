@@ -3,7 +3,8 @@ package dev.huey.destroyTheCore.missions;
 import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.Mission;
-import dev.huey.destroyTheCore.utils.LocationUtils;
+import dev.huey.destroyTheCore.records.Pos;
+import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.RandomUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
@@ -18,26 +19,28 @@ import org.bukkit.potion.PotionEffectType;
 
 public class CargoMission extends Mission implements Listener {
   
-  public static final NamespacedKey dataNamespace = new NamespacedKey(
+  static public final NamespacedKey dataNamespace = new NamespacedKey(
     DestroyTheCore.instance,
     "cargo-mission-package"
   );
   
-  public static ItemStack getItem() {
+  static public ItemStack getItem() {
     ItemStack item = new ItemStack(Material.VAULT);
     
     item.editMeta(meta -> {
       meta.displayName(TextUtils.$("missions.cargo.item"));
       
-      meta.getPersistentDataContainer().set(dataNamespace,
+      meta.getPersistentDataContainer().set(
+        dataNamespace,
         PersistentDataType.BOOLEAN,
-        true);
+        true
+      );
     });
     
     return item;
   }
   
-  public static boolean hasItem(Player pl) {
+  static public boolean hasItem(Player pl) {
     for (ItemStack item : pl.getInventory().getContents()) {
       if (item == null || item.isEmpty()) continue;
       if (!item.hasItemMeta()) continue;
@@ -65,7 +68,9 @@ public class CargoMission extends Mission implements Listener {
     Player a = randomPlayer(Game.Side.RED), b = randomPlayer(Game.Side.GREEN);
     if (a == null || b == null) return;
     
-    for (Player pl : new Player[]{a, b}) {
+    for (Player pl : new Player[]{
+      a, b
+    }) {
       if (pl == null) continue;
       
       pl.give(getItem());
@@ -86,11 +91,13 @@ public class CargoMission extends Mission implements Listener {
         );
         
         if (
-          LocationUtils.near(
-            p.getLocation(),
-            LocationUtils.live(DestroyTheCore.game.map.mission),
-            5
-          )
+          LocUtils.inLive(p)
+            &&
+            LocUtils.near(
+              Pos.of(p),
+              DestroyTheCore.game.map.mission,
+              5
+            )
         ) {
           draw = false;
           declareWinner(p);

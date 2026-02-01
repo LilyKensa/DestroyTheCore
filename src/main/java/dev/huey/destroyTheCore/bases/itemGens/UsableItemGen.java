@@ -33,8 +33,11 @@ public class UsableItemGen extends ItemGen {
   
   void addLore() {
     if (
-      !lore.isEmpty() && (lore.getLast() instanceof TextComponent lastLore) && !lastLore.content().startsWith(
-        "-")
+      !lore.isEmpty()
+        && (lore.getLast() instanceof TextComponent lastLore)
+        && !lastLore.content().startsWith(
+          "-"
+        )
     ) lore.add(Component.empty());
     lore.add(
       TextUtils.$(

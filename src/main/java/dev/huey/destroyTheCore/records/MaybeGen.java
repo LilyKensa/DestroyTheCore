@@ -13,7 +13,7 @@ public class MaybeGen implements ConfigurationSerializable {
   int amount = 1;
   ItemStack stack;
   
-  public static MaybeGen fromItem(ItemStack item) {
+  static public MaybeGen fromItem(ItemStack item) {
     MaybeGen mg = new MaybeGen();
     
     if (DestroyTheCore.itemsManager.isGen(item)) {
@@ -29,7 +29,8 @@ public class MaybeGen implements ConfigurationSerializable {
   
   public ItemStack get() {
     if (key != null) return DestroyTheCore.itemsManager.gens.get(key).getItem(
-      amount);
+      amount
+    );
     
     return stack;
   }
@@ -49,7 +50,7 @@ public class MaybeGen implements ConfigurationSerializable {
     return map;
   }
   
-  public static MaybeGen deserialize(Map<String, Object> map) {
+  static public MaybeGen deserialize(Map<String, Object> map) {
     MaybeGen mg = new MaybeGen();
     
     if (map.containsKey("gen") && map.containsKey("count")) {

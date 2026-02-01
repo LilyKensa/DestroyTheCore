@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 
 public class Subcommand {
   
-  public static class Argument {
+  static public class Argument {
     
     public String name;
     public Supplier<List<String>> completionsSupplier;

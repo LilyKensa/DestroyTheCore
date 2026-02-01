@@ -4,7 +4,7 @@ import com.destroystokyo.paper.ParticleBuilder;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.managers.RolesManager;
-import dev.huey.destroyTheCore.utils.LocationUtils;
+import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import java.util.List;
@@ -48,11 +48,17 @@ public class ProvocateurRole extends Role {
     //    }
     
     if (
-      PlayerUtils.getTeammates(pl).stream().anyMatch(p -> !p.equals(
-        pl) && LocationUtils.near(p, pl, 10))
+      PlayerUtils.getTeammates(pl).stream().anyMatch(
+        p -> !p.equals(
+          pl
+        ) && LocUtils.near(p, pl, 10)
+      )
     ) {
-      new ParticleBuilder(Particle.PORTAL).allPlayers().location(
-        LocationUtils.hitboxCenter(pl)).extra(2).spawn();
+      new ParticleBuilder(Particle.PORTAL)
+        .allPlayers()
+        .location(LocUtils.hitboxCenter(pl))
+        .extra(2)
+        .spawn();
     }
   }
   

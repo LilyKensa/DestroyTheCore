@@ -27,12 +27,12 @@ import org.bukkit.persistence.PersistentDataType;
 
 public class FindSkullMission extends TimedMission implements Listener {
   
-  public static final NamespacedKey dataNamespace = new NamespacedKey(
+  static public final NamespacedKey dataNamespace = new NamespacedKey(
     DestroyTheCore.instance,
     "find-skull-mission-item"
   );
   
-  public static ItemStack getSkullItem(Player pl) {
+  static public ItemStack getSkullItem(Player pl) {
     ItemStack item = new ItemStack(Material.PLAYER_HEAD);
     item.editMeta(uncastedMeta -> {
       SkullMeta meta = (SkullMeta) uncastedMeta;
@@ -48,12 +48,16 @@ public class FindSkullMission extends TimedMission implements Listener {
     return item;
   }
   
-  public static boolean isSkullItem(ItemStack item) {
-    return (item != null && !item.isEmpty() && item.hasItemMeta() && item.getItemMeta().getPersistentDataContainer().has(
-      dataNamespace));
+  static public boolean isSkullItem(ItemStack item) {
+    return (item != null
+      && !item.isEmpty()
+      && item.hasItemMeta()
+      && item.getItemMeta().getPersistentDataContainer().has(
+        dataNamespace
+      ));
   }
   
-  public static Location randomLocation(Location center, double radius) {
+  static public Location randomLocation(Location center, double radius) {
     double angle = RandomUtils.nextDouble() * 2 * Math.PI;
     double randomRadius = Math.sqrt(RandomUtils.nextDouble()) * radius;
     
@@ -64,12 +68,13 @@ public class FindSkullMission extends TimedMission implements Listener {
     return new Location(center.getWorld(), x, y, z);
   }
   
-  public static void giveTreasure(Player pl) {
+  static public void giveTreasure(Player pl) {
     ItemStack item = RandomUtils.pick(
       new ItemStack(Material.EMERALD, 8),
       new ItemStack(Material.GOLD_INGOT, 64),
       DestroyTheCore.itemsManager.gens.get(
-        ItemsManager.ItemKey.GRENADE).getItem(6),
+        ItemsManager.ItemKey.GRENADE
+      ).getItem(6),
       new ItemStack(Material.TNT, 1),
       new ItemStack(Material.GOLDEN_APPLE, 8)
     );
@@ -84,7 +89,8 @@ public class FindSkullMission extends TimedMission implements Listener {
           Placeholder.component(
             "item",
             item.effectiveName().colorIfAbsent(
-              item.getItemMeta().hasRarity() ? item.getItemMeta().getRarity().color() : NamedTextColor.WHITE
+              item.getItemMeta().hasRarity() ? item.getItemMeta().getRarity()
+                .color() : NamedTextColor.WHITE
             )
           ),
           Placeholder.component("amount", Component.text(item.getAmount()))
@@ -103,7 +109,7 @@ public class FindSkullMission extends TimedMission implements Listener {
   public void innerStart() {
     for (Player p : PlayerUtils.allGaming()) {
       Location skullLoc = randomLocation(
-        loc.clone().add(0, RandomUtils.range(20, 30), 0),
+        centerLoc.clone().add(0, RandomUtils.range(20, 30), 0),
         30
       );
       
@@ -129,9 +135,10 @@ public class FindSkullMission extends TimedMission implements Listener {
     
     if (!isSkullItem(item)) return;
     
-    CoreUtils.setTickOut(() -> pl.getInventory().remove(item));
-    
-    giveTreasure(pl);
+    CoreUtils.setTickOut(() -> {
+      pl.getInventory().remove(item);
+      giveTreasure(pl);
+    });
   }
   
   @Override
@@ -139,8 +146,11 @@ public class FindSkullMission extends TimedMission implements Listener {
     for (UUID id : skullEntities) {
       Entity e = Bukkit.getEntity(id);
       if (e != null) {
-        new ParticleBuilder(Particle.LARGE_SMOKE).allPlayers().location(
-          e.getLocation()).extra(0).spawn();
+        new ParticleBuilder(Particle.LARGE_SMOKE)
+          .allPlayers()
+          .location(e.getLocation())
+          .extra(0)
+          .spawn();
         
         e.remove();
       }

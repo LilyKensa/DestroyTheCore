@@ -31,10 +31,14 @@ public class RocketMission extends TimedMission {
     }
     
     if (DestroyTheCore.ticksManager.isParticleTick()) {
-      for (Player pl : PlayerUtils.allGaming()) new ParticleBuilder(
-        Particle.CLOUD
-      ).allPlayers().location(pl.getLocation()).count(RandomUtils.range(1,
-        4)).extra(0.05).spawn();
+      for (Player pl : PlayerUtils.allGaming()) {
+        new ParticleBuilder(Particle.CLOUD)
+          .allPlayers()
+          .location(pl.getLocation())
+          .count(RandomUtils.range(1, 4))
+          .extra(0.05)
+          .spawn();
+      }
     }
   }
   
@@ -45,8 +49,12 @@ public class RocketMission extends TimedMission {
         new PotionEffect(PotionEffectType.LEVITATION, 20, 79, true, false)
       );
       
-      new ParticleBuilder(Particle.CLOUD).allPlayers().location(
-        pl.getLocation()).count(20).extra(0.1).spawn();
+      new ParticleBuilder(Particle.CLOUD)
+        .allPlayers()
+        .location(pl.getLocation())
+        .count(20)
+        .extra(0.1)
+        .spawn();
       
       pl.playSound(
         pl.getLocation(),

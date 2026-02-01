@@ -8,7 +8,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class TicksManager {
   
-  public static final int particleRate = 4, updateRate = 10;
+  static public final int particleRate = 4, updateRate = 10;
   
   /** Ticks elapsed from last game start */
   public int ticksCount = 0;
@@ -30,7 +30,6 @@ public class TicksManager {
   
   /** The {@link BukkitRunnable} that runs every tick */
   public class TicksRunnable extends BukkitRunnable {
-    
     @Override
     public void run() {
       ticksCount++;

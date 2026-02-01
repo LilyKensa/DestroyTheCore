@@ -53,7 +53,7 @@ public class Stats implements ConfigurationSerializable {
     return map;
   }
   
-  public static Stats deserialize(Map<String, Object> map) {
+  static public Stats deserialize(Map<String, Object> map) {
     Stats stats = new Stats();
     
     stats.nightVision = (boolean) map.getOrDefault("night-vision", false);

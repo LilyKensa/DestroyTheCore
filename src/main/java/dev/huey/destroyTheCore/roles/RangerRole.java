@@ -7,7 +7,8 @@ import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.managers.RolesManager;
 import dev.huey.destroyTheCore.records.PlayerData;
-import dev.huey.destroyTheCore.utils.LocationUtils;
+import dev.huey.destroyTheCore.records.Pos;
+import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.RandomUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
@@ -28,8 +29,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class RangerRole extends Role {
-  
-  public static class Mine {
+  static public class Mine {
+    final double radius = 1.2;
     
     boolean active = true;
     public Location loc;
@@ -43,28 +44,35 @@ public class RangerRole extends Role {
     }
   }
   
-  public static List<Mine> mines = new ArrayList<>();
+  static public List<Mine> mines = new ArrayList<>();
   
-  public static void onPlayerMove(Player pl) {
+  static public void onPlayerMove(Player pl) {
     for (Mine mine : mines) {
+      if (!LocUtils.isSameWorld(mine.loc, pl.getLocation())) continue;
       if (
-        !DestroyTheCore.game.getPlayerData(pl).side.equals(mine.side.opposite())
+        !DestroyTheCore.game.getPlayerData(pl).side
+          .equals(mine.side.opposite())
       ) continue;
       
-      if (!LocationUtils.near(pl.getLocation(), mine.loc, 1.5)) continue;
+      if (!LocUtils.near(Pos.of(pl), Pos.of(mine.loc), mine.radius)) continue;
       
-      new ParticleBuilder(Particle.LAVA).allPlayers().location(mine.loc).count(
-        25).extra(0).spawn();
+      new ParticleBuilder(Particle.LAVA)
+        .allPlayers()
+        .location(mine.loc)
+        .count(25)
+        .extra(0)
+        .spawn();
       
       Player owner = Bukkit.getPlayer(mine.ownerId);
       
       if (owner != null) pl.damage(
         1,
         DamageSource.builder(DamageType.ARROW).withDamageLocation(
-          mine.loc).withDirectEntity(owner).withCausingEntity(owner).build()
+          mine.loc
+        ).withDirectEntity(owner).withCausingEntity(owner).build()
       );
       pl.addPotionEffect(
-        new PotionEffect(PotionEffectType.POISON, 10 * 20, 9, false, true)
+        new PotionEffect(PotionEffectType.POISON, 5 * 20, 9, false, true)
       );
       
       if (owner == null) {
@@ -96,21 +104,27 @@ public class RangerRole extends Role {
     mines.removeIf(m -> !m.active);
   }
   
-  public static void onParticleTick() {
+  static public void onParticleTick() {
     for (Mine mine : mines) {
-      LocationUtils.ring(
+      LocUtils.ring(
         mine.loc,
-        1.5,
+        mine.radius,
         loc -> {
-          new ParticleBuilder(Particle.SMALL_FLAME).receivers(
-            PlayerUtils.getNonEnemies(mine.side)).location(loc).extra(
-              0).spawn();
+          new ParticleBuilder(Particle.SMALL_FLAME)
+            .receivers(PlayerUtils.getNonEnemies(mine.side))
+            .location(loc)
+            .extra(0)
+            .spawn();
         }
       );
       
-      if (RandomUtils.hit(0.01))
-        new ParticleBuilder(Particle.LAVA).allPlayers().location(
-          mine.loc).count(RandomUtils.range(3) + 1).extra(0).spawn();
+      if (RandomUtils.hit(0.05))
+        new ParticleBuilder(Particle.LAVA)
+          .allPlayers()
+          .location(mine.loc)
+          .count(RandomUtils.range(3) + 1)
+          .extra(0)
+          .spawn();
       
       mine.loc.addRotation(1, 0);
     }
@@ -136,12 +150,13 @@ public class RangerRole extends Role {
   
   @Override
   public void onTick(Player pl) {
-    if (DestroyTheCore.ticksManager.isSeconds()) {
+    if (DestroyTheCore.ticksManager.isUpdateTick()) {
       if (
         pl.getInventory().getItemInMainHand().getType().equals(
-          Material.CROSSBOW)
+          Material.CROSSBOW
+        )
       ) pl.addPotionEffect(
-        new PotionEffect(PotionEffectType.RESISTANCE, 30, 0, true, false)
+        new PotionEffect(PotionEffectType.RESISTANCE, 15, 0, true, false)
       );
     }
   }
@@ -157,9 +172,9 @@ public class RangerRole extends Role {
     }
     else {
       pl.getWorld().dropItemNaturally(
-        LocationUtils.live(
-          LocationUtils.selfSide(
-            LocationUtils.toSpawnPoint(
+        LocUtils.live(
+          LocUtils.selfSide(
+            LocUtils.toSpawnPoint(
               RandomUtils.pick(DestroyTheCore.game.map.spawnpoints)
             ),
             data.side

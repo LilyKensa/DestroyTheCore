@@ -103,7 +103,17 @@ game:
   diamond-broadcast: "我愛鑽石!|是時候來點鑽石了!|好耶! 我得到了鑽石!|鑽石實在太讚了!|鑽石! 鑽石! 鑽石!|我最喜歡挖鑽石了!"
   height-warning: "<red>你即將得到高山症!</red>"
   start-canceled: "<red>取消</red>"
-  missing-loc: "<red>地圖沒弄好!</red>"
+  missing-locs:
+    message: "<red>缺少地圖物件: <location>!</red>"
+    locs:
+      rest-area: "重生等待區"
+      core: "核心"
+      mission: "中央任務點"
+      spawnpoints: "重生點"
+      woods: "木頭"
+      ores: "礦物"
+      diamonds: "鑽石"
+      shops: "商店"
   result:
     titles:
       draw: "平手"
@@ -764,7 +774,7 @@ roles:
     skill:
       name: "獵人陷阱"
       desc-1: "<dark_purple>放置一個陷阱</dark_purple>"
-      desc-2: "<dark_purple>踩上去的敵人獲得中毒 X (10s)</dark_purple>"
+      desc-2: "<dark_purple>踩上去的敵人獲得中毒 X (5s)</dark_purple>"
       announce: "<player> 使用了<yellow><role></yellow>技能, 放置了一個陷阱!"
       trap-hit:
         owner: "<enemy> 採到你的陷阱!"

@@ -3,6 +3,7 @@ package dev.huey.destroyTheCore.managers;
 import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.records.MaybeGen;
+import dev.huey.destroyTheCore.records.Pos;
 import dev.huey.destroyTheCore.records.Region;
 import dev.huey.destroyTheCore.records.Stats;
 import dev.huey.destroyTheCore.utils.CoreUtils;
@@ -17,13 +18,11 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 
 public class ConfigManager {
-  
-  public static File getFile(String path) {
+  static public File getFile(String path) {
     return new File(DestroyTheCore.instance.getDataFolder(), path);
   }
   
   public abstract static class Config {
-    
     String path;
     File file;
     YamlConfiguration config;
@@ -70,16 +69,18 @@ public class ConfigManager {
     ConfigurationSerialization.registerClass(Region.class);
     ConfigurationSerialization.registerClass(Stats.class);
     ConfigurationSerialization.registerClass(MaybeGen.class);
-    ConfigurationSerialization.registerClass(Game.LobbyLocs.class);
-    ConfigurationSerialization.registerClass(Game.MapLocs.class);
+    ConfigurationSerialization.registerClass(Pos.class);
+    ConfigurationSerialization.registerClass(Game.LobbyPos.class);
+    ConfigurationSerialization.registerClass(Game.MapPos.class);
     ConfigurationSerialization.registerClass(Game.Shop.class);
     
     config = new Config("config.yml") {
       @Override
       public void read() {
-        DestroyTheCore.translationsManager.currentLocale = Locale.forLanguageTag(
-          CoreUtils.def(config.getString("lang"), "en-us")
-        );
+        DestroyTheCore.translationsManager.currentLocale = Locale
+          .forLanguageTag(
+            CoreUtils.def(config.getString("lang"), "en-us")
+          );
         
         DestroyTheCore.worldsManager.mapName = config.getString("map");
         DestroyTheCore.worldsManager.cloneLive();
@@ -89,7 +90,8 @@ public class ConfigManager {
       public void write() {
         config.set(
           "lang",
-          DestroyTheCore.translationsManager.currentLocale.toLanguageTag().toLowerCase()
+          DestroyTheCore.translationsManager.currentLocale.toLanguageTag()
+            .toLowerCase()
         );
         config.set("map", DestroyTheCore.worldsManager.mapName);
       }
@@ -128,7 +130,8 @@ public class ConfigManager {
       @Override
       public void read() {
         DestroyTheCore.game.shops = CoreUtils.listLoader(Game.Shop.class).apply(
-          config.get("shops"));
+          config.get("shops")
+        );
       }
       
       @Override
@@ -139,7 +142,7 @@ public class ConfigManager {
     lobby = new Config("lobby.yml") {
       @Override
       public void read() {
-        DestroyTheCore.game.lobby = (Game.LobbyLocs) config.get("locations");
+        DestroyTheCore.game.lobby = (Game.LobbyPos) config.get("locations");
       }
       
       @Override
@@ -160,7 +163,7 @@ public class ConfigManager {
     ) {
       @Override
       public void read() {
-        DestroyTheCore.game.map = (Game.MapLocs) config.get("locations");
+        DestroyTheCore.game.map = (Game.MapPos) config.get("locations");
       }
       
       @Override

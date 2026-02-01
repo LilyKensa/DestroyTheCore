@@ -10,13 +10,13 @@ import java.util.List;
 import org.bukkit.entity.Player;
 
 public class GiveCommand extends Subcommand {
-  
   public GiveCommand() {
     super("give");
     addArgument(
       "item",
       () -> DestroyTheCore.itemsManager.gens.keySet().stream().map(
-        key -> key.name().toLowerCase()).toList()
+        key -> key.name().toLowerCase()
+      ).toList()
     );
   }
   
@@ -32,6 +32,15 @@ public class GiveCommand extends Subcommand {
       return;
     }
     
+    int amount = 1;
+    if (args.size() >= 2) {
+      try {
+        amount = Integer.parseInt(args.get(1));
+      }
+      catch (NumberFormatException ignored) {
+      }
+    }
+    
     ItemsManager.ItemKey key;
     try {
       key = ItemsManager.ItemKey.valueOf(args.getFirst().toUpperCase());
@@ -42,6 +51,6 @@ public class GiveCommand extends Subcommand {
     }
     
     ItemGen ig = DestroyTheCore.itemsManager.gens.get(key);
-    pl.give(ig.getItem());
+    pl.give(ig.getItem(amount));
   }
 }

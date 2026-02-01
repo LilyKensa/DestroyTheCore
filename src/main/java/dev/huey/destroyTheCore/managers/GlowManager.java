@@ -12,7 +12,7 @@ import com.comphenix.protocol.wrappers.WrappedDataWatcher;
 import com.google.common.reflect.TypeToken;
 import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.utils.CoreUtils;
-import dev.huey.destroyTheCore.utils.LocationUtils;
+import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import java.util.*;
 import java.util.function.Predicate;
@@ -23,12 +23,23 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 public class GlowManager {
   
   enum MetadataBit {
-    ON_FIRE(0b00000001, Player::isVisualFire), SNEAKING(0b00000010,
-      Player::isSneaking), RIDING(0b00000100, p -> false), // This is unused
-    SPRINTING(0b00001000, Player::isSprinting), SWIMMING(0b00010000,
-      Player::isSwimming), INVISIBLE(0b00100000, Player::isInvisible), GLOWING(
-        0b01000000,
-        Player::isGlowing), FLYING(0b10000000, Player::isFlying);
+    ON_FIRE(0b00000001, Player::isVisualFire),
+    SNEAKING(
+      0b00000010,
+      Player::isSneaking
+    ),
+    RIDING(0b00000100, p -> false), // This is unused
+    SPRINTING(0b00001000, Player::isSprinting),
+    SWIMMING(
+      0b00010000,
+      Player::isSwimming
+    ),
+    INVISIBLE(0b00100000, Player::isInvisible),
+    GLOWING(
+      0b01000000,
+      Player::isGlowing
+    ),
+    FLYING(0b10000000, Player::isFlying);
     
     final byte bit;
     final Predicate<Player> predicate;
@@ -61,10 +72,13 @@ public class GlowManager {
   }
   
   boolean shouldSeeGlow(Player viewer, Player target) {
-    return (target.isGlowing() || (isWearingHat(viewer) && LocationUtils.near(
-      target,
-      viewer,
-      15)));
+    return (target.isGlowing()
+      || (isWearingHat(viewer)
+        && LocUtils.near(
+          target,
+          viewer,
+          15
+        )));
   }
   
   void resend(Player viewer, Player target, boolean glow) {
@@ -123,8 +137,10 @@ public class GlowManager {
       
       boolean glow = shouldSeeGlow(viewer, target);
       
-      List<WrappedDataValue> dataValues = packet.getDataValueCollectionModifier().read(
-        0);
+      List<WrappedDataValue> dataValues = packet
+        .getDataValueCollectionModifier().read(
+          0
+        );
       for (WrappedDataValue value : dataValues) {
         if (value.getIndex() != 0) continue;
         

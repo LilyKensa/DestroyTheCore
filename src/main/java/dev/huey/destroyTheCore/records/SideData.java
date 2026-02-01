@@ -12,7 +12,7 @@ import org.bukkit.inventory.Inventory;
 public class SideData {
   
   /** Constants */
-  public static final int maxCoreHealth = 75;
+  static public final int maxCoreHealth = 75;
   
   public int coreHealth = maxCoreHealth;
   public int invulnTicks = 0, clearInvCooldown = 0, extraDamageTicks = 0,

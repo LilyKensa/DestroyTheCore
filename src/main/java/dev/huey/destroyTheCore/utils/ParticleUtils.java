@@ -1,6 +1,7 @@
 package dev.huey.destroyTheCore.utils;
 
 import com.destroystokyo.paper.ParticleBuilder;
+import dev.huey.destroyTheCore.records.Pos;
 import java.util.List;
 import org.apache.logging.log4j.util.TriConsumer;
 import org.bukkit.Color;
@@ -11,21 +12,26 @@ import org.bukkit.entity.Player;
 
 public class ParticleUtils {
   
-  public static void dust(List<Player> players, Location loc, Color color) {
-    new ParticleBuilder(Particle.DUST).receivers(players).location(loc).offset(
-      0,
-      0,
-      0).count(1).color(color).spawn();
+  static public void dust(List<Player> players, Location loc, Color color) {
+    new ParticleBuilder(Particle.DUST)
+      .receivers(players)
+      .location(loc)
+      .count(1)
+      .color(color)
+      .spawn();
   }
   
-  public static void cloud(List<Player> players, Location loc) {
-    new ParticleBuilder(Particle.CLOUD).receivers(players).location(loc).offset(
-      0.6,
-      0.6,
-      0.6).count(15).extra(0.05).spawn();
+  static public void cloud(List<Player> players, Location loc) {
+    new ParticleBuilder(Particle.CLOUD)
+      .receivers(players)
+      .location(loc)
+      .offset(0.6, 0.6, 0.6)
+      .count(15)
+      .extra(0.05)
+      .spawn();
   }
   
-  public static void simpleRegion(
+  static public void simpleRegion(
     List<Player> players, Location loc1, Location loc2, Color color
   ) {
     if (!loc1.getWorld().getName().equals(loc2.getWorld().getName())) return;
@@ -55,24 +61,36 @@ public class ParticleUtils {
       dust(players, loc, color);
     };
     
-    for (double y : new double[]{yMin, yMax}) {
-      for (double z : new double[]{zMin, zMax}) {
+    for (double y : new double[]{
+      yMin, yMax
+    }) {
+      for (double z : new double[]{
+        zMin, zMax
+      }) {
         for (double x = xMin; x <= xMax; x += step) {
           emitter.accept(x, y, z);
         }
       }
     }
     
-    for (double x : new double[]{xMin, xMax}) {
-      for (double z : new double[]{zMin, zMax}) {
+    for (double x : new double[]{
+      xMin, xMax
+    }) {
+      for (double z : new double[]{
+        zMin, zMax
+      }) {
         for (double y = yMin; y <= yMax; y += step) {
           emitter.accept(x, y, z);
         }
       }
     }
     
-    for (double x : new double[]{xMin, xMax}) {
-      for (double y : new double[]{yMin, yMax}) {
+    for (double x : new double[]{
+      xMin, xMax
+    }) {
+      for (double y : new double[]{
+        yMin, yMax
+      }) {
         for (double z = zMin; z <= zMax; z += step) {
           emitter.accept(x, y, z);
         }
@@ -80,15 +98,15 @@ public class ParticleUtils {
     }
   }
   
-  public static void block(List<Player> players, Location loc, Color color) {
+  static public void block(List<Player> players, Location loc, Color color) {
     simpleRegion(players, loc, loc, color);
   }
   
   /** Region with 2 corners */
-  public static void region(
+  static public void region(
     List<Player> players, Location loc1, Location loc2, Color color0, Color color1, Color color2
   ) {
-    if (!LocationUtils.isSameWorld(loc1, loc2)) return;
+    if (!LocUtils.isSameWorld(loc1, loc2)) return;
     World world = loc1.getWorld();
     
     if (loc1.distanceSquared(loc2) > 750000) return;
@@ -96,8 +114,8 @@ public class ParticleUtils {
     block(players, loc1, color1);
     block(players, loc2, color2);
     
-    Location min = LocationUtils.min(loc1, loc2), max = LocationUtils.max(loc1,
-      loc2).add(1, 1, 1);
+    Pos min = LocUtils.min(Pos.of(loc1), Pos.of(loc2));
+    Pos max = LocUtils.max(Pos.of(loc1), Pos.of(loc2)).add(1, 1, 1);
     
     double step = 0.5;
     double xMin = min.getX(), xMax = max.getX();
@@ -107,31 +125,44 @@ public class ParticleUtils {
     TriConsumer<Double, Double, Double> emitter = (x, y, z) -> {
       Location loc = new Location(world, x, y, z);
       if (
-        LocationUtils.closeEnough(loc, loc1) || LocationUtils.closeEnough(loc,
-          loc2)
+        LocUtils.closeEnough(loc, loc1.toBlockLocation().add(0.5, 0.5, 0.5))
+          ||
+          LocUtils.closeEnough(loc, loc2.toBlockLocation().add(0.5, 0.5, 0.5))
       ) return;
       
       dust(players, loc, color0);
     };
     
-    for (double y : new double[]{yMin, yMax}) {
-      for (double z : new double[]{zMin, zMax}) {
+    for (double y : new double[]{
+      yMin, yMax
+    }) {
+      for (double z : new double[]{
+        zMin, zMax
+      }) {
         for (double x = xMin; x <= xMax; x += step) {
           emitter.accept(x, y, z);
         }
       }
     }
     
-    for (double x : new double[]{xMin, xMax}) {
-      for (double z : new double[]{zMin, zMax}) {
+    for (double x : new double[]{
+      xMin, xMax
+    }) {
+      for (double z : new double[]{
+        zMin, zMax
+      }) {
         for (double y = yMin; y <= yMax; y += step) {
           emitter.accept(x, y, z);
         }
       }
     }
     
-    for (double x : new double[]{xMin, xMax}) {
-      for (double y : new double[]{yMin, yMax}) {
+    for (double x : new double[]{
+      xMin, xMax
+    }) {
+      for (double y : new double[]{
+        yMin, yMax
+      }) {
         for (double z = zMin; z <= zMax; z += step) {
           emitter.accept(x, y, z);
         }
@@ -139,16 +170,16 @@ public class ParticleUtils {
     }
   }
   
-  public static void region(
+  static public void region(
     List<Player> players, Location loc1, Location loc2
   ) {
     region(players, loc1, loc2, Color.GRAY, Color.YELLOW, Color.AQUA);
   }
   
-  public static void ring(
+  static public void ring(
     List<Player> players, Location centerLoc, double radius, int count, Color color
   ) {
-    LocationUtils.ring(
+    LocUtils.ring(
       centerLoc,
       radius,
       count,
@@ -158,14 +189,14 @@ public class ParticleUtils {
     );
   }
   
-  public static void ring(
+  static public void ring(
     List<Player> players, Location loc, double radius, Color color
   ) {
     ring(players, loc, radius, 16, color);
   }
   
   /** By Gemini */
-  public static void spiralSphere(
+  static public void spiralSphere(
     Location center, double radius, Particle particleType, int turns, int pointsPerTurn
   ) {
     final int totalPoints = turns * pointsPerTurn;
@@ -200,12 +231,16 @@ public class ParticleUtils {
       
       Location particleLoc = center.clone().add(x_final, y_final, z_final);
       
-      new ParticleBuilder(particleType).allPlayers().location(
-        particleLoc).count(1).extra(0).spawn();
+      new ParticleBuilder(particleType)
+        .allPlayers()
+        .location(particleLoc)
+        .count(1)
+        .extra(0)
+        .spawn();
     }
   }
   
-  public static void spiralSphere(
+  static public void spiralSphere(
     Location center, double radius, Particle particleType
   ) {
     spiralSphere(center, radius, particleType, 15, 30);

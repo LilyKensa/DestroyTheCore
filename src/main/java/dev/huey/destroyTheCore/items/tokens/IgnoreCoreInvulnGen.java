@@ -5,7 +5,7 @@ import dev.huey.destroyTheCore.bases.itemGens.UsableItemGen;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.records.PlayerData;
 import dev.huey.destroyTheCore.records.SideData;
-import dev.huey.destroyTheCore.utils.LocationUtils;
+import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import java.util.List;
@@ -35,13 +35,13 @@ public class IgnoreCoreInvulnGen extends UsableItemGen {
       return;
     }
     
-    PlayerUtils.takeOneItemFromHand(pl);
+//    PlayerUtils.takeOneItemFromHand(pl);
     
     oppositeSideData.invulnTicks = 0;
     DestroyTheCore.boardsManager.refresh();
     
-    Location coreLoc = LocationUtils.live(
-      LocationUtils.selfSide(DestroyTheCore.game.map.core, data.side.opposite())
+    Location coreLoc = LocUtils.live(
+      LocUtils.selfSide(DestroyTheCore.game.map.core, data.side.opposite())
     );
     coreLoc.getBlock().setType(Material.END_STONE);
     

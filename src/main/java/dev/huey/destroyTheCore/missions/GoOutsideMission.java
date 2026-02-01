@@ -9,9 +9,10 @@ import org.bukkit.potion.PotionEffectType;
 
 public class GoOutsideMission extends TimedMission {
   
-  public static boolean isUnderSky(Player pl) {
+  static public boolean isUnderSky(Player pl) {
     return (pl.getY() > pl.getWorld().getHighestBlockAt(
-      pl.getLocation()).getLocation().getY());
+      pl.getLocation()
+    ).getLocation().getY());
   }
   
   public GoOutsideMission() {

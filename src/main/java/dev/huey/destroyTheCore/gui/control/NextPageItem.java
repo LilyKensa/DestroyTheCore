@@ -21,19 +21,22 @@ public class NextPageItem extends PageItem {
     ItemBuilder builder = new ItemBuilder(
       gui.hasNextPage() ? Material.GLOWSTONE_DUST : Material.GUNPOWDER
     );
-    builder.setDisplayName(TextUtils.$r(
-      "gui.buttons.next-page.title")).addLoreLines(
-        gui.hasNextPage() ? TextUtils.$r(
-          "gui.buttons.next-page.desc",
-          List.of(
-            Placeholder.component(
-              "next",
-              Component.text(gui.getCurrentPage() + 2)
-            ),
-            Placeholder.component("max", Component.text(gui.getPageAmount()))
-          )
-        ) : TextUtils.$r("gui.buttons.next-page.desc-end")
-      );
+    builder.setDisplayName(
+      TextUtils.$r(
+        "gui.buttons.next-page.title"
+      )
+    ).addLoreLines(
+      gui.hasNextPage() ? TextUtils.$r(
+        "gui.buttons.next-page.desc",
+        List.of(
+          Placeholder.component(
+            "next",
+            Component.text(gui.getCurrentPage() + 2)
+          ),
+          Placeholder.component("max", Component.text(gui.getPageAmount()))
+        )
+      ) : TextUtils.$r("gui.buttons.next-page.desc-end")
+    );
     
     return builder;
   }

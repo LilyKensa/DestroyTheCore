@@ -25,8 +25,10 @@ public class DiscountTraderMission extends InstantMission {
   
   @Override
   public void run() {
-    WanderingTrader trader = (WanderingTrader) loc.getWorld().spawnEntity(loc,
-      EntityType.WANDERING_TRADER);
+    WanderingTrader trader = (WanderingTrader) centerLoc.getWorld().spawnEntity(
+      centerLoc,
+      EntityType.WANDERING_TRADER
+    );
     trader.customName(
       TextUtils.$("missions.discount-trader.trader").color(null)
     );

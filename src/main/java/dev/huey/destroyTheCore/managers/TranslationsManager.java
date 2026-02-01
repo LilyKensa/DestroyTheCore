@@ -19,16 +19,18 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 public class TranslationsManager {
   
-  public static final Key key = Key.key("destroy-the-core:translations");
+  static public final Key key = Key.key("destroy-the-core:translations");
   
-  public static final List<Locale> availableLocales = List.of(
+  static public final List<Locale> availableLocales = List.of(
     Locale.US,
     Locale.TAIWAN
   );
-  public static final List<String> availableLocaleTags = availableLocales.stream().map(
-    locale -> locale.toLanguageTag().toLowerCase()).toList();
+  static public final List<String> availableLocaleTags = availableLocales
+    .stream().map(
+      locale -> locale.toLanguageTag().toLowerCase()
+    ).toList();
   
-  public static class Translator {
+  static public class Translator {
     
     public MiniMessage mm = MiniMessage.miniMessage();
     
@@ -45,8 +47,10 @@ public class TranslationsManager {
     }
     
     public String get(Locale locale, String key) {
-      String notFound = "%s:%s".formatted(locale.toLanguageTag().toLowerCase(),
-        key);
+      String notFound = "%s:%s".formatted(
+        locale.toLanguageTag().toLowerCase(),
+        key
+      );
       if (!store.containsKey(locale)) return notFound;
       Map<String, String> map = store.get(locale);
       if (!map.containsKey(key)) return notFound;
@@ -105,7 +109,10 @@ public class TranslationsManager {
   
   public Component get(String key, List<TagResolver> placeholders) {
     return translator.translate(currentLocale, key, placeholders).colorIfAbsent(
-      NamedTextColor.GRAY).decorationIfAbsent(TextDecoration.ITALIC,
-        TextDecoration.State.FALSE);
+      NamedTextColor.GRAY
+    ).decorationIfAbsent(
+      TextDecoration.ITALIC,
+      TextDecoration.State.FALSE
+    );
   }
 }

@@ -3,6 +3,8 @@ package dev.huey.destroyTheCore.commands;
 import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.Subcommand;
+import dev.huey.destroyTheCore.utils.CoreUtils;
+import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import java.util.Arrays;
@@ -31,8 +33,11 @@ public class JoinTeamCommand extends Subcommand {
       PlayerUtils.prefixedSend(pl, TextUtils.$("commands.join.unclear"));
     }
     
-    Game.Side side = Arrays.stream(Game.Side.values()).filter(s -> s.id.equals(
-      args.getFirst())).findAny().orElse(null);
+    Game.Side side = Arrays.stream(Game.Side.values()).filter(
+      s -> s.id.equals(
+        args.getFirst()
+      )
+    ).findAny().orElse(null);
     if (side == null) {
       PlayerUtils.prefixedSend(pl, TextUtils.$("commands.join.side-not-found"));
       return;
@@ -67,8 +72,10 @@ public class JoinTeamCommand extends Subcommand {
     }
     else {
       if (
-        !PlayerUtils.isAdmin(pl) && DestroyTheCore.worldsManager.checkLiveWorld(
-          pl.getLocation())
+        !PlayerUtils.isAdmin(pl)
+          && LocUtils.inLive(
+            pl.getLocation()
+          )
       ) {
         PlayerUtils.prefixedSend(pl, TextUtils.$("commands.join.only-lobby"));
         return;
@@ -89,9 +96,11 @@ public class JoinTeamCommand extends Subcommand {
     DestroyTheCore.game.getPlayerData(target).join(side);
     DestroyTheCore.game.enforceTeam(target);
     
-    PlayerUtils.refreshSpectatorAbilities(target);
-    PlayerUtils.hideSpectators();
-    
     DestroyTheCore.boardsManager.refresh(target);
+    
+    CoreUtils.setTickOut(() -> {
+      PlayerUtils.refreshSpectatorAbilities(target);
+      PlayerUtils.hideSpectators();
+    });
   }
 }

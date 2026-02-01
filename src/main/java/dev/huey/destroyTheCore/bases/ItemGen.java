@@ -18,7 +18,7 @@ import org.bukkit.persistence.PersistentDataType;
 public class ItemGen {
   
   /** Used to distinguish item-gens, stored data is the name of {@link #id} */
-  public static final NamespacedKey dataNamespace = new NamespacedKey(
+  static public final NamespacedKey dataNamespace = new NamespacedKey(
     DestroyTheCore.instance,
     "custom-item"
   );
@@ -62,9 +62,11 @@ public class ItemGen {
       
       computeMeta(meta);
       
-      meta.getPersistentDataContainer().set(dataNamespace,
+      meta.getPersistentDataContainer().set(
+        dataNamespace,
         PersistentDataType.STRING,
-        id.name());
+        id.name()
+      );
     });
     
     return item;
@@ -91,8 +93,12 @@ public class ItemGen {
     
     PersistentDataContainer container = meta.getPersistentDataContainer();
     if (!container.has(dataNamespace)) return false;
-    return this.id.name().equals(container.get(dataNamespace,
-      PersistentDataType.STRING));
+    return this.id.name().equals(
+      container.get(
+        dataNamespace,
+        PersistentDataType.STRING
+      )
+    );
   }
   
   /**
