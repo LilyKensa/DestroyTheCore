@@ -38,8 +38,13 @@ public class AntiGravityMission extends TimedMission {
             new PotionEffect(PotionEffectType.LEVITATION, 15, 5, true, false)
           );
           
-          new ParticleBuilder(Particle.CLOUD).allPlayers().location(
-            p.getLocation()).offset(0.1, 0, 0.1).count(2).extra(0.05).spawn();
+          new ParticleBuilder(Particle.CLOUD)
+            .allPlayers()
+            .location(p.getLocation())
+            .offset(0.1, 0, 0.1)
+            .count(2)
+            .extra(0.05)
+            .spawn();
         }
       }
     }

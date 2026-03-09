@@ -10,6 +10,7 @@ import dev.huey.destroyTheCore.utils.TextUtils;
 import java.util.List;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -20,15 +21,19 @@ public class RandomRoleItem extends GUIItem {
   
   @Override
   public ItemProvider getItemProvider() {
-    return new ItemBuilder(Material.REDSTONE).setDisplayName(TextUtils.$r(
-      "gui.buttons.pick-random.title"));
+    return new ItemBuilder(Material.REDSTONE).setDisplayName(
+      TextUtils.$r(
+        "gui.buttons.pick-random.title"
+      )
+    );
   }
   
   @Override
   public void handleClick(ClickType click, Player pl, InventoryClickEvent ev) {
     Role role = RandomUtils.pick(
       DestroyTheCore.rolesManager.roles.values().stream().filter(
-        r -> r.id != RolesManager.RoleKey.DEFAULT).toList()
+        r -> r.id != RolesManager.RoleKey.DEFAULT
+      ).toList()
     );
     
     PlayerUtils.prefixedBroadcast(
@@ -39,6 +44,12 @@ public class RandomRoleItem extends GUIItem {
           Placeholder.unparsed("role", role.name)
         )
       )
+    );
+    pl.playSound(
+      pl.getLocation(),
+      Sound.ENTITY_EXPERIENCE_ORB_PICKUP,
+      1, // Volume
+      1 // Pitch
     );
     
     DestroyTheCore.rolesManager.setRole(pl, role);

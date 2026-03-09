@@ -41,14 +41,19 @@ public class EditorTool {
     ItemMeta meta = item.getItemMeta();
     
     meta.displayName(
-      toolPrefix.append(TextUtils.$("tools." + id).color(
-        NamedTextColor.GOLD)).decoration(TextDecoration.ITALIC, false)
+      toolPrefix.append(
+        TextUtils.$("tools." + id).color(
+          NamedTextColor.GOLD
+        )
+      ).decoration(TextDecoration.ITALIC, false)
     );
     meta.setEnchantmentGlintOverride(true);
     
-    meta.getPersistentDataContainer().set(dataNamespace,
+    meta.getPersistentDataContainer().set(
+      dataNamespace,
       PersistentDataType.STRING,
-      id);
+      id
+    );
     
     item.setItemMeta(meta);
     return item;

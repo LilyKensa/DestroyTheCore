@@ -4,6 +4,7 @@ import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.managers.RolesManager;
+import dev.huey.destroyTheCore.records.Pos;
 import dev.huey.destroyTheCore.utils.*;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -27,16 +28,18 @@ public class ConstructorRole extends Role {
   
   static final ItemStack dummyAxe = new ItemStack(Material.NETHERITE_AXE);
   
-  public static void onBlockBreak(Player pl, Block block) {
+  static public void onBlockBreak(Player pl, Block block) {
     if (
       DestroyTheCore.game.getPlayerData(
-        pl).role.id != RolesManager.RoleKey.CONSTRUCTOR
+        pl
+      ).role.id != RolesManager.RoleKey.CONSTRUCTOR
     ) return;
     
     if (block.isPreferredTool(dummyAxe)) {
       if (
         Stream.of(Tag.PLANKS, Tag.WOODEN_SLABS, Tag.WOODEN_STAIRS).anyMatch(
-          t -> t.isTagged(block.getType()))
+          t -> t.isTagged(block.getType())
+        )
       ) {
         pl.addPotionEffect(
           new PotionEffect(PotionEffectType.HASTE, 40, 0, true, false)
@@ -68,29 +71,41 @@ public class ConstructorRole extends Role {
     for (int i = 0; i < 11; ++i) skillPlacePos.add(new HashSet<>());
     
     for (int i = 0; i < 4; ++i) {
-      for (int x : new int[]{i, -i}) for (
-                                          int z = -i; z <= i; ++z
+      for (int x : new int[]{
+        i, -i
+      }) for (
+              int z = -i; z <= i; ++z
       ) skillPlacePos.get(i).add(new Vector(x, -1, z));
-      for (int z : new int[]{i, -i}) for (
-                                          int x = -i; x <= i; ++x
+      for (int z : new int[]{
+        i, -i
+      }) for (
+              int x = -i; x <= i; ++x
       ) skillPlacePos.get(i).add(new Vector(x, -1, z));
     }
     
     for (int i = 4; i < 7; ++i) {
-      for (int x : new int[]{-3, 3}) for (
-                                          int z = -3; z <= 3; ++z
+      for (int x : new int[]{
+        -3, 3
+      }) for (
+              int z = -3; z <= 3; ++z
       ) skillPlacePos.get(i).add(new Vector(x, i - 4, z));
-      for (int z : new int[]{-3, 3}) for (
-                                          int x = -3; x <= 3; ++x
+      for (int z : new int[]{
+        -3, 3
+      }) for (
+              int x = -3; x <= 3; ++x
       ) skillPlacePos.get(i).add(new Vector(x, i - 4, z));
     }
     
     for (int i = 7; i < 11; ++i) {
-      for (int x : new int[]{-10 + i, 10 - i}) for (
-                                                    int z = -10 + i; z <= 10 - i; ++z
+      for (int x : new int[]{
+        -10 + i, 10 - i
+      }) for (
+              int z = -10 + i; z <= 10 - i; ++z
       ) skillPlacePos.get(i).add(new Vector(x, 3, z));
-      for (int z : new int[]{-10 + i, 10 - i}) for (
-                                                    int x = -10 + i; x <= 10 - i; ++x
+      for (int z : new int[]{
+        -10 + i, 10 - i
+      }) for (
+              int x = -10 + i; x <= 10 - i; ++x
       ) skillPlacePos.get(i).add(new Vector(x, 3, z));
     }
   }
@@ -117,7 +132,7 @@ public class ConstructorRole extends Role {
     );
     
     new BukkitRunnable() {
-      final Location startLoc = LocationUtils.toBlockCenter(pl.getLocation());
+      final Location startLoc = LocUtils.toBlockCenter(pl.getLocation());
       int step = 0;
       
       @Override
@@ -125,15 +140,19 @@ public class ConstructorRole extends Role {
         for (Vector vec : skillPlacePos.get(step)) {
           Location loc = startLoc.clone().add(vec);
           if (loc.getBlock().isCollidable()) continue;
-          if (LocationUtils.nearSpawn(loc)) continue;
+          if (LocUtils.nearSpawn(loc)) continue;
           
-          Location restCenter = LocationUtils.live(
-            DestroyTheCore.game.map.restArea
-          );
-          if (restCenter != null) restCenter.setX(0);
-          if (
-            restCenter != null && LocationUtils.near(loc, restCenter, 6)
-          ) continue;
+          if (DestroyTheCore.game.map.restArea != null) {
+            for (Pos rest : new Pos[]{
+              DestroyTheCore.game.map.restArea, LocUtils.flip(
+                DestroyTheCore.game.map.restArea
+              )
+            }) {
+              if (
+                LocUtils.near(Pos.of(loc), rest, 6)
+              ) return;
+            }
+          }
           
           loc.getBlock().setType(Material.OAK_PLANKS);
           

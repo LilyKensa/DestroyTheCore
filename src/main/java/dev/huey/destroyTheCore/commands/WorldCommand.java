@@ -1,7 +1,6 @@
 package dev.huey.destroyTheCore.commands;
 
 import dev.huey.destroyTheCore.bases.Subcommand;
-import dev.huey.destroyTheCore.utils.LocationUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import java.util.List;
@@ -45,6 +44,6 @@ public class WorldCommand extends Subcommand {
       return;
     }
     
-    pl.teleport(LocationUtils.toSpawnPoint(world.getSpawnLocation()));
+    pl.teleport(world.getSpawnLocation().toBlockLocation().add(0.5, 0.25, 0.5));
   }
 }

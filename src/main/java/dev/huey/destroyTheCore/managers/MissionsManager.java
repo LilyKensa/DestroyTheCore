@@ -18,8 +18,8 @@ import org.bukkit.scoreboard.Team;
 
 public class MissionsManager {
   
-  public static Component prefix;
-  public static final int waitingTicks = 60 * 20;
+  static public Component prefix;
+  static public final int waitingTicks = 60 * 20;
   
   public boolean active = false;
   public Mission mission;
@@ -34,8 +34,10 @@ public class MissionsManager {
   public void start() {
     prefix = TextUtils.$("mission.prefix");
     
-    Scoreboard board = Bukkit.getServer().getScoreboardManager().getMainScoreboard();
-    team = board.registerNewTeam("mission");
+    Scoreboard board = Bukkit.getServer().getScoreboardManager()
+      .getMainScoreboard();
+    team = board.getTeam("mission");
+    if (team == null) team = board.registerNewTeam("mission");
     team.color(NamedTextColor.YELLOW);
     team.prefix(
       Component.text(PlainTextComponentSerializer.plainText().serialize(prefix))

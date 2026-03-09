@@ -39,8 +39,10 @@ public class LotteryGen extends UsableItemGen {
     PlayerUtils.takeOneItemFromHand(pl);
     
     final Location centerLoc = pl.getLocation().add(0, 0.1, 0);
-    final int percentage = Math.floorMod(RandomUtils.nextInt(),
-      100) + data.lotteryShift;
+    final int percentage = Math.floorMod(
+      RandomUtils.nextInt(),
+      100
+    ) + data.lotteryShift;
     new BukkitRunnable() {
       int age = 0;
       Color color = Color.GRAY;
@@ -49,12 +51,12 @@ public class LotteryGen extends UsableItemGen {
       public void run() {
         if (age == 20) {
           int totalChance = 0;
-          if (percentage < (totalChance += 15)) {
+          if (percentage < (totalChance += 25)) {
             data.lotteryShift += 2;
             giveTreasure(pl);
             color = Color.ORANGE;
           }
-          else if (percentage < (totalChance += 35)) {
+          else if (percentage < (totalChance += 40)) {
             data.lotteryShift += 1;
             giveNormal(pl);
             color = Color.FUCHSIA;
@@ -122,8 +124,11 @@ public class LotteryGen extends UsableItemGen {
     item.editMeta(meta -> {
       if (
         !DestroyTheCore.itemsManager.isGen(
-          item) || DestroyTheCore.itemsManager.gens.get(
-            ItemsManager.ItemKey.PLACEHOLDER).checkItem(item)
+          item
+        )
+          || DestroyTheCore.itemsManager.gens.get(
+            ItemsManager.ItemKey.PLACEHOLDER
+          ).checkItem(item)
       ) return;
       
       List<Component> lore = meta.lore();
@@ -132,31 +137,18 @@ public class LotteryGen extends UsableItemGen {
       }
       
       if (
-        !lore.isEmpty() && (lore.getLast() instanceof TextComponent lastLore) && !lastLore.content().startsWith(
-          "-")
+        !lore.isEmpty()
+          && (lore.getLast() instanceof TextComponent lastLore)
+          && !lastLore.content().startsWith(
+            "-"
+          )
       ) lore.add(Component.empty());
       lore.add(TextUtils.$("items.lottery.item-lore"));
       
       meta.lore(lore);
     });
     
-    if (DestroyTheCore.game.getPlayerData(pl).alive) {
-      pl.give(item);
-    }
-    else if (DestroyTheCore.game.map.spawnpoints != null) {
-      pl.sendActionBar(TextUtils.$("items.lottery.sent-to-spawn"));
-      pl.getWorld().dropItemNaturally(
-        LocationUtils.live(
-          LocationUtils.selfSide(
-            LocationUtils.toSpawnPoint(
-              RandomUtils.pick(DestroyTheCore.game.map.spawnpoints)
-            ),
-            pl
-          )
-        ),
-        item
-      );
-    }
+    PlayerUtils.give(pl, item);
     
     Consumer<Component> announcer = comp -> {
       if (big) {
@@ -175,7 +167,8 @@ public class LotteryGen extends UsableItemGen {
           Placeholder.component(
             "item",
             item.effectiveName().colorIfAbsent(
-              item.getItemMeta().hasRarity() ? item.getItemMeta().getRarity().color() : NamedTextColor.WHITE
+              item.getItemMeta().hasRarity() ? item.getItemMeta().getRarity()
+                .color() : NamedTextColor.WHITE
             )
           ),
           Placeholder.component("amount", Component.text(item.getAmount()))
@@ -237,9 +230,11 @@ public class LotteryGen extends UsableItemGen {
       true
     );
     
-    pl.give(
+    PlayerUtils.give(
+      pl,
       DestroyTheCore.itemsManager.gens.get(
-        ItemsManager.ItemKey.RANDOM_ROLE).getItem()
+        ItemsManager.ItemKey.RANDOM_ROLE
+      ).getItem()
     );
   }
   
@@ -331,8 +326,10 @@ public class LotteryGen extends UsableItemGen {
     Pair.of(
       2,
       pl -> {
-        for (int i = 0; i < 9; ++i) pl.getInventory().setItem(i,
-          new ItemStack(Material.ROTTEN_FLESH));
+        for (int i = 0; i < 9; ++i) pl.getInventory().setItem(
+          i,
+          new ItemStack(Material.ROTTEN_FLESH)
+        );
         
         announce(
           TextUtils.$(
@@ -349,7 +346,8 @@ public class LotteryGen extends UsableItemGen {
         
         // Offset the sin value of killing teammates
         DestroyTheCore.game.getPlayerData(pl).addRespawnTime(
-          -PlayerData.killPunishment * teammates.size());
+          -PlayerData.killPunishment * teammates.size()
+        );
         
         for (Player p : teammates) {
           if (!PlayerUtils.shouldHandle(p)) continue;
@@ -372,7 +370,8 @@ public class LotteryGen extends UsableItemGen {
                     "action",
                     RandomUtils.pick(
                       TextUtils.translateRaw(
-                        "items.lottery.announce.kill-actions").split("\\|")
+                        "items.lottery.announce.kill-actions"
+                      ).split("\\|")
                     )
                   ),
                   Placeholder.component(
@@ -418,21 +417,23 @@ public class LotteryGen extends UsableItemGen {
     Pair.of(
       1,
       pl -> {
-        for (PotionEffectType type : List.of(
-          PotionEffectType.WITHER,
-          PotionEffectType.REGENERATION,
-          PotionEffectType.STRENGTH,
-          PotionEffectType.WEAKNESS,
-          PotionEffectType.SPEED,
-          PotionEffectType.SLOWNESS,
-          PotionEffectType.HASTE,
-          PotionEffectType.MINING_FATIGUE,
-          PotionEffectType.DARKNESS,
-          PotionEffectType.HUNGER,
-          PotionEffectType.DOLPHINS_GRACE,
-          PotionEffectType.JUMP_BOOST,
-          PotionEffectType.SLOW_FALLING
-        )) {
+        for (
+          PotionEffectType type : List.of(
+            PotionEffectType.WITHER,
+            PotionEffectType.REGENERATION,
+            PotionEffectType.STRENGTH,
+            PotionEffectType.WEAKNESS,
+            PotionEffectType.SPEED,
+            PotionEffectType.SLOWNESS,
+            PotionEffectType.HASTE,
+            PotionEffectType.MINING_FATIGUE,
+            PotionEffectType.DARKNESS,
+            PotionEffectType.HUNGER,
+            PotionEffectType.DOLPHINS_GRACE,
+            PotionEffectType.JUMP_BOOST,
+            PotionEffectType.SLOW_FALLING
+          )
+        ) {
           pl.addPotionEffect(new PotionEffect(type, 10 * 20, 9, true, true));
         }
         

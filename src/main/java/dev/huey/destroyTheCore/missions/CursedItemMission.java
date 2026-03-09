@@ -28,46 +28,48 @@ import org.bukkit.potion.PotionEffectType;
 
 public class CursedItemMission extends TimedMission implements Listener {
   
-  public static final NamespacedKey dataNamespace = new NamespacedKey(
+  static public final NamespacedKey dataNamespace = new NamespacedKey(
     DestroyTheCore.instance,
     "cursed-item-mission-item"
   );
   
   static Item itemEntity;
   
-  public static void setItemEntity(Item entity) {
+  static public void setItemEntity(Item entity) {
     DestroyTheCore.missionsManager.team.addEntity(entity);
     entity.setGlowing(true);
     
     itemEntity = entity;
   }
   
-  public static ItemStack getItem() {
+  static public ItemStack getItem() {
     ItemStack item = new ItemStack(Material.RABBIT_FOOT);
     
     item.editMeta(meta -> {
       meta.displayName(TextUtils.$("missions.cursed-item.item"));
       
-      meta.getPersistentDataContainer().set(dataNamespace,
+      meta.getPersistentDataContainer().set(
+        dataNamespace,
         PersistentDataType.BOOLEAN,
-        true);
+        true
+      );
     });
     
     return item;
   }
   
-  public static void dropItem(Location there) {
+  static public void dropItem(Location there) {
     setItemEntity(there.getWorld().dropItem(there, getItem()));
   }
   
-  public static boolean isItem(ItemStack item) {
+  static public boolean isItem(ItemStack item) {
     if (item == null || item.isEmpty()) return false;
     if (!item.hasItemMeta()) return false;
     
     return item.getItemMeta().getPersistentDataContainer().has(dataNamespace);
   }
   
-  public static boolean hasItem(Player pl) {
+  static public boolean hasItem(Player pl) {
     for (ItemStack item : pl.getInventory().getContents()) {
       if (isItem(item)) return true;
     }
@@ -81,7 +83,7 @@ public class CursedItemMission extends TimedMission implements Listener {
   
   @Override
   public void innerStart() {
-    dropItem(loc);
+    dropItem(centerLoc);
   }
   
   final int maxHolding = 10 * 20 / TicksManager.updateRate;
@@ -122,7 +124,8 @@ public class CursedItemMission extends TimedMission implements Listener {
         comp.append(Component.text("["));
         for (int i = 0; i < maxHolding; ++i) comp.append(
           Component.text("■").color(
-            i <= holding ? NamedTextColor.RED : NamedTextColor.DARK_GRAY)
+            i <= holding ? NamedTextColor.RED : NamedTextColor.DARK_GRAY
+          )
         );
         comp.append(Component.text("]"));
         p.sendActionBar(comp.colorIfAbsent(NamedTextColor.GRAY));
@@ -144,8 +147,11 @@ public class CursedItemMission extends TimedMission implements Listener {
   @Override
   public void innerFinish() {
     if (itemEntity != null && !itemEntity.isDead()) {
-      new ParticleBuilder(Particle.LARGE_SMOKE).allPlayers().location(
-        itemEntity.getLocation()).extra(0).spawn();
+      new ParticleBuilder(Particle.LARGE_SMOKE)
+        .allPlayers()
+        .location(itemEntity.getLocation())
+        .extra(0)
+        .spawn();
       
       itemEntity.remove();
     }

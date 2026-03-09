@@ -4,43 +4,43 @@ import java.util.*;
 
 public class RandomUtils {
   
-  public static final Random random = new Random();
+  static public final Random random = new Random();
   
-  public static int nextInt() {
+  static public int nextInt() {
     return random.nextInt();
   }
   
-  public static int range(int l, int r) {
+  static public int range(int l, int r) {
     return l + Math.floorMod(nextInt(), r - l);
   }
   
-  public static int range(int r) {
+  static public int range(int r) {
     return range(0, r);
   }
   
-  public static double nextDouble() {
+  static public double nextDouble() {
     return random.nextDouble();
   }
   
-  public static double aroundZero(double off) {
+  static public double aroundZero(double off) {
     return nextDouble() * (off * 2) - off;
   }
   
-  public static boolean hit(double chance) {
+  static public boolean hit(double chance) {
     return nextDouble() < chance;
   }
   
-  public static <T> T pick(List<T> list) {
+  static public <T> T pick(List<T> list) {
     if (list.isEmpty()) return null;
     
     return list.get(Math.floorMod(nextInt(), list.size()));
   }
   
-  public static <T> T pick(Set<T> set) {
+  static public <T> T pick(Set<T> set) {
     return pick(new ArrayList<>(set));
   }
   
-  public static <T> T pick(T... array) {
+  static public <T> T pick(T... array) {
     return pick(Arrays.asList(array));
   }
 }

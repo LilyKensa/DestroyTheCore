@@ -15,6 +15,7 @@ import org.bukkit.event.Listener;
 public abstract class ProgressiveMission extends Mission implements Listener {
   
   Map<Game.Side, BossBar> bars = new HashMap();
+  float displayRatio;
   
   public ProgressiveMission(String id) {
     super(id);
@@ -43,7 +44,8 @@ public abstract class ProgressiveMission extends Mission implements Listener {
     for (Player p : Bukkit.getOnlinePlayers()) {
       PlayerData d = DestroyTheCore.game.getPlayerData(p);
       Game.Side firstSide = d.side.equals(
-        Game.Side.SPECTATOR) ? Game.Side.RED : d.side;
+        Game.Side.SPECTATOR
+      ) ? Game.Side.RED : d.side;
       bars.get(firstSide).addViewer(p);
       bars.get(firstSide.opposite()).addViewer(p);
     }
@@ -51,11 +53,20 @@ public abstract class ProgressiveMission extends Mission implements Listener {
     innerStart();
   }
   
+  public float progress(Game.Side side) {
+    BossBar bar = bars.get(side);
+    return bar.progress();
+  }
+  
   public void progress(Game.Side side, float value) {
     if (!bars.containsKey(side)) return;
     BossBar bar = bars.get(side);
     
-    bar.progress(value);
+    while (value * displayRatio >= 1) {
+      displayRatio /= 2;
+    }
+    
+    bar.progress(value * displayRatio);
   }
   
   @Override

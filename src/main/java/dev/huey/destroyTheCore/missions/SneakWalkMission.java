@@ -38,7 +38,8 @@ public class SneakWalkMission extends ProgressiveMission implements Listener {
     dist.put(
       data.side,
       dist.get(data.side) + ev.getTo().clone().subtract(
-        ev.getFrom().clone()).length()
+        ev.getFrom().clone()
+      ).length()
     );
     progress(data.side, (float) Math.min(dist.get(data.side) / 200D, 1));
   }
@@ -49,7 +50,9 @@ public class SneakWalkMission extends ProgressiveMission implements Listener {
   
   @Override
   public void innerFinish() {
-    for (Game.Side side : new Game.Side[]{Game.Side.RED, Game.Side.GREEN}) {
+    for (Game.Side side : new Game.Side[]{
+      Game.Side.RED, Game.Side.GREEN
+    }) {
       if (dist.get(side) > dist.get(side.opposite())) {
         declareWinner(side);
         return;

@@ -21,19 +21,22 @@ public class PrevPageItem extends PageItem {
     ItemBuilder builder = new ItemBuilder(
       gui.hasPreviousPage() ? Material.GLOWSTONE_DUST : Material.GUNPOWDER
     );
-    builder.setDisplayName(TextUtils.$r(
-      "gui.buttons.prev-page.title")).addLoreLines(
-        gui.hasNextPage() ? TextUtils.$r(
-          "gui.buttons.prev-page.desc",
-          List.of(
-            Placeholder.component(
-              "prev",
-              Component.text(gui.getCurrentPage() + 2)
-            ),
-            Placeholder.component("max", Component.text(gui.getPageAmount()))
-          )
-        ) : TextUtils.$r("gui.buttons.prev-page.desc-end")
-      );
+    builder.setDisplayName(
+      TextUtils.$r(
+        "gui.buttons.prev-page.title"
+      )
+    ).addLoreLines(
+      gui.hasNextPage() ? TextUtils.$r(
+        "gui.buttons.prev-page.desc",
+        List.of(
+          Placeholder.component(
+            "prev",
+            Component.text(gui.getCurrentPage() + 2)
+          ),
+          Placeholder.component("max", Component.text(gui.getPageAmount()))
+        )
+      ) : TextUtils.$r("gui.buttons.prev-page.desc-end")
+    );
     return builder;
   }
 }

@@ -33,7 +33,6 @@ public class CommandsManager implements TabCompleter, CommandExecutor {
       new ReviveCommand(),
       new EditCommand(),
       new WarpCommand(),
-      new SnapCommand(),
       new GiveCommand(),
       new StopCommand(),
       new ResetCommand(),
@@ -42,7 +41,8 @@ public class CommandsManager implements TabCompleter, CommandExecutor {
       new LanguageCommand(),
       new MapCommand(),
       new ShopCommand(),
-      new HelpCommand()
+      new HelpCommand(),
+      new StatsCommand()
     );
   }
   
@@ -54,7 +54,7 @@ public class CommandsManager implements TabCompleter, CommandExecutor {
   
   @Override
   public List<String> onTabComplete(
-                                    CommandSender sender, Command command, String label, String[] args
+    CommandSender sender, Command command, String label, String[] args
   ) {
     String lastArg = args[args.length - 1];
     
@@ -77,7 +77,7 @@ public class CommandsManager implements TabCompleter, CommandExecutor {
   
   @Override
   public boolean onCommand(
-                           CommandSender sender, Command command, String label, String[] args
+    CommandSender sender, Command command, String label, String[] args
   ) {
     if (!(sender instanceof Player pl)) return true;
     
@@ -107,13 +107,15 @@ public class CommandsManager implements TabCompleter, CommandExecutor {
   
   public List<String> complete(String name, List<String> args) {
     Optional<Subcommand> findSubcommand = subcommands.stream().filter(
-      c -> c.name.equals(name)).findAny();
+      c -> c.name.equals(name)
+    ).findAny();
     
     if (findSubcommand.isEmpty()) return List.of();
     if (findSubcommand.get().arguments.size() < args.size()) return List.of();
     
     return findSubcommand.get().arguments.get(
-      args.size() - 1).completionsSupplier.get();
+      args.size() - 1
+    ).completionsSupplier.get();
   }
   
   public void dispatch(Player pl, String name, List<String> args) {

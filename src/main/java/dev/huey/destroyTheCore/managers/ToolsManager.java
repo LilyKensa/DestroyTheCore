@@ -88,7 +88,8 @@ public class ToolsManager {
     ItemStack item = ev.getItem();
     
     if (
-      ev.getAction() != Action.RIGHT_CLICK_AIR && ev.getAction() != Action.RIGHT_CLICK_BLOCK
+      ev.getAction() != Action.RIGHT_CLICK_AIR
+        && ev.getAction() != Action.RIGHT_CLICK_BLOCK
     ) return;
     if (item == null || item.getType().isAir()) return;
     

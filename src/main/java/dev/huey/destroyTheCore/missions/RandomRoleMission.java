@@ -21,7 +21,8 @@ public class RandomRoleMission extends InstantMission {
     
     Role role = RandomUtils.pick(
       DestroyTheCore.rolesManager.roles.values().stream().filter(
-        r -> r.id != RolesManager.RoleKey.DEFAULT).toList()
+        r -> r.id != RolesManager.RoleKey.DEFAULT
+      ).toList()
     );
     
     DestroyTheCore.rolesManager.setRole(pl, role);

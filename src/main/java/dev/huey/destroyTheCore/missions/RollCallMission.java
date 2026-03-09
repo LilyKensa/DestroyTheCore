@@ -4,10 +4,10 @@ import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.missions.ProgressiveMission;
 import dev.huey.destroyTheCore.records.PlayerData;
-import dev.huey.destroyTheCore.utils.LocationUtils;
+import dev.huey.destroyTheCore.records.Pos;
+import dev.huey.destroyTheCore.utils.LocUtils;
 import java.util.HashMap;
 import java.util.Map;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class RollCallMission extends ProgressiveMission {
@@ -31,17 +31,15 @@ public class RollCallMission extends ProgressiveMission {
       Map<Game.Side, Integer> all = new HashMap<>();
       Map<Game.Side, Integer> attended = new HashMap<>();
       
-      for (Player p : Bukkit.getOnlinePlayers()) {
+      for (Player p : DestroyTheCore.worldsManager.live.getPlayers()) {
         PlayerData d = DestroyTheCore.game.getPlayerData(p);
         
         all.put(d.side, all.getOrDefault(d.side, 0) + 1);
         
         if (
-          LocationUtils.near(
-            p.getLocation(),
-            LocationUtils.live(
-              LocationUtils.selfSide(DestroyTheCore.game.map.core, p)
-            ),
+          LocUtils.near(
+            Pos.of(p),
+            LocUtils.selfSide(DestroyTheCore.game.map.core, p),
             6
           )
         ) {
@@ -49,7 +47,8 @@ public class RollCallMission extends ProgressiveMission {
         }
       }
       
-      for (Game.Side side : new Game.Side[]{Game.Side.RED, Game.Side.GREEN,
+      for (Game.Side side : new Game.Side[]{
+        Game.Side.RED, Game.Side.GREEN,
       }) {
         int allCount = all.getOrDefault(side, 0);
         if (allCount == 0) allCount = 1;

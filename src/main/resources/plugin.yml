@@ -27,6 +27,8 @@ commands:
     description: Reset the game
   revive:
     description: Revive somebody
+  stats:
+    description: See other player's stats
 permissions:
   dtc.admin:
     description: The admin permission

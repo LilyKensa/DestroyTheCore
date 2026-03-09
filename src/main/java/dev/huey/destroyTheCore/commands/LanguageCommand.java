@@ -22,7 +22,8 @@ public class LanguageCommand extends Subcommand {
     if (args.isEmpty()) {
       PlayerUtils.prefixedSend(
         pl,
-        "Current locale is " + DestroyTheCore.translationsManager.currentLocale.toLanguageTag().toLowerCase(),
+        "Current locale is " + DestroyTheCore.translationsManager.currentLocale
+          .toLanguageTag().toLowerCase(),
         NamedTextColor.AQUA
       );
       return;
@@ -50,7 +51,8 @@ public class LanguageCommand extends Subcommand {
     );
     PlayerUtils.prefixedNotice(
       Component.text("We recommend restarting the server!").color(
-        NamedTextColor.AQUA)
+        NamedTextColor.AQUA
+      )
     );
   }
 }

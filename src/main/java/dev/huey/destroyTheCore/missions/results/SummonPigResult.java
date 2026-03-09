@@ -31,8 +31,10 @@ public class SummonPigResult extends Mission.Result {
     announce(side, List.of(Placeholder.component("name", name)));
     
     for (Player p : PlayerUtils.getTeammates(side)) {
-      PigZombie piggy = (PigZombie) p.getWorld().spawnEntity(p.getLocation(),
-        EntityType.ZOMBIFIED_PIGLIN);
+      PigZombie piggy = (PigZombie) p.getWorld().spawnEntity(
+        p.getLocation(),
+        EntityType.ZOMBIFIED_PIGLIN
+      );
       
       piggy.setBaby();
       

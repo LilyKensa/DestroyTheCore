@@ -2,6 +2,7 @@ package dev.huey.destroyTheCore.tools;
 
 import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.bases.editorTools.RegionTool;
+import dev.huey.destroyTheCore.records.Pos;
 import dev.huey.destroyTheCore.records.Region;
 import java.util.HashSet;
 import java.util.Set;
@@ -15,14 +16,16 @@ public class WoodsTool extends RegionTool {
   
   @Override
   public Region getRegion() {
-    Set<Location> set = DestroyTheCore.game.map.woods;
+    Set<Pos> set = DestroyTheCore.game.map.woods;
     if (set.isEmpty()) return null;
-    World world = set.iterator().next().getWorld();
     
-    int minX = 9999, minY = 9999, minZ = 9999, maxX = -9999, maxY = -9999,
-      maxZ = -9999;
-    for (Location loc : set) {
-      int x = loc.getBlockX(), y = loc.getBlockY(), z = loc.getBlockZ();
+    double minX = 9999, minY = 9999, minZ = 9999;
+    double maxX = -9999, maxY = -9999, maxZ = -9999;
+    for (Pos pos : set) {
+      double x = pos.getX();
+      double y = pos.getY();
+      double z = pos.getZ();
+      
       if (x < minX) minX = x;
       if (y < minY) minY = y;
       if (z < minZ) minZ = z;
@@ -32,8 +35,8 @@ public class WoodsTool extends RegionTool {
     }
     
     return new Region(
-      new Location(world, minX, minY, minZ),
-      new Location(world, maxX, maxY, maxZ)
+      new Pos(minX, minY, minZ),
+      new Pos(maxX, maxY, maxZ)
     );
   }
   
@@ -44,10 +47,10 @@ public class WoodsTool extends RegionTool {
       return;
     }
     
-    Set<Location> set = new HashSet<>();
+    Set<Pos> set = new HashSet<>();
     
-    region.forEachBlock(block -> {
-      if (Tag.LOGS.isTagged(block.getType())) set.add(block.getLocation());
+    region.forEachBlock(DestroyTheCore.worldsManager.template, block -> {
+      if (Tag.LOGS.isTagged(block.getType())) set.add(Pos.of(block));
     });
     DestroyTheCore.game.map.woods = set;
   }

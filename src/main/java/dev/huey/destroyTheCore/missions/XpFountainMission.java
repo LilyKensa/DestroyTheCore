@@ -2,14 +2,14 @@ package dev.huey.destroyTheCore.missions;
 
 import com.destroystokyo.paper.ParticleBuilder;
 import dev.huey.destroyTheCore.DestroyTheCore;
-import dev.huey.destroyTheCore.bases.Mission;
+import dev.huey.destroyTheCore.bases.missions.TimedMission;
 import dev.huey.destroyTheCore.utils.RandomUtils;
 import org.bukkit.Particle;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.util.Vector;
 
-public class XpFountainMission extends Mission {
+public class XpFountainMission extends TimedMission {
   
   int count = 0;
   
@@ -18,20 +18,25 @@ public class XpFountainMission extends Mission {
   }
   
   @Override
-  public void start() {
+  public void innerStart() {
   }
   
   @Override
-  public void tick() {
+  public void innerTick() {
     if (!DestroyTheCore.ticksManager.isParticleTick()) return;
     
     for (int i = 0; i < RandomUtils.range(1, 4); ++i) {
-      ExperienceOrb orb = (ExperienceOrb) loc.getWorld().spawnEntity(loc,
-        EntityType.EXPERIENCE_ORB);
+      ExperienceOrb orb = (ExperienceOrb) centerLoc.getWorld().spawnEntity(
+        centerLoc,
+        EntityType.EXPERIENCE_ORB
+      );
       
-      new ParticleBuilder(Particle.CLOUD).allPlayers().location(loc).offset(0.1,
-        0,
-        0.1).extra(0.05).spawn();
+      new ParticleBuilder(Particle.CLOUD)
+        .allPlayers()
+        .location(centerLoc)
+        .offset(0.1, 0, 0.1)
+        .extra(0.05)
+        .spawn();
       
       orb.setExperience(RandomUtils.range(5, 11));
       
@@ -52,6 +57,6 @@ public class XpFountainMission extends Mission {
   }
   
   @Override
-  public void finish() {
+  public void innerFinish() {
   }
 }

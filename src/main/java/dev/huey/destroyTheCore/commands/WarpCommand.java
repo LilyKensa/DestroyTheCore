@@ -2,7 +2,7 @@ package dev.huey.destroyTheCore.commands;
 
 import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.bases.Subcommand;
-import dev.huey.destroyTheCore.utils.LocationUtils;
+import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.RandomUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
@@ -33,11 +33,11 @@ public class WarpCommand extends Subcommand {
     
     switch (args.getFirst()) {
       case "lobby" -> {
-        loc = DestroyTheCore.game.lobby.spawn;
+        loc = LocUtils.lobby(DestroyTheCore.game.lobby.spawn);
       }
       case "spawn" -> {
-        loc = LocationUtils.live(
-          LocationUtils.toSpawnPoint(
+        loc = LocUtils.live(
+          LocUtils.toSpawnPoint(
             RandomUtils.pick(DestroyTheCore.game.map.spawnpoints)
           )
         );

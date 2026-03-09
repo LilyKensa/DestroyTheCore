@@ -10,12 +10,15 @@ public abstract class GUIItem extends AbstractItem {
   
   /** Close all windows for a player */
   protected void closeWindow(Player pl) {
-    getWindows().stream().filter(window -> window.getViewer().equals(
-      pl)).forEach(window -> CoreUtils.setTickOut(window::close));
+    getWindows().stream().filter(
+      window -> window.getViewer().equals(
+        pl
+      )
+    ).forEach(window -> CoreUtils.setTickOut(window::close));
   }
   
   @Override
   public abstract void handleClick(
-                                   ClickType click, Player pl, InventoryClickEvent ev
+    ClickType click, Player pl, InventoryClickEvent ev
   );
 }

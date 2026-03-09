@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 
 public class Subcommand {
   
-  public static class Argument {
+  static public class Argument {
     
     public String name;
     public Supplier<List<String>> completionsSupplier;
@@ -34,7 +34,7 @@ public class Subcommand {
    * @see CommandsManager#checkCompletion
    */
   public void addArgument(
-                          String name, Supplier<List<String>> completionsSupplier
+    String name, Supplier<List<String>> completionsSupplier
   ) {
     arguments.add(new Argument(name, completionsSupplier));
   }

@@ -9,7 +9,8 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 public class Stats implements ConfigurationSerializable {
   
   public boolean nightVision = false;
-  public int games = 0, wins = 0, kills = 0, deaths = 0, coreAttacks = 0;
+  public int games = 0, wins = 0, kills = 0, deaths = 0, coreAttacks = 0,
+    skills = 0;
   public Map<Material, Integer> ores = new HashMap<>();
   
   public void addFromPlayerData(PlayerData data, boolean win) {
@@ -18,6 +19,7 @@ public class Stats implements ConfigurationSerializable {
     kills += data.kills;
     deaths += data.deaths;
     coreAttacks += data.coreAttacks;
+    skills += data.skills;
     
     for (Material type : data.ores.keySet()) ores.put(
       type,
@@ -42,6 +44,7 @@ public class Stats implements ConfigurationSerializable {
     pusher.accept("wins", wins);
     pusher.accept("kills", kills);
     pusher.accept("deaths", deaths);
+    pusher.accept("skills", skills);
     pusher.accept("core-attacks", coreAttacks);
     
     Map<String, Integer> stringOres = new HashMap<>();
@@ -53,7 +56,7 @@ public class Stats implements ConfigurationSerializable {
     return map;
   }
   
-  public static Stats deserialize(Map<String, Object> map) {
+  static public Stats deserialize(Map<String, Object> map) {
     Stats stats = new Stats();
     
     stats.nightVision = (boolean) map.getOrDefault("night-vision", false);
@@ -61,6 +64,7 @@ public class Stats implements ConfigurationSerializable {
     stats.wins = (int) map.getOrDefault("wins", 0);
     stats.kills = (int) map.getOrDefault("kills", 0);
     stats.deaths = (int) map.getOrDefault("deaths", 0);
+    stats.skills = (int) map.getOrDefault("skills", 0);
     stats.coreAttacks = (int) map.getOrDefault("core-attacks", 0);
     
     Map<String, Integer> stringOres = (Map<String, Integer>) map.getOrDefault(

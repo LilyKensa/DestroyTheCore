@@ -4,6 +4,7 @@ import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.bases.Subcommand;
 import dev.huey.destroyTheCore.managers.RolesManager;
+import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import java.util.List;
@@ -18,7 +19,8 @@ public class SetRoleCommand extends Subcommand {
     addArgument(
       "role",
       () -> DestroyTheCore.rolesManager.roles.values().stream().map(
-        s -> s.id.name().toLowerCase()).toList()
+        s -> s.id.name().toLowerCase()
+      ).toList()
     );
     addArgument(
       "player",
@@ -72,8 +74,10 @@ public class SetRoleCommand extends Subcommand {
     }
     else {
       if (
-        !PlayerUtils.isAdmin(pl) && DestroyTheCore.worldsManager.checkLiveWorld(
-          pl.getLocation())
+        !PlayerUtils.isAdmin(pl)
+          && LocUtils.inLive(
+            pl.getLocation()
+          )
       ) {
         PlayerUtils.prefixedSend(pl, TextUtils.$("commands.role.only-lobby"));
         return;

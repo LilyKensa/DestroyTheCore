@@ -28,11 +28,14 @@ public class RecipesManager {
       if (recipe instanceof CookingRecipe<?> cr) {
         it.remove();
         cr.setCookingTime(Math.ceilDiv(cr.getCookingTime(), 10));
+        cr.setExperience(cr.getExperience() * 5);
         recipesToAdd.add(cr);
       }
     }
     
-    for (Recipe r : recipesToAdd) Bukkit.getServer().addRecipe(r);
+    for (Recipe r : recipesToAdd) {
+      Bukkit.getServer().addRecipe(r);
+    }
     
     ShapedRecipe goldenCarrotRecipe = new ShapedRecipe(
       getKey("expensive_golden_carrot"),

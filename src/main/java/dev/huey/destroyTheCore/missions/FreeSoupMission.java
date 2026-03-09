@@ -49,7 +49,7 @@ public class FreeSoupMission extends InstantMission {
         meta.addCustomEffect(RandomUtils.pick(effects), true);
       });
       
-      p.give(item);
+      PlayerUtils.give(p, item);
     }
   }
 }

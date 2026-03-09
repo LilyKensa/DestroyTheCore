@@ -34,7 +34,7 @@ public class AssignMoreRespawnTimeGen extends UsableItemGen {
       return;
     }
     
-    PlayerUtils.takeOneItemFromHand(pl);
+//    PlayerUtils.takeOneItemFromHand(pl);
     
     PlayerUtils.delayAssign(
       pl,
@@ -47,7 +47,7 @@ public class AssignMoreRespawnTimeGen extends UsableItemGen {
         
         ParticleUtils.ring(
           PlayerUtils.all(),
-          LocationUtils.hitboxCenter(target),
+          LocUtils.hitboxCenter(target),
           1.2,
           Color.AQUA
         );

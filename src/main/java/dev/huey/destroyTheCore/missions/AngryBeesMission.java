@@ -2,7 +2,7 @@ package dev.huey.destroyTheCore.missions;
 
 import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.bases.Mission;
-import dev.huey.destroyTheCore.utils.LocationUtils;
+import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.RandomUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import java.util.ArrayList;
@@ -42,9 +42,11 @@ public class AngryBeesMission extends Mission implements Listener {
   }
   
   public void idle() {
-    Location targetLoc = loc.clone().add(RandomUtils.aroundZero(30),
+    Location targetLoc = centerLoc.clone().add(
+      RandomUtils.aroundZero(30),
       0,
-      RandomUtils.aroundZero(30));
+      RandomUtils.aroundZero(30)
+    );
     
     queenBee.getPathfinder().moveTo(targetLoc);
     for (Bee bee : bees) {
@@ -62,7 +64,10 @@ public class AngryBeesMission extends Mission implements Listener {
     );
     for (Player p : Bukkit.getOnlinePlayers()) healthBar.addViewer(p);
     
-    queenBee = (Bee) loc.getWorld().spawnEntity(loc, EntityType.BEE);
+    queenBee = (Bee) centerLoc.getWorld().spawnEntity(
+      centerLoc,
+      EntityType.BEE
+    );
     
     queenBee.customName(TextUtils.$("missions.angry-bees.queen-bee"));
     queenBee.setCustomNameVisible(true);
@@ -75,7 +80,10 @@ public class AngryBeesMission extends Mission implements Listener {
     queenBee.setHealth(100);
     
     for (int i = 0; i < 4; ++i) {
-      Bee bee = (Bee) loc.getWorld().spawnEntity(loc, EntityType.BEE);
+      Bee bee = (Bee) centerLoc.getWorld().spawnEntity(
+        centerLoc,
+        EntityType.BEE
+      );
       bee.customName(TextUtils.$("missions.angry-bees.normal-bee"));
       bee.setCustomNameVisible(true);
       bee.setGlowing(true);
@@ -100,7 +108,8 @@ public class AngryBeesMission extends Mission implements Listener {
     
     healthBar.progress(
       (float) (queenBee.getHealth() / queenBee.getAttribute(
-        Attribute.MAX_HEALTH).getValue())
+        Attribute.MAX_HEALTH
+      ).getValue())
     );
     
     madAt(pl);
@@ -131,11 +140,14 @@ public class AngryBeesMission extends Mission implements Listener {
       }
       else if (RandomUtils.hit(0.8)) {
         Player target = Bukkit.getOnlinePlayers().stream().filter(
-          p -> LocationUtils.near(p, queenBee, 30)).min(
-            Comparator.comparingDouble(p -> p.getLocation().distanceSquared(
-              queenBee.getLocation())
+          p -> LocUtils.near(p, queenBee, 30)
+        ).min(
+          Comparator.comparingDouble(
+            p -> p.getLocation().distanceSquared(
+              queenBee.getLocation()
             )
-          ).orElse(null);
+          )
+        ).orElse(null);
         
         if (target != null) madAt(target);
       }

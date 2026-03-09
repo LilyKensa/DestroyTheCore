@@ -25,8 +25,12 @@ public class AssignClearInvGen extends UsableItemGen {
   }
   
   public Allay summonAllayWithItem(Location location, ItemStack item) {
-    Allay allay = (Allay) location.getWorld().spawnEntity(location,
-      EntityType.ALLAY);
+    if (item == null || item.isEmpty()) return null;
+    
+    Allay allay = (Allay) location.getWorld().spawnEntity(
+      location,
+      EntityType.ALLAY
+    );
     
     allay.customName(TextUtils.$("items.assign-clear-inv.allay"));
     
@@ -67,7 +71,7 @@ public class AssignClearInvGen extends UsableItemGen {
       return;
     }
     
-    PlayerUtils.takeOneItemFromHand(pl);
+//    PlayerUtils.takeOneItemFromHand(pl);
     
     sideData.clearInvCooldown = 10 * 60 * 20;
     
@@ -95,7 +99,7 @@ public class AssignClearInvGen extends UsableItemGen {
               }
               
               summonAllayWithItem(
-                LocationUtils.hitboxCenter(target),
+                LocUtils.hitboxCenter(target),
                 items[index]
               );
             }
@@ -111,7 +115,7 @@ public class AssignClearInvGen extends UsableItemGen {
         
         ParticleUtils.ring(
           PlayerUtils.all(),
-          LocationUtils.hitboxCenter(target),
+          LocUtils.hitboxCenter(target),
           1.2,
           Color.ORANGE
         );

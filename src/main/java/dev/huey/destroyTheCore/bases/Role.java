@@ -10,8 +10,7 @@ import dev.huey.destroyTheCore.items.armors.StarterLeggingsGen;
 import dev.huey.destroyTheCore.managers.GUIManager;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.managers.RolesManager;
-import dev.huey.destroyTheCore.utils.CoreUtils;
-import dev.huey.destroyTheCore.utils.LocationUtils;
+import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import java.util.ArrayList;
@@ -38,7 +37,7 @@ import xyz.xenondevs.invui.item.builder.ItemBuilder;
 public class Role extends GUIItem {
   
   /** Used to distinguish skill items, stored data is {@code true} */
-  public static final NamespacedKey skillNamespace = new NamespacedKey(
+  static public final NamespacedKey skillNamespace = new NamespacedKey(
     DestroyTheCore.instance,
     "skill"
   );
@@ -46,13 +45,13 @@ public class Role extends GUIItem {
    * Used to distinguish role-exclusive items, stored data is the name of
    * {@link #id}
    */
-  public static final NamespacedKey exclusiveItemNamespace = new NamespacedKey(
+  static public final NamespacedKey exclusiveItemNamespace = new NamespacedKey(
     DestroyTheCore.instance,
     "exclusive-item"
   );
   
   /** Prefixed send */
-  public static void send(Player pl, Component message) {
+  static public void send(Player pl, Component message) {
     PlayerUtils.send(pl, TextUtils.$("role.prefix").append(message));
   }
   
@@ -110,7 +109,7 @@ public class Role extends GUIItem {
   
   public void addInfo(Material iconType) {
     this.iconType = iconType;
-    this.name = CoreUtils.stripColor($r("roles.%s.name"));
+    this.name = TextUtils.stripColor($r("roles.%s.name"));
     this.lore = $ra("roles.%s.desc");
   }
   
@@ -131,7 +130,7 @@ public class Role extends GUIItem {
   }
   
   public void addSkill(int cd) {
-    skillName = CoreUtils.stripColor($r("roles.%s.skill.name"));
+    skillName = TextUtils.stripColor($r("roles.%s.skill.name"));
     skillDesc = $ra("roles.%s.skill.desc");
     skillCooldown = cd;
   }
@@ -163,8 +162,10 @@ public class Role extends GUIItem {
       
       List<Component> lore = new ArrayList<>();
       for (String line : skillDesc) lore.add(
-        Component.text(line).decoration(TextDecoration.ITALIC,
-          TextDecoration.State.FALSE)
+        Component.text(line).decoration(
+          TextDecoration.ITALIC,
+          TextDecoration.State.FALSE
+        )
       );
       meta.lore(lore);
       
@@ -187,9 +188,11 @@ public class Role extends GUIItem {
         ItemFlag.HIDE_ADDITIONAL_TOOLTIP
       );
       
-      meta.getPersistentDataContainer().set(skillNamespace,
+      meta.getPersistentDataContainer().set(
+        skillNamespace,
         PersistentDataType.BOOLEAN,
-        true);
+        true
+      );
     });
     return item;
   }
@@ -213,9 +216,11 @@ public class Role extends GUIItem {
       
       itemMetaEditor.accept(meta);
       
-      meta.getPersistentDataContainer().set(exclusiveItemNamespace,
+      meta.getPersistentDataContainer().set(
+        exclusiveItemNamespace,
         PersistentDataType.STRING,
-        this.id.name());
+        this.id.name()
+      );
     });
     return item;
   }
@@ -250,18 +255,23 @@ public class Role extends GUIItem {
   
   /** Call this if the skill is successfully used */
   public void skillFeedback(Player pl) {
+    DestroyTheCore.game.getPlayerData(pl).skills++;
+    
     pl.playSound(
       pl.getLocation(),
       Sound.BLOCK_CONDUIT_ACTIVATE,
       1, // Volume
       1 // Pitch
     );
-    LocationUtils.ring(
+    LocUtils.ring(
       pl.getLocation().add(0, 0.1, 0),
       0.8,
       loc -> {
-        new ParticleBuilder(Particle.END_ROD).allPlayers().location(loc).extra(
-          0).spawn();
+        new ParticleBuilder(Particle.END_ROD)
+          .allPlayers()
+          .location(loc)
+          .extra(0)
+          .spawn();
       }
     );
     pl.swingMainHand();
@@ -303,8 +313,8 @@ public class Role extends GUIItem {
         TextUtils.$r(
           "role.desc.item",
           List.of(
-            Placeholder.unparsed("name", CoreUtils.stripColor(itemName)),
-            Placeholder.unparsed("detail", CoreUtils.stripColor(itemDesc))
+            Placeholder.unparsed("name", TextUtils.stripColor(itemName)),
+            Placeholder.unparsed("detail", TextUtils.stripColor(itemDesc))
           )
         )
       );
@@ -324,14 +334,18 @@ public class Role extends GUIItem {
     
     return new ItemBuilder(iconType).setDisplayName("§e" + name).addItemFlags(
       ItemFlag.HIDE_ATTRIBUTES,
-      ItemFlag.HIDE_ADDITIONAL_TOOLTIP).addLoreLines(combinedLore.toArray(
-        new String[0]));
+      ItemFlag.HIDE_ADDITIONAL_TOOLTIP
+    ).addLoreLines(
+      combinedLore.toArray(
+        new String[0]
+      )
+    );
   }
   
   /** @see GUIManager */
   @Override
   public void handleClick(
-                          ClickType clickType, Player pl, InventoryClickEvent ev
+    ClickType clickType, Player pl, InventoryClickEvent ev
   ) {
     announce(pl);
     pl.playSound(

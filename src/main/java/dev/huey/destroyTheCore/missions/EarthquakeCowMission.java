@@ -1,9 +1,10 @@
 package dev.huey.destroyTheCore.missions;
 
+import com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent;
 import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.Mission;
-import dev.huey.destroyTheCore.utils.LocationUtils;
+import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.RandomUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
@@ -34,18 +35,21 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 public class EarthquakeCowMission extends Mission implements Listener {
-  
-  public static Location getFloorBlock(Location originalLoc) {
-    Location loc = LocationUtils.toBlockCenter(originalLoc);
+  static public Location getFloorBlock(Location originalLoc) {
+    Location loc = LocUtils.toBlockCenter(originalLoc);
     
     while (
-      loc.getY() > loc.getWorld().getMinHeight() && loc.getY() < loc.getWorld().getMaxHeight() && loc.getBlock().isCollidable()
+      loc.getY() > loc.getWorld().getMinHeight()
+        && loc.getY() < loc.getWorld().getMaxHeight()
+        && loc.getBlock().isCollidable()
     ) {
       loc.add(0, 1, 0);
     }
     
     while (
-      loc.getY() > loc.getWorld().getMinHeight() && loc.getY() < loc.getWorld().getMaxHeight() && !loc.getBlock().isCollidable()
+      loc.getY() > loc.getWorld().getMinHeight()
+        && loc.getY() < loc.getWorld().getMaxHeight()
+        && !loc.getBlock().isCollidable()
     ) {
       loc.add(0, -1, 0);
     }
@@ -53,25 +57,41 @@ public class EarthquakeCowMission extends Mission implements Listener {
     return loc;
   }
   
-  public static void flyBlock(Location loc, double strength) {
+  record BlockRecord(
+                     Block block, Material type, BlockData data,
+                     BlockState state
+  ) {
+  }
+  
+  static Map<FallingBlock, BlockRecord> flyingBlocks = new HashMap<>();
+  
+  static public void flyBlock(Location loc, double strength) {
     Block block = loc.getBlock();
     if (block.getType().isAir() || !block.getType().isSolid()) return;
     if (block.getType().equals(Material.NETHERITE_BLOCK)) return;
     
-    BlockData data = block.getBlockData();
-    BlockState state = block.getState();
+    BlockRecord rec = new BlockRecord(
+      block,
+      block.getType(),
+      block.getBlockData(),
+      block.getState()
+    );
+    
     block.setType(Material.AIR);
     
     FallingBlock fallingBlock = (FallingBlock) loc.getWorld().spawnEntity(
       loc.clone().add(0, 0.01, 0),
-      EntityType.FALLING_BLOCK);
-    fallingBlock.setBlockData(data);
-    fallingBlock.setBlockState(state);
+      EntityType.FALLING_BLOCK
+    );
+    fallingBlock.setBlockData(rec.data);
+    fallingBlock.setBlockState(rec.state);
     
     fallingBlock.setVelocity(new Vector(0, strength, 0));
+    
+    flyingBlocks.put(fallingBlock, rec);
   }
   
-  public static Set<Vector> getMidpointCirclePoints(int radius) {
+  static public Set<Vector> getMidpointCirclePoints(int radius) {
     Set<Vector> points = new HashSet<>();
     if (radius <= 0) return points;
     
@@ -138,13 +158,16 @@ public class EarthquakeCowMission extends Mission implements Listener {
             p.damage(
               (maxRadius - r) * 0.5,
               DamageSource.builder(DamageType.MOB_ATTACK).withDirectEntity(
-                cow).withCausingEntity(cow).build()
+                cow
+              ).withCausingEntity(cow).build()
             );
             p.setVelocity(
               p.getVelocity().add(
                 p.getLocation().subtract(
-                  cow.getLocation()).toVector().normalize().multiply(0.5).add(
-                    new Vector(0, 0.1, 0))
+                  cow.getLocation()
+                ).toVector().normalize().multiply(0.5).add(
+                  new Vector(0, 0.1, 0)
+                )
               )
             );
           }
@@ -183,7 +206,11 @@ public class EarthquakeCowMission extends Mission implements Listener {
   
   public void move() {
     cow.getPathfinder().moveTo(
-      loc.clone().add(RandomUtils.aroundZero(30), 0, RandomUtils.aroundZero(30))
+      centerLoc.clone().add(
+        RandomUtils.aroundZero(30),
+        0,
+        RandomUtils.aroundZero(30)
+      )
     );
   }
   
@@ -197,7 +224,7 @@ public class EarthquakeCowMission extends Mission implements Listener {
     );
     for (Player p : Bukkit.getOnlinePlayers()) healthBar.addViewer(p);
     
-    cow = (Cow) loc.getWorld().spawnEntity(loc, EntityType.COW);
+    cow = (Cow) centerLoc.getWorld().spawnEntity(centerLoc, EntityType.COW);
     
     cow.customName(TextUtils.$("missions.earthquake-cow.cow"));
     cow.setCustomNameVisible(true);
@@ -225,7 +252,8 @@ public class EarthquakeCowMission extends Mission implements Listener {
     
     healthBar.progress(
       (float) (cow.getHealth() / cow.getAttribute(
-        Attribute.MAX_HEALTH).getValue())
+        Attribute.MAX_HEALTH
+      ).getValue())
     );
     
     addScore(pl, ev.getFinalDamage());
@@ -241,6 +269,17 @@ public class EarthquakeCowMission extends Mission implements Listener {
     
     killed = true;
     end();
+  }
+  
+  public void onEntityRemoveFromWorld(EntityRemoveFromWorldEvent ev) {
+    if (!(ev.getEntity() instanceof FallingBlock entity)) return;
+    if (!flyingBlocks.containsKey(entity)) return;
+    
+    BlockRecord rec = flyingBlocks.get(entity);
+    
+    rec.block.setType(rec.type);
+    rec.block.setBlockData(rec.data);
+    rec.state.update(true);
   }
   
   @Override

@@ -19,12 +19,13 @@ import dev.huey.destroyTheCore.roles.KekkaiMasterRole;
 import dev.huey.destroyTheCore.utils.*;
 import io.papermc.paper.chat.ChatRenderer;
 import io.papermc.paper.event.player.AsyncChatEvent;
+import it.unimi.dsi.fastutil.Pair;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.function.*;
+import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.bossbar.BossBar;
+import net.kyori.adventure.bossbar.BossBarViewer;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
@@ -34,7 +35,6 @@ import net.kyori.adventure.title.TitlePart;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.Container;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.damage.DamageSource;
@@ -48,6 +48,7 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.*;
+import org.bukkit.event.vehicle.VehicleDamageEvent;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.potion.PotionEffect;
@@ -58,13 +59,11 @@ import org.bukkit.scoreboard.*;
 import org.bukkit.util.Vector;
 
 public class Game {
-  
   public boolean isPlaying = false;
   
-  public static class LobbyLocs implements ConfigurationSerializable {
-    
-    public Location spawn = null;
-    public Location startButton = null;
+  static public class LobbyPos implements ConfigurationSerializable {
+    public Pos spawn = null;
+    public Pos startButton = null;
     public Region joinRed = null;
     public Region joinGreen = null;
     public Region joinSpectator = null;
@@ -86,29 +85,28 @@ public class Game {
       return map;
     }
     
-    public static LobbyLocs deserialize(Map<String, Object> map) {
-      LobbyLocs locs = new LobbyLocs();
+    static public LobbyPos deserialize(Map<String, Object> map) {
+      LobbyPos lp = new LobbyPos();
       
-      locs.spawn = (Location) map.getOrDefault("spawn", null);
-      locs.startButton = (Location) map.getOrDefault("start-button", null);
-      locs.joinRed = (Region) map.getOrDefault("join-red", null);
-      locs.joinGreen = (Region) map.getOrDefault("join-green", null);
-      locs.joinSpectator = (Region) map.getOrDefault("join-spectator", null);
+      lp.spawn = (Pos) map.getOrDefault("spawn", null);
+      lp.startButton = (Pos) map.getOrDefault("start-button", null);
+      lp.joinRed = (Region) map.getOrDefault("join-red", null);
+      lp.joinGreen = (Region) map.getOrDefault("join-green", null);
+      lp.joinSpectator = (Region) map.getOrDefault("join-spectator", null);
       
-      return locs;
+      return lp;
     }
   }
   
-  public static class MapLocs implements ConfigurationSerializable {
-    
-    public Location restArea = null;
-    public Location core = null;
-    public Location mission = null;
-    public Set<Location> spawnpoints = new HashSet<>();
-    public Set<Location> woods = new HashSet<>();
-    public Set<Location> ores = new HashSet<>();
-    public Set<Location> diamonds = new HashSet<>();
-    public Set<Location> shops = new HashSet<>();
+  static public class MapPos implements ConfigurationSerializable {
+    public Pos restArea = null;
+    public Pos core = null;
+    public Pos mission = null;
+    public Set<Pos> spawnpoints = new HashSet<>();
+    public Set<Pos> woods = new HashSet<>();
+    public Set<Pos> ores = new HashSet<>();
+    public Set<Pos> diamonds = new HashSet<>();
+    public Set<Pos> shops = new HashSet<>();
     
     @Override
     public Map<String, Object> serialize() {
@@ -131,29 +129,28 @@ public class Game {
       return map;
     }
     
-    public static MapLocs deserialize(Map<String, Object> map) {
-      MapLocs locs = new MapLocs();
+    static public MapPos deserialize(Map<String, Object> map) {
+      MapPos mp = new MapPos();
       
-      locs.restArea = (Location) map.getOrDefault("rest-area", null);
-      locs.core = (Location) map.getOrDefault("core", null);
-      locs.mission = (Location) map.getOrDefault("mission", null);
+      mp.restArea = (Pos) map.getOrDefault("rest-area", null);
+      mp.core = (Pos) map.getOrDefault("core", null);
+      mp.mission = (Pos) map.getOrDefault("mission", null);
       
-      Function<String, List<Location>> loader = CoreUtils.listLoader(
-        Location.class).compose(
-          map::get);
+      Function<String, List<Pos>> loader = CoreUtils.listLoader(Pos.class)
+        .compose(map::get);
       
-      locs.spawnpoints = new HashSet<>(loader.apply("spawnpoints"));
-      locs.woods = new HashSet<>(loader.apply("woods"));
-      locs.ores = new HashSet<>(loader.apply("ores"));
-      locs.diamonds = new HashSet<>(loader.apply("diamonds"));
-      locs.shops = new HashSet<>(loader.apply("shops"));
+      mp.spawnpoints = new HashSet<>(loader.apply("spawnpoints"));
+      mp.woods = new HashSet<>(loader.apply("woods"));
+      mp.ores = new HashSet<>(loader.apply("ores"));
+      mp.diamonds = new HashSet<>(loader.apply("diamonds"));
+      mp.shops = new HashSet<>(loader.apply("shops"));
       
-      return locs;
+      return mp;
     }
   }
   
-  public LobbyLocs lobby = new LobbyLocs();
-  public MapLocs map = new MapLocs();
+  public LobbyPos lobby = new LobbyPos();
+  public MapPos map = new MapPos();
   
   record VillagerData(Location loc, Villager villager) {
   }
@@ -167,21 +164,21 @@ public class Game {
       Location loc = vd.loc.clone();
       Villager villager = vd.villager;
       
-      PlayerUtils.allGaming().stream().filter(p -> LocationUtils.near(p,
-        villager,
-        5)).map(
-          p -> LocationUtils.hitboxCenter(p).toVector().subtract(
-            LocationUtils.hitboxCenter(
-              villager).toVector())
-        ).min(Comparator.comparing(Vector::lengthSquared)).ifPresent(
-          loc::setDirection);
+      PlayerUtils.allGaming().stream()
+        .filter(p -> LocUtils.near(p, villager, 5))
+        .map(
+          p -> LocUtils.hitboxCenter(p)
+            .toVector()
+            .subtract(LocUtils.hitboxCenter(villager).toVector())
+        )
+        .min(Comparator.comparing(Vector::lengthSquared))
+        .ifPresent(loc::setDirection);
       
       villager.setRotation(loc.getYaw(), loc.getPitch());
     }
   }
   
-  public static class Shop implements ConfigurationSerializable {
-    
+  static public class Shop implements ConfigurationSerializable {
     public String name = "Anonymous Shop";
     public Villager.Type biome = Villager.Type.PLAINS;
     public Villager.Profession prof = Villager.Profession.NONE;
@@ -249,24 +246,27 @@ public class Game {
       return map;
     }
     
-    public static Shop deserialize(Map<String, Object> map) {
+    static public Shop deserialize(Map<String, Object> map) {
       Shop shop = new Shop();
       
       if (map.containsKey("name")) shop.name = (String) map.get("name");
       if (map.containsKey("biome")) shop.biome = Registry.VILLAGER_TYPE.get(
         Key.key(
-          (String) map.get("biome")));
+          (String) map.get("biome")
+        )
+      );
       if (map.containsKey("profession"))
         shop.prof = Registry.VILLAGER_PROFESSION.get(
           Key.key((String) map.get("profession"))
         );
       if (map.containsKey("block-type")) shop.blockType = Material.valueOf(
-        (String) map.get(
-          "block-type"));
+        (String) map.get("block-type")
+      );
       
       Function<String, List<MaybeGen>> loader = CoreUtils.listLoader(
-        MaybeGen.class).compose(
-          map::get);
+        MaybeGen.class
+      )
+        .compose(map::get);
       
       shop.items = loader.apply("items");
       
@@ -279,17 +279,24 @@ public class Game {
   public Map<UUID, Stats> stats = new HashMap<>();
   
   public enum Phase {
-    CoreWilting(5, "core-wilting", null), DoubleDamage(4,
-      "double-core-damage",
-      CoreWilting), DeathPenalty(3,
-        "death-penalty",
-        DoubleDamage), MissionsStarted(2,
-          "missions-started",
-          DeathPenalty), ShopOpened(1,
-            "shop-opened",
-            MissionsStarted), CoreProtected(0,
-              "core-protected",
-              ShopOpened);
+    CoreWilting(5, "core-wilting", null),
+    DoubleDamage(4, "double-core-damage", CoreWilting),
+    DeathPenalty(3, "death-penalty", DoubleDamage),
+    MissionsStarted(
+      2,
+      "missions-started",
+      DeathPenalty
+    ),
+    ShopOpened(
+      1,
+      "shop-opened",
+      MissionsStarted
+    ),
+    CoreProtected(
+      0,
+      "core-protected",
+      ShopOpened
+    );
     
     public final int index;
     public final String translationKey;
@@ -339,9 +346,13 @@ public class Game {
   }
   
   public enum Side {
-    RED("red", NamedTextColor.RED, Color.RED), GREEN("green",
+    RED("red", NamedTextColor.RED, Color.RED),
+    GREEN(
+      "green",
       NamedTextColor.GREEN,
-      Color.LIME), SPECTATOR("spectator", NamedTextColor.GRAY, Color.GRAY);
+      Color.LIME
+    ),
+    SPECTATOR("spectator", NamedTextColor.GRAY, Color.GRAY);
     
     public final String id;
     public final String translateKey;
@@ -360,7 +371,7 @@ public class Game {
     }
     
     public String pureTitle() {
-      return CoreUtils.stripColor(title());
+      return TextUtils.stripColor(title());
     }
     
     public Component titleComp() {
@@ -392,12 +403,11 @@ public class Game {
   }
   
   public class BarSet {
-    
     String id;
     Function<SideData, Integer> current, max;
     
     public BarSet(
-                  String id, Function<SideData, Integer> current, Function<SideData, Integer> max
+      String id, Function<SideData, Integer> current, Function<SideData, Integer> max
     ) {
       this.id = id;
       this.current = current;
@@ -422,6 +432,17 @@ public class Game {
     }
     
     public void show(Side side) {
+      BossBar oldBar = bars.get(side);
+      if (oldBar != null) {
+        List<BossBarViewer> viewers = new ArrayList<>();
+        oldBar.viewers().forEach(viewers::add);
+        
+        for (BossBarViewer viewer : viewers) {
+          if (!(viewer instanceof Audience audience)) continue;
+          oldBar.removeViewer(audience);
+        }
+      }
+      
       bars.put(
         side,
         BossBar.bossBar(
@@ -432,20 +453,25 @@ public class Game {
         )
       );
       
-      for (Player p : PlayerUtils.getTeammates(side)) bars.get(side).addViewer(
-        p);
+      for (Player p : PlayerUtils.getTeammates(side)) {
+        bars.get(side).addViewer(p);
+      }
     }
     
     public void hide(Side side) {
       if (!bars.containsKey(side)) return;
       
-      for (Player p : PlayerUtils.getTeammates(side)) bars.get(
-        side).removeViewer(p);
+      for (Player p : PlayerUtils.getTeammates(side)) {
+        bars.get(side).removeViewer(p);
+      }
     }
     
     public void update(Side side) {
       BossBar bar = bars.get(side);
+      if (bar == null) return;
+      
       SideData sd = getSideData(side);
+      
       bar.name(getTitle(side));
       bar.progress(1F * current.apply(sd) / max.apply(sd));
     }
@@ -481,7 +507,8 @@ public class Game {
   }
   
   public void recreateTeams() {
-    Scoreboard board = Bukkit.getServer().getScoreboardManager().getMainScoreboard();
+    Scoreboard board = Bukkit.getServer().getScoreboardManager()
+      .getMainScoreboard();
     
     for (Team team : board.getTeams()) {
       team.unregister();
@@ -501,7 +528,9 @@ public class Game {
       Team.OptionStatus.NEVER
     );
     
-    for (Side side : new Side[]{Side.RED, Side.GREEN}) {
+    for (Side side : new Side[]{
+      Side.RED, Side.GREEN
+    }) {
       Map<RolesManager.RoleKey, Team> sideTeams = new HashMap<>();
       
       for (Role role : DestroyTheCore.rolesManager.roles.values()) {
@@ -530,7 +559,8 @@ public class Game {
   Objective respawnTimeBoard, healthBoard;
   
   public void createScoreboards() {
-    Scoreboard board = Bukkit.getServer().getScoreboardManager().getMainScoreboard();
+    Scoreboard board = Bukkit.getServer().getScoreboardManager()
+      .getMainScoreboard();
     
     respawnTimeBoard = board.getObjective("respawn-time");
     if (respawnTimeBoard == null) {
@@ -554,7 +584,8 @@ public class Game {
   }
   
   public void hideRTScore() {
-    Scoreboard board = Bukkit.getServer().getScoreboardManager().getMainScoreboard();
+    Scoreboard board = Bukkit.getServer().getScoreboardManager()
+      .getMainScoreboard();
     board.clearSlot(DisplaySlot.PLAYER_LIST);
   }
   
@@ -563,7 +594,8 @@ public class Game {
   }
   
   public void enforceRTScore(Player pl) {
-    Scoreboard board = Bukkit.getServer().getScoreboardManager().getMainScoreboard();
+    Scoreboard board = Bukkit.getServer().getScoreboardManager()
+      .getMainScoreboard();
     Objective respawnTimeBoard = board.getObjective("respawn-time");
     
     PlayerData data = getPlayerData(pl);
@@ -588,9 +620,11 @@ public class Game {
     if (getPlayerData(pl) == null) playerData.put(id, new PlayerData(pl));
     
     Iterator<Recipe> rit = Bukkit.recipeIterator();
-    while (rit.hasNext()) if (
-      rit.next() instanceof Keyed keyed
-    ) pl.discoverRecipe(keyed.getKey());
+    while (rit.hasNext()) {
+      if (rit.next() instanceof Keyed keyed) {
+        pl.discoverRecipe(keyed.getKey());
+      }
+    }
     
     pl.clearActivePotionEffects();
     PlayerUtils.enforceNightVision(pl);
@@ -613,14 +647,15 @@ public class Game {
       pl.getInventory().setItem(
         4,
         DestroyTheCore.itemsManager.gens.get(
-          ItemsManager.ItemKey.CHOOSE_ROLE).getItem()
+          ItemsManager.ItemKey.CHOOSE_ROLE
+        ).getItem()
       );
       
       PlayerUtils.backToLobby(pl);
     }
     
     if (isPlaying) {
-      PlayerUtils.hideSpectators(pl);
+      PlayerUtils.refreshAllSpectatorVisibilitiesFor(pl);
     }
     
     DestroyTheCore.worldsManager.onPlayerChangeWorld(pl, pl.getWorld());
@@ -651,9 +686,21 @@ public class Game {
     Game.Side side = DestroyTheCore.game.getPlayerData(pl).side;
     
     ev.viewers().removeIf(
-      audience -> audience instanceof Player p && side != Side.SPECTATOR && DestroyTheCore.game.getPlayerData(
-        p).side.equals(side.opposite())
+      audience -> audience instanceof Player p
+        && side != Side.SPECTATOR
+        && DestroyTheCore.game.getPlayerData(p).side
+          .equals(side.opposite())
     );
+  }
+  
+  public void handleVehicleDamage(VehicleDamageEvent ev) {
+    if (ev.getAttacker() instanceof Player attacker) {
+      if (isPlaying && getPlayerData(attacker).side == Side.SPECTATOR) {
+        attacker.sendActionBar(TextUtils.$("game.banned.attack.spectator"));
+        ev.setCancelled(true);
+        return;
+      }
+    }
   }
   
   public void handleEntityDamage(EntityDamageByEntityEvent ev) {
@@ -670,19 +717,24 @@ public class Game {
     }
     
     if (
-      ev.getDamager() instanceof Projectile proj && proj.getShooter() instanceof Player shooter && ev.getEntity() instanceof Player victim
+      ev.getDamager() instanceof Projectile proj
+        && proj.getShooter() instanceof Player shooter
+        && ev.getEntity() instanceof Player victim
     ) {
       handlePlayerDamage(shooter, victim, proj, ev);
     }
   }
   
   public void handlePlayerDamage(
-                                 Player attacker, Player victim, Projectile proj, EntityDamageByEntityEvent ev
+    Player attacker, Player victim, Projectile proj, EntityDamageByEntityEvent ev
   ) {
     if (isPlaying) {
       double damage = ev.getDamage(), finalDamage = ev.getFinalDamage();
       
-      if (getPlayerData(attacker).side.equals(getPlayerData(victim).side)) {
+      PlayerData attackerData = getPlayerData(attacker),
+        victimData = getPlayerData(victim);
+      
+      if (attackerData.side.equals(victimData.side)) {
         if (proj == null) {
           attacker.sendActionBar(TextUtils.$("game.banned.attack.teammate"));
         }
@@ -697,13 +749,19 @@ public class Game {
       
       if (finalDamage <= 0) return;
       
-      if (getPlayerData(victim).role.id != RolesManager.RoleKey.PROVOCATEUR) {
+      double damageMultiplier = finalDamage / damage;
+      
+      if (attackerData.role.id == RolesManager.RoleKey.PROVOCATEUR) {
+        damage *= 0.8;
+      }
+      
+      if (victimData.role.id != RolesManager.RoleKey.PROVOCATEUR) {
         List<Player> provocateurs = new ArrayList<>();
         for (Player p : PlayerUtils.getTeammates(victim)) {
           if (
             getPlayerData(p).role.id != RolesManager.RoleKey.PROVOCATEUR
           ) continue;
-          if (!LocationUtils.near(p, victim, 10)) continue;
+          if (!LocUtils.near(p, victim, 10)) continue;
           
           provocateurs.add(p);
         }
@@ -711,7 +769,8 @@ public class Game {
         double damageReduced = 0;
         for (Player p : provocateurs) {
           double ratio = p.hasPotionEffect(
-            PotionEffectType.ABSORPTION) ? 0.9 : 0.6;
+            PotionEffectType.ABSORPTION
+          ) ? 0.9 : 0.6;
           double amount = Math.max(1, damage * ratio / provocateurs.size());
           
           PlayerUtils.delayAssign(
@@ -722,7 +781,8 @@ public class Game {
               p.damage(
                 amount,
                 DamageSource.builder(DamageType.PLAYER_ATTACK).withDirectEntity(
-                  attacker).withCausingEntity(attacker).build()
+                  attacker
+                ).withCausingEntity(attacker).build()
               );
             }
           );
@@ -730,10 +790,14 @@ public class Game {
         }
         
         damage -= damageReduced;
-        ev.setDamage(damage);
       }
       
-      DestroyTheCore.damageManager.addDamage(attacker, victim, finalDamage);
+      ev.setDamage(damage);
+      DestroyTheCore.damageManager.addDamage(
+        attacker,
+        victim,
+        damage * damageMultiplier
+      );
     }
     
     if (ev.getFinalDamage() >= 2) victim.removePotionEffect(
@@ -743,7 +807,7 @@ public class Game {
     DestroyTheCore.itemsManager.onPlayerDamage(attacker, victim);
   }
   
-  public static Component bountyPrefix;
+  static public Component bountyPrefix;
   
   public boolean nextPlayerDropAll = false;
   
@@ -753,7 +817,7 @@ public class Game {
     if (!PlayerUtils.shouldHandle(pl)) return;
     ev.setCancelled(true);
     
-    if (!DestroyTheCore.worldsManager.checkLiveWorld(pl.getLocation())) {
+    if (!LocUtils.inLive(pl.getLocation())) {
       CoreUtils.setTickOut(() -> PlayerUtils.backToLobby(pl));
       return;
     }
@@ -810,7 +874,8 @@ public class Game {
               "action",
               RandomUtils.pick(
                 TextUtils.translateRaw(
-                  "game.death.messages.kill-actions").split("\\|")
+                  "game.death.messages.kill-actions"
+                ).split("\\|")
               )
             ),
             Placeholder.component("killer", PlayerUtils.getName(killer))
@@ -818,37 +883,72 @@ public class Game {
         )
       );
       
-      new ParticleBuilder(Particle.SOUL).allPlayers().location(
-        LocationUtils.hitboxCenter(
-          pl)).offset(0.1, 0.3, 0.1).count(15).extra(0.2).spawn();
+      new ParticleBuilder(Particle.SOUL)
+        .allPlayers()
+        .location(LocUtils.hitboxCenter(pl))
+        .offset(0.1, 0.3, 0.1)
+        .count(15)
+        .extra(0.2)
+        .spawn();
       
-      new ParticleBuilder(
-        Particle.TRIAL_SPAWNER_DETECTION_OMINOUS).allPlayers().location(
-          LocationUtils.hitboxCenter(pl)).offset(0.5, 0.6, 0.5).count(20).extra(
-            0).spawn();
+      new ParticleBuilder(Particle.TRIAL_SPAWNER_DETECTION_OMINOUS)
+        .allPlayers()
+        .location(LocUtils.hitboxCenter(pl))
+        .offset(0.5, 0.6, 0.5)
+        .count(20)
+        .extra(0)
+        .spawn();
       
       killer.sendActionBar(TextUtils.$("game.death.killer-sin"));
       
       killer.addPotionEffect(
-        new PotionEffect(PotionEffectType.GLOWING, 5 * 20, 0, false, false)
+        new PotionEffect(
+          PotionEffectType.GLOWING,
+          5 * 20,
+          0,
+          false,
+          false
+        )
       );
       killer.addPotionEffect(
-        new PotionEffect(PotionEffectType.SLOWNESS, 5 * 20, 0, false, false)
+        new PotionEffect(
+          PotionEffectType.SLOWNESS,
+          5 * 20,
+          0,
+          false,
+          false
+        )
       );
       killer.addPotionEffect(
-        new PotionEffect(PotionEffectType.BLINDNESS, 5 * 20, 0, false, false)
+        new PotionEffect(
+          PotionEffectType.BLINDNESS,
+          5 * 20,
+          0,
+          false,
+          false
+        )
       );
       killer.addPotionEffect(
-        new PotionEffect(PotionEffectType.WEAKNESS, 5 * 20, 2, false, false)
+        new PotionEffect(
+          PotionEffectType.WEAKNESS,
+          5 * 20,
+          2,
+          false,
+          false
+        )
       );
       
-      killer.give(
-        DestroyTheCore.itemsManager.gens.get(
-          ItemsManager.ItemKey.SOUL).getItem()
-      );
+      PlayerData killerData = getPlayerData(killer);
+      killerData.addKill();
+      
+      PlayerUtils.give(killer, ItemsManager.ItemKey.SOUL);
       
       if (data.killStreak >= 10) {
-        killer.give(new ItemStack(Material.EMERALD, data.killStreak));
+        PlayerUtils.give(
+          killer,
+          Material.EMERALD,
+          data.killStreak
+        );
         
         PlayerUtils.broadcast(
           bountyPrefix.append(
@@ -862,9 +962,6 @@ public class Game {
           )
         );
       }
-      
-      PlayerData killerData = getPlayerData(killer);
-      killerData.addKill();
       
       if (killerData.killStreak == 10) {
         PlayerUtils.broadcast(
@@ -894,7 +991,7 @@ public class Game {
   public void handleHungry(FoodLevelChangeEvent ev) {
     if (!(ev.getEntity() instanceof Player pl)) return;
     
-    if (PlayerUtils.inLobby(pl) || !getPlayerData(pl).isGaming()) {
+    if (LocUtils.inLobby(pl) || !getPlayerData(pl).isGaming()) {
       PlayerUtils.resetHunger(pl);
       ev.setCancelled(true);
       return;
@@ -906,24 +1003,29 @@ public class Game {
   public void handleInteract(PlayerInteractEvent ev) {
     Player pl = ev.getPlayer();
     PlayerData data = getPlayerData(pl);
-    ItemStack item = ev.getItem(),
-      mainhandItem = ev.getPlayer().getInventory().getItemInMainHand();
+    ItemStack item = ev.getItem();
     
     if (ev.getAction() == Action.LEFT_CLICK_BLOCK) handleLeftClickBlock(ev);
-    
     if (ev.getAction() == Action.RIGHT_CLICK_BLOCK) handleRightClickBlock(ev);
     
     if (
-      List.of(Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK).contains(
-        ev.getAction())
+      List.of(Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK)
+        .contains(ev.getAction())
     ) {
       if (
-        !PlayerUtils.checkUsingBlock(pl,
-          ev.getClickedBlock()) && item != null && !item.isEmpty() && item.getType().equals(
-            Material.KNOWLEDGE_BOOK)
+        !PlayerUtils.checkUsingBlock(
+          pl,
+          ev.getClickedBlock()
+        )
+          && item != null
+          && !item.isEmpty()
+          && item
+            .getType().equals(
+              Material.KNOWLEDGE_BOOK
+            )
       ) ev.setCancelled(true);
       
-      if (!data.alive && !PlayerUtils.inLobby(pl)) {
+      if (!data.alive && !LocUtils.inLobby(pl)) {
         if (!PlayerUtils.shouldHandle(pl)) return;
         
         pl.sendActionBar(TextUtils.$("game.banned.use.time"));
@@ -932,8 +1034,15 @@ public class Game {
       }
       
       if (
-        ev.getHand() == EquipmentSlot.HAND && item != null && item.hasItemMeta() && item.getItemMeta().getPersistentDataContainer().has(
-          Role.skillNamespace)
+        LocUtils.inLive(pl)
+          &&
+          ev.getHand() == EquipmentSlot.HAND
+          && item != null
+          && item
+            .hasItemMeta()
+          && item.getItemMeta().getPersistentDataContainer().has(
+            Role.skillNamespace
+          )
       ) {
         if (!PlayerUtils.checkHandCooldown(pl, data.extraSkillReload)) return;
         PlayerUtils.setHandCooldown(pl, data.role.skillCooldown);
@@ -956,8 +1065,9 @@ public class Game {
     ItemStack item = pl.getInventory().getItemInMainHand();
     
     if (
-      Tag.ITEMS_SWORDS.isTagged(item.getType()) || Tag.ITEMS_AXES.isTagged(
-        item.getType()) || Tag.ITEMS_PICKAXES.isTagged(item.getType())
+      Tag.ITEMS_SWORDS.isTagged(item.getType())
+        || Tag.ITEMS_AXES.isTagged(item.getType())
+        || Tag.ITEMS_PICKAXES.isTagged(item.getType())
     ) return;
     
     Map<Integer, ItemStack> leftovers = sd.enderChest.addItem(item);
@@ -989,29 +1099,26 @@ public class Game {
     Block block = ev.getClickedBlock();
     if (block == null) return;
     
-    if (
-      LocationUtils.isSameWorld(
-        block.getWorld(),
-        DestroyTheCore.worldsManager.lobby
-      )
-    ) {
+    if (LocUtils.inLobby(pl)) {
       if (
-        DestroyTheCore.worldsManager.isReady && lobby.startButton != null && LocationUtils.isSameBlock(
-          block.getLocation(),
-          lobby.startButton)
+        DestroyTheCore.worldsManager.isReady
+          && lobby.startButton != null
+          && Pos.of(block).isSameBlockAs(lobby.startButton)
       ) {
         if (startingTask == null || startingTask.isCancelled()) {
           scheduleStart();
         }
         else {
-          cancelStart();
+          cancelScheduleStart();
         }
         return;
       }
       else if (PlayerUtils.shouldHandle(pl)) {
-        if (PlayerUtils.checkUsingBlock(pl, block)) pl.sendActionBar(
-          TextUtils.$("game.banned.use.lobby")
-        );
+        if (PlayerUtils.checkUsingBlock(pl, block)) {
+          pl.sendActionBar(
+            TextUtils.$("game.banned.use.lobby")
+          );
+        }
         ev.setCancelled(true);
       }
     }
@@ -1024,11 +1131,15 @@ public class Game {
       return;
     }
     
-    for (Location rest : new Location[]{DestroyTheCore.game.map.restArea, LocationUtils.flip(
-      DestroyTheCore.game.map.restArea),
+    for (Pos rest : new Pos[]{
+      DestroyTheCore.game.map.restArea, LocUtils.flip(
+        DestroyTheCore.game.map.restArea
+      )
     }) {
       if (
-        LocationUtils.near(block.getLocation(), LocationUtils.live(rest), 6)
+        LocUtils.inLive(pl)
+          &&
+          LocUtils.near(Pos.of(block), rest, 6)
       ) {
         ev.getPlayer().sendActionBar(TextUtils.$("game.banned.use.rest-area"));
         ev.setCancelled(true);
@@ -1036,8 +1147,17 @@ public class Game {
       }
     }
     
-    if (isPlaying && block.getType().equals(Material.ENDER_CHEST)) {
+    if (
+      isPlaying
+        && block.getType().equals(Material.ENDER_CHEST)
+        && !pl.isSneaking()
+    ) {
       ev.setCancelled(true);
+      
+      if (!LocUtils.canAccess(pl, block)) {
+        pl.sendActionBar(TextUtils.$("game.banned.open-enemy-container"));
+        return;
+      }
       
       Location loc = block.getLocation();
       SideData sd = getSideData(pl);
@@ -1045,7 +1165,7 @@ public class Game {
       pl.openInventory(sd.enderChest);
       sd.addEnderChestViewer(loc, pl);
       if (sd.enderChestViewers.get(loc).size() == 1) {
-        LocationUtils.playChestAnimation(loc, true);
+        LocUtils.playChestAnimation(loc, true);
       }
     }
   }
@@ -1069,7 +1189,7 @@ public class Game {
     Location blockLoc = block.getLocation();
     if (map.core == null) return;
     
-    if (!DestroyTheCore.worldsManager.checkLiveWorld(blockLoc)) {
+    if (!LocUtils.inLive(blockLoc)) {
       pl.sendActionBar(TextUtils.$("game.banned.place.lobby"));
       ev.setCancelled(true);
       return;
@@ -1077,14 +1197,15 @@ public class Game {
     
     if (
       List.of(Material.OBSIDIAN, Material.CRYING_OBSIDIAN).contains(
-        block.getType()) && LocationUtils.nearAnyCore(blockLoc, 3)
+        block.getType()
+      ) && LocUtils.nearAnyCore(blockLoc, 3)
     ) {
       pl.sendActionBar(TextUtils.$("game.banned.place.obsidian"));
       ev.setCancelled(true);
       return;
     }
     
-    if (LocationUtils.nearSpawn(blockLoc)) {
+    if (LocUtils.nearSpawn(blockLoc)) {
       ev.getPlayer().sendActionBar(TextUtils.$("game.banned.place.spawn"));
       ev.setCancelled(true);
       return;
@@ -1110,7 +1231,8 @@ public class Game {
         if (
           RandomUtils.hit(
             (pl.getPotionEffect(
-              PotionEffectType.LUCK).getAmplifier() + 1) * 0.25
+              PotionEffectType.LUCK
+            ).getAmplifier() + 1) * 0.25
           )
         ) amount *= 2;
       }
@@ -1118,12 +1240,13 @@ public class Game {
         if (
           RandomUtils.hit(
             (pl.getPotionEffect(
-              PotionEffectType.UNLUCK).getAmplifier() + 1) * 0.25
+              PotionEffectType.UNLUCK
+            ).getAmplifier() + 1) * 0.25
           )
         ) amount *= 0.5;
       }
       if (amount >= 1) {
-        pl.give(new ItemStack(ore.dropType(), (int) amount));
+        PlayerUtils.give(pl, ore.dropType(), (int) amount);
         
         if (amount >= 2) {
           pl.sendActionBar(
@@ -1143,7 +1266,7 @@ public class Game {
       int orbsCount = ore.maxXp() > 0 ? RandomUtils.range(5, 8) : 0;
       for (int i = 0; i < orbsCount; ++i) {
         ExperienceOrb orb = (ExperienceOrb) block.getWorld().spawnEntity(
-          LocationUtils.toBlockCenter(block.getLocation()),
+          LocUtils.toBlockCenter(block.getLocation()),
           EntityType.EXPERIENCE_ORB
         );
         orb.setExperience(RandomUtils.range(ore.minXp(), ore.maxXp() + 1));
@@ -1152,20 +1275,24 @@ public class Game {
       if (getPlayerData(pl).role.id == RolesManager.RoleKey.GOLD_DIGGER) {
         for (Player p : PlayerUtils.getTeammates(pl)) {
           if (p.equals(pl)) continue;
-          if (!LocationUtils.near(p, pl, 10)) continue;
+          if (!LocUtils.near(p, pl, 10)) continue;
           
           if (RandomUtils.hit(0.25)) {
             ItemStack item = new ItemStack(ore.dropType());
-            p.give(item);
+            PlayerUtils.give(p, item);
             
             p.sendActionBar(
               TextUtils.$(
                 "roles.gold-digger.ores-bonus",
                 List.of(
-                  Placeholder.component("ore",
-                    item.effectiveName().color(null)),
-                  Placeholder.component("player",
-                    PlayerUtils.getName(pl).color(null))
+                  Placeholder.component(
+                    "ore",
+                    item.effectiveName().color(null)
+                  ),
+                  Placeholder.component(
+                    "player",
+                    PlayerUtils.getName(pl).color(null)
+                  )
                 )
               )
             );
@@ -1175,13 +1302,15 @@ public class Game {
     }
     
     if (
-      Mission.loc != null && InfiniteOresMission.check(block.getLocation())
+      Mission.centerLoc != null
+        && InfiniteOresMission.check(block.getLocation())
     ) return;
     
+    oresTypeCache.put(Pos.of(block).toBlockPos(), originalType);
     block.setType(Material.BEDROCK);
     
     ProtocolManager manager = ProtocolLibrary.getProtocolManager();
-    BlockPosition pos = new BlockPosition(
+    BlockPosition protocolPos = new BlockPosition(
       block.getX(),
       block.getY(),
       block.getZ()
@@ -1189,7 +1318,7 @@ public class Game {
     int breakerId = fakeBreakerId.getAndIncrement();
     
     int kekkaiBonus = KekkaiMasterRole.checkFastOres(
-      LocationUtils.toBlockCenter(block.getLocation())
+      LocUtils.toBlockCenter(block.getLocation())
     ) ? 2 : 1;
     
     new BukkitRunnable() {
@@ -1203,15 +1332,17 @@ public class Game {
           PacketType.Play.Server.BLOCK_BREAK_ANIMATION
         );
         packet.getIntegers().write(0, breakerId);
-        packet.getBlockPositionModifier().write(0, pos);
+        packet.getBlockPositionModifier().write(0, protocolPos);
         packet.getIntegers().write(1, stage);
         
         try {
           for (Player p : Bukkit.getOnlinePlayers()) {
-            if (LocationUtils.isSameWorld(p, pl)) manager.sendServerPacket(
-              p,
-              packet
-            );
+            if (LocUtils.isSameWorld(p.getWorld(), block.getWorld())) {
+              manager.sendServerPacket(
+                p,
+                packet
+              );
+            }
           }
         }
         catch (Exception e) {
@@ -1219,11 +1350,29 @@ public class Game {
         }
         
         if (stage == -1) {
-          block.setType(originalType);
-          ParticleUtils.cloud(
-            PlayerUtils.all(),
-            LocationUtils.toBlockCenter(block.getLocation())
-          );
+          boolean shouldRestore = true;
+          sideLoop: for (Side side : new Side[]{
+            Side.RED, Side.GREEN
+          }) {
+            if (getSideData(side).noOresTicks <= 0) continue;
+            
+            for (Pos orePos : map.ores) {
+              if (
+                LocUtils.selfSide(orePos, side).isSameBlockAs(Pos.of(block))
+              ) {
+                shouldRestore = false;
+                break sideLoop;
+              }
+            }
+          }
+          
+          if (shouldRestore) {
+            block.setType(originalType);
+            ParticleUtils.cloud(
+              PlayerUtils.all(),
+              LocUtils.toBlockCenter(block.getLocation())
+            );
+          }
           
           cancel();
           return;
@@ -1241,18 +1390,16 @@ public class Game {
   public void handleCoreAttack(Player pl, Block block) {
     PlayerUtils.damageHandItem(pl);
     
-    pl.addPotionEffect(
-      new PotionEffect(PotionEffectType.GLOWING, 10 * 20, 0, false, false)
-    );
-    pl.addPotionEffect(
-      new PotionEffect(PotionEffectType.SLOWNESS, 10 * 20, 0, false, true)
-    );
-    pl.addPotionEffect(
-      new PotionEffect(PotionEffectType.MINING_FATIGUE, 10 * 20, 0, false, true)
-    );
-    pl.addPotionEffect(
-      new PotionEffect(PotionEffectType.WEAKNESS, 10 * 20, 0, false, true)
-    );
+    BiConsumer<PotionEffectType, Integer> effector = (type, level) -> {
+      pl.addPotionEffect(
+        new PotionEffect(type, 10 * 20, level, false, false)
+      );
+    };
+    
+    effector.accept(PotionEffectType.GLOWING, 0);
+    effector.accept(PotionEffectType.SLOWNESS, 0);
+    effector.accept(PotionEffectType.MINING_FATIGUE, 0);
+    effector.accept(PotionEffectType.WEAKNESS, 0);
     
     PlayerData data = getPlayerData(pl);
     data.addCoreAttack();
@@ -1286,20 +1433,18 @@ public class Game {
       }
       else {
         p.playSound(
-          LocationUtils.live(
-            LocationUtils.toBlockCenter(
-              LocationUtils.selfSide(map.core, oppositeSide)
-            )
+          LocUtils.live(
+            LocUtils.selfSide(map.core.center(), oppositeSide)
           ),
           Sound.BLOCK_ANVIL_LAND,
-          0.6f, // Volume
+          0.8f, // Volume
           1 // Pitch
         );
         
         p.playSound(
           p.getLocation(),
           Sound.BLOCK_ANVIL_LAND,
-          0.5f, // Volume
+          0.2f, // Volume
           1 // Pitch
         );
       }
@@ -1331,7 +1476,7 @@ public class Game {
       blockBelow.setType(Material.AIR);
     }
     
-    if (PlayerUtils.inLobby(pl)) {
+    if (!LocUtils.inLive(pl)) {
       pl.sendActionBar(TextUtils.$("game.banned.break.lobby"));
       ev.setCancelled(true);
       return;
@@ -1343,11 +1488,13 @@ public class Game {
       return;
     }
     
-    for (Location rest : new Location[]{DestroyTheCore.game.map.restArea, LocationUtils.flip(
-      DestroyTheCore.game.map.restArea),
+    for (Pos rest : new Pos[]{
+      DestroyTheCore.game.map.restArea, LocUtils.flip(
+        DestroyTheCore.game.map.restArea
+      )
     }) {
       if (
-        LocationUtils.near(block.getLocation(), LocationUtils.live(rest), 6)
+        LocUtils.near(Pos.of(block), rest, 6)
       ) {
         pl.sendActionBar(TextUtils.$("game.banned.break.rest-area"));
         ev.setCancelled(true);
@@ -1385,18 +1532,20 @@ public class Game {
     }
     
     if (
-      map.woods.stream().anyMatch(loc -> LocationUtils.isSameBlock(
-        LocationUtils.live(loc),
-        block.getLocation()
-      ) || LocationUtils.isSameBlock(
-        LocationUtils.live(LocationUtils.flip(loc)),
-        block.getLocation()
-      )
+      map.woods.stream().anyMatch(
+        loc -> LocUtils.isSameBlock(
+          LocUtils.live(loc),
+          block.getLocation()
+        )
+          || LocUtils.isSameBlock(
+            LocUtils.live(LocUtils.flip(loc)),
+            block.getLocation()
+          )
       )
     ) {
       PlayerUtils.damageHandItem(pl);
       
-      pl.give(new ItemStack(ev.getBlock().getType(), 2));
+      PlayerUtils.give(pl, ev.getBlock().getType(), 2);
       pl.giveExp(RandomUtils.range(1, 4));
       
       ev.setCancelled(true);
@@ -1419,9 +1568,9 @@ public class Game {
     
     if (map.core != null && data.side != Side.SPECTATOR) {
       if (
-        LocationUtils.isSameBlock(
+        LocUtils.isSameBlock(
           block.getLocation(),
-          LocationUtils.live(LocationUtils.selfSide(map.core, pl))
+          LocUtils.live(LocUtils.selfSide(map.core, pl))
         )
       ) {
         pl.sendActionBar(TextUtils.$("game.banned.break.own-core"));
@@ -1429,9 +1578,9 @@ public class Game {
         return;
       }
       if (
-        LocationUtils.isSameBlock(
+        LocUtils.isSameBlock(
           block.getLocation(),
-          LocationUtils.live(LocationUtils.enemySide(map.core, pl))
+          LocUtils.live(LocUtils.enemySide(map.core, pl))
         )
       ) {
         ev.setCancelled(true);
@@ -1449,25 +1598,38 @@ public class Game {
     if (block.getType().equals(Material.ENDER_CHEST)) {
       ev.setDropItems(false);
       block.getWorld().dropItemNaturally(
-        LocationUtils.toBlockCenter(block.getLocation()),
+        LocUtils.toBlockCenter(block.getLocation()),
         new ItemStack(Material.ENDER_CHEST)
       );
     }
   }
   
   public void handleBlockForm(BlockFormEvent ev) {
+    Block block = ev.getBlock();
+    
     if (
-      List.of(Material.OBSIDIAN, Material.CRYING_OBSIDIAN).contains(
-        ev.getBlock().getType()) && LocationUtils.nearAnyCore(
-          ev.getBlock().getLocation(),
-          3)
+      LocUtils.inLive(block.getLocation())
+        &&
+        List.of(Material.OBSIDIAN, Material.CRYING_OBSIDIAN).contains(
+          block.getType()
+        )
+        && LocUtils.nearAnyCore(
+          block.getLocation(),
+          3
+        )
     ) {
       ev.setCancelled(true);
     }
   }
   
   public void handleLiquidFlow(BlockFromToEvent ev) {
-    if (LocationUtils.nearAnyCore(ev.getToBlock().getLocation(), 3)) {
+    Block block = ev.getToBlock();
+    
+    if (
+      LocUtils.inLive(block.getLocation())
+        &&
+        LocUtils.nearAnyCore(block.getLocation(), 3)
+    ) {
       ev.setCancelled(true);
     }
   }
@@ -1475,45 +1637,49 @@ public class Game {
   public void handlePourLiquid(PlayerBucketEmptyEvent ev) {
     Block block = ev.getBlock();
     
-    if (LocationUtils.nearAnyCore(block.getLocation(), 3)) {
+    if (
+      LocUtils.inLive(block.getLocation())
+        &&
+        LocUtils.nearAnyCore(block.getLocation(), 3)
+    ) {
       ev.getPlayer().sendActionBar(TextUtils.$("game.banned.pour"));
       ev.setCancelled(true);
     }
   }
   
   public boolean unmovable(Block block) {
-    Predicate<Location> checker = loc -> loc != null && (LocationUtils.isSameBlock(
-      block.getLocation(),
-      LocationUtils.live(loc)
-    ) || LocationUtils.isSameBlock(
-      block.getLocation(),
-      LocationUtils.live(LocationUtils.flip(loc))
-    ));
+    Pos pos = Pos.of(block);
     
-    Predicate<Set<Location>> listChecker = locs -> locs != null && locs.stream().anyMatch(
-      checker);
+    Predicate<Pos> checker = p -> p != null
+      && (p.isSameBlockAs(pos) || LocUtils.flip(p).isSameBlockAs(pos));
     
-    return (checker.test(map.core) || listChecker.test(
-      map.woods) || listChecker.test(
-        map.ores) || listChecker.test(map.diamonds));
+    Predicate<Set<Pos>> listChecker = set -> set != null
+      && set.stream().anyMatch(checker);
+    
+    return checker.test(map.core)
+      || listChecker.test(map.woods)
+      || listChecker.test(map.ores)
+      || listChecker.test(map.diamonds);
   }
   
-  public boolean unmovable(List<Block> blocks) {
+  public boolean anyUnmovable(List<Block> blocks) {
     return blocks.stream().anyMatch(this::unmovable);
   }
   
   public void handleExplosion(EntityExplodeEvent ev) {
-    ev.blockList().removeIf(block -> unmovable(
-      block) || block.getState() instanceof Container
+    ev.blockList().removeIf(
+      block -> unmovable(block)
+        || block.getState() instanceof BlockInventoryHolder
+        || block.getState() instanceof DoubleChest
     );
   }
   
   public void handlePistonExtend(BlockPistonExtendEvent ev) {
-    if (unmovable(ev.getBlocks())) ev.setCancelled(true);
+    if (anyUnmovable(ev.getBlocks())) ev.setCancelled(true);
   }
   
   public void handlePistonRetract(BlockPistonRetractEvent ev) {
-    if (unmovable(ev.getBlocks())) ev.setCancelled(true);
+    if (anyUnmovable(ev.getBlocks())) ev.setCancelled(true);
   }
   
   public void handlePickupItem(PlayerAttemptPickupItemEvent ev) {
@@ -1541,7 +1707,7 @@ public class Game {
   }
   
   public void handleInventoryClick(
-                                   Inventory inv, Player pl, ItemStack item, ClickType click, InventoryClickEvent ev
+    Inventory inv, Player pl, ItemStack item, ClickType click, InventoryClickEvent ev
   ) {
     if (!PlayerUtils.shouldHandle(pl)) return;
     
@@ -1559,31 +1725,56 @@ public class Game {
         if (gen instanceof UsableItemGen ugen && ugen.isInstantUse()) {
           ev.setCancelled(true);
           
-          ugen.use(pl, null);
-          
-          BiConsumer<Integer, ItemStack> consumeItemFromSlot = (
-                                                                slot, recipeIngredient
-          ) -> {
-            ItemStack slotItem = inv.getItem(slot);
-            if (
-              slotItem != null && slotItem.getType() == recipeIngredient.getType()
-            ) {
-              int newAmount = slotItem.getAmount() - recipeIngredient.getAmount();
-              if (newAmount <= 0) {
-                inv.setItem(slot, null);
-              }
-              else {
-                slotItem.setAmount(newAmount);
-              }
-            }
-          };
+          Map<Material, Integer> costs = new HashMap<>();
+          Map<Material, Integer> given = new HashMap<>();
           
           for (ItemStack ingredient : recipe.getIngredients()) {
             if (ingredient.isEmpty()) continue;
             
-            consumeItemFromSlot.accept(0, ingredient);
-            consumeItemFromSlot.accept(1, ingredient);
+            costs.put(
+              ingredient.getType(),
+              costs.getOrDefault(
+                ingredient.getType(),
+                0
+              ) + ingredient.getAmount()
+            );
           }
+          
+          for (int i = 0; i < 2; ++i) {
+            ItemStack slotItem = minv.getItem(i);
+            if (slotItem == null || slotItem.isEmpty()) continue;
+            
+            given.put(
+              slotItem.getType(),
+              given.getOrDefault(slotItem.getType(), 0) + slotItem.getAmount()
+            );
+          }
+          
+          for (Material type : costs.keySet()) {
+            int count = given.getOrDefault(type, 0) - costs.get(type);
+            if (count < 0) return;
+          }
+          
+          for (int i = 0; i < 2; ++i) {
+            ItemStack slotItem = minv.getItem(i);
+            if (slotItem == null || slotItem.isEmpty()) continue;
+            
+            Material type = slotItem.getType();
+            int count = costs.getOrDefault(type, 0) - slotItem.getAmount();
+            
+            if (count >= 0) {
+              slotItem = null;
+              costs.put(type, count);
+            }
+            else {
+              slotItem.setAmount(-count);
+              costs.put(type, 0);
+            }
+            
+            minv.setItem(i, slotItem);
+          }
+          
+          ugen.use(pl, null);
         }
       }
     }
@@ -1595,14 +1786,14 @@ public class Game {
     if (!isPlaying) return;
     
     if (ev.getInventory().getHolder() instanceof BlockInventoryHolder holder) {
-      if (!LocationUtils.canAccess(pl, holder.getBlock())) {
+      if (!LocUtils.canAccess(pl, holder.getBlock())) {
         pl.sendActionBar(TextUtils.$("game.banned.open-enemy-container"));
         ev.setCancelled(true);
         return;
       }
     }
     if (ev.getInventory().getHolder() instanceof DoubleChest dc) {
-      if (!LocationUtils.canAccess(pl, dc.getLocation().getBlock())) {
+      if (!LocUtils.canAccess(pl, dc.getLocation().getBlock())) {
         pl.sendActionBar(TextUtils.$("game.banned.open-enemy-container"));
         ev.setCancelled(true);
         return;
@@ -1619,7 +1810,6 @@ public class Game {
   
   public void handleInventoryClose(InventoryCloseEvent ev) {
     if (!isPlaying) return;
-    
     if (!(ev.getPlayer() instanceof Player pl)) return;
     
     SideData sd = getSideData(pl);
@@ -1631,7 +1821,7 @@ public class Game {
     sd.removeEnderChestViewer(loc, pl);
     if (
       sd.enderChestViewers.get(loc).isEmpty()
-    ) LocationUtils.playChestAnimation(loc, false);
+    ) LocUtils.playChestAnimation(loc, false);
   }
   
   public void handleCrafting(PrepareItemCraftEvent ev) {
@@ -1654,7 +1844,8 @@ public class Game {
     if (left.isRepairableBy(right) || left.getType() == right.getType()) {
       if (
         DestroyTheCore.itemsManager.isGen(
-          left) || DestroyTheCore.itemsManager.isGen(right)
+          left
+        ) || DestroyTheCore.itemsManager.isGen(right)
       ) {
         ev.setResult(null);
       }
@@ -1666,44 +1857,47 @@ public class Game {
     
     PlayerData data = getPlayerData(pl);
     
-    BiConsumer<Region, Side> sideChecker = (region, side) -> {
-      if (data.side.equals(side)) return;
-      if (region == null || !region.contains(pl.getLocation())) return;
+    if (!isPlaying && LocUtils.inLobby(pl)) {
+      BiConsumer<Region, Side> sideChecker = (region, side) -> {
+        if (data.side.equals(side)) return;
+        if (region == null || !region.contains(Pos.of(pl))) return;
       
-      if (isPlaying) {
-        pl.sendActionBar(TextUtils.$("game.side.join.bad-time"));
-        return;
-      }
+//        if (isPlaying) {
+//          pl.sendActionBar(TextUtils.$("game.side.join.bad-time"));
+//          return;
+//        }
+        
+        PlayerUtils.prefixedSend(
+          pl,
+          TextUtils.$(
+            "game.side.join.success",
+            List.of(Placeholder.component("side", side.titleComp()))
+          )
+        );
+        getPlayerData(pl).join(side);
+        enforceTeam(pl);
+        DestroyTheCore.boardsManager.refresh(pl);
+      };
       
-      PlayerUtils.prefixedSend(
-        pl,
-        TextUtils.$(
-          "game.side.join.success",
-          List.of(Placeholder.component("side", side.titleComp()))
-        )
-      );
-      getPlayerData(pl).join(side);
-      enforceTeam(pl);
-      DestroyTheCore.boardsManager.refresh(pl);
-    };
-    
-    if (!isPlaying) {
       sideChecker.accept(lobby.joinRed, Side.RED);
       sideChecker.accept(lobby.joinGreen, Side.GREEN);
       sideChecker.accept(lobby.joinSpectator, Side.SPECTATOR);
     }
     
     if (isPlaying && map.restArea != null) {
-      playerLoop:
-      for (Player p : Bukkit.getOnlinePlayers()) {
+      playerLoop: for (Player p : Bukkit.getOnlinePlayers()) {
         PlayerData pd = getPlayerData(p);
         if (pd.alive || pd.side == Side.SPECTATOR) continue;
         
-        for (Location rest : new Location[]{DestroyTheCore.game.map.restArea, LocationUtils.flip(
-          DestroyTheCore.game.map.restArea),
+        for (Pos rest : new Pos[]{
+          DestroyTheCore.game.map.restArea, LocUtils.flip(
+            DestroyTheCore.game.map.restArea
+          ),
         }) {
           if (
-            LocationUtils.near(p.getLocation(), LocationUtils.live(rest), 6)
+            LocUtils.inLive(p)
+              &&
+              LocUtils.near(Pos.of(p), rest, 6)
           ) continue playerLoop;
         }
         
@@ -1711,13 +1905,11 @@ public class Game {
       }
     }
     
-    if (isPlaying && data.side != Side.SPECTATOR) {
+    if (isPlaying && LocUtils.inLive(pl) && data.side != Side.SPECTATOR) {
       if (map.core != null && isInTruce()) {
-        double coreX = LocationUtils.toBlockCenter(LocationUtils.enemySide(
-          map.core,
-          pl)).getX();
+        Pos enemyCore = LocUtils.enemySide(map.core, pl).center();
         
-        if (Math.abs(pl.getX() - coreX) <= 30) {
+        if (LocUtils.near(Pos.of(pl), enemyCore, 30)) {
           pl.sendActionBar(TextUtils.$("game.truce.warning"));
           
           pl.addPotionEffect(
@@ -1728,7 +1920,7 @@ public class Game {
           );
         }
         
-        if (Math.abs(pl.getX() - coreX) <= 20) {
+        if (LocUtils.near(Pos.of(pl), enemyCore, 20)) {
           pl.setHealth(1);
           PlayerUtils.teleportToSpawnPoint(pl);
           
@@ -1780,64 +1972,84 @@ public class Game {
   }
   
   public void setBothCoreMaterial(Material type) {
-    for (Location loc : new Location[]{map.core, LocationUtils.flip(map.core),
+    for (Pos pos : new Pos[]{
+      map.core, LocUtils.flip(map.core),
     }) {
-      LocationUtils.setLiveBlock(loc, type);
+      LocUtils.setLiveBlock(pos, type);
     }
   }
   
   public void setDiamonds(Material type) {
-    for (Location loc : map.diamonds) {
-      LocationUtils.setLiveBlock(loc, type);
+    for (Pos pos : map.diamonds) {
+      LocUtils.setLiveBlock(pos, type);
     }
   }
   
+  Map<BlockPos, Material> oresTypeCache = new HashMap<>();
+  
   public void banOres(Side side) {
-    for (Location loc : map.ores) {
-      LocationUtils.setLiveBlock(
-        LocationUtils.selfSide(loc, side),
-        Material.BEDROCK
-      );
+    for (Pos pos : map.ores) {
+      banOneOre(LocUtils.selfSide(pos, side));
     }
+  }
+  
+  public void banOneOre(Pos pos) {
+    Block block = LocUtils.live(pos).getBlock();
+    if (block.getType() == Material.BEDROCK) return;
+    
+    oresTypeCache.put(
+      pos.toBlockPos(),
+      block.getType()
+    );
+    LocUtils.setLiveBlock(
+      pos,
+      Material.BEDROCK
+    );
   }
   
   public void unbanOres(Side side) {
-    for (Location loc : map.ores) {
-      LocationUtils.setLiveBlock(
-        LocationUtils.selfSide(loc, side),
-        loc.getBlock().getType()
+    for (Pos pos : map.ores) {
+      LocUtils.setLiveBlock(
+        LocUtils.selfSide(pos, side),
+        oresTypeCache.getOrDefault(pos.toBlockPos(), Material.GLASS)
       );
     }
   }
   
   public void summonShopVillagers() {
-    for (Location originalLoc : map.shops) {
-      Location loc = LocationUtils.live(
-        LocationUtils.toSpawnPoint(originalLoc)
+    for (Pos pos : map.shops) {
+      Location loc = LocUtils.live(
+        LocUtils.toSpawnPoint(pos)
       );
       loc.setY(loc.getBlockY());
       
       for (Villager e : loc.getNearbyEntitiesByType(Villager.class, 2)) {
-        if (LocationUtils.near(loc, e.getLocation(), 1)) e.remove();
+        if (LocUtils.near(Pos.of(e), pos, 1)) e.remove();
       }
       
-      offsetLoop:
-      for (Vector offset : new Vector[]{new Vector(0, -2, 0), new Vector(1,
-        0,
-        0), new Vector(-1,
+      offsetLoop: for (Vector offset : new Vector[]{
+        new Vector(0, -2, 0), new Vector(1, 0, 0), new Vector(
+          -1,
           0,
-          0), new Vector(0, 0, 1), new Vector(0, 0, -1),
+          0
+        ), new Vector(0, 0, 1), new Vector(0, 0, -1)
       }) {
         for (Shop shop : shops) {
-          if (
-            shop.blockType != loc.clone().add(offset).getBlock().getType()
-          ) continue;
+          if (shop.blockType != loc.clone().add(offset).getBlock().getType())
+            continue;
           
-          villagers.add(new VillagerData(loc, shop.summonVillager(loc)));
+          Location flipped = LocUtils.live(LocUtils.flip(Pos.of(loc)));
+          
           villagers.add(
             new VillagerData(
-              LocationUtils.flip(loc),
-              shop.summonVillager(LocationUtils.flip(loc))
+              loc,
+              shop.summonVillager(loc)
+            )
+          );
+          villagers.add(
+            new VillagerData(
+              flipped,
+              shop.summonVillager(flipped)
             )
           );
           
@@ -1881,9 +2093,11 @@ public class Game {
             );
           }
           
-          Bukkit.getScheduler().runTaskLater(DestroyTheCore.instance,
+          Bukkit.getScheduler().runTaskLater(
+            DestroyTheCore.instance,
             Game.this::start,
-            100);
+            100
+          );
           
           cancel();
           return;
@@ -1911,7 +2125,7 @@ public class Game {
     }.runTaskTimer(DestroyTheCore.instance, 0, 20);
   }
   
-  public void cancelStart() {
+  public void cancelScheduleStart() {
     startingTask.cancel();
     
     for (Player p : Bukkit.getOnlinePlayers()) {
@@ -1921,14 +2135,41 @@ public class Game {
   }
   
   public void start() {
-    if (
-      map.restArea == null || map.core == null || map.mission == null || map.spawnpoints == null || map.woods == null || map.ores == null || map.diamonds == null || map.shops == null
-    ) {
-      PlayerUtils.prefixedBroadcast(TextUtils.$("game.missing-loc"));
-      return;
+    List<Pair<String, Object>> posChecks = List.of(
+      Pair.of("rest-area", map.restArea),
+      Pair.of("core", map.core),
+      Pair.of("mission", map.mission),
+      Pair.of("spawnpoints", map.spawnpoints),
+      Pair.of("woods", map.woods),
+      Pair.of("ores", map.ores),
+      Pair.of("diamonds", map.diamonds),
+      Pair.of("shops", map.shops)
+    );
+    boolean mapGood = true;
+    for (Pair<String, Object> pair : posChecks) {
+      String name = pair.first();
+      Object stuff = pair.second();
+      
+      if (stuff == null || (stuff instanceof List<?> list && list.isEmpty())) {
+        PlayerUtils.prefixedBroadcast(
+          TextUtils.$(
+            "game.missing-locs.message",
+            List.of(
+              Placeholder.unparsed(
+                "location",
+                TextUtils.stripColor(
+                  TextUtils.$r("game.missing-locs.locs." + name)
+                )
+              )
+            )
+          )
+        );
+        mapGood = false;
+      }
     }
+    if (!mapGood) return;
     
-    DestroyTheCore.worldsManager.refreshForceLoadChunks();
+//    DestroyTheCore.worldsManager.refreshForceLoadChunks();
     
     isPlaying = true;
     
@@ -1958,10 +2199,11 @@ public class Game {
       );
       
       PlayerUtils.refreshSpectatorAbilities(p);
-      PlayerUtils.hideSpectators(p);
       PlayerUtils.respawn(p);
     }
     DestroyTheCore.boardsManager.refresh();
+    
+    PlayerUtils.refreshAllSpectatorVisibilities();
     
     // After 0: respawn, 1: give essential items
     CoreUtils.setTickOut(
@@ -2016,12 +2258,14 @@ public class Game {
     
     DestroyTheCore.missionsManager.stop();
     
-    PlayerUtils.showAllPlayers();
-    for (Player p : Bukkit.getOnlinePlayers())
+    for (Player p : Bukkit.getOnlinePlayers()) {
       PlayerUtils.refreshSpectatorAbilities(
         p,
         false
       );
+    }
+    
+    PlayerUtils.refreshAllSpectatorVisibilities();
     
     hideRTScore();
     
@@ -2050,7 +2294,8 @@ public class Game {
         p.getInventory().setItem(
           4,
           DestroyTheCore.itemsManager.gens.get(
-            ItemsManager.ItemKey.CHOOSE_ROLE).getItem()
+            ItemsManager.ItemKey.CHOOSE_ROLE
+          ).getItem()
         );
       }
     }
@@ -2092,61 +2337,46 @@ public class Game {
     stop();
   }
   
-  public static class TopThree {
-    
-    // Top 3 scores
+  static public class TopThree {
     int v1 = Integer.MIN_VALUE;
     int v2 = Integer.MIN_VALUE;
     int v3 = Integer.MIN_VALUE;
     
-    // Lists of players for each rank
     List<Player> p1 = new ArrayList<>();
     List<Player> p2 = new ArrayList<>();
     List<Player> p3 = new ArrayList<>();
     
     public void add(Player p, int v) {
       if (v >= v1) {
-        // New score is strictly better than v1, or equal to v1
         if (v > v1) {
-          // Shift existing top 2 and 3 down to make room for new top 1
           v3 = v2;
           p3 = p2;
           
           v2 = v1;
           p2 = p1;
           
-          // Set new top 1
           v1 = v;
           p1 = new ArrayList<>();
         }
-        // Add player to the new or existing rank 1 list
         p1.add(p);
       }
       else if (v >= v2) {
-        // New score is strictly better than v2, or equal to v2
         if (v > v2) {
-          // Shift existing top 3 down to make room for new top 2
           v3 = v2;
           p3 = p2;
           
-          // Set new top 2
           v2 = v;
           p2 = new ArrayList<>();
         }
-        // Add player to the new or existing rank 2 list
         p2.add(p);
       }
       else if (v >= v3) {
-        // New score is strictly better than v3, or equal to v3
         if (v > v3) {
-          // Set new top 3
           v3 = v;
           p3 = new ArrayList<>();
         }
-        // Add player to the new or existing rank 3 list
         p3.add(p);
       }
-      // If v < v3, the score is not in the top three and is ignored.
     }
     
     String name;
@@ -2168,7 +2398,8 @@ public class Game {
               Component.join(
                 JoinConfiguration.separator(Component.text(", ")),
                 tops.stream().map(PlayerUtils::getName).toList().toArray(
-                  new Component[0])
+                  new Component[0]
+                )
               )
             ),
             Placeholder.component("count", Component.text(value))
@@ -2304,6 +2535,16 @@ public class Game {
   }
   
   public void onTick() {
+    for (Player p : Bukkit.getOnlinePlayers()) {
+      if (
+        PlayerUtils.wearingLeather(p)
+          && p.getFreezeTicks() > 140
+          && p.getFreezeTicks() % 20 == 1
+      ) {
+        p.damage(1, DamageSource.builder(DamageType.FREEZE).build());
+      }
+    }
+    
     if (!isPlaying) return;
     
     if (phaseTimer <= 0) {
@@ -2357,8 +2598,8 @@ public class Game {
         sd.invulnTicks--;
         
         if (!sd.isInvuln()) {
-          LocationUtils.setLiveBlock(
-            LocationUtils.selfSide(map.core, side),
+          LocUtils.setLiveBlock(
+            LocUtils.selfSide(map.core, side),
             Material.END_STONE
           );
         }
@@ -2368,12 +2609,15 @@ public class Game {
     if (isPlaying && DestroyTheCore.ticksManager.isUpdateTick()) {
       for (Player p : Bukkit.getOnlinePlayers()) {
         PlayerData data = getPlayerData(p);
-        if (PlayerUtils.inLobby(p)) continue;
+        if (LocUtils.inLobby(p)) continue;
         
         if (
           p.getInventory().contains(
-            Material.ENCHANTING_TABLE) || p.getInventory().contains(
-              Material.ENDER_CHEST)
+            Material.ENCHANTING_TABLE
+          )
+            || p.getInventory().contains(
+              Material.ENDER_CHEST
+            )
         ) {
           p.addPotionEffect(
             new PotionEffect(PotionEffectType.SLOWNESS, 30, 2, true, false)
@@ -2398,24 +2642,35 @@ public class Game {
           p.setCooldown(Material.KNOWLEDGE_BOOK, 0);
           data.extraSkillReload = 0;
         }
+        
+        if (p.isSneaking())
+          PlayerUtils.growNearbyCrops(p);
       }
     }
     
     updateVillagers();
     
     if (
-      map.core != null && phase.isAfter(
-        Phase.CoreWilting) && DestroyTheCore.ticksManager.ticksCount % (15 * 20) == 0
+      map.core != null
+        && phase.isAfter(
+          Phase.CoreWilting
+        )
+        && DestroyTheCore.ticksManager.ticksCount % (15 * 20) == 0
     ) {
       getSideData(Side.RED).directAttackCore();
       getSideData(Side.GREEN).directAttackCore();
       checkWinner();
       
-      for (Location loc : new Location[]{map.core, LocationUtils.flip(map.core),
+      for (Pos pos : new Pos[]{
+        map.core, LocUtils.flip(map.core)
       }) {
-        new ParticleBuilder(Particle.WITCH).allPlayers().location(
-          LocationUtils.live(LocationUtils.toBlockCenter(loc)).add(0, -0.2, 0)
-        ).offset(0, 0, 0).count(20).extra(1).spawn();
+        new ParticleBuilder(Particle.WITCH)
+          .allPlayers()
+          .location(LocUtils.live(pos.center()).add(0, -0.2, 0))
+          .offset(0, 0, 0)
+          .count(20)
+          .extra(1)
+          .spawn();
       }
       
       for (Player p : Bukkit.getOnlinePlayers()) {
@@ -2429,7 +2684,7 @@ public class Game {
     }
     
     if (map.core != null) {
-      for (Player p : Bukkit.getOnlinePlayers()) {
+      for (Player p : DestroyTheCore.worldsManager.live.getPlayers()) {
         PlayerUtils.rrt(p);
       }
     }
@@ -2447,15 +2702,18 @@ public class Game {
   public void onParticleTick() {
     for (Player p : Bukkit.getOnlinePlayers()) {
       if (!isPlaying) continue;
-      if (PlayerUtils.inLobby(p)) continue;
+      if (LocUtils.inLobby(p)) continue;
       if (p.hasPotionEffect(PotionEffectType.INVISIBILITY)) continue;
       
       PlayerData data = getPlayerData(p);
       
       if (
         p.getInventory().contains(
-          Material.ENCHANTING_TABLE) || p.getInventory().contains(
-            Material.ENDER_CHEST)
+          Material.ENCHANTING_TABLE
+        )
+          || p.getInventory().contains(
+            Material.ENDER_CHEST
+          )
       ) {
         ParticleUtils.dust(
           PlayerUtils.all(),
@@ -2474,11 +2732,18 @@ public class Game {
     }
     
     if (isPlaying && map.core != null) {
-      for (Location loc : new Location[]{map.core, LocationUtils.flip(map.core),
+      for (Pos pos : new Pos[]{
+        map.core, LocUtils.flip(map.core)
       }) {
-        new ParticleBuilder(Particle.ENCHANT).allPlayers().location(
-          LocationUtils.live(LocationUtils.toBlockCenter(loc)).add(0, 0.6, 0)
-        ).count(2).offset(0.3, 0.2, 0.3).extra(1.5).spawn();
+        new ParticleBuilder(Particle.ENCHANT)
+          .allPlayers()
+          .location(
+            LocUtils.live(pos.center()).add(0, 0.6, 0)
+          )
+          .count(2)
+          .offset(0.3, 0.2, 0.3)
+          .extra(1.5)
+          .spawn();
       }
     }
   }

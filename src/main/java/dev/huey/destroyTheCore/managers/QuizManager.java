@@ -18,7 +18,7 @@ import org.bukkit.entity.Player;
 
 public class QuizManager {
   
-  public static class Quiz {
+  static public class Quiz {
     
     Player pl;
     int startTime;
@@ -82,9 +82,9 @@ public class QuizManager {
     }
   }
   
-  public static Component prefix;
+  static public Component prefix;
   
-  public static void send(Player pl, Component message) {
+  static public void send(Player pl, Component message) {
     if (prefix == null) prefix = TextUtils.$("quiz.prefix");
     PlayerUtils.send(pl, prefix.append(message));
   }
@@ -107,7 +107,8 @@ public class QuizManager {
     if (!quizzes.containsKey(id)) return;
     if (!content.matches("^\\d+$")) return;
     
-    CoreUtils.setTickOut(() -> quizzes.get(id).update(Integer.parseInt(content))
+    CoreUtils.setTickOut(
+      () -> quizzes.get(id).update(Integer.parseInt(content))
     );
   }
   

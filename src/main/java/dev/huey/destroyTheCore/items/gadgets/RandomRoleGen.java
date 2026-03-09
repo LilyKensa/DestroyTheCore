@@ -26,7 +26,7 @@ public class RandomRoleGen extends UsableItemGen {
   public void computeMeta(ItemMeta uncastedMeta) {
     BookMeta meta = (BookMeta) uncastedMeta;
     
-    meta.setGeneration(null);
+    meta.addItemFlags(org.bukkit.inventory.ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
   }
   
   @Override
@@ -40,7 +40,8 @@ public class RandomRoleGen extends UsableItemGen {
     
     Role role = RandomUtils.pick(
       DestroyTheCore.rolesManager.roles.values().stream().filter(
-        r -> r.id != RolesManager.RoleKey.DEFAULT).toList()
+        r -> r.id != RolesManager.RoleKey.DEFAULT
+      ).toList()
     );
     
     PlayerUtils.broadcast(

@@ -4,7 +4,7 @@ import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.managers.RolesManager;
-import dev.huey.destroyTheCore.utils.LocationUtils;
+import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import java.util.List;
@@ -47,7 +47,7 @@ public class GoldDiggerRole extends Role {
       
       for (Player p : PlayerUtils.getTeammates(pl)) {
         if (p.equals(pl)) continue;
-        if (!LocationUtils.near(p, pl, 10)) continue;
+        if (!LocUtils.near(p, pl, 10)) continue;
         
         p.addPotionEffect(
           new PotionEffect(PotionEffectType.HASTE, 30, 0, true, false)

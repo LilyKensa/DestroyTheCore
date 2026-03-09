@@ -4,7 +4,7 @@ import com.destroystokyo.paper.ParticleBuilder;
 import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.managers.RolesManager;
-import dev.huey.destroyTheCore.utils.LocationUtils;
+import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +24,7 @@ import org.bukkit.util.Vector;
 
 public class WandererRole extends Role {
   
-  public static class Elevator {
+  static public class Elevator {
     
     final double radius = 2.5;
     final double height = 10;
@@ -37,17 +37,23 @@ public class WandererRole extends Role {
     }
     
     public boolean contains(Location thatLoc) {
-      return (LocationUtils.isSameWorld(loc,
-        thatLoc) && thatLoc.getY() >= loc.getY() && thatLoc.getY() <= loc.getY() + height && new Vector(
+      return (LocUtils.isSameWorld(
+        loc,
+        thatLoc
+      )
+        && thatLoc.getY() >= loc.getY()
+        && thatLoc.getY() <= loc.getY() + height
+        && new Vector(
           thatLoc.getX() - loc.getX(),
           0,
-          thatLoc.getZ() - loc.getZ()).lengthSquared() <= radius * radius);
+          thatLoc.getZ() - loc.getZ()
+        ).lengthSquared() <= radius * radius);
     }
   }
   
-  public static List<Elevator> elevators = new ArrayList<>();
+  static public List<Elevator> elevators = new ArrayList<>();
   
-  public static void onTick() {
+  static public void onTick() {
     for (Elevator elevator : elevators) {
       if (DestroyTheCore.ticksManager.isUpdateTick()) {
         for (Player p : Bukkit.getOnlinePlayers()) {
@@ -73,7 +79,7 @@ public class WandererRole extends Role {
     elevators.removeIf(e -> e.duration <= 0);
   }
   
-  public static void onParticleTick() {
+  static public void onParticleTick() {
     for (Elevator elevator : elevators) {
       for (double y = 0; y < elevator.height; y += elevator.height / 10D) {
         double currentAngle = Math.toRadians(elevator.loc.getYaw()) + y * 5;
@@ -84,8 +90,11 @@ public class WandererRole extends Role {
         
         Location particleLoc = elevator.loc.clone().add(x, y, z);
         
-        new ParticleBuilder(Particle.END_ROD).allPlayers().location(
-          particleLoc).extra(0).spawn();
+        new ParticleBuilder(Particle.END_ROD)
+          .allPlayers()
+          .location(particleLoc)
+          .extra(0)
+          .spawn();
       }
       
       elevator.loc.addRotation(10, 0);
@@ -128,8 +137,10 @@ public class WandererRole extends Role {
       
       if (offItem.getType().equals(Material.SHIELD)) {
         pl.getInventory().setItemInOffHand(ItemStack.empty());
-        pl.getWorld().dropItemNaturally(LocationUtils.hitboxCenter(pl),
-          offItem).setPickupDelay(20);
+        pl.getWorld().dropItemNaturally(
+          LocUtils.hitboxCenter(pl),
+          offItem
+        ).setPickupDelay(20);
         
         pl.sendActionBar(TextUtils.$("roles.wanderer.no-shield"));
       }
@@ -147,7 +158,7 @@ public class WandererRole extends Role {
     proj.addScoreboardTag("wanderer-elevator");
   }
   
-  public static void onProjectileHit(ProjectileHitEvent ev) {
+  static public void onProjectileHit(ProjectileHitEvent ev) {
     Projectile proj = ev.getEntity();
     if (!proj.getScoreboardTags().contains("wanderer-elevator")) return;
     
