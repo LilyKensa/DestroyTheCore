@@ -2,14 +2,14 @@ package dev.huey.destroyTheCore.missions;
 
 import com.destroystokyo.paper.ParticleBuilder;
 import dev.huey.destroyTheCore.DestroyTheCore;
-import dev.huey.destroyTheCore.bases.Mission;
+import dev.huey.destroyTheCore.bases.missions.TimedMission;
 import dev.huey.destroyTheCore.utils.RandomUtils;
 import org.bukkit.Particle;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.util.Vector;
 
-public class XpFountainMission extends Mission {
+public class XpFountainMission extends TimedMission {
   
   int count = 0;
   
@@ -18,11 +18,11 @@ public class XpFountainMission extends Mission {
   }
   
   @Override
-  public void start() {
+  public void innerStart() {
   }
   
   @Override
-  public void tick() {
+  public void innerTick() {
     if (!DestroyTheCore.ticksManager.isParticleTick()) return;
     
     for (int i = 0; i < RandomUtils.range(1, 4); ++i) {
@@ -57,6 +57,6 @@ public class XpFountainMission extends Mission {
   }
   
   @Override
-  public void finish() {
+  public void innerFinish() {
   }
 }

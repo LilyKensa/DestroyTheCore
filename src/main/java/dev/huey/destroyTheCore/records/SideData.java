@@ -17,7 +17,8 @@ public class SideData {
   public int coreHealth = maxCoreHealth;
   public int invulnTicks = 0, clearInvCooldown = 0, extraDamageTicks = 0,
     noOresTicks = 0, maxNoOresTicks = 0,
-    noShopTicks = 0, maxNoShopTicks = 0;
+    noShopTicks = 0, maxNoShopTicks = 0,
+    missionsCompleted = 0;
   public boolean usedTruce = false;
   
   public Inventory enderChest = Bukkit.createInventory(

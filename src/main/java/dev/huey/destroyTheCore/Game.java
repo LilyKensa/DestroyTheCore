@@ -23,7 +23,9 @@ import it.unimi.dsi.fastutil.Pair;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.*;
+import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.bossbar.BossBar;
+import net.kyori.adventure.bossbar.BossBarViewer;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
@@ -46,6 +48,7 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.*;
+import org.bukkit.event.vehicle.VehicleDamageEvent;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.potion.PotionEffect;
@@ -429,7 +432,16 @@ public class Game {
     }
     
     public void show(Side side) {
-      if (getSideData(side).noOresTicks > 0) return;
+      BossBar oldBar = bars.get(side);
+      if (oldBar != null) {
+        List<BossBarViewer> viewers = new ArrayList<>();
+        oldBar.viewers().forEach(viewers::add);
+        
+        for (BossBarViewer viewer : viewers) {
+          if (!(viewer instanceof Audience audience)) continue;
+          oldBar.removeViewer(audience);
+        }
+      }
       
       bars.put(
         side,
@@ -456,7 +468,10 @@ public class Game {
     
     public void update(Side side) {
       BossBar bar = bars.get(side);
+      if (bar == null) return;
+      
       SideData sd = getSideData(side);
+      
       bar.name(getTitle(side));
       bar.progress(1F * current.apply(sd) / max.apply(sd));
     }
@@ -640,7 +655,7 @@ public class Game {
     }
     
     if (isPlaying) {
-      PlayerUtils.hideSpectators(pl);
+      PlayerUtils.refreshAllSpectatorVisibilitiesFor(pl);
     }
     
     DestroyTheCore.worldsManager.onPlayerChangeWorld(pl, pl.getWorld());
@@ -678,6 +693,16 @@ public class Game {
     );
   }
   
+  public void handleVehicleDamage(VehicleDamageEvent ev) {
+    if (ev.getAttacker() instanceof Player attacker) {
+      if (isPlaying && getPlayerData(attacker).side == Side.SPECTATOR) {
+        attacker.sendActionBar(TextUtils.$("game.banned.attack.spectator"));
+        ev.setCancelled(true);
+        return;
+      }
+    }
+  }
+  
   public void handleEntityDamage(EntityDamageByEntityEvent ev) {
     if (ev.getDamager() instanceof Player attacker) {
       if (isPlaying && getPlayerData(attacker).side == Side.SPECTATOR) {
@@ -706,7 +731,10 @@ public class Game {
     if (isPlaying) {
       double damage = ev.getDamage(), finalDamage = ev.getFinalDamage();
       
-      if (getPlayerData(attacker).side.equals(getPlayerData(victim).side)) {
+      PlayerData attackerData = getPlayerData(attacker),
+        victimData = getPlayerData(victim);
+      
+      if (attackerData.side.equals(victimData.side)) {
         if (proj == null) {
           attacker.sendActionBar(TextUtils.$("game.banned.attack.teammate"));
         }
@@ -721,7 +749,13 @@ public class Game {
       
       if (finalDamage <= 0) return;
       
-      if (getPlayerData(victim).role.id != RolesManager.RoleKey.PROVOCATEUR) {
+      double damageMultiplier = finalDamage / damage;
+      
+      if (attackerData.role.id == RolesManager.RoleKey.PROVOCATEUR) {
+        damage *= 0.8;
+      }
+      
+      if (victimData.role.id != RolesManager.RoleKey.PROVOCATEUR) {
         List<Player> provocateurs = new ArrayList<>();
         for (Player p : PlayerUtils.getTeammates(victim)) {
           if (
@@ -756,10 +790,14 @@ public class Game {
         }
         
         damage -= damageReduced;
-        ev.setDamage(damage);
       }
       
-      DestroyTheCore.damageManager.addDamage(attacker, victim, finalDamage);
+      ev.setDamage(damage);
+      DestroyTheCore.damageManager.addDamage(
+        attacker,
+        victim,
+        damage * damageMultiplier
+      );
     }
     
     if (ev.getFinalDamage() >= 2) victim.removePotionEffect(
@@ -900,14 +938,17 @@ public class Game {
         )
       );
       
-      killer.give(
-        DestroyTheCore.itemsManager.gens.get(
-          ItemsManager.ItemKey.SOUL
-        ).getItem()
-      );
+      PlayerData killerData = getPlayerData(killer);
+      killerData.addKill();
+      
+      PlayerUtils.give(killer, ItemsManager.ItemKey.SOUL);
       
       if (data.killStreak >= 10) {
-        killer.give(new ItemStack(Material.EMERALD, data.killStreak));
+        PlayerUtils.give(
+          killer,
+          Material.EMERALD,
+          data.killStreak
+        );
         
         PlayerUtils.broadcast(
           bountyPrefix.append(
@@ -921,9 +962,6 @@ public class Game {
           )
         );
       }
-      
-      PlayerData killerData = getPlayerData(killer);
-      killerData.addKill();
       
       if (killerData.killStreak == 10) {
         PlayerUtils.broadcast(
@@ -1208,7 +1246,7 @@ public class Game {
         ) amount *= 0.5;
       }
       if (amount >= 1) {
-        pl.give(new ItemStack(ore.dropType(), (int) amount));
+        PlayerUtils.give(pl, ore.dropType(), (int) amount);
         
         if (amount >= 2) {
           pl.sendActionBar(
@@ -1241,7 +1279,7 @@ public class Game {
           
           if (RandomUtils.hit(0.25)) {
             ItemStack item = new ItemStack(ore.dropType());
-            p.give(item);
+            PlayerUtils.give(p, item);
             
             p.sendActionBar(
               TextUtils.$(
@@ -1268,10 +1306,11 @@ public class Game {
         && InfiniteOresMission.check(block.getLocation())
     ) return;
     
+    oresTypeCache.put(Pos.of(block).toBlockPos(), originalType);
     block.setType(Material.BEDROCK);
     
     ProtocolManager manager = ProtocolLibrary.getProtocolManager();
-    BlockPosition pos = new BlockPosition(
+    BlockPosition protocolPos = new BlockPosition(
       block.getX(),
       block.getY(),
       block.getZ()
@@ -1293,7 +1332,7 @@ public class Game {
           PacketType.Play.Server.BLOCK_BREAK_ANIMATION
         );
         packet.getIntegers().write(0, breakerId);
-        packet.getBlockPositionModifier().write(0, pos);
+        packet.getBlockPositionModifier().write(0, protocolPos);
         packet.getIntegers().write(1, stage);
         
         try {
@@ -1311,11 +1350,29 @@ public class Game {
         }
         
         if (stage == -1) {
-          block.setType(originalType);
-          ParticleUtils.cloud(
-            PlayerUtils.all(),
-            LocUtils.toBlockCenter(block.getLocation())
-          );
+          boolean shouldRestore = true;
+          sideLoop: for (Side side : new Side[]{
+            Side.RED, Side.GREEN
+          }) {
+            if (getSideData(side).noOresTicks <= 0) continue;
+            
+            for (Pos orePos : map.ores) {
+              if (
+                LocUtils.selfSide(orePos, side).isSameBlockAs(Pos.of(block))
+              ) {
+                shouldRestore = false;
+                break sideLoop;
+              }
+            }
+          }
+          
+          if (shouldRestore) {
+            block.setType(originalType);
+            ParticleUtils.cloud(
+              PlayerUtils.all(),
+              LocUtils.toBlockCenter(block.getLocation())
+            );
+          }
           
           cancel();
           return;
@@ -1488,7 +1545,7 @@ public class Game {
     ) {
       PlayerUtils.damageHandItem(pl);
       
-      pl.give(new ItemStack(ev.getBlock().getType(), 2));
+      PlayerUtils.give(pl, ev.getBlock().getType(), 2);
       pl.giveExp(RandomUtils.range(1, 4));
       
       ev.setCancelled(true);
@@ -1932,18 +1989,22 @@ public class Game {
   
   public void banOres(Side side) {
     for (Pos pos : map.ores) {
-      Block block = LocUtils.live(pos).getBlock();
-      if (block.getType() == Material.BEDROCK) continue;
-      
-      oresTypeCache.put(
-        pos.toBlockPos(),
-        block.getType()
-      );
-      LocUtils.setLiveBlock(
-        LocUtils.selfSide(pos, side),
-        Material.BEDROCK
-      );
+      banOneOre(LocUtils.selfSide(pos, side));
     }
+  }
+  
+  public void banOneOre(Pos pos) {
+    Block block = LocUtils.live(pos).getBlock();
+    if (block.getType() == Material.BEDROCK) return;
+    
+    oresTypeCache.put(
+      pos.toBlockPos(),
+      block.getType()
+    );
+    LocUtils.setLiveBlock(
+      pos,
+      Material.BEDROCK
+    );
   }
   
   public void unbanOres(Side side) {
@@ -2138,10 +2199,11 @@ public class Game {
       );
       
       PlayerUtils.refreshSpectatorAbilities(p);
-      PlayerUtils.hideSpectators(p);
       PlayerUtils.respawn(p);
     }
     DestroyTheCore.boardsManager.refresh();
+    
+    PlayerUtils.refreshAllSpectatorVisibilities();
     
     // After 0: respawn, 1: give essential items
     CoreUtils.setTickOut(
@@ -2196,12 +2258,14 @@ public class Game {
     
     DestroyTheCore.missionsManager.stop();
     
-    PlayerUtils.showAllPlayers();
-    for (Player p : Bukkit.getOnlinePlayers())
+    for (Player p : Bukkit.getOnlinePlayers()) {
       PlayerUtils.refreshSpectatorAbilities(
         p,
         false
       );
+    }
+    
+    PlayerUtils.refreshAllSpectatorVisibilities();
     
     hideRTScore();
     
@@ -2578,6 +2642,9 @@ public class Game {
           p.setCooldown(Material.KNOWLEDGE_BOOK, 0);
           data.extraSkillReload = 0;
         }
+        
+        if (p.isSneaking())
+          PlayerUtils.growNearbyCrops(p);
       }
     }
     

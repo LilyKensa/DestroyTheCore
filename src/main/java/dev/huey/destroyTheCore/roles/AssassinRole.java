@@ -1,9 +1,12 @@
 package dev.huey.destroyTheCore.roles;
 
+import com.destroystokyo.paper.ParticleBuilder;
 import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.managers.RolesManager;
+import dev.huey.destroyTheCore.utils.LocUtils;
+import dev.huey.destroyTheCore.utils.ParticleUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import java.util.Comparator;
@@ -12,6 +15,7 @@ import java.util.Map;
 import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Item;
@@ -87,6 +91,10 @@ public class AssassinRole extends Role {
     addStanding(pl);
     
     if (isStanding(pl)) {
+      if (!pl.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
+        ParticleUtils.cloud(PlayerUtils.all(), LocUtils.hitboxCenter(pl));
+      }
+      
       pl.addPotionEffect(
         new PotionEffect(PotionEffectType.INVISIBILITY, 5, 0, true, false)
       );
@@ -115,7 +123,7 @@ public class AssassinRole extends Role {
   @Override
   public void useSkill(Player pl) {
     if (!pl.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
-      pl.setCooldown(Material.KNOWLEDGE_BOOK, 0);
+      pl.setCooldown(Material.KNOWLEDGE_BOOK, 10);
       pl.sendActionBar(TextUtils.$("roles.assassin.skill.not-invis"));
       return;
     }
@@ -138,12 +146,20 @@ public class AssassinRole extends Role {
     ).orElse(null);
     
     if (nearest == null) {
-      pl.setCooldown(Material.KNOWLEDGE_BOOK, 0);
+      pl.setCooldown(Material.KNOWLEDGE_BOOK, 10);
       pl.sendActionBar(TextUtils.$("roles.assassin.skill.no-target"));
       return;
     }
     
     skillFeedback(pl);
+    
+    new ParticleBuilder(Particle.REVERSE_PORTAL)
+      .allPlayers()
+      .location(pl.getLocation())
+      .offset(0.2, 0.3, 0.2)
+      .extra(5)
+      .count(20)
+      .spawn();
     
     pl.teleport(nearest);
     

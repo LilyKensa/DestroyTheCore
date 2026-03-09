@@ -25,6 +25,8 @@ public class AssignClearInvGen extends UsableItemGen {
   }
   
   public Allay summonAllayWithItem(Location location, ItemStack item) {
+    if (item == null || item.isEmpty()) return null;
+    
     Allay allay = (Allay) location.getWorld().spawnEntity(
       location,
       EntityType.ALLAY

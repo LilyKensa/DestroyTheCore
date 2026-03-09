@@ -41,7 +41,8 @@ public class CommandsManager implements TabCompleter, CommandExecutor {
       new LanguageCommand(),
       new MapCommand(),
       new ShopCommand(),
-      new HelpCommand()
+      new HelpCommand(),
+      new StatsCommand()
     );
   }
   

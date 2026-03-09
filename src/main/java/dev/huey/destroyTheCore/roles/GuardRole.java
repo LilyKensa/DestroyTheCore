@@ -109,7 +109,7 @@ public class GuardRole extends Role {
     
     boolean found = false;
     for (Player e : PlayerUtils.getEnemies(pl)) {
-      if (LocUtils.inLive(e)) continue;
+      if (!LocUtils.inLive(e)) continue;
       
       if (
         LocUtils.near(

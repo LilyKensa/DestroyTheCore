@@ -25,7 +25,8 @@ public class PlayerData {
   
   public int respawnTime = minRespawnTime, extraSkillReload = 0,
     rrtProgress = -20, shoutCooldown = 0, quizQuota = 10,
-    lotteryShift = 0, killStreak = 0, kills = 0, deaths = 0, coreAttacks = 0;
+    lotteryShift = 0, killStreak = 0, kills = 0, deaths = 0,
+    coreAttacks = 0, skills = 0;
   public Map<Material, Integer> ores = new HashMap<>();
   
   public PlayerData(Player owner) {

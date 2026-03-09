@@ -4,7 +4,6 @@ import dev.huey.destroyTheCore.bases.missions.InstantMission;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 public class FreeMoneyMission extends InstantMission {
   
@@ -15,9 +14,9 @@ public class FreeMoneyMission extends InstantMission {
   @Override
   public void run() {
     for (Player p : PlayerUtils.allGaming()) {
-      p.give(new ItemStack(Material.EMERALD, 2));
-      p.give(new ItemStack(Material.GOLD_INGOT, 8));
-      p.give(new ItemStack(Material.IRON_INGOT, 16));
+      PlayerUtils.give(p, Material.EMERALD, 2);
+      PlayerUtils.give(p, Material.GOLD_INGOT, 8);
+      PlayerUtils.give(p, Material.IRON_INGOT, 16);
     }
   }
 }

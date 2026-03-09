@@ -100,7 +100,7 @@ public class JoinTeamCommand extends Subcommand {
     
     CoreUtils.setTickOut(() -> {
       PlayerUtils.refreshSpectatorAbilities(target);
-      PlayerUtils.hideSpectators();
+      PlayerUtils.refreshAllSpectatorVisibilities();
     });
   }
 }

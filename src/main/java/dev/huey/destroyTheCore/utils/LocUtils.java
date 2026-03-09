@@ -6,7 +6,6 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.BlockPosition;
 import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.Game;
-import dev.huey.destroyTheCore.records.PlayerData;
 import dev.huey.destroyTheCore.records.Pos;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -286,30 +285,31 @@ public class LocUtils {
     return enemySide(pos, DestroyTheCore.game.getPlayerData(pl).side);
   }
   
-  /** If a block is in their own half of the map */
-  static public boolean canAccess(Player pl, Block block) {
+  static public boolean canAccess(Game.Side side, Location loc) {
     if (DestroyTheCore.game.map.core == null) return true;
-    if (
-      !LocUtils.inLive(block.getLocation())
-    ) return true;
+    if (!LocUtils.inLive(loc)) return true;
     
-    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
-    
-    double selfDistSq = LocUtils.toBlockCenter(
-      block.getLocation()
-    ).distanceSquared(
+    double selfDistSq = loc.distanceSquared(
       LocUtils.live(
-        LocUtils.selfSide(DestroyTheCore.game.map.core, data.side)
+        LocUtils.selfSide(DestroyTheCore.game.map.core, side).center()
       )
     );
-    double enemyDistSq = LocUtils.toBlockCenter(
-      block.getLocation()
-    ).distanceSquared(
+    double enemyDistSq = loc.distanceSquared(
       LocUtils.live(
-        LocUtils.enemySide(DestroyTheCore.game.map.core, data.side)
+        LocUtils.enemySide(DestroyTheCore.game.map.core, side).center()
       )
     );
     
     return selfDistSq <= enemyDistSq;
+  }
+  
+  /** If a block is in their own half of the map */
+  static public boolean canAccess(Player pl, Block block) {
+    return canAccess(
+      DestroyTheCore.game.getPlayerData(pl).side,
+      LocUtils.toBlockCenter(
+        block.getLocation()
+      )
+    );
   }
 }

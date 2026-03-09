@@ -6,7 +6,7 @@ import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.managers.RolesManager;
-import dev.huey.destroyTheCore.records.PlayerData;
+import dev.huey.destroyTheCore.managers.TicksManager;
 import dev.huey.destroyTheCore.records.Pos;
 import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
@@ -24,7 +24,6 @@ import org.bukkit.damage.DamageSource;
 import org.bukkit.damage.DamageType;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -33,6 +32,7 @@ public class RangerRole extends Role {
     final double radius = 1.2;
     
     boolean active = true;
+    int prepareTicks = 3 * 20;
     public Location loc;
     public UUID ownerId;
     public Game.Side side;
@@ -47,7 +47,11 @@ public class RangerRole extends Role {
   static public List<Mine> mines = new ArrayList<>();
   
   static public void onPlayerMove(Player pl) {
+    boolean updatedMines = false;
+    
     for (Mine mine : mines) {
+      if (mine.prepareTicks > 0) continue;
+      
       if (!LocUtils.isSameWorld(mine.loc, pl.getLocation())) continue;
       if (
         !DestroyTheCore.game.getPlayerData(pl).side
@@ -99,32 +103,45 @@ public class RangerRole extends Role {
       }
       
       mine.active = false;
+      updatedMines = true;
     }
     
-    mines.removeIf(m -> !m.active);
+    if (updatedMines)
+      mines.removeIf(m -> !m.active);
+  }
+  
+  static public void onUpdateTick() {
+    for (Mine mine : mines) {
+      if (mine.prepareTicks > 0) {
+        mine.prepareTicks -= TicksManager.updateRate;
+      }
+    }
   }
   
   static public void onParticleTick() {
     for (Mine mine : mines) {
-      LocUtils.ring(
-        mine.loc,
-        mine.radius,
-        loc -> {
-          new ParticleBuilder(Particle.SMALL_FLAME)
-            .receivers(PlayerUtils.getNonEnemies(mine.side))
-            .location(loc)
-            .extra(0)
-            .spawn();
-        }
-      );
-      
-      if (RandomUtils.hit(0.05))
+      if (mine.prepareTicks > 0 || RandomUtils.hit(0.05)) {
         new ParticleBuilder(Particle.LAVA)
           .allPlayers()
           .location(mine.loc)
           .count(RandomUtils.range(3) + 1)
           .extra(0)
           .spawn();
+      }
+      
+      if (mine.prepareTicks <= 0) {
+        LocUtils.ring(
+          mine.loc,
+          mine.radius,
+          loc -> {
+            new ParticleBuilder(Particle.SMALL_FLAME)
+              .receivers(PlayerUtils.getNonEnemies(mine.side))
+              .location(loc)
+              .extra(0)
+              .spawn();
+          }
+        );
+      }
       
       mine.loc.addRotation(1, 0);
     }
@@ -163,26 +180,7 @@ public class RangerRole extends Role {
   
   @Override
   public void onPhaseChange(Game.Phase phase, Player pl) {
-    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
-    
-    ItemStack item = new ItemStack(Material.ARROW, 20);
-    
-    if (data.alive) {
-      pl.give(item);
-    }
-    else {
-      pl.getWorld().dropItemNaturally(
-        LocUtils.live(
-          LocUtils.selfSide(
-            LocUtils.toSpawnPoint(
-              RandomUtils.pick(DestroyTheCore.game.map.spawnpoints)
-            ),
-            data.side
-          )
-        ),
-        item
-      ).setPickupDelay(20);
-    }
+    PlayerUtils.give(pl, Material.ARROW, 20);
   }
   
   @Override

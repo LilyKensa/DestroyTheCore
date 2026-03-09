@@ -59,7 +59,9 @@ public class ExplodeMission extends TimedMission {
   public void innerFinish() {
     if (a == null || b == null) return;
     
-    for (Player pl : new Player[]{a, b}) {
+    for (Player pl : new Player[]{
+      a, b
+    }) {
       pl.getWorld().createExplosion(
         pl,
         pl.getLocation(),

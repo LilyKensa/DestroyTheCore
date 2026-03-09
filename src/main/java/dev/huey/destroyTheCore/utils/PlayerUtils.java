@@ -22,6 +22,7 @@ import net.kyori.adventure.title.Title;
 import net.kyori.adventure.title.TitlePart;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.Openable;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -89,9 +90,11 @@ public class PlayerUtils {
   
   /** Broadcast to admins */
   static public void prefixedNotice(Component comp) {
-    for (Player p : Bukkit.getOnlinePlayers()) if (
-      PlayerUtils.isAdmin(p)
-    ) PlayerUtils.prefixedSend(p, comp);
+    for (Player p : Bukkit.getOnlinePlayers()) {
+      if (isAdmin(p)) {
+        prefixedSend(p, comp);
+      }
+    }
   }
   
   /** Broadcast to everyone */
@@ -103,14 +106,18 @@ public class PlayerUtils {
   static public void auraBroadcast(
     Location center, double dist, Component comp
   ) {
-    for (Player pl : center.getWorld().getPlayers()) if (
-      LocUtils.near(Pos.of(pl), Pos.of(center), dist)
-    ) send(pl, comp);
+    for (Player pl : center.getWorld().getPlayers()) {
+      if (LocUtils.near(Pos.of(pl), Pos.of(center), dist)) {
+        send(pl, comp);
+      }
+    }
   }
   
   /** {@link #broadcast} with {@link DestroyTheCore#prefix} */
   static public void prefixedBroadcast(Component comp) {
-    for (Player pl : Bukkit.getOnlinePlayers()) prefixedSend(pl, comp);
+    for (Player pl : Bukkit.getOnlinePlayers()) {
+      prefixedSend(pl, comp);
+    }
   }
   
   static public void prefixedBroadcast(String text, TextColor color) {
@@ -127,16 +134,13 @@ public class PlayerUtils {
   
   static public List<Player> allGaming() {
     return all().stream().filter(
-      p -> DestroyTheCore.game.getPlayerData(
-        p
-      ).isGaming()
+      p -> DestroyTheCore.game.getPlayerData(p).isGaming()
     ).toList();
   }
   
   static public Component getName(Player pl) {
-    Team team = Bukkit.getScoreboardManager().getMainScoreboard().getPlayerTeam(
-      pl
-    );
+    Team team = Bukkit.getScoreboardManager().getMainScoreboard()
+      .getPlayerTeam(pl);
     
     TextComponent.Builder builder = Component.text();
     if (team != null) builder.append(team.prefix());
@@ -386,39 +390,28 @@ public class PlayerUtils {
     }
   }
   
-  /** Remove spectators from {@code viewer}'s pov world */
-  static public void hideSpectators(Player viewer) {
-    for (Player s : Bukkit.getOnlinePlayers()) {
-      if (DestroyTheCore.game.getPlayerData(s).side == Game.Side.SPECTATOR) {
-        viewer.hidePlayer(DestroyTheCore.instance, s);
-      }
-      else {
-        viewer.showPlayer(DestroyTheCore.instance, s);
-      }
+  static public void refreshSpectatorVisibility(Player target, Player viewer) {
+    if (
+      DestroyTheCore.game.isPlaying
+        &&
+        DestroyTheCore.game.getPlayerData(target).side == Game.Side.SPECTATOR
+    ) {
+      viewer.hidePlayer(DestroyTheCore.instance, target);
+    }
+    else {
+      viewer.showPlayer(DestroyTheCore.instance, target);
     }
   }
   
-  static public void hideSpectators() {
-    if (!DestroyTheCore.game.isPlaying) {
-      showAllPlayers();
-      return;
-    }
-    
-    for (Player p : Bukkit.getOnlinePlayers()) {
-      hideSpectators(p);
+  static public void refreshAllSpectatorVisibilitiesFor(Player pl) {
+    for (Player target : Bukkit.getOnlinePlayers()) {
+      refreshSpectatorVisibility(target, pl);
     }
   }
   
-  /** Add spectators back from {@code viewer}'s pov world */
-  static public void showAllPlayers(Player viewer) {
-    for (Player s : Bukkit.getOnlinePlayers()) {
-      viewer.showPlayer(DestroyTheCore.instance, s);
-    }
-  }
-  
-  static public void showAllPlayers() {
-    for (Player p : Bukkit.getOnlinePlayers()) {
-      showAllPlayers(p);
+  static public void refreshAllSpectatorVisibilities() {
+    for (Player pl : Bukkit.getOnlinePlayers()) {
+      refreshAllSpectatorVisibilitiesFor(pl);
     }
   }
   
@@ -548,6 +541,7 @@ public class PlayerUtils {
     data.revive();
     
     refreshSpectatorAbilities(pl);
+    refreshAllSpectatorVisibilities();
     if (data.side.equals(Game.Side.SPECTATOR)) return;
     
     pl.setCooldown(Material.KNOWLEDGE_BOOK, 0);
@@ -591,7 +585,7 @@ public class PlayerUtils {
           respawn(pl);
           DestroyTheCore.quizManager.discard(pl);
           
-          PlayerUtils.normalTitleTimes(pl);
+          normalTitleTimes(pl);
           pl.sendTitlePart(TitlePart.TITLE, TextUtils.$("player.respawned"));
           pl.sendTitlePart(TitlePart.SUBTITLE, Component.empty());
           
@@ -600,17 +594,21 @@ public class PlayerUtils {
         }
         
         if (updateTitle) {
+          int secs = waitTicks / 20;
+          
+          data.respawnTime = secs;
+          DestroyTheCore.game.enforceRTScore(pl);
+          
           if (waitTicks <= 60) {
-            PlayerUtils.normalTitleTimes(pl);
+            normalTitleTimes(pl);
             pl.sendTitlePart(
               TitlePart.TITLE,
-              Component.text(waitTicks / 20).color(NamedTextColor.GOLD)
+              Component.text(secs).color(NamedTextColor.GOLD)
             );
             pl.sendTitlePart(TitlePart.SUBTITLE, Component.empty());
           }
           else {
-            int secs = waitTicks / 20;
-            PlayerUtils.normalTitleTimes(pl);
+            normalTitleTimes(pl);
             pl.sendTitlePart(TitlePart.TITLE, Component.empty());
             pl.sendTitlePart(
               TitlePart.SUBTITLE,
@@ -640,10 +638,50 @@ public class PlayerUtils {
     }.runTaskTimer(DestroyTheCore.instance, 0, 1);
   }
   
-  /** Safely give a player an item, will not crash if item's empty */
+  /** Give a player an item, or send to their spawn if they're dead */
   static public void give(Player pl, ItemStack item) {
     if (item == null || item.isEmpty()) return;
-    pl.give(item);
+    
+    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
+    
+    if (!DestroyTheCore.game.isPlaying || data.alive) {
+      pl.give(item);
+    }
+    else {
+      pl.getWorld().dropItemNaturally(
+        LocUtils.live(
+          LocUtils.selfSide(
+            LocUtils.toSpawnPoint(
+              RandomUtils.pick(DestroyTheCore.game.map.spawnpoints)
+            ),
+            data.side
+          )
+        ),
+        item
+      ).setPickupDelay(20);
+      
+      pl.sendActionBar(TextUtils.$("player.item-sent-to-spawn"));
+    }
+  }
+  
+  static public void give(Player pl, Material type, int count) {
+    give(pl, new ItemStack(type, count));
+  }
+  
+  static public void give(Player pl, Material type) {
+    give(pl, type, 1);
+  }
+  
+  static public void give(Player pl, ItemsManager.ItemKey key, int count) {
+    give(
+      pl,
+      DestroyTheCore.itemsManager.gens
+        .get(key).getItem(count)
+    );
+  }
+  
+  static public void give(Player pl, ItemsManager.ItemKey key) {
+    give(pl, key, 1);
   }
   
   /** Give a player basic armors, weapons & skill books */
@@ -699,11 +737,9 @@ public class PlayerUtils {
         }
       }
       
-      if (!hasAnyWeapon) pl.give(
-        DestroyTheCore.itemsManager.gens.get(
-          ItemsManager.ItemKey.STARTER_SWORD
-        ).getItem()
-      );
+      if (!hasAnyWeapon) {
+        give(pl, ItemsManager.ItemKey.STARTER_SWORD);
+      }
     }
     
     for (ItemStack item : inv.getContents()) {
@@ -724,10 +760,43 @@ public class PlayerUtils {
       }
     }
     
-    if (!hasFood) give(pl, new ItemStack(Material.BREAD, 8));
+    if (!hasFood) give(pl, Material.BREAD, 8);
     
     if (!inv.contains(Material.KNOWLEDGE_BOOK)) {
-      pl.give(data.role.getSkillItem());
+      give(pl, data.role.getSkillItem());
+    }
+  }
+  
+  static public void growNearbyCrops(Player pl) {
+    if (!LocUtils.inLive(pl)) return;
+    
+    final int radius = 6, outerRadius = radius + 1;
+    
+    for (int x = -outerRadius; x <= outerRadius; x++) {
+      for (int y = -outerRadius; y <= outerRadius; y++) {
+        for (int z = -outerRadius; z <= outerRadius; z++) {
+          Block block = pl.getLocation().add(x, y, z).getBlock();
+          Location centerLoc = block.getLocation().add(0.5, 0.1, 0.5);
+          if (pl.getLocation().distanceSquared(centerLoc) > radius * radius)
+            continue;
+          
+          if (!(block.getBlockData() instanceof Ageable ageable)) continue;
+          if (ageable.getAge() >= ageable.getMaximumAge()) continue;
+          
+          if (RandomUtils.range(100) < 5) {
+            ageable.setAge(ageable.getAge() + 1);
+            block.setBlockData(ageable);
+            
+            new ParticleBuilder(Particle.HAPPY_VILLAGER)
+              .allPlayers()
+              .location(centerLoc)
+              .offset(0.4, 0.2, 0.4)
+              .extra(0)
+              .count(5)
+              .spawn();
+          }
+        }
+      }
     }
   }
   

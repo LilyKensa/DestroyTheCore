@@ -144,6 +144,7 @@ public abstract class Mission implements Listener {
   
   /** Call this to announce the winner */
   public void declareWinner(Game.Side side) {
+    DestroyTheCore.game.getSideData(side).missionsCompleted++;
     RandomUtils.pick(results).run(side);
   }
   

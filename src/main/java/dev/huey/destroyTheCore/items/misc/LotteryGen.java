@@ -51,12 +51,12 @@ public class LotteryGen extends UsableItemGen {
       public void run() {
         if (age == 20) {
           int totalChance = 0;
-          if (percentage < (totalChance += 15)) {
+          if (percentage < (totalChance += 25)) {
             data.lotteryShift += 2;
             giveTreasure(pl);
             color = Color.ORANGE;
           }
-          else if (percentage < (totalChance += 35)) {
+          else if (percentage < (totalChance += 40)) {
             data.lotteryShift += 1;
             giveNormal(pl);
             color = Color.FUCHSIA;
@@ -148,23 +148,7 @@ public class LotteryGen extends UsableItemGen {
       meta.lore(lore);
     });
     
-    if (DestroyTheCore.game.getPlayerData(pl).alive) {
-      pl.give(item);
-    }
-    else if (DestroyTheCore.game.map.spawnpoints != null) {
-      pl.sendActionBar(TextUtils.$("items.lottery.sent-to-spawn"));
-      pl.getWorld().dropItemNaturally(
-        LocUtils.live(
-          LocUtils.selfSide(
-            LocUtils.toSpawnPoint(
-              RandomUtils.pick(DestroyTheCore.game.map.spawnpoints)
-            ),
-            pl
-          )
-        ),
-        item
-      );
-    }
+    PlayerUtils.give(pl, item);
     
     Consumer<Component> announcer = comp -> {
       if (big) {
@@ -246,7 +230,8 @@ public class LotteryGen extends UsableItemGen {
       true
     );
     
-    pl.give(
+    PlayerUtils.give(
+      pl,
       DestroyTheCore.itemsManager.gens.get(
         ItemsManager.ItemKey.RANDOM_ROLE
       ).getItem()

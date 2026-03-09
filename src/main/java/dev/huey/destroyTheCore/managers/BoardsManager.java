@@ -165,7 +165,7 @@ public class BoardsManager {
         );
       }
     }
-    else {
+    else { // Not playing
       Stats stats = DestroyTheCore.game.stats.get(pl.getUniqueId());
       
       lines.addAll(
@@ -205,6 +205,15 @@ public class BoardsManager {
                 Component.text(
                   stats.ores.values().stream().reduce(0, Integer::sum)
                 )
+              )
+            )
+          ),
+          TextUtils.$r(
+            "board.skills",
+            List.of(
+              Placeholder.component(
+                "value",
+                Component.text(stats.skills)
               )
             )
           ),

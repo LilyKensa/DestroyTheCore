@@ -16,6 +16,7 @@ player:
   group-in-cooldown: "<red>This item group is in <value>s cooldown</red>"
   respawning: "Respawning in <seconds>"
   respawned: "<yellow>Respawned</yellow>"
+  item-sent-to-spawn: "<green>You were given some item, but as you're dead, it was sent to your spawn!</green>"
 
 quiz:
   prefix: "[<light_purple>Quiz</light_purple>] "
@@ -134,6 +135,7 @@ game:
       first: "| <yellow>1st</yellow> - <players> - <aqua><count></aqua>"
       second: "| <gold>2nd</gold> - <players> - <aqua><count></aqua>"
       third: "| <red>3rd</red> - <players> - <aqua><count></aqua>"
+      side: "| <side> - <aqua><count></aqua>"
       foot: "+---------------------------------------+"
     top-attackers: "+------------- <light_purple>Top Attackers</light_purple> -------------+"
     top-killers: "+-------------- <light_purple>Top Killers</light_purple> --------------+"
@@ -255,6 +257,7 @@ board:
   sin: "<white>Sin</white>: <red><value></red>"
   kd: "<white>Kills</white>: <yellow><kills></yellow> - <white>Deaths</white>: <yellow><deaths></yellow>"
   attacks: "<white>Core Attacks</white>: <light_purple><value></light_purple>"
+  skills: "<white>Skills Casted</white>: <light_purple><value></light_purple>"
   ores: "<white>Ores Mined</white>: <light_purple><value></light_purple>"
   wins: "<white>Wins</white>: <aqua><wins></aqua>/<dark_aqua><all></dark_aqua> <gold><ratio>%</gold>"
 
@@ -324,6 +327,10 @@ commands:
   world:
     query: "You're in world <yellow><world></yellow>"
     not-found: "<red>Can't find the specific world!</red>"
+  stats:
+    title: "<yellow>Stats of <player>:</yellow>"
+    line-prefix: "| "
+    player-not-found: "<red>Can't find the specific player!</red>"
 
 items:
   absorption-helmet:
@@ -443,7 +450,6 @@ items:
     desc-3: "50% Junk"
     prefix: "[<light_purple>Lottery</light_purple>] "
     item-lore: "- <gold>Lottery prize</gold>"
-    sent-to-spawn: "<green>Lottery rewards was sent to your spawn!</green>"
     announce:
       item: "<player> got <item> × <dark_aqua><amount></dark_aqua>"
       poison: "<player> poisoned <side> team"
@@ -874,5 +880,5 @@ roles:
       detail: "Sweeping Edge III pumpkin pie"
     skill:
       name: "Become the Shield"
-      desc-1: "<dark_purple>Gets Absorption X & Resistance III (10s), Weakness X (30s)</dark_purple>"
+      desc-1: "<dark_purple>Gets Absorption X & Resistance III & Weakness & Glowing (10s)</dark_purple>"
       announce: "<player> used <yellow><role></yellow>'s skill, increased health!"

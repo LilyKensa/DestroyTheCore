@@ -66,14 +66,18 @@ public class CargoMission extends Mission implements Listener {
   @Override
   public void start() {
     Player a = randomPlayer(Game.Side.RED), b = randomPlayer(Game.Side.GREEN);
-    if (a == null || b == null) return;
     
     for (Player pl : new Player[]{
       a, b
     }) {
       if (pl == null) continue;
       
-      pl.give(getItem());
+      pl.teleport(
+        LocUtils.live(
+          LocUtils.selfSide(DestroyTheCore.game.map.core, pl)
+        )
+      );
+      PlayerUtils.give(pl, getItem());
     }
   }
   

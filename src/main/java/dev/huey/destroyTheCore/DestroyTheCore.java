@@ -61,7 +61,7 @@ public final class DestroyTheCore extends JavaPlugin {
     ticksManager = new TicksManager();
     
     for (String commandName : new String[]{
-      "dtc", "rejoin", "night-vision", "shout", "shuffle-team", "warp", "skip", "edit", "reset", "revive", "language",
+      "dtc", "rejoin", "night-vision", "shout", "shuffle-team", "warp", "skip", "edit", "reset", "revive", "language", "stats"
     }) {
       PluginCommand command = getCommand(commandName);
       if (command == null) {

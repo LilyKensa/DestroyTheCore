@@ -73,7 +73,10 @@ public class ProvocateurRole extends Role {
       new PotionEffect(PotionEffectType.RESISTANCE, 10 * 20, 2, false, true)
     );
     pl.addPotionEffect(
-      new PotionEffect(PotionEffectType.WEAKNESS, 30 * 20, 9, false, true)
+      new PotionEffect(PotionEffectType.WEAKNESS, 10 * 20, 0, false, true)
+    );
+    pl.addPotionEffect(
+      new PotionEffect(PotionEffectType.GLOWING, 10 * 20, 0, false, false)
     );
     
     PlayerUtils.auraBroadcast(

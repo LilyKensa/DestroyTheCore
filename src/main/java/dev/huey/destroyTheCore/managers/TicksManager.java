@@ -53,6 +53,8 @@ public class TicksManager {
       
       if (isUpdateTick()) {
         DestroyTheCore.itemsManager.onUpdateTick();
+        
+        RangerRole.onUpdateTick();
       }
       
       if (isSeconds()) {

@@ -17,6 +17,7 @@ import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.*;
+import org.bukkit.event.vehicle.VehicleDamageEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -154,6 +155,11 @@ public class EventsManager implements Listener {
       AssassinRole.onPlayerMove(ev.getPlayer());
       DestroyTheCore.game.handlePlayerMove(ev.getPlayer());
     }
+  }
+  
+  @EventHandler
+  public void onVehicleDamage(VehicleDamageEvent ev) {
+    DestroyTheCore.game.handleVehicleDamage(ev);
   }
   
   @EventHandler

@@ -108,6 +108,7 @@ public class CollectStarsMission extends ProgressiveMission implements Listener 
     CoreUtils.setTickOut(() -> pl.getInventory().remove(item));
     
     counts.put(data.side, counts.getOrDefault(data.side, 0) + 1);
+    
     progress(
       data.side,
       (float) Math.min(2D * counts.get(data.side) / totalCount, 1)

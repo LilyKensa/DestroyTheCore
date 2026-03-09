@@ -1,7 +1,6 @@
 package dev.huey.destroyTheCore.commands;
 
 import dev.huey.destroyTheCore.DestroyTheCore;
-import dev.huey.destroyTheCore.bases.ItemGen;
 import dev.huey.destroyTheCore.bases.Subcommand;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
@@ -50,7 +49,6 @@ public class GiveCommand extends Subcommand {
       return;
     }
     
-    ItemGen ig = DestroyTheCore.itemsManager.gens.get(key);
-    pl.give(ig.getItem(amount));
+    PlayerUtils.give(pl, key, amount);
   }
 }

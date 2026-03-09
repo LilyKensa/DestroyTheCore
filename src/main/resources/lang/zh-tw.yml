@@ -20,6 +20,7 @@ player:
   group-in-cooldown: "<red>此物品群組冷卻還有 <value> 秒</red>"
   respawning: "在 <seconds> 秒後重生"
   respawned: "<yellow>已重生</yellow>"
+  item-sent-to-spawn: "<green>你被給予某樣物品, 但因為你正在等待重生, 已改為送至你的重生點!</green>"
 
 quiz:
   prefix: "[<light_purple>問題</light_purple>] "
@@ -121,8 +122,8 @@ game:
       win: "贏家"
       lose: "輸光"
     subtitles:
-      more-health: "<side> 有更多血"
-      destroyed: "<side> 摧毀了敵方核心"
+      more-health: "<side>有更多血"
+      destroyed: "<side>摧毀了敵方核心"
   reduce-respawn-time:
     progress: "<aqua>你正在贖罪: <progress>/5</aqua>"
     done: "<green>贖罪成功! 罪惡值減少 1 點</green>"
@@ -138,6 +139,7 @@ game:
       first: "| <yellow>第 1 名</yellow> - <players> - <aqua><count></aqua>"
       second: "| <gold>第 2 名</gold> - <players> - <aqua><count></aqua>"
       third: "| <red>第 3 名</red> - <players> - <aqua><count></aqua>"
+      side: "| <side> - <aqua><count></aqua>"
       foot: "+---------------------------------------+"
     top-attackers: "+--------------- <light_purple>核心攻擊數</light_purple> ---------------+"
     top-killers: "+--------------- <light_purple>殺人如麻者</light_purple> ---------------+"
@@ -259,6 +261,7 @@ board:
   sin: "<white>罪惡值</white>: <red><value></red>"
   kd: "<white>擊殺數</white>: <yellow><kills></yellow> - <white>死亡數</white>: <yellow><deaths></yellow>"
   attacks: "<white>核心攻擊次數</white>: <light_purple><value></light_purple>"
+  skills: "<white>技能施放數</white>: <light_purple><value></light_purple>"
   ores: "<white>總礦物數</white>: <light_purple><value></light_purple>"
   wins: "<white>贏局</white>: <aqua><wins></aqua>/<dark_aqua><all></dark_aqua> <gold><ratio>%</gold>"
 
@@ -328,6 +331,10 @@ commands:
   world:
     query: "你在 <yellow><world></yellow>"
     not-found: "<red>沒有那種世界!</red>"
+  stats:
+    title: "<yellow><player> 的資訊:</yellow>"
+    line-prefix: "| "
+    player-not-found: "<red>Can't find the specific player!</red>"
 
 items:
   absorption-helmet:
@@ -447,7 +454,6 @@ items:
     desc-3: "50% 垃圾"
     prefix: "[<light_purple>樂透</light_purple>] "
     item-lore: "- <gold>樂透獎品</gold>"
-    sent-to-spawn: "<green>樂透獎品已送至你的重生點!</green>"
     announce:
       item: "<player> 得到了<item> × <dark_aqua><amount></dark_aqua>"
       poison: "<player> 使<side>中毒了"
@@ -883,5 +889,5 @@ roles:
       detail: "橫掃之刃 III 南瓜派"
     skill:
       name: "成為肉盾"
-      desc-1: "<dark_purple>獲得吸收 X & 抗性 III (10s), 虛弱 X (30s)</dark_purple>"
+      desc-1: "<dark_purple>獲得吸收 X & 抗性 III & 虛弱 & 發光 (10s)</dark_purple>"
       announce: "<player> 使用了<yellow><role></yellow>技能, 血量增加!"

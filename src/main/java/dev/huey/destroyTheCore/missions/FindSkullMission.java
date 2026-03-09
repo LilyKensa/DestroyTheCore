@@ -79,7 +79,7 @@ public class FindSkullMission extends TimedMission implements Listener {
       new ItemStack(Material.GOLDEN_APPLE, 8)
     );
     
-    pl.give(item);
+    PlayerUtils.give(pl, item);
     
     broadcast(
       TextUtils.$(

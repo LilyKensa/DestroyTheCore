@@ -255,6 +255,8 @@ public class Role extends GUIItem {
   
   /** Call this if the skill is successfully used */
   public void skillFeedback(Player pl) {
+    DestroyTheCore.game.getPlayerData(pl).skills++;
+    
     pl.playSound(
       pl.getLocation(),
       Sound.BLOCK_CONDUIT_ACTIVATE,

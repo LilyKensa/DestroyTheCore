@@ -100,7 +100,7 @@ public class RolesManager {
             Enchantment.BINDING_CURSE
           )
       ) {
-        pl.give(getter.get());
+        PlayerUtils.give(pl, getter.get());
         setter.accept(replacement);
       }
     };
@@ -130,7 +130,7 @@ public class RolesManager {
     }
     inv.setContents(contents);
     
-    if (!hasItem) pl.give(role.getExclusiveItem());
+    if (!hasItem) PlayerUtils.give(pl, role.getExclusiveItem());
     
     pl.setCooldown(
       Material.KNOWLEDGE_BOOK,
