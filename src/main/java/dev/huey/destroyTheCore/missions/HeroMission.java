@@ -5,7 +5,6 @@ import dev.huey.destroyTheCore.bases.missions.InstantMission;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.RandomUtils;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class HeroMission extends InstantMission {
@@ -27,17 +26,24 @@ public class HeroMission extends InstantMission {
     }) {
       if (pl == null) continue;
       
-      pl.addPotionEffect(
-        new PotionEffect(PotionEffectType.STRENGTH, 60 * 20, 0, false, true)
+      PlayerUtils.glow(pl, 60 * 20);
+      PlayerUtils.addEffect(
+        pl,
+        PotionEffectType.STRENGTH,
+        60 * 20,
+        1
       );
-      pl.addPotionEffect(
-        new PotionEffect(PotionEffectType.RESISTANCE, 60 * 20, 2, false, true)
+      PlayerUtils.addEffect(
+        pl,
+        PotionEffectType.RESISTANCE,
+        60 * 20,
+        3
       );
-      pl.addPotionEffect(
-        new PotionEffect(PotionEffectType.SPEED, 60 * 20, 1, false, true)
-      );
-      pl.addPotionEffect(
-        new PotionEffect(PotionEffectType.GLOWING, 60 * 20, 0, false, true)
+      PlayerUtils.addEffect(
+        pl,
+        PotionEffectType.SPEED,
+        60 * 20,
+        2
       );
     }
   }

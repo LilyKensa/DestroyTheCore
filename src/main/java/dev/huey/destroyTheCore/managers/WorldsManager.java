@@ -99,7 +99,7 @@ public class WorldsManager {
       if (p.getWorld().equals(live)) {
         p.teleport(
           CoreUtils.def(
-            DestroyTheCore.game.lobby.spawn,
+            DestroyTheCore.game.lobby.spawn.toLoc(lobby),
             new Location(lobby, 0, 100, 0)
           )
         );

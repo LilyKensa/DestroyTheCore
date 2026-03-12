@@ -12,8 +12,6 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 public class EnemyGlowGen extends UsableItemGen {
   
@@ -34,15 +32,7 @@ public class EnemyGlowGen extends UsableItemGen {
         p,
         Particle.WAX_OFF,
         () -> {
-          p.addPotionEffect(
-            new PotionEffect(
-              PotionEffectType.GLOWING,
-              10 * 60 * 20,
-              0,
-              true,
-              false
-            )
-          );
+          PlayerUtils.glow(p, 10 * 60 * 20);
         }
       );
     }

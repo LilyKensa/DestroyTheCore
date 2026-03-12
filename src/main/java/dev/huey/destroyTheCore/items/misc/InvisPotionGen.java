@@ -24,7 +24,7 @@ public class InvisPotionGen extends ItemGen {
       new PotionEffect(
         PotionEffectType.INVISIBILITY,
         5 * 60 * 20,
-        0,
+        1,
         false,
         true
       ),

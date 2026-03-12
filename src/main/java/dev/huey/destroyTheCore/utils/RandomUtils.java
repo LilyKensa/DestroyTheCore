@@ -6,6 +6,10 @@ public class RandomUtils {
   
   static public final Random random = new Random();
   
+  static public boolean nextBool() {
+    return random.nextBoolean();
+  }
+  
   static public int nextInt() {
     return random.nextInt();
   }

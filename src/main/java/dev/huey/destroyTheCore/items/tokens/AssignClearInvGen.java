@@ -26,6 +26,11 @@ public class AssignClearInvGen extends UsableItemGen {
   
   public Allay summonAllayWithItem(Location location, ItemStack item) {
     if (item == null || item.isEmpty()) return null;
+    if (
+      item.getType() == Material.KNOWLEDGE_BOOK
+        ||
+        DestroyTheCore.rolesManager.isExclusiveItem(item)
+    ) return null;
     
     Allay allay = (Allay) location.getWorld().spawnEntity(
       location,
@@ -45,12 +50,20 @@ public class AssignClearInvGen extends UsableItemGen {
   }
   
   @Override
+  public boolean canUse(Player pl) {
+    Game.Side side = DestroyTheCore.game.getPlayerData(pl).side;
+    SideData sideData = DestroyTheCore.game.getSideData(side);
+    
+    return sideData.clearInvCooldown <= 0;
+  }
+  
+  @Override
   public void use(Player pl, Block block) {
     Game.Side side = DestroyTheCore.game.getPlayerData(pl).side;
     SideData sideData = DestroyTheCore.game.getSideData(side);
     if (side.equals(Game.Side.SPECTATOR)) return;
     
-    if (sideData.clearInvCooldown > 0) {
+    if (!canUse(pl)) {
       pl.sendActionBar(
         TextUtils.$(
           "items.assign-clear-inv.cooldown",

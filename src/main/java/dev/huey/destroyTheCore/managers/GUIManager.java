@@ -25,6 +25,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Registry;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -74,11 +75,27 @@ public class GUIManager {
   }
   
   public void openRoleSelection(Player pl) {
+    pl.playSound(
+      pl,
+      Sound.BLOCK_ENDER_CHEST_OPEN,
+      1, // Volume
+      1 // Pitch
+    );
+    
     Window window = Window.single().setViewer(pl).setTitle(
       TextUtils.$r(
         "gui.titles.choose-role"
       )
     ).setGui(roleGui).build();
+    
+    window.addCloseHandler(() -> {
+      pl.playSound(
+        pl,
+        Sound.BLOCK_ENDER_CHEST_CLOSE,
+        1, // Volume
+        1 // Pitch
+      );
+    });
     
     window.open();
   }

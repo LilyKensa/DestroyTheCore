@@ -11,10 +11,11 @@ import dev.huey.destroyTheCore.utils.TextUtils;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class CargoMission extends Mission implements Listener {
@@ -81,17 +82,26 @@ public class CargoMission extends Mission implements Listener {
     }
   }
   
+  @EventHandler
+  public void onBlockPlace(BlockPlaceEvent ev) {
+    if (!ev.getItemInHand().getPersistentDataContainer().has(dataNamespace))
+      return;
+    
+    ev.setCancelled(true);
+  }
+  
   @Override
   public void tick() {
     if (DestroyTheCore.ticksManager.isUpdateTick()) {
       for (Player p : PlayerUtils.allGaming()) {
         if (!hasItem(p)) continue;
         
-        p.addPotionEffect(
-          new PotionEffect(PotionEffectType.SLOWNESS, 20, 9, true, false)
-        );
-        p.addPotionEffect(
-          new PotionEffect(PotionEffectType.GLOWING, 20, 0, true, false)
+        PlayerUtils.glow(p, 20);
+        PlayerUtils.addPassiveEffect(
+          p,
+          PotionEffectType.SLOWNESS,
+          20,
+          10
         );
         
         if (

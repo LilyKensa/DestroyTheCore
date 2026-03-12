@@ -19,7 +19,6 @@ import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
@@ -41,8 +40,11 @@ public class ConstructorRole extends Role {
           t -> t.isTagged(block.getType())
         )
       ) {
-        pl.addPotionEffect(
-          new PotionEffect(PotionEffectType.HASTE, 40, 0, true, false)
+        PlayerUtils.addPassiveEffect(
+          pl,
+          PotionEffectType.HASTE,
+          40,
+          1
         );
       }
       
@@ -66,7 +68,7 @@ public class ConstructorRole extends Role {
         meta.addEnchant(Enchantment.EFFICIENCY, 7, true);
       }
     );
-    addSkill(300 * 20);
+    addSkill(2 * 60 * 20);
     
     for (int i = 0; i < 11; ++i) skillPlacePos.add(new HashSet<>());
     

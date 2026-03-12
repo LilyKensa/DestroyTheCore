@@ -13,7 +13,6 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class ProvocateurRole extends Role {
@@ -37,16 +36,6 @@ public class ProvocateurRole extends Role {
   
   @Override
   public void onTick(Player pl) {
-    //    if (DestroyTheCore.ticksManager.isSeconds()) {
-    //      pl.addPotionEffect(new PotionEffect(
-    //        PotionEffectType.WEAKNESS,
-    //        30,
-    //        0,
-    //        true,
-    //        false
-    //      ));
-    //    }
-    
     if (
       PlayerUtils.getTeammates(pl).stream().anyMatch(
         p -> !p.equals(
@@ -66,17 +55,24 @@ public class ProvocateurRole extends Role {
   public void useSkill(Player pl) {
     skillFeedback(pl);
     
-    pl.addPotionEffect(
-      new PotionEffect(PotionEffectType.ABSORPTION, 10 * 20, 9, false, true)
+    PlayerUtils.glow(pl, 10 * 20);
+    PlayerUtils.addEffect(
+      pl,
+      PotionEffectType.ABSORPTION,
+      10 * 20,
+      10
     );
-    pl.addPotionEffect(
-      new PotionEffect(PotionEffectType.RESISTANCE, 10 * 20, 2, false, true)
+    PlayerUtils.addEffect(
+      pl,
+      PotionEffectType.RESISTANCE,
+      10 * 20,
+      3
     );
-    pl.addPotionEffect(
-      new PotionEffect(PotionEffectType.WEAKNESS, 10 * 20, 0, false, true)
-    );
-    pl.addPotionEffect(
-      new PotionEffect(PotionEffectType.GLOWING, 10 * 20, 0, false, false)
+    PlayerUtils.addEffect(
+      pl,
+      PotionEffectType.WEAKNESS,
+      10 * 20,
+      1
     );
     
     PlayerUtils.auraBroadcast(

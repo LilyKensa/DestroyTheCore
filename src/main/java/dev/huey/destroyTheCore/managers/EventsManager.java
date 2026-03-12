@@ -1,5 +1,6 @@
 package dev.huey.destroyTheCore.managers;
 
+import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.bases.itemGens.ProjItemGen;
 import dev.huey.destroyTheCore.items.gadgets.GrenadeGen;
@@ -9,6 +10,7 @@ import io.papermc.paper.event.player.AsyncChatEvent;
 import java.util.List;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -42,8 +44,16 @@ public class EventsManager implements Listener {
   
   @EventHandler
   public void onBlockBreak(BlockBreakEvent ev) {
-    ConstructorRole.onBlockBreak(ev.getPlayer(), ev.getBlock());
+    Player pl = ev.getPlayer();
+    Block block = ev.getBlock();
+    
+    ConstructorRole.onBlockBreak(pl, block);
+    MoleRole.onBlockBreak(pl, block, ev);
+    
+    if (ev.isCancelled()) return;
+    
     DestroyTheCore.toolsManager.onBlockBreak(ev);
+    
     DestroyTheCore.game.handleBlockBreak(ev);
   }
   
@@ -91,7 +101,12 @@ public class EventsManager implements Listener {
   
   @EventHandler
   public void onPlayerDropItem(PlayerDropItemEvent ev) {
+    Player pl = ev.getPlayer();
+    ItemStack item = ev.getItemDrop().getItemStack();
+    
     DestroyTheCore.itemsManager.onPlayerDropItem(ev);
+    
+    DestroyTheCore.game.handleDropItem(pl, item, ev);
   }
   
   @EventHandler
@@ -158,6 +173,11 @@ public class EventsManager implements Listener {
   }
   
   @EventHandler
+  public void onPlayerJump(PlayerJumpEvent ev) {
+    MoleRole.onPlayerJump(ev.getPlayer());
+  }
+  
+  @EventHandler
   public void onVehicleDamage(VehicleDamageEvent ev) {
     DestroyTheCore.game.handleVehicleDamage(ev);
   }
@@ -199,10 +219,11 @@ public class EventsManager implements Listener {
     WandererRole.onProjectileHit(ev);
     GrenadeGen.onProjectileHit(ev);
     
-    for (ProjItemGen g : DestroyTheCore.itemsManager.projGens.values())
+    for (ProjItemGen g : DestroyTheCore.itemsManager.projGens.values()) {
       g.outerOnProjectileHit(
         ev
       );
+    }
   }
   
   @EventHandler

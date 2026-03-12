@@ -21,7 +21,6 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityShootBowEvent;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class AssassinRole extends Role {
@@ -95,8 +94,11 @@ public class AssassinRole extends Role {
         ParticleUtils.cloud(PlayerUtils.all(), LocUtils.hitboxCenter(pl));
       }
       
-      pl.addPotionEffect(
-        new PotionEffect(PotionEffectType.INVISIBILITY, 5, 0, true, false)
+      PlayerUtils.addPassiveEffect(
+        pl,
+        PotionEffectType.INVISIBILITY,
+        5,
+        1
       );
     }
     else if (
@@ -108,14 +110,22 @@ public class AssassinRole extends Role {
           Game.Phase.DoubleDamage
         )
     ) {
-      pl.addPotionEffect(
-        new PotionEffect(PotionEffectType.INVISIBILITY, 5, 0, true, true)
+      PlayerUtils.addEffect(
+        pl,
+        PotionEffectType.INVISIBILITY,
+        5,
+        1,
+        true,
+        true
       );
     }
     
     if (pl.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
-      pl.addPotionEffect(
-        new PotionEffect(PotionEffectType.STRENGTH, 10, 0, true, false)
+      PlayerUtils.addPassiveEffect(
+        pl,
+        PotionEffectType.STRENGTH,
+        10,
+        1
       );
     }
   }
@@ -163,11 +173,17 @@ public class AssassinRole extends Role {
     
     pl.teleport(nearest);
     
-    pl.addPotionEffect(
-      new PotionEffect(PotionEffectType.INVISIBILITY, 4 * 20, 0, true, false)
+    PlayerUtils.addEffect(
+      pl,
+      PotionEffectType.INVISIBILITY,
+      4 * 20,
+      1
     );
-    pl.addPotionEffect(
-      new PotionEffect(PotionEffectType.STRENGTH, 4 * 20, 1, true, false)
+    PlayerUtils.addEffect(
+      pl,
+      PotionEffectType.STRENGTH,
+      4 * 20,
+      2
     );
   }
 }

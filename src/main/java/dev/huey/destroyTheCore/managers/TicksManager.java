@@ -2,6 +2,7 @@ package dev.huey.destroyTheCore.managers;
 
 import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.roles.KekkaiMasterRole;
+import dev.huey.destroyTheCore.roles.MoleRole;
 import dev.huey.destroyTheCore.roles.RangerRole;
 import dev.huey.destroyTheCore.roles.WandererRole;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -47,6 +48,7 @@ public class TicksManager {
         KekkaiMasterRole.onParticleTick();
         RangerRole.onParticleTick();
         WandererRole.onParticleTick();
+        MoleRole.onParticleTick();
         
         DestroyTheCore.game.onParticleTick();
       }
@@ -55,6 +57,7 @@ public class TicksManager {
         DestroyTheCore.itemsManager.onUpdateTick();
         
         RangerRole.onUpdateTick();
+        MoleRole.onUpdateTick();
       }
       
       if (isSeconds()) {

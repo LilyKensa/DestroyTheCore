@@ -23,7 +23,6 @@ import org.bukkit.event.player.PlayerAttemptPickupItemEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class CursedItemMission extends TimedMission implements Listener {
@@ -111,11 +110,17 @@ public class CursedItemMission extends TimedMission implements Listener {
       for (Player p : PlayerUtils.allGaming()) {
         if (!hasItem(p)) continue;
         
-        p.addPotionEffect(
-          new PotionEffect(PotionEffectType.SPEED, 20, 2, true, false)
+        PlayerUtils.addPassiveEffect(
+          p,
+          PotionEffectType.SPEED,
+          20,
+          3
         );
-        p.addPotionEffect(
-          new PotionEffect(PotionEffectType.STRENGTH, 20, 0, true, false)
+        PlayerUtils.addPassiveEffect(
+          p,
+          PotionEffectType.STRENGTH,
+          20,
+          1
         );
         
         holding++;

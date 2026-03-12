@@ -58,6 +58,7 @@ game:
     attack:
       teammate: "<red>你幹麻打你隊友!</red>"
       spectator: "<red>旁觀者不能攻擊!</red>"
+      post-respawn: "<red>玩家處於重生後保護狀態!</red>"
     use:
       time: "<red>你現在什麼事都不能做!</red>"
       lobby: "<red>你不能在大廳使用方塊!</red>"
@@ -77,7 +78,7 @@ game:
       own-core: "<red>你幹麻挖你自己核心!</red>"
       spectator: "<red>旁觀者不能破壞方塊!</red>"
     pour: "<red>你不能在核心旁倒液體!</red>"
-    open-enemy-container: "<red>你不能翻敵人的箱子!</red>"
+    open-enemy-container: "<red>你不能翻敵人的<type>!</red>"
   bounty:
     prefix: "[<light_purple>懸賞</light_purple>] "
     reward: "<player> 得到了 <white>綠寶石</white> × <dark_aqua><amount></dark_aqua>"
@@ -496,6 +497,9 @@ items:
   kekkai-master-leggings:
     name: "<aqua>符文褲</aqua>"
     desc-1: "- <red>結界師綁定物品</red>"
+  mole-boots:
+    name: "<aqua>腳爪封印</aqua>"
+    desc-1: "- <red>地鼠綁定物品</red>"
   assign-clear-inv:
     name: "[<white>令牌</white>] <light_purple>盜賊集結</light_purple>"
     desc-1: "清空隨機敵人的背包"
@@ -883,7 +887,7 @@ roles:
     desc-1: "<gold>完美的肉盾, 幫隊友擋傷害!</gold>"
     feature-1: "轉移 10 格內隊友受的 60% 傷害給自己"
     feature-2: "若自身正在套用吸收效果, 則改為轉移 90% 傷害"
-    feature-3: "永久虛弱 I"
+    feature-3: "永久傷害輸出減少 20%"
     item:
       name: "<aqua>超派</aqua>"
       detail: "橫掃之刃 III 南瓜派"
@@ -891,3 +895,17 @@ roles:
       name: "成為肉盾"
       desc-1: "<dark_purple>獲得吸收 X & 抗性 III & 虛弱 & 發光 (10s)</dark_purple>"
       announce: "<player> 使用了<yellow><role></yellow>技能, 血量增加!"
+  mole:
+    name: "地鼠"
+    desc-1: "<gold>地鼠挖地洞!</gold>"
+    feature-1: "挖方塊超級快, 但太硬的方塊破壞不了"
+    feature-2: "在陽光下會得到黑暗 I"
+    item:
+      name: "<aqua>地鼠之爪</aqua>"
+      detail: "挖方塊超級快, 但太硬的方塊破壞不了"
+    skill:
+      name: "潛入地底"
+      desc-1: "<dark_purple>躲到地板中並加快移動速度 (5s)</dark_purple>"
+      desc-2: "<dark_purple>跳出潛伏狀態會造成爆炸, 對附近的敵人造成傷害</dark_purple>"
+      announce: "<player> 使用了<yellow><role></yellow>技能, 潛入了地底!"
+    block-too-hard: "<red>這個方塊太硬了, 你的爪子很痛!</red>"

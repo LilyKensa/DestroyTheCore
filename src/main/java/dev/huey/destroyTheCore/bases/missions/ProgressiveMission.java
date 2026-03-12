@@ -15,7 +15,7 @@ import org.bukkit.event.Listener;
 public abstract class ProgressiveMission extends Mission implements Listener {
   
   Map<Game.Side, BossBar> bars = new HashMap();
-  float displayRatio;
+  float displayRatio = 1;
   
   public ProgressiveMission(String id) {
     super(id);
@@ -62,7 +62,7 @@ public abstract class ProgressiveMission extends Mission implements Listener {
     if (!bars.containsKey(side)) return;
     BossBar bar = bars.get(side);
     
-    while (value * displayRatio >= 1) {
+    while (value * displayRatio > 1) {
       displayRatio /= 2;
     }
     

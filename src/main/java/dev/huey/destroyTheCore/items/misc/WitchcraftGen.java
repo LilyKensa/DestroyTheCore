@@ -19,7 +19,6 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class WitchcraftGen extends UsableItemGen {
@@ -41,7 +40,7 @@ public class WitchcraftGen extends UsableItemGen {
     PlayerData data = DestroyTheCore.game.getPlayerData(pl);
     
     if (!PlayerUtils.checkHandCooldown(pl)) return;
-    PlayerUtils.setHandCooldown(pl, 20);
+    PlayerUtils.setHandCooldown(pl, 60);
     
     PlayerUtils.takeOneItemFromHand(pl);
     
@@ -75,14 +74,11 @@ public class WitchcraftGen extends UsableItemGen {
             e,
             Particle.WITCH,
             () -> {
-              e.addPotionEffect(
-                new PotionEffect(
-                  PotionEffectType.POISON,
-                  10 * 20,
-                  1,
-                  false,
-                  true
-                )
+              PlayerUtils.addEffect(
+                e,
+                PotionEffectType.POISON,
+                10 * 20,
+                2
               );
             }
           );
@@ -160,14 +156,11 @@ public class WitchcraftGen extends UsableItemGen {
             e,
             Particle.WITCH,
             () -> {
-              e.addPotionEffect(
-                new PotionEffect(
-                  PotionEffectType.UNLUCK,
-                  60 * 20,
-                  0,
-                  false,
-                  true
-                )
+              PlayerUtils.addEffect(
+                e,
+                PotionEffectType.UNLUCK,
+                60 * 20,
+                1
               );
             }
           );
@@ -227,14 +220,11 @@ public class WitchcraftGen extends UsableItemGen {
             e,
             Particle.WITCH,
             () -> {
-              e.addPotionEffect(
-                new PotionEffect(
-                  PotionEffectType.GLOWING,
-                  60 * 20,
-                  0,
-                  false,
-                  true
-                )
+              PlayerUtils.addEffect(
+                e,
+                PotionEffectType.GLOWING,
+                60 * 20,
+                1
               );
             }
           );
@@ -288,14 +278,11 @@ public class WitchcraftGen extends UsableItemGen {
             e,
             Particle.WITCH,
             () -> {
-              e.addPotionEffect(
-                new PotionEffect(
-                  PotionEffectType.SLOWNESS,
-                  30 * 20,
-                  1,
-                  false,
-                  true
-                )
+              PlayerUtils.addEffect(
+                e,
+                PotionEffectType.SLOWNESS,
+                30 * 20,
+                2
               );
             }
           );
@@ -318,14 +305,11 @@ public class WitchcraftGen extends UsableItemGen {
             e,
             Particle.WITCH,
             () -> {
-              e.addPotionEffect(
-                new PotionEffect(
-                  PotionEffectType.MINING_FATIGUE,
-                  30 * 20,
-                  0,
-                  false,
-                  true
-                )
+              PlayerUtils.addEffect(
+                e,
+                PotionEffectType.MINING_FATIGUE,
+                30 * 20,
+                1
               );
             }
           );

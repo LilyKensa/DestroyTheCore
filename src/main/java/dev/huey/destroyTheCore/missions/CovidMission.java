@@ -9,7 +9,6 @@ import java.util.HashSet;
 import java.util.Set;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class CovidMission extends TimedMission {
@@ -42,8 +41,11 @@ public class CovidMission extends TimedMission {
       }
       
       for (Player p : isClose) {
-        p.addPotionEffect(
-          new PotionEffect(PotionEffectType.POISON, 40, 0, true, false)
+        PlayerUtils.addPassiveEffect(
+          p,
+          PotionEffectType.POISON,
+          40,
+          1
         );
       }
       

@@ -25,13 +25,12 @@ import org.bukkit.block.Block;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.Openable;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -48,18 +47,30 @@ public class PlayerUtils {
   
   static public boolean wearingLeather(Player player) {
     Predicate<Material> isLeather = (type) -> type == Material.LEATHER_HELMET
-      ||
-      type == Material.LEATHER_CHESTPLATE
-      ||
-      type == Material.LEATHER_LEGGINGS
-      ||
-      type == Material.LEATHER_BOOTS;
+      || type == Material.LEATHER_CHESTPLATE
+      || type == Material.LEATHER_LEGGINGS
+      || type == Material.LEATHER_BOOTS;
     
     for (ItemStack item : player.getInventory().getArmorContents()) {
       if (item != null && isLeather.test(item.getType())) {
         return true;
       }
     }
+    return false;
+  }
+  
+  static public boolean isUnderSky(Player pl) {
+    for (int dx = -1; dx <= 1; ++dx) {
+      horizontalLoop: for (int dz = -1; dz <= 1; ++dz) {
+        for (int dy = 0; dy <= 8; ++dy) {
+          if (pl.getLocation().add(dx, dy, dz).getBlock().isCollidable())
+            continue horizontalLoop;
+        }
+        
+        return true;
+      }
+    }
+    
     return false;
   }
   
@@ -362,27 +373,14 @@ public class PlayerUtils {
     pl.setFallDistance(0);
   }
   
-  /** Grant invulnerabilities */
-  static public void protect(Player pl, int ticks) {
-    pl.addPotionEffect(
-      new PotionEffect(PotionEffectType.RESISTANCE, ticks, 9, true, false)
-    );
-    pl.addPotionEffect(
-      new PotionEffect(PotionEffectType.FIRE_RESISTANCE, ticks, 9, true, false)
-    );
-  }
-  
   /** Refresh night vision effect based on their preference */
   static public void enforceNightVision(Player pl) {
     if (DestroyTheCore.game.stats.get(pl.getUniqueId()).nightVision) {
-      pl.addPotionEffect(
-        new PotionEffect(
-          PotionEffectType.NIGHT_VISION,
-          PotionEffect.INFINITE_DURATION,
-          0,
-          true,
-          false
-        )
+      addPassiveEffect(
+        pl,
+        PotionEffectType.NIGHT_VISION,
+        PotionEffect.INFINITE_DURATION,
+        0
       );
     }
     else {
@@ -448,6 +446,59 @@ public class PlayerUtils {
       pl,
       DestroyTheCore.game.getPlayerData(pl).side.equals(Game.Side.SPECTATOR)
     );
+  }
+  
+  /** Apply potion effect, level is 1-based */
+  static public void addEffect(
+    LivingEntity pl, PotionEffectType type, int ticks, int level, boolean beacon, boolean particles
+  ) {
+    pl.addPotionEffect(
+      new PotionEffect(type, ticks, level - 1, beacon, particles)
+    );
+  }
+  
+  static public void addEffect(
+    LivingEntity pl, PotionEffectType type, int ticks, int level
+  ) {
+    addEffect(pl, type, ticks, level, false, true);
+  }
+  
+  static public void addPassiveEffect(
+    LivingEntity pl, PotionEffectType type, int ticks, int level
+  ) {
+    addEffect(pl, type, ticks, level, true, false);
+  }
+  
+  static public void setEffect(
+    LivingEntity pl, PotionEffectType type, int ticks, int level, boolean beacon, boolean particles
+  ) {
+    pl.removePotionEffect(type);
+    addEffect(pl, type, ticks, level - 1, beacon, particles);
+  }
+  
+  static public void setEffect(
+    LivingEntity pl, PotionEffectType type, int ticks, int level
+  ) {
+    setEffect(pl, type, ticks, level, false, true);
+  }
+  
+  static public void extendEffect(
+    LivingEntity pl, PotionEffectType type, int ticks, int level, boolean beacon, boolean particles
+  ) {
+    int duration = ticks;
+    if (pl.hasPotionEffect(type))
+      duration += pl.getPotionEffect(type).getDuration();
+    setEffect(pl, type, duration, level, beacon, particles);
+  }
+  
+  static public void extendEffect(
+    LivingEntity pl, PotionEffectType type, int ticks, int level
+  ) {
+    extendEffect(pl, type, ticks, level, false, true);
+  }
+  
+  static public void glow(LivingEntity pl, int ticks) {
+    addEffect(pl, PotionEffectType.GLOWING, ticks, 1, true, false);
   }
   
   /** Reduce respawn time process */
@@ -550,7 +601,6 @@ public class PlayerUtils {
     
     pl.setGameMode(GameMode.SURVIVAL);
     fullyHeal(pl);
-    protect(pl, 400);
     teleportToSpawnPoint(pl);
   }
   
@@ -638,6 +688,11 @@ public class PlayerUtils {
     }.runTaskTimer(DestroyTheCore.instance, 0, 1);
   }
   
+  static public boolean isTeammate(Player a, Player b) {
+    return DestroyTheCore.game.getPlayerData(a).side == DestroyTheCore.game
+      .getPlayerData(b).side;
+  }
+  
   /** Give a player an item, or send to their spawn if they're dead */
   static public void give(Player pl, ItemStack item) {
     if (item == null || item.isEmpty()) return;
@@ -699,12 +754,9 @@ public class PlayerUtils {
       }
       ItemStack item = DestroyTheCore.itemsManager.gens.get(key).getItem();
       
-      if (key.name().startsWith("STARTER")) item.editMeta(uncastedMeta -> {
-        LeatherArmorMeta meta = (LeatherArmorMeta) uncastedMeta;
-        
-        meta.setColor(data.side.dyeColor);
-        meta.addItemFlags(ItemFlag.HIDE_DYE);
-      });
+      if (key.name().startsWith("STARTER")) {
+        CoreUtils.dyeTeamColor(item, data.side);
+      }
       
       inv.setItem(slot, item);
     };
@@ -805,8 +857,13 @@ public class PlayerUtils {
     Player from, Player to, Particle particle, Runnable task
   ) {
     new BukkitRunnable() {
-      int duration = 100;
+      int duration = 60;
       Location pos = LocUtils.hitboxCenter(from);
+      
+      void apply() {
+        task.run();
+        cancel();
+      }
       
       @Override
       public void run() {
@@ -815,15 +872,13 @@ public class PlayerUtils {
           return;
         }
         if (!LocUtils.isSameWorld(from, to)) {
-          task.run();
-          cancel();
+          apply();
           return;
         }
         
         duration--;
         if (duration < 0) {
-          task.run();
-          cancel();
+          apply();
           return;
         }
         
@@ -831,13 +886,12 @@ public class PlayerUtils {
         double dist = offset.length();
         
         if (dist < 0.3) {
-          task.run();
-          cancel();
+          apply();
           return;
         }
         
         if (dist < 5) offset = offset.multiply(5 / dist);
-        if (dist > 20) offset = offset.multiply(20 / dist);
+        if (dist > 100) offset = offset.multiply(100 / dist);
         
         pos.add(offset.multiply(0.1));
         

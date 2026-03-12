@@ -20,8 +20,13 @@ public class TruceGen extends UsableItemGen {
   }
   
   @Override
+  public boolean canUse(Player pl) {
+    return !DestroyTheCore.game.phase.isAfter(Game.Phase.DoubleDamage);
+  }
+  
+  @Override
   public void use(Player pl, Block block) {
-    if (DestroyTheCore.game.phase.isAfter(Game.Phase.DoubleDamage)) {
+    if (!canUse(pl)) {
       pl.sendActionBar(TextUtils.$("items.truce.too-late"));
       return;
     }
