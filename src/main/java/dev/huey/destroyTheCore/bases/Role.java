@@ -57,13 +57,14 @@ public class Role extends GUIItem {
   
   public RolesManager.RoleKey id;
   public String translationName;
-  
+
   /**
    * Add extra settings using:<br>
    * - {@link #addInfo}<br>
    * - {@link #addFeature}<br>
    * - {@link #addExclusiveItem}<br>
    * - {@link #addSkill}
+   * - {@link #addLvlreq}
    */
   public Role(RolesManager.RoleKey id) {
     this.id = id;
@@ -106,6 +107,8 @@ public class Role extends GUIItem {
   public String skillName;
   public List<String> skillDesc;
   public int skillCooldown;
+
+  public int lvlReq;
   
   public void addInfo(Material iconType) {
     this.iconType = iconType;
@@ -134,7 +137,12 @@ public class Role extends GUIItem {
     skillDesc = $ra("roles.%s.skill.desc");
     skillCooldown = cd;
   }
-  
+
+  public void addLvlreq(int lvl)
+  {
+    lvlReq = lvl;
+  }
+
   /** Announce that a player has changed to this role */
   public void announce(Player pl) {
     PlayerUtils.prefixedBroadcast(
