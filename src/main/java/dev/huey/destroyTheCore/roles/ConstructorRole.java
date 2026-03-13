@@ -69,7 +69,8 @@ public class ConstructorRole extends Role {
       }
     );
     addSkill(2 * 60 * 20);
-    
+    addLvlreq(5);
+
     for (int i = 0; i < 11; ++i) skillPlacePos.add(new HashSet<>());
     
     for (int i = 0; i < 4; ++i) {

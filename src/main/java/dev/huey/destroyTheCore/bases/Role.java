@@ -57,7 +57,7 @@ public class Role extends GUIItem {
   
   public RolesManager.RoleKey id;
   public String translationName;
-
+  
   /**
    * Add extra settings using:<br>
    * - {@link #addInfo}<br>
@@ -107,7 +107,7 @@ public class Role extends GUIItem {
   public String skillName;
   public List<String> skillDesc;
   public int skillCooldown;
-
+  
   public int lvlReq;
   
   public void addInfo(Material iconType) {
@@ -137,12 +137,11 @@ public class Role extends GUIItem {
     skillDesc = $ra("roles.%s.skill.desc");
     skillCooldown = cd;
   }
-
-  public void addLvlreq(int lvl)
-  {
+  
+  public void addLvlreq(int lvl) {
     lvlReq = lvl;
   }
-
+  
   /** Announce that a player has changed to this role */
   public void announce(Player pl) {
     PlayerUtils.prefixedBroadcast(
@@ -355,15 +354,26 @@ public class Role extends GUIItem {
   public void handleClick(
     ClickType clickType, Player pl, InventoryClickEvent ev
   ) {
-    announce(pl);
-    pl.playSound(
-      pl.getLocation(),
-      Sound.ENTITY_EXPERIENCE_ORB_PICKUP,
-      1, // Volume
-      1 // Pitch
-    );
-    
-    DestroyTheCore.rolesManager.setRole(pl, this);
+    if (DestroyTheCore.game.stats.get(pl.getUniqueId()).levels >= this.lvlReq) {
+      announce(pl);
+      pl.playSound(
+        pl.getLocation(),
+        Sound.ENTITY_EXPERIENCE_ORB_PICKUP,
+        1, // Volume
+        1 // Pitch
+      );
+      
+      DestroyTheCore.rolesManager.setRole(pl, this);
+    }
+    else {
+      pl.playSound(
+        pl.getLocation(),
+        Sound.ENTITY_ENDERMAN_TELEPORT,
+        1, //
+        1
+      );
+      pl.sendActionBar(TextUtils.$("items.choose-role.not-unlock"));
+    }
     closeWindow(pl);
   }
 }

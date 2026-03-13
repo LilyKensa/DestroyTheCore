@@ -441,6 +441,7 @@ items:
   choose-role:
     name: "<aqua>Role Selection</aqua>"
     no-team: "<red>Join a team first!</red>"
+    not-unlock: "<red>You need higher level to unlock this role!</red>"
   spectator-teleporter:
     name: "<aqua>Spectator Teleporter</aqua>"
   absorption-potion:

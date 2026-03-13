@@ -96,7 +96,7 @@ public class PlayerData {
     coreAttacks++;
     addRespawnTime(corePunishment);
   }
-
+  
   public void addOre(Material type) {
     ores.put(type, ores.getOrDefault(type, 0) + 1);
   }

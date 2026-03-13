@@ -20,9 +20,7 @@ public class Stats implements ConfigurationSerializable {
     deaths += data.deaths;
     coreAttacks += data.coreAttacks;
     skills += data.skills;
-
     exp += data.exp;
-
     if (exp >= 500) {
       exp -= 500;
       levels++;

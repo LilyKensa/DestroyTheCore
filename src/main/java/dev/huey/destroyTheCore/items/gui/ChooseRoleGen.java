@@ -4,8 +4,6 @@ import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.itemGens.UsableItemGen;
 import dev.huey.destroyTheCore.managers.ItemsManager;
-import dev.huey.destroyTheCore.managers.TranslationsManager;
-import dev.huey.destroyTheCore.records.Stats;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -31,11 +29,6 @@ public class ChooseRoleGen extends UsableItemGen {
     ) {
       pl.sendActionBar(TextUtils.$("items.choose-role.no-team"));
       return;
-    }
-
-    if (DestroyTheCore.game.stats.get(pl.getUniqueId()).levels <
-        DestroyTheCore.game.getPlayerData(pl).role.lvlReq) {
-      pl.sendActionBar(TextUtils.$("item.choose-role.not-unlock"));
     }
     
     DestroyTheCore.guiManager.openRoleSelection(pl);

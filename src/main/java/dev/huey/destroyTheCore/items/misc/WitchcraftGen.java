@@ -123,7 +123,8 @@ public class WitchcraftGen extends UsableItemGen {
         Player e = RandomUtils.pick(PlayerUtils.getEnemies(data.side));
         Role role = RandomUtils.pick(
           DestroyTheCore.rolesManager.roles.values().stream().filter(
-            r -> r.id != RolesManager.RoleKey.DEFAULT
+            r -> r.id != RolesManager.RoleKey.DEFAULT && r.lvlReq <= DestroyTheCore.game.stats.get(
+              pl.getUniqueId()).levels
           ).toList()
         );
         

@@ -441,6 +441,7 @@ items:
   choose-role:
     name: "<aqua>選擇職業</aqua>"
     no-team: "<red>請先加入隊伍!</red>"
+    not-unlock: "<red>你尚未解鎖此職業</red>"
   spectator-teleporter:
     name: "<aqua>旁觀者傳送器</aqua>"
   absorption-potion:
