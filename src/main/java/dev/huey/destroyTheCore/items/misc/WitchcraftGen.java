@@ -125,7 +125,7 @@ public class WitchcraftGen extends UsableItemGen {
           DestroyTheCore.rolesManager.roles.values().stream().filter(
             r -> r.id != RolesManager.RoleKey.DEFAULT
               && r.lvlReq <= DestroyTheCore.game.stats.get(
-                pl.getUniqueId()
+                e.getUniqueId()
               ).levels
           ).toList()
         );

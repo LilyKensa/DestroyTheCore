@@ -403,7 +403,7 @@ public class KekkaiMasterRole extends Role {
       }
     );
     addSkill(30 * 20);
-    addLvlreq(7);
+    addLvlreq(0);
   }
   
   @Override

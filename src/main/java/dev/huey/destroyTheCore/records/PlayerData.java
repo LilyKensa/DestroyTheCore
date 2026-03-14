@@ -59,23 +59,11 @@ public class PlayerData {
   
   public void revive() {
     alive = true;
-    respawnAt = DestroyTheCore.ticksManager.ticksCount;
-
-    if (DestroyTheCore.game.phase != null) {
-      setRespawnTime(
-        DestroyTheCore.game.phase.minRespawnTime()
-      );
-    }
+    if (DestroyTheCore.game.phase != null) setRespawnTime(
+      DestroyTheCore.game.phase.minRespawnTime()
+    );
   }
-
-  public boolean isPostRespawn() {
-    return DestroyTheCore.ticksManager.ticksCount - respawnAt < 10 * 20;
-  }
-
-  public void removePostRevive() {
-    respawnAt = -9999;
-  }
-
+  
   public void kill() {
     alive = false;
     addDeath();

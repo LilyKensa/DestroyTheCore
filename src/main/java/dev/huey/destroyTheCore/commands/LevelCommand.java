@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Objects;
 import org.bukkit.entity.Player;
 
+/** for debug purpose will delete after */
 public class LevelCommand extends Subcommand {
   
   public LevelCommand() {
