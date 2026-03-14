@@ -23,7 +23,7 @@ public class Stats implements ConfigurationSerializable {
 
     exp += data.exp + 5 * kills + 3 * coreAttacks;
     for (int value : ores.values()) {
-      exp += value % 4;
+      exp += value / 4;
     }
     
     if (exp >= 100 * levels + 500 && levels < 15) {

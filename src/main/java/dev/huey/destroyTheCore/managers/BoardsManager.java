@@ -222,10 +222,19 @@ public class BoardsManager {
             "board.exp",
             List.of(
               Placeholder.component("exp", Component.text(stats.exp)),
+              Placeholder.component("levels", Component.text(stats.levels)),
               Placeholder.component(
                 "threshold",
                 Component.text(stats.levels * 100 + 500)
+              
               )
+            )
+          ),
+          "",
+          TextUtils.$r(
+            "board.levels",
+            List.of(
+              Placeholder.component("levels", Component.text(stats.levels))
             )
           )
         )
