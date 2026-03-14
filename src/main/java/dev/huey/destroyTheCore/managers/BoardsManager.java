@@ -217,7 +217,17 @@ public class BoardsManager {
               )
             )
           ),
-          ""
+          "",
+          TextUtils.$r(
+            "board.exp",
+            List.of(
+              Placeholder.component("exp", Component.text(stats.exp)),
+              Placeholder.component(
+                "threshold",
+                Component.text(stats.levels * 100 + 500)
+              )
+            )
+          )
         )
       );
     }

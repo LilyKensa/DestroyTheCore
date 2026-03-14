@@ -276,6 +276,7 @@ board:
   ores: "<white>Ores Mined</white>: <light_purple><value></light_purple>"
   ore-type: "  <type>: <dark_purple><value></dark_purple>"
   wins: "<white>Wins</white>: <aqua><wins></aqua>/<dark_aqua><all></dark_aqua> <gold><ratio>%</gold>"
+  exp: "<white>Exp</white>: <aqua><exp></aqua>/<dark_aqua><threshold></dark_aqua>"
 
 command:
   not-found: "Unknown command!"

@@ -2473,6 +2473,9 @@ public class Game {
   public void nextPhase() {
     phase = phase.next;
     phaseTimer = 10 * 60 * 20;
+    for (Player p : Bukkit.getOnlinePlayers()) {
+      DestroyTheCore.game.getPlayerData(p).exp += 25;
+    }
     
     if (phase == null) {
       checkWinner();

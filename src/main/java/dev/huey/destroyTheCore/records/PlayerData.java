@@ -85,6 +85,10 @@ public class PlayerData {
     addRespawnTime(corePunishment);
   }
   
+  public void addExp(int amount) {
+    exp += amount;
+  }
+
   public void addOre(Material type) {
     ores.put(type, ores.getOrDefault(type, 0) + 1);
   }

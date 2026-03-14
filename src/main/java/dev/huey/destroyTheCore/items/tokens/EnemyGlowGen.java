@@ -46,5 +46,6 @@ public class EnemyGlowGen extends UsableItemGen {
         )
       )
     );
+    DestroyTheCore.game.getPlayerData(pl).addExp(25);
   }
 }

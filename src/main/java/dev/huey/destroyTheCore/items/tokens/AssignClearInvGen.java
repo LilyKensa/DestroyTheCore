@@ -156,5 +156,6 @@ public class AssignClearInvGen extends UsableItemGen {
         );
       }
     );
+    DestroyTheCore.game.getPlayerData(pl).addExp(25);
   }
 }
