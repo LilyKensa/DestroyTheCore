@@ -22,15 +22,21 @@ public class LevelCommand extends Subcommand {
     pl.sendMessage(args.get(0));
     if (Objects.equals(args.get(0), "add")) {
       DestroyTheCore.game.stats.get(
-        pl.getUniqueId()).levels += 1;
+        pl.getUniqueId()
+      ).levels += 1;
     }
     if (Objects.equals(args.get(0), "subtract")) DestroyTheCore.game.stats.get(
-      pl.getUniqueId()).levels -= 1;
+      pl.getUniqueId()
+    ).levels -= 1;
     if (Objects.equals(args.get(0), "zero")) DestroyTheCore.game.stats.get(
-      pl.getUniqueId()).levels = 0;
+      pl.getUniqueId()
+    ).levels = 0;
     
     
-    pl.sendMessage("Your level is now" + DestroyTheCore.game.stats.get(
-      pl.getUniqueId()).levels);
+    pl.sendMessage(
+      "Your level is now" + DestroyTheCore.game.stats.get(
+        pl.getUniqueId()
+      ).levels
+    );
   }
 }
