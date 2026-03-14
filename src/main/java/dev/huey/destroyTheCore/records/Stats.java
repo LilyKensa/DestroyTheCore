@@ -25,8 +25,8 @@ public class Stats implements ConfigurationSerializable {
     for (int value : ores.values()) {
       exp += value % 4;
     }
-
-    if (exp >= 100 * levels + 500) {
+    
+    if (exp >= 100 * levels + 500 && levels < 15) {
       exp -= 100 * levels + 500;
       levels++;
     }
@@ -58,7 +58,7 @@ public class Stats implements ConfigurationSerializable {
     pusher.accept("core-attacks", coreAttacks);
     pusher.accept("levels", levels);
     pusher.accept("exp", exp);
-
+    
     Map<String, Integer> stringOres = new HashMap<>();
     for (Map.Entry<Material, Integer> entry : ores.entrySet()) {
       stringOres.put(entry.getKey().name(), entry.getValue());

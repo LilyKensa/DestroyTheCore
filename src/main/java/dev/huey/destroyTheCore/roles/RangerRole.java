@@ -161,7 +161,7 @@ public class RangerRole extends Role {
       }
     );
     addSkill(150 * 20);
-    addLvlreq(10);
+    addLvlreq(9);
   }
   
   @Override
