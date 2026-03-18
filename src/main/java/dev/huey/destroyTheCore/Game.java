@@ -561,7 +561,7 @@ public class Game {
     }
   }
   
-  Objective respawnTimeBoard, healthBoard;
+  Objective respawnTimeBoard, healthBoard, levelBoard;
   
   public void createScoreboards() {
     Scoreboard board = Bukkit.getServer().getScoreboardManager()
@@ -585,6 +585,17 @@ public class Game {
       );
       
       healthBoard.setDisplaySlot(DisplaySlot.BELOW_NAME);
+    }
+    
+    levelBoard = board.getObjective("level");
+    if (levelBoard == null) {
+      levelBoard = board.registerNewObjective(
+        "level",
+        Criteria.DUMMY,
+        Component.text("☆").color(
+          NamedTextColor.DARK_AQUA
+        )
+      );
     }
   }
   
@@ -2463,6 +2474,8 @@ public class Game {
     
     PlayerUtils.refreshAllSpectatorVisibilities();
     
+    healthBoard.setDisplaySlot(DisplaySlot.BELOW_NAME);
+    
     // After 0: respawn, 1: give essential items
     CoreUtils.setTickOut(
       () -> DestroyTheCore.rolesManager.onPhaseChange(phase),
@@ -2533,6 +2546,13 @@ public class Game {
     DestroyTheCore.boardsManager.refresh();
     
     CoreUtils.setTickOut(this::showCredits);
+    
+    levelBoard.setDisplaySlot(DisplaySlot.BELOW_NAME);
+    for (Player p : Bukkit.getOnlinePlayers()) {
+      levelBoard.getScore(p.getName()).setScore(
+        DestroyTheCore.game.stats.get(p.getUniqueId()).levels
+      );
+    }
   }
   
   public void reset() {

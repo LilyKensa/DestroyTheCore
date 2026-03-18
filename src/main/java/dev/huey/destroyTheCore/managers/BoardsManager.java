@@ -217,7 +217,6 @@ public class BoardsManager {
               )
             )
           ),
-          "",
           TextUtils.$r(
             "board.exp",
             List.of(
@@ -230,13 +229,7 @@ public class BoardsManager {
               )
             )
           ),
-          "",
-          TextUtils.$r(
-            "board.levels",
-            List.of(
-              Placeholder.component("levels", Component.text(stats.levels))
-            )
-          )
+          "▇▇▇▇▇▇▇▇"
         )
       );
     }
