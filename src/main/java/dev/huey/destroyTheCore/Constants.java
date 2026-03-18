@@ -8,10 +8,10 @@ import org.bukkit.entity.Villager;
 public class Constants {
   
   public record OreData(
-                        Material dropType,
-                        long cooldownSeconds,
-                        int minXp,
-                        int maxXp
+    Material dropType,
+    long cooldownSeconds,
+    int minXp,
+    int maxXp
   ) {
   }
   
@@ -22,7 +22,7 @@ public class Constants {
     Map.entry(Material.REDSTONE_ORE, new OreData(Material.REDSTONE, 5, 2, 6)),
     Map.entry(Material.LAPIS_ORE, new OreData(Material.LAPIS_LAZULI, 10, 2, 6)),
     Map.entry(Material.EMERALD_ORE, new OreData(Material.EMERALD, 13, 3, 8)),
-    Map.entry(Material.DIAMOND_ORE, new OreData(Material.DIAMOND, 60, 3, 12))
+    Map.entry(Material.DIAMOND_ORE, new OreData(Material.DIAMOND, 90, 3, 12))
   );
   
   /** To be dropped when needed */

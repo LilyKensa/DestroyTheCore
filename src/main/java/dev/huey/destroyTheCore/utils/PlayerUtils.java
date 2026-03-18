@@ -60,6 +60,8 @@ public class PlayerUtils {
   }
   
   static public boolean isUnderSky(Player pl) {
+    int count = 0;
+    
     for (int dx = -1; dx <= 1; ++dx) {
       horizontalLoop: for (int dz = -1; dz <= 1; ++dz) {
         for (int dy = 0; dy <= 8; ++dy) {
@@ -67,11 +69,11 @@ public class PlayerUtils {
             continue horizontalLoop;
         }
         
-        return true;
+        count++;
       }
     }
     
-    return false;
+    return count > 4;
   }
   
   static public void send(Player pl, Component component) {

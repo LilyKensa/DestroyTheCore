@@ -728,6 +728,18 @@ public class Game {
     ) {
       handlePlayerDamage(shooter, victim, proj, ev);
     }
+    
+    if (ev.getEntity() instanceof Item itemEntity) {
+      ItemStack item = itemEntity.getItemStack();
+      if (
+        Set.of(Material.ENCHANTING_TABLE, Material.ENDER_CHEST).contains(
+          item.getType()
+        )
+      ) {
+        ev.setCancelled(true);
+        return;
+      }
+    }
   }
   
   public void handlePlayerDamage(
@@ -1846,6 +1858,7 @@ public class Game {
   ) {
     if (checkAbandonedTool(pl, item)) {
       ev.getItemDrop().remove();
+      return;
     }
   }
   

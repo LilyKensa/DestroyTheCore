@@ -5,10 +5,24 @@ general:
 
 chat:
   format: "<player>: <white><message></white>"
+  broadcast:
+    prefix: "[<gold>Broadcast</gold>] "
+    name: "Server"
   shout:
     prefix: "[<gold>Shout</gold>] "
-    empty: "I am an idiot, I shouted but I got no message to say!"
+    empty: "I'm an idiot, I shouted but I got no message to say!"
+    empty-troll: "I'm an idiot, I shouted but I typed '<message>'"
     cooldown: "<red>You need to wait <value> seconds to shout again!</red>"
+
+tips:
+  prefix: "[<dark_aqua>Tip</dark_aqua>] "
+  tip-1:
+    title: "<aqua>Join Our Discord!</aqua>"
+    content-1: "<click:open_url:'https://discord.gg/JygVAym6by'>https://discord.gg/JygVAym6by</click>"
+  tip-2:
+    title: "<aqua>About Sin Value...</aqua>"
+    content-1: "The sin value increases when you kill a person or attack the core"
+    content-2: "Having more sin means it takes you longer to respawn"
 
 player:
   no-perm: "<red>You don't have the permissions to do so!</red>"
@@ -260,6 +274,7 @@ board:
   attacks: "<white>Core Attacks</white>: <light_purple><value></light_purple>"
   skills: "<white>Skills Casted</white>: <light_purple><value></light_purple>"
   ores: "<white>Ores Mined</white>: <light_purple><value></light_purple>"
+  ore-type: "  <type>: <dark_purple><value></dark_purple>"
   wins: "<white>Wins</white>: <aqua><wins></aqua>/<dark_aqua><all></dark_aqua> <gold><ratio>%</gold>"
 
 command:

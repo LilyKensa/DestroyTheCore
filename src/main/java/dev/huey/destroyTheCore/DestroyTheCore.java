@@ -30,6 +30,7 @@ public final class DestroyTheCore extends JavaPlugin {
   static public QuizManager quizManager;
   static public MissionsManager missionsManager;
   static public GUIManager guiManager;
+  static public TipsManager tipsManager;
   static public BoardsManager boardsManager;
   static public TicksManager ticksManager;
   
@@ -56,12 +57,13 @@ public final class DestroyTheCore extends JavaPlugin {
     quizManager = new QuizManager();
     missionsManager = new MissionsManager();
     guiManager = new GUIManager();
+    tipsManager = new TipsManager();
     boardsManager = new BoardsManager();
     configManager = new ConfigManager();
     ticksManager = new TicksManager();
     
     for (String commandName : new String[]{
-      "dtc", "rejoin", "night-vision", "shout", "shuffle-team", "warp", "skip", "edit", "reset", "revive", "language", "stats"
+      "dtc", "rejoin", "night-vision", "shout", "broadcast", "shuffle-team", "warp", "skip", "edit", "reset", "revive", "language", "stats"
     }) {
       PluginCommand command = getCommand(commandName);
       if (command == null) {
@@ -85,6 +87,7 @@ public final class DestroyTheCore extends JavaPlugin {
     recipesManager.init();
     rolesManager.init();
     guiManager.init();
+    tipsManager.init();
     ticksManager.init();
     
     game.init();

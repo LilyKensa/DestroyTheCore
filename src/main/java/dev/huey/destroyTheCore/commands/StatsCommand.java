@@ -6,10 +6,14 @@ import dev.huey.destroyTheCore.records.Stats;
 import dev.huey.destroyTheCore.utils.CoreUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
+
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
@@ -91,6 +95,15 @@ public class StatsCommand extends Subcommand {
           )
         ),
         TextUtils.$(
+          "board.skills",
+          List.of(
+            Placeholder.component(
+              "value",
+              Component.text(stats.skills)
+            )
+          )
+        ),
+        TextUtils.$(
           "board.ores",
           List.of(
             Placeholder.component(
@@ -100,19 +113,31 @@ public class StatsCommand extends Subcommand {
               )
             )
           )
-        ),
-        TextUtils.$(
-          "board.skills",
-          List.of(
-            Placeholder.component(
-              "value",
-              Component.text(stats.skills)
-            )
-          )
         )
       )
     ) {
       sendWithPrefix(pl, comp);
+    }
+    
+    for (Map.Entry<Material, Integer> entry : stats.ores.entrySet()) {
+      sendWithPrefix(
+        pl,
+        TextUtils.$(
+          "board.ore-type",
+          List.of(
+            Placeholder.unparsed(
+              "type",
+              String.join(" ", Arrays.stream(
+                entry.getKey().name()
+                  .split("_"))
+                  .map(CoreUtils::capitalize)
+                  .toList()
+              )
+            ),
+            Placeholder.component("value", Component.text(entry.getValue()))
+          )
+        )
+      );
     }
     
     PlayerUtils.send(pl, Component.empty());

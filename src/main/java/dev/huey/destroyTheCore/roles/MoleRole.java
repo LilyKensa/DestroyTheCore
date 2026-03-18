@@ -209,7 +209,10 @@ public class MoleRole extends Role {
       );
       
       ev.setCancelled(true);
+      return;
     }
+    
+    pl.setExhaustion(pl.getExhaustion() + 0.045f);
   }
   
   public MoleRole() {
@@ -241,12 +244,14 @@ public class MoleRole extends Role {
   
   @Override
   public void onTick(Player pl) {
+    if (!PlayerUtils.shouldHandle(pl)) return;
+    
     if (DestroyTheCore.ticksManager.isUpdateTick()) {
       if (PlayerUtils.isUnderSky(pl)) {
         PlayerUtils.addPassiveEffect(
           pl,
           PotionEffectType.DARKNESS,
-          20,
+          40,
           1
         );
       }

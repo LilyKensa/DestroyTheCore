@@ -8,6 +8,7 @@ import dev.huey.destroyTheCore.utils.TextUtils;
 import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.entity.Player;
 
@@ -39,9 +40,14 @@ public class ShoutCommand extends Subcommand {
     
     data.shoutCooldown = PlayerData.shoutCooldownDuration;
     
-    Component message = args.isEmpty() ? TextUtils.$(
-      "chat.shout.empty"
-    ) : Component.text(String.join(" ", args));
+    TextComponent empty = (TextComponent) TextUtils.$("chat.shout.empty");
+    TextComponent message = args.isEmpty() ? empty : String.join(" ", args)
+      .equals(empty.content()) ? (TextComponent) TextUtils.$(
+        "chat.shout.empty-troll",
+        List.of(
+          Placeholder.component("message", empty)
+        )
+      ) : Component.text(String.join(" ", args));
     
     PlayerUtils.broadcast(
       Component.join(
