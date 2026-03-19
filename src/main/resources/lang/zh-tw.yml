@@ -7,7 +7,7 @@ chat:
   format: "<player>: <white><message></white>"
   broadcast:
     prefix: "[<gold>廣播</gold>] "
-    name: "伺服器"
+    name: "<aqua>伺服器</aqua>"
   shout:
     prefix: "[<gold>吶喊</gold>] "
     empty: "我是白癡, 我吶喊但沒打訊息!"
@@ -176,6 +176,8 @@ tool:
 
 role:
   prefix: "[<light_purple>職業</light_purple>] "
+  name: "<yellow><name></yellow>"
+  name-locked: "<red>🔒 <name></red> (Unlocks at level <dark_aqua><levels></dark_aqua>)"
   change: "<player> 轉職成為<yellow><role></yellow>"
   skill:
     title: "[<white>技能</white>] <light_purple><name></light_purple>"
@@ -276,8 +278,7 @@ board:
   ores: "<white>總礦物數</white>: <light_purple><value></light_purple>"
   ore-type: "  <type>: <dark_purple><value></dark_purple>"
   wins: "<white>贏局</white>: <aqua><wins></aqua>/<dark_aqua><all></dark_aqua> <gold><ratio>%</gold>"
-  exp: "<dark_aqua>等級</dark_aqua>: <green><levels></green> <white>[</white><aqua><bar_aqua></aqua><gray><bar_gray></gray><white>]</white> <aqua><percentage>%</aqua>"
-  levels: "<white>等級</white>: <grey><levels></grey>"
+  exp: "<dark_aqua>等級</dark_aqua> <green><levels></green> [<bar>] <aqua><percent>%</aqua>"
 
 command:
   not-found: "沒有這種指令!"
@@ -289,6 +290,8 @@ world:
   template-warning: "<red>你在模板世界中!</red>"
 
 commands:
+  level:
+    changed: "<aqua><player> 現在的等級是 <value> 等</aqua>"
   night-vision:
     on: "<green>已啟用夜視效果</green>"
     off: "<green>已關閉夜視效果/green>"
@@ -443,7 +446,7 @@ items:
   choose-role:
     name: "<aqua>選擇職業</aqua>"
     no-team: "<red>請先加入隊伍!</red>"
-    not-unlock: "<red>你尚未解鎖此職業</red>"
+    locked: "<red>你尚未解鎖此職業!</red>"
   spectator-teleporter:
     name: "<aqua>旁觀者傳送器</aqua>"
   absorption-potion:
@@ -779,7 +782,7 @@ roles:
     feature-4: "永久發光"
     feature-5: "永久緩速 I"
     item:
-      name: "<aqua>掏金者之礸</aqua>"
+      name: "<aqua>掏金者之鑽</aqua>"
       detail: "效率 III 鐵鎬"
     skill:
       name: "貪婪之心"

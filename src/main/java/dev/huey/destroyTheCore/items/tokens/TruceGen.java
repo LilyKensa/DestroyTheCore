@@ -51,6 +51,7 @@ public class TruceGen extends UsableItemGen {
         )
       )
     );
+    
     DestroyTheCore.game.getPlayerData(pl).addExp(25);
   }
 }

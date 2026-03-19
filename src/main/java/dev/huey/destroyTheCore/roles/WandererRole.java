@@ -121,7 +121,7 @@ public class WandererRole extends Role {
       }
     );
     addSkill(60 * 20);
-    addLvlreq(10);
+    addLevelReq(10);
   }
   
   @Override

@@ -6,7 +6,6 @@ import dev.huey.destroyTheCore.records.Stats;
 import dev.huey.destroyTheCore.utils.CoreUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +41,7 @@ public class StatsCommand extends Subcommand {
       target = Bukkit.getOfflinePlayer(args.get(0));
     }
     
-    Stats stats = DestroyTheCore.game.stats.get(target.getUniqueId());
+    Stats stats = DestroyTheCore.game.getStats(target);
     
     if (stats == null) {
       PlayerUtils.prefixedSend(
@@ -127,9 +126,12 @@ public class StatsCommand extends Subcommand {
           List.of(
             Placeholder.unparsed(
               "type",
-              String.join(" ", Arrays.stream(
-                entry.getKey().name()
-                  .split("_"))
+              String.join(
+                " ",
+                Arrays.stream(
+                  entry.getKey().name()
+                    .split("_")
+                )
                   .map(CoreUtils::capitalize)
                   .toList()
               )

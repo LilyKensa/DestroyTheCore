@@ -54,6 +54,7 @@ public class IgnoreCoreInvulnGen extends UsableItemGen {
         )
       )
     );
+    
     DestroyTheCore.game.getPlayerData(pl).addExp(25);
   }
 }

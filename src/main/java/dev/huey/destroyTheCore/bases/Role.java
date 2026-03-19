@@ -10,6 +10,7 @@ import dev.huey.destroyTheCore.items.armors.StarterLeggingsGen;
 import dev.huey.destroyTheCore.managers.GUIManager;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.managers.RolesManager;
+import dev.huey.destroyTheCore.records.Stats;
 import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
@@ -64,7 +65,7 @@ public class Role extends GUIItem {
    * - {@link #addFeature}<br>
    * - {@link #addExclusiveItem}<br>
    * - {@link #addSkill}
-   * - {@link #addLvlreq}
+   * - {@link #addLevelReq}
    */
   public Role(RolesManager.RoleKey id) {
     this.id = id;
@@ -108,7 +109,7 @@ public class Role extends GUIItem {
   public List<String> skillDesc;
   public int skillCooldown;
   
-  public int lvlReq;
+  public int levelReq;
   
   public void addInfo(Material iconType) {
     this.iconType = iconType;
@@ -138,8 +139,8 @@ public class Role extends GUIItem {
     skillCooldown = cd;
   }
   
-  public void addLvlreq(int lvl) {
-    lvlReq = lvl;
+  public void addLevelReq(int lvl) {
+    levelReq = lvl;
   }
   
   /** Announce that a player has changed to this role */
@@ -226,7 +227,7 @@ public class Role extends GUIItem {
       meta.getPersistentDataContainer().set(
         exclusiveItemNamespace,
         PersistentDataType.STRING,
-        this.id.name()
+        id.name()
       );
     });
     return item;
@@ -295,7 +296,7 @@ public class Role extends GUIItem {
   
   /** @see GUIManager */
   @Override
-  public ItemProvider getItemProvider() {
+  public ItemProvider getItemProvider(Player pl) {
     List<String> combinedLore = new ArrayList<>();
     if (lore != null) {
       combinedLore.addAll(lore);
@@ -339,14 +340,25 @@ public class Role extends GUIItem {
       combinedLore.addAll(skillDesc);
     }
     
-    return new ItemBuilder(iconType).setDisplayName("§e" + name).addItemFlags(
-      ItemFlag.HIDE_ATTRIBUTES,
-      ItemFlag.HIDE_ADDITIONAL_TOOLTIP
-    ).addLoreLines(
-      combinedLore.toArray(
-        new String[0]
+    Stats stat = DestroyTheCore.game.getStats(pl);
+    
+    return new ItemBuilder(iconType)
+      .setDisplayName(
+        TextUtils.$r(
+          stat.levels > levelReq ? "role.name" : "role.name-locked"
+        )
+          .replaceAll("<name>", name)
+          .replaceAll("<levels>", "%d".formatted(levelReq))
       )
-    );
+      .addItemFlags(
+        ItemFlag.HIDE_ATTRIBUTES,
+        ItemFlag.HIDE_ADDITIONAL_TOOLTIP
+      )
+      .addLoreLines(
+        combinedLore.toArray(
+          new String[0]
+        )
+      );
   }
   
   /** @see GUIManager */
@@ -354,7 +366,7 @@ public class Role extends GUIItem {
   public void handleClick(
     ClickType clickType, Player pl, InventoryClickEvent ev
   ) {
-    if (DestroyTheCore.game.stats.get(pl.getUniqueId()).levels >= this.lvlReq) {
+    if (DestroyTheCore.game.getStats(pl).levels >= levelReq) {
       announce(pl);
       pl.playSound(
         pl.getLocation(),
@@ -372,7 +384,7 @@ public class Role extends GUIItem {
         1, //
         1
       );
-      pl.sendActionBar(TextUtils.$("items.choose-role.not-unlock"));
+      pl.sendActionBar(TextUtils.$("items.choose-role.locked"));
     }
     closeWindow(pl);
   }

@@ -14,6 +14,7 @@ public class BroadcastCommand extends Subcommand {
   
   public BroadcastCommand() {
     super("broadcast");
+    addArgument("message", () -> List.of("<message>"));
   }
   
   @Override

@@ -59,9 +59,21 @@ public class PlayerData {
   
   public void revive() {
     alive = true;
-    if (DestroyTheCore.game.phase != null) setRespawnTime(
-      DestroyTheCore.game.phase.minRespawnTime()
-    );
+    respawnAt = DestroyTheCore.ticksManager.ticksCount;
+    
+    if (DestroyTheCore.game.phase != null) {
+      setRespawnTime(
+        DestroyTheCore.game.phase.minRespawnTime()
+      );
+    }
+  }
+  
+  public boolean isPostRespawn() {
+    return DestroyTheCore.ticksManager.ticksCount - respawnAt < 10 * 20;
+  }
+  
+  public void removePostRevive() {
+    respawnAt = -9999;
   }
   
   public void kill() {
@@ -88,7 +100,7 @@ public class PlayerData {
   public void addExp(int amount) {
     exp += amount;
   }
-
+  
   public void addOre(Material type) {
     ores.put(type, ores.getOrDefault(type, 0) + 1);
   }

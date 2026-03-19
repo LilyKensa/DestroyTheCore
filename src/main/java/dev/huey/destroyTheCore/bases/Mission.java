@@ -4,10 +4,7 @@ import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.managers.MissionsManager;
 import dev.huey.destroyTheCore.missions.results.*;
-import dev.huey.destroyTheCore.utils.CoreUtils;
-import dev.huey.destroyTheCore.utils.LocUtils;
-import dev.huey.destroyTheCore.utils.RandomUtils;
-import dev.huey.destroyTheCore.utils.TextUtils;
+import dev.huey.destroyTheCore.utils.*;
 import java.util.ArrayList;
 import java.util.List;
 import net.kyori.adventure.text.Component;
@@ -147,11 +144,11 @@ public abstract class Mission implements Listener {
   /** Call this to announce the winner */
   public void declareWinner(Game.Side side) {
     DestroyTheCore.game.getSideData(side).missionsCompleted++;
-    for (Player p : Bukkit.getOnlinePlayers()) {
-      if (DestroyTheCore.game.getPlayerData(p).side == side) {
-        DestroyTheCore.game.getPlayerData(p).addExp(25);
-      }
+    
+    for (Player p : PlayerUtils.getTeammates(side)) {
+      DestroyTheCore.game.getPlayerData(p).addExp(25);
     }
+    
     RandomUtils.pick(results).run(side);
   }
   

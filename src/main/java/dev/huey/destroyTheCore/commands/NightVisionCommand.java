@@ -16,7 +16,7 @@ public class NightVisionCommand extends Subcommand {
   
   @Override
   public void execute(Player pl, List<String> args) {
-    Stats stats = DestroyTheCore.game.stats.get(pl.getUniqueId());
+    Stats stats = DestroyTheCore.game.getStats(pl);
     
     stats.nightVision = !stats.nightVision;
     PlayerUtils.enforceNightVision(pl);

@@ -86,7 +86,6 @@ public final class DestroyTheCore extends JavaPlugin {
     glowManager.init();
     recipesManager.init();
     rolesManager.init();
-    guiManager.init();
     tipsManager.init();
     ticksManager.init();
     

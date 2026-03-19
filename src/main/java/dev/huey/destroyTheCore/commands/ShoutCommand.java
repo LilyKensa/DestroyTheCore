@@ -16,6 +16,7 @@ public class ShoutCommand extends Subcommand {
   
   public ShoutCommand() {
     super("shout");
+    addArgument("message", () -> List.of("<message>"));
   }
   
   @Override

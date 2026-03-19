@@ -7,7 +7,7 @@ chat:
   format: "<player>: <white><message></white>"
   broadcast:
     prefix: "[<gold>Broadcast</gold>] "
-    name: "Server"
+    name: "<aqua>Server</aqua>"
   shout:
     prefix: "[<gold>Shout</gold>] "
     empty: "I'm an idiot, I shouted but I got no message to say!"
@@ -176,6 +176,8 @@ tool:
 
 role:
   prefix: "[<light_purple>Role</light_purple>] "
+  name: "<yellow><name></yellow>"
+  name-locked: "<red>🔒 <name></red> (Unlocks at level <dark_aqua><levels></dark_aqua>)"
   change: "<player> changed role to <yellow><role></yellow>"
   skill:
     title: "[<white>Skill</white>] <light_purple><name></light_purple>"
@@ -276,8 +278,7 @@ board:
   ores: "<white>Ores Mined</white>: <light_purple><value></light_purple>"
   ore-type: "  <type>: <dark_purple><value></dark_purple>"
   wins: "<white>Wins</white>: <aqua><wins></aqua>/<dark_aqua><all></dark_aqua> <gold><ratio>%</gold>"
-  exp: "<dark_aqua>Level</dark_aqua>: <green><levels></green> <white>[</white><aqua><bar_aqua></aqua><gray><bar_gray></gray><white>]</white> <aqua><percentage>%</aqua>"
-  levels: "<white>Levels</white>: <grey><levels></grey>"
+  exp: "<dark_aqua>Level</dark_aqua> <green><levels></green> [<bar>] <aqua><percent>%</aqua>"
 
 command:
   not-found: "Unknown command!"
@@ -289,6 +290,8 @@ world:
   template-warning: "<red>You're in the template world!</red>"
 
 commands:
+  level:
+    changed: "<aqua><player>'s level is now <value>!</aqua>"
   night-vision:
     on: "<green>Enabled Night Vision</green>"
     off: "<green>Disabled Night Vision</green>"
@@ -443,7 +446,7 @@ items:
   choose-role:
     name: "<aqua>Role Selection</aqua>"
     no-team: "<red>Join a team first!</red>"
-    not-unlock: "<red>You need higher level to unlock this role!</red>"
+    locked: "<red>You haven't unlocked this role yet!</red>"
   spectator-teleporter:
     name: "<aqua>Spectator Teleporter</aqua>"
   absorption-potion:

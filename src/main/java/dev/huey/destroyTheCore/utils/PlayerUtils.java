@@ -377,7 +377,7 @@ public class PlayerUtils {
   
   /** Refresh night vision effect based on their preference */
   static public void enforceNightVision(Player pl) {
-    if (DestroyTheCore.game.stats.get(pl.getUniqueId()).nightVision) {
+    if (DestroyTheCore.game.getStats(pl).nightVision) {
       addPassiveEffect(
         pl,
         PotionEffectType.NIGHT_VISION,

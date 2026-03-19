@@ -2,9 +2,13 @@ package dev.huey.destroyTheCore.commands;
 
 import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.bases.Subcommand;
+import dev.huey.destroyTheCore.records.Stats;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
+import dev.huey.destroyTheCore.utils.TextUtils;
 import java.util.List;
-import java.util.Objects;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 /** for debug purpose will delete after */
@@ -12,32 +16,52 @@ public class LevelCommand extends Subcommand {
   
   public LevelCommand() {
     super("level");
-    addArgument("command", () -> List.of("add", "subtract", "zero"));
+    addArgument("command", () -> List.of("add", "minus", "clear"));
+    addArgument("amount", () -> List.of("<amount>"));
+    addArgument(
+      "player",
+      () -> Bukkit.getOnlinePlayers().stream().map(Player::getName).toList()
+    );
   }
   
   public void execute(Player pl, List<String> args) {
+    // 1. Permission Check
     if (!PlayerUtils.isAdmin(pl)) {
       PlayerUtils.reportNoPerm(pl);
       return;
     }
-    pl.sendMessage(args.get(0));
-    if (Objects.equals(args.get(0), "add")) {
-      DestroyTheCore.game.stats.get(
-        pl.getUniqueId()
-      ).levels += 1;
-    }
-    if (Objects.equals(args.get(0), "subtract")) DestroyTheCore.game.stats.get(
-      pl.getUniqueId()
-    ).levels -= 1;
-    if (Objects.equals(args.get(0), "zero")) DestroyTheCore.game.stats.get(
-      pl.getUniqueId()
-    ).levels = 0;
     
+    String action = args.isEmpty() ? null : args.get(0).toLowerCase();
+    
+    int amount = args.size() > 2 ? Integer.parseInt(args.get(1)) : 1;
+    
+    Player target = pl;
+    if (args.size() > 3) {
+      Player p = Bukkit.getPlayer(args.get(2));
+      if (p != null) target = p;
+    }
+    
+    Stats stat = DestroyTheCore.game.getStats(target);
+    
+    switch (action) {
+      case "add" -> stat.levels += amount;
+      case "minus" -> stat.levels -= amount;
+      case "clear" -> stat.levels = 0;
+      case null, default -> {
+      }
+    }
+    
+    stat.levels = Math.min(Math.max(0, stat.levels), 15);
+    DestroyTheCore.game.enforceLevelScore(target);
     
     pl.sendMessage(
-      "Your level is now" + DestroyTheCore.game.stats.get(
-        pl.getUniqueId()
-      ).levels
+      TextUtils.$(
+        "commands.level.changed",
+        List.of(
+          Placeholder.component("player", PlayerUtils.getName(target)),
+          Placeholder.component("value", Component.text(stat.levels))
+        )
+      )
     );
   }
 }

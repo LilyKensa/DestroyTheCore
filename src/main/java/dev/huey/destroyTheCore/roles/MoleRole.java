@@ -235,6 +235,7 @@ public class MoleRole extends Role {
       }
     );
     addSkill(60 * 20);
+    addLevelReq(12);
   }
   
   @Override

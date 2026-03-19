@@ -33,7 +33,7 @@ public class RandomRoleItem extends GUIItem {
     Role role = RandomUtils.pick(
       DestroyTheCore.rolesManager.roles.values().stream().filter(
         r -> r.id != RolesManager.RoleKey.DEFAULT
-          && r.lvlReq <= DestroyTheCore.game.stats.get(
+          && r.levelReq <= DestroyTheCore.game.stats.get(
             pl.getUniqueId()
           ).levels
       ).toList()

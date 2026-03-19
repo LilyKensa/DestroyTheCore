@@ -27,7 +27,7 @@ public class ProvocateurRole extends Role {
       }
     );
     addSkill(180 * 20);
-    addLvlreq(3);
+    addLevelReq(3);
   }
   
   @Override

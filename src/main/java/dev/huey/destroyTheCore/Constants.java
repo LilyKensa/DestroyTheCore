@@ -8,10 +8,10 @@ import org.bukkit.entity.Villager;
 public class Constants {
   
   public record OreData(
-    Material dropType,
-    long cooldownSeconds,
-    int minXp,
-    int maxXp
+                        Material dropType,
+                        long cooldownSeconds,
+                        int minXp,
+                        int maxXp
   ) {
   }
   
