@@ -9,7 +9,6 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class AttackerRole extends Role {
@@ -31,11 +30,17 @@ public class AttackerRole extends Role {
   public void useSkill(Player pl) {
     skillFeedback(pl);
     
-    pl.addPotionEffect(
-      new PotionEffect(PotionEffectType.SPEED, 5 * 20, 0, false, true)
+    PlayerUtils.addEffect(
+      pl,
+      PotionEffectType.SPEED,
+      5 * 20,
+      1
     );
-    pl.addPotionEffect(
-      new PotionEffect(PotionEffectType.RESISTANCE, 10 * 20, 0, false, true)
+    PlayerUtils.addEffect(
+      pl,
+      PotionEffectType.RESISTANCE,
+      10 * 20,
+      1
     );
     
     PlayerUtils.auraBroadcast(

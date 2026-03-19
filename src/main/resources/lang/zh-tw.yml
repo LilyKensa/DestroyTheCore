@@ -1,7 +1,3 @@
-# I spent a absolute fucking hour translating this shit by hand
-# You better like it >:(
-# - Huey
-
 general:
   title: "<white>殲滅攻城戰 III</white>"
   subtitle: "原作: <gold>Hageeshow</gold> / 第三版: <gold>_hueeey_</gold>"
@@ -9,10 +5,24 @@ general:
 
 chat:
   format: "<player>: <white><message></white>"
+  broadcast:
+    prefix: "[<gold>廣播</gold>] "
+    name: "伺服器"
   shout:
     prefix: "[<gold>吶喊</gold>] "
     empty: "我是白癡, 我吶喊但沒打訊息!"
+    empty-troll: "我是白癡, 我吶喊然後打了 '<message>'"
     cooldown: "<red>你必須等待 <value> 秒才能再次吶喊!</red>"
+
+tips:
+  prefix: "[<dark_aqua>提示</dark_aqua>] "
+  tip-1:
+    title: "<aqua>加入我們的 Discord 群組!</aqua>"
+    content-1: "<click:open_url:'https://discord.gg/JygVAym6by'>https://discord.gg/JygVAym6by</click>"
+  tip-2:
+    title: "<aqua>關於罪惡值...</aqua>"
+    content-1: "殺人或挖核心會增加你的罪惡值"
+    content-2: "罪惡值越高, 重生所需時間越久"
 
 player:
   no-perm: "<red>你沒有權限這麼做!</red>"
@@ -58,6 +68,7 @@ game:
     attack:
       teammate: "<red>你幹麻打你隊友!</red>"
       spectator: "<red>旁觀者不能攻擊!</red>"
+      post-respawn: "<red>玩家處於重生後保護狀態!</red>"
     use:
       time: "<red>你現在什麼事都不能做!</red>"
       lobby: "<red>你不能在大廳使用方塊!</red>"
@@ -77,7 +88,7 @@ game:
       own-core: "<red>你幹麻挖你自己核心!</red>"
       spectator: "<red>旁觀者不能破壞方塊!</red>"
     pour: "<red>你不能在核心旁倒液體!</red>"
-    open-enemy-container: "<red>你不能翻敵人的箱子!</red>"
+    open-enemy-container: "<red>你不能翻敵人的<type>!</red>"
   bounty:
     prefix: "[<light_purple>懸賞</light_purple>] "
     reward: "<player> 得到了 <white>綠寶石</white> × <dark_aqua><amount></dark_aqua>"
@@ -263,6 +274,7 @@ board:
   attacks: "<white>核心攻擊次數</white>: <light_purple><value></light_purple>"
   skills: "<white>技能施放數</white>: <light_purple><value></light_purple>"
   ores: "<white>總礦物數</white>: <light_purple><value></light_purple>"
+  ore-type: "  <type>: <dark_purple><value></dark_purple>"
   wins: "<white>贏局</white>: <aqua><wins></aqua>/<dark_aqua><all></dark_aqua> <gold><ratio>%</gold>"
 
 command:
@@ -496,6 +508,9 @@ items:
   kekkai-master-leggings:
     name: "<aqua>符文褲</aqua>"
     desc-1: "- <red>結界師綁定物品</red>"
+  mole-boots:
+    name: "<aqua>腳爪封印</aqua>"
+    desc-1: "- <red>地鼠綁定物品</red>"
   assign-clear-inv:
     name: "[<white>令牌</white>] <light_purple>盜賊集結</light_purple>"
     desc-1: "清空隨機敵人的背包"
@@ -883,7 +898,7 @@ roles:
     desc-1: "<gold>完美的肉盾, 幫隊友擋傷害!</gold>"
     feature-1: "轉移 10 格內隊友受的 60% 傷害給自己"
     feature-2: "若自身正在套用吸收效果, 則改為轉移 90% 傷害"
-    feature-3: "永久虛弱 I"
+    feature-3: "永久傷害輸出減少 20%"
     item:
       name: "<aqua>超派</aqua>"
       detail: "橫掃之刃 III 南瓜派"
@@ -891,3 +906,17 @@ roles:
       name: "成為肉盾"
       desc-1: "<dark_purple>獲得吸收 X & 抗性 III & 虛弱 & 發光 (10s)</dark_purple>"
       announce: "<player> 使用了<yellow><role></yellow>技能, 血量增加!"
+  mole:
+    name: "地鼠"
+    desc-1: "<gold>地鼠挖地洞!</gold>"
+    feature-1: "挖方塊超級快, 但太硬的方塊破壞不了"
+    feature-2: "在陽光下會得到黑暗 I"
+    item:
+      name: "<aqua>地鼠之爪</aqua>"
+      detail: "挖方塊超級快, 但太硬的方塊破壞不了"
+    skill:
+      name: "潛入地底"
+      desc-1: "<dark_purple>躲到地板中並加快移動速度 (5s)</dark_purple>"
+      desc-2: "<dark_purple>跳出潛伏狀態會造成爆炸, 對附近的敵人造成傷害</dark_purple>"
+      announce: "<player> 使用了<yellow><role></yellow>技能, 潛入了地底!"
+    block-too-hard: "<red>這個方塊太硬了, 你的爪子很痛!</red>"

@@ -23,6 +23,8 @@ import it.unimi.dsi.fastutil.Pair;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.bossbar.BossBarViewer;
@@ -36,6 +38,7 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.DoubleChest;
+import org.bukkit.block.data.Ageable;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.damage.DamageSource;
 import org.bukkit.damage.DamageType;
@@ -51,7 +54,6 @@ import org.bukkit.event.player.*;
 import org.bukkit.event.vehicle.VehicleDamageEvent;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -165,7 +167,10 @@ public class Game {
       Villager villager = vd.villager;
       
       PlayerUtils.allGaming().stream()
-        .filter(p -> LocUtils.near(p, villager, 5))
+        .filter(
+          p -> p.getGameMode() != GameMode.SPECTATOR
+            && LocUtils.near(p, villager, 5)
+        )
         .map(
           p -> LocUtils.hitboxCenter(p)
             .toVector()
@@ -723,6 +728,18 @@ public class Game {
     ) {
       handlePlayerDamage(shooter, victim, proj, ev);
     }
+    
+    if (ev.getEntity() instanceof Item itemEntity) {
+      ItemStack item = itemEntity.getItemStack();
+      if (
+        Set.of(Material.ENCHANTING_TABLE, Material.ENDER_CHEST).contains(
+          item.getType()
+        )
+      ) {
+        ev.setCancelled(true);
+        return;
+      }
+    }
   }
   
   public void handlePlayerDamage(
@@ -748,6 +765,14 @@ public class Game {
       }
       
       if (finalDamage <= 0) return;
+      
+      attackerData.removePostRevive();
+      
+      if (victimData.isPostRespawn()) {
+        attacker.sendActionBar(TextUtils.$("game.banned.attack.post-respawn"));
+        ev.setDamage(0);
+        return;
+      }
       
       double damageMultiplier = finalDamage / damage;
       
@@ -901,41 +926,24 @@ public class Game {
       
       killer.sendActionBar(TextUtils.$("game.death.killer-sin"));
       
-      killer.addPotionEffect(
-        new PotionEffect(
-          PotionEffectType.GLOWING,
-          5 * 20,
-          0,
-          false,
-          false
-        )
+      PlayerUtils.glow(killer, 5 * 20);
+      PlayerUtils.addEffect(
+        killer,
+        PotionEffectType.SLOWNESS,
+        5 * 20,
+        1
       );
-      killer.addPotionEffect(
-        new PotionEffect(
-          PotionEffectType.SLOWNESS,
-          5 * 20,
-          0,
-          false,
-          false
-        )
+      PlayerUtils.addEffect(
+        killer,
+        PotionEffectType.BLINDNESS,
+        5 * 20,
+        1
       );
-      killer.addPotionEffect(
-        new PotionEffect(
-          PotionEffectType.BLINDNESS,
-          5 * 20,
-          0,
-          false,
-          false
-        )
-      );
-      killer.addPotionEffect(
-        new PotionEffect(
-          PotionEffectType.WEAKNESS,
-          5 * 20,
-          2,
-          false,
-          false
-        )
+      PlayerUtils.addEffect(
+        killer,
+        PotionEffectType.WEAKNESS,
+        5 * 20,
+        3
       );
       
       PlayerData killerData = getPlayerData(killer);
@@ -986,6 +994,40 @@ public class Game {
     
     DestroyTheCore.boardsManager.refresh(pl);
     PlayerUtils.scheduleRespawn(pl);
+    
+    List<Player> teammates = new ArrayList<>();
+    int teammateCount = 0, enemyCount = 0;
+    
+    for (Player p : pl.getLocation().getNearbyPlayers(6)) {
+      if (!LocUtils.near(p, pl, 6)) continue;
+      
+      if (PlayerUtils.isTeammate(p, pl)) {
+        teammateCount++;
+        teammates.add(p);
+      }
+      else {
+        enemyCount++;
+      }
+    }
+    
+    if (enemyCount > teammateCount) {
+      for (Player p : teammates) {
+        new ParticleBuilder(Particle.ANGRY_VILLAGER)
+          .allPlayers()
+          .location(p.getEyeLocation())
+          .offset(0.2, 0.1, 0.2)
+          .count(3)
+          .extra(0)
+          .spawn();
+        
+        PlayerUtils.addEffect(
+          p,
+          PotionEffectType.STRENGTH,
+          5 * 20,
+          1
+        );
+      }
+    }
   }
   
   public void handleHungry(FoodLevelChangeEvent ev) {
@@ -1059,6 +1101,21 @@ public class Game {
     Block block = ev.getClickedBlock();
     if (block == null || block.getType() != Material.ENDER_CHEST) return;
     
+    if (!LocUtils.canAccess(pl, block)) {
+      pl.sendActionBar(
+        TextUtils.$(
+          "game.banned.open-enemy-container",
+          List.of(
+            Placeholder.component(
+              "type",
+              Component.translatable(block.getType().translationKey())
+            )
+          )
+        )
+      );
+      return;
+    }
+    
     SideData sd = getSideData(pl);
     if (sd == null) return;
     
@@ -1094,7 +1151,11 @@ public class Game {
     }
   }
   
+  EnumMap<Material, Material> cropDrops = new EnumMap<>(Material.class);
+  
   public void handleRightClickBlock(PlayerInteractEvent ev) {
+    if (ev.getHand() != EquipmentSlot.HAND) return;
+    
     Player pl = ev.getPlayer();
     Block block = ev.getClickedBlock();
     if (block == null) return;
@@ -1138,8 +1199,7 @@ public class Game {
     }) {
       if (
         LocUtils.inLive(pl)
-          &&
-          LocUtils.near(Pos.of(block), rest, 6)
+          && LocUtils.near(Pos.of(block), rest, 6)
       ) {
         ev.getPlayer().sendActionBar(TextUtils.$("game.banned.use.rest-area"));
         ev.setCancelled(true);
@@ -1155,7 +1215,17 @@ public class Game {
       ev.setCancelled(true);
       
       if (!LocUtils.canAccess(pl, block)) {
-        pl.sendActionBar(TextUtils.$("game.banned.open-enemy-container"));
+        pl.sendActionBar(
+          TextUtils.$(
+            "game.banned.open-enemy-container",
+            List.of(
+              Placeholder.component(
+                "type",
+                Component.translatable(block.getType().translationKey())
+              )
+            )
+          )
+        );
         return;
       }
       
@@ -1167,6 +1237,38 @@ public class Game {
       if (sd.enderChestViewers.get(loc).size() == 1) {
         LocUtils.playChestAnimation(loc, true);
       }
+    }
+    
+    ItemStack handItem = pl.getInventory().getItemInMainHand();
+    
+    if (
+      block.getBlockData() instanceof Ageable ageable
+        && (handItem.isEmpty() || Tag.ITEMS_HOES.isTagged(handItem.getType()))
+    ) {
+      if (ageable.getAge() != ageable.getMaximumAge()) return;
+      
+      int plus = 0, fortune = 0;
+      switch (block.getType()) {
+        case CARROT, POTATO, NETHER_WART -> fortune = 3;
+      }
+      if (!handItem.isEmpty()) {
+        fortune += handItem.getEnchantmentLevel(Enchantment.FORTUNE);
+      }
+      
+      int count = CoreUtils.applyFortune(fortune) + plus;
+      block.getWorld().dropItemNaturally(
+        block.getLocation().add(0.5, 0.1, 0.5),
+        new ItemStack(
+          block.getType().isItem() ? block.getType() : cropDrops.getOrDefault(
+            block.getType(),
+            Material.APPLE
+          ),
+          count
+        )
+      );
+      
+      ageable.setAge(0);
+      block.setBlockData(ageable);
     }
   }
   
@@ -1391,15 +1493,18 @@ public class Game {
     PlayerUtils.damageHandItem(pl);
     
     BiConsumer<PotionEffectType, Integer> effector = (type, level) -> {
-      pl.addPotionEffect(
-        new PotionEffect(type, 10 * 20, level, false, false)
+      PlayerUtils.addEffect(
+        pl,
+        type,
+        10 * 20,
+        level
       );
     };
     
-    effector.accept(PotionEffectType.GLOWING, 0);
-    effector.accept(PotionEffectType.SLOWNESS, 0);
-    effector.accept(PotionEffectType.MINING_FATIGUE, 0);
-    effector.accept(PotionEffectType.WEAKNESS, 0);
+    effector.accept(PotionEffectType.GLOWING, 1);
+    effector.accept(PotionEffectType.SLOWNESS, 1);
+    effector.accept(PotionEffectType.MINING_FATIGUE, 1);
+    effector.accept(PotionEffectType.WEAKNESS, 1);
     
     PlayerData data = getPlayerData(pl);
     data.addCoreAttack();
@@ -1463,6 +1568,11 @@ public class Game {
     
     checkWinner();
   }
+  
+  static public final EnumSet<Material> dropSelf = EnumSet.of(
+    Material.ENDER_CHEST,
+    Material.BOOKSHELF
+  );
   
   public void handleBlockBreak(BlockBreakEvent ev) {
     Player pl = ev.getPlayer();
@@ -1595,11 +1705,11 @@ public class Game {
       ev.setDropItems(false);
     }
     
-    if (block.getType().equals(Material.ENDER_CHEST)) {
+    if (dropSelf.contains(block.getType())) {
       ev.setDropItems(false);
       block.getWorld().dropItemNaturally(
         LocUtils.toBlockCenter(block.getLocation()),
-        new ItemStack(Material.ENDER_CHEST)
+        new ItemStack(block.getType())
       );
     }
   }
@@ -1648,6 +1758,16 @@ public class Game {
   }
   
   public boolean unmovable(Block block) {
+    for (Pos rest : new Pos[]{
+      DestroyTheCore.game.map.restArea, LocUtils.flip(
+        DestroyTheCore.game.map.restArea
+      )
+    }) {
+      if (LocUtils.near(Pos.of(block), rest, 6)) {
+        return true;
+      }
+    }
+    
     Pos pos = Pos.of(block);
     
     Predicate<Pos> checker = p -> p != null
@@ -1682,6 +1802,66 @@ public class Game {
     if (anyUnmovable(ev.getBlocks())) ev.setCancelled(true);
   }
   
+  final List<String> toolTiers = List.of(
+    "WOODEN",
+    "STONE",
+    "IRON",
+    "DIAMOND",
+    "NETHERITE"
+  );
+  final List<String> toolTypes = List.of(
+    "PICKAXE",
+    "AXE",
+    "SHOVEL",
+    "SWORD",
+    "HOE"
+  );
+  
+  Pattern toolPattern = Pattern.compile(
+    "(%s)_(%s)".formatted(
+      String.join("|", toolTiers),
+      String.join("|", toolTypes)
+    )
+  );
+  
+  boolean checkAbandonedTool(Player pl, ItemStack item) {
+    if (DestroyTheCore.itemsManager.isGen(item)) return false;
+    
+    Matcher matcher = toolPattern.matcher(item.getType().name());
+    if (!matcher.find()) return false;
+    
+    String tierName = matcher.group(1), typeName = matcher.group(2);
+    int tier = toolTiers.indexOf(tierName);
+    if (tier >= 2) return false;
+    
+    for (ItemStack invItem : pl.getInventory().getContents()) {
+      if (invItem == null) continue;
+      
+      Matcher invMatcher = toolPattern.matcher(invItem.getType().name());
+      if (!invMatcher.find()) continue;
+      
+      String invTierName = invMatcher.group(1), invTypeName = invMatcher.group(
+        2
+      );
+      int invTier = toolTiers.indexOf(invTierName);
+      
+      if (invTypeName.equals(typeName) && invTier > tier) {
+        return true;
+      }
+    }
+    
+    return false;
+  }
+  
+  public void handleDropItem(
+    Player pl, ItemStack item, PlayerDropItemEvent ev
+  ) {
+    if (checkAbandonedTool(pl, item)) {
+      ev.getItemDrop().remove();
+      return;
+    }
+  }
+  
   public void handlePickupItem(PlayerAttemptPickupItemEvent ev) {
     Player pl = ev.getPlayer();
     ItemStack item = ev.getItem().getItemStack();
@@ -1692,6 +1872,11 @@ public class Game {
     }
     
     if (!DestroyTheCore.rolesManager.canTakeExclusiveItem(pl, item)) {
+      ev.setCancelled(true);
+      return;
+    }
+    
+    if (checkAbandonedTool(pl, item)) {
       ev.setCancelled(true);
       return;
     }
@@ -1711,6 +1896,33 @@ public class Game {
   ) {
     if (!PlayerUtils.shouldHandle(pl)) return;
     
+    PlayerData data = getPlayerData(pl);
+    
+    if (ev.getSlotType() == InventoryType.SlotType.ARMOR) {
+      if (
+        DestroyTheCore.itemsManager.checkGen(
+          item,
+          ItemsManager.ItemKey.PLACEHOLDER
+        )
+      ) {
+        ItemsManager.ItemKey key = null;
+        switch (ev.getSlot()) {
+          case 39 -> key = data.role.defHelmet();
+          case 38 -> key = data.role.defChestplate();
+          case 37 -> key = data.role.defLeggings();
+          case 36 -> key = data.role.defBoots();
+        }
+        if (key == null) return;
+        
+        ItemStack armor = DestroyTheCore.itemsManager.gens.get(key).getItem();
+        
+        CoreUtils.setTickOut(() -> {
+          CoreUtils.dyeTeamColor(armor, data.side);
+          pl.getInventory().setItem(ev.getSlot(), armor);
+        });
+      }
+    }
+    
     if (inv.getType() == InventoryType.PLAYER) return;
     
     if (!DestroyTheCore.rolesManager.canTakeExclusiveItem(pl, item)) {
@@ -1721,8 +1933,11 @@ public class Game {
     if (inv instanceof MerchantInventory minv && ev.getRawSlot() == 2) {
       if (DestroyTheCore.itemsManager.isGen(item)) {
         MerchantRecipe recipe = minv.getSelectedRecipe();
+        
         ItemGen gen = DestroyTheCore.itemsManager.getGen(item);
         if (gen instanceof UsableItemGen ugen && ugen.isInstantUse()) {
+          if (!ugen.canUse(pl)) return;
+          
           ev.setCancelled(true);
           
           Map<Material, Integer> costs = new HashMap<>();
@@ -1787,14 +2002,36 @@ public class Game {
     
     if (ev.getInventory().getHolder() instanceof BlockInventoryHolder holder) {
       if (!LocUtils.canAccess(pl, holder.getBlock())) {
-        pl.sendActionBar(TextUtils.$("game.banned.open-enemy-container"));
+        pl.sendActionBar(
+          TextUtils.$(
+            "game.banned.open-enemy-container",
+            List.of(
+              Placeholder.component(
+                "type",
+                Component.translatable(
+                  holder.getBlock().getType().translationKey()
+                )
+              )
+            )
+          )
+        );
         ev.setCancelled(true);
         return;
       }
     }
     if (ev.getInventory().getHolder() instanceof DoubleChest dc) {
       if (!LocUtils.canAccess(pl, dc.getLocation().getBlock())) {
-        pl.sendActionBar(TextUtils.$("game.banned.open-enemy-container"));
+        pl.sendActionBar(
+          TextUtils.$(
+            "game.banned.open-enemy-container",
+            List.of(
+              Placeholder.component(
+                "type",
+                Component.translatable("block.minecraft.chest")
+              )
+            )
+          )
+        );
         ev.setCancelled(true);
         return;
       }
@@ -1861,11 +2098,6 @@ public class Game {
       BiConsumer<Region, Side> sideChecker = (region, side) -> {
         if (data.side.equals(side)) return;
         if (region == null || !region.contains(Pos.of(pl))) return;
-      
-//        if (isPlaying) {
-//          pl.sendActionBar(TextUtils.$("game.side.join.bad-time"));
-//          return;
-//        }
         
         PlayerUtils.prefixedSend(
           pl,
@@ -1906,30 +2138,45 @@ public class Game {
     }
     
     if (isPlaying && LocUtils.inLive(pl) && data.side != Side.SPECTATOR) {
-      if (map.core != null && isInTruce()) {
-        Pos enemyCore = LocUtils.enemySide(map.core, pl).center();
+      if (map.core != null) {
+        Pos selfCore = LocUtils.selfSide(map.core, pl).center(),
+          enemyCore = LocUtils.enemySide(map.core, pl).center();
         
-        if (LocUtils.near(Pos.of(pl), enemyCore, 30)) {
-          pl.sendActionBar(TextUtils.$("game.truce.warning"));
+        if (enemyCore.distSq(Pos.of(pl)) < selfCore.distSq(Pos.of(pl))) {
+          data.removePostRevive();
           
-          pl.addPotionEffect(
-            new PotionEffect(PotionEffectType.BLINDNESS, 40, 0, true, false)
-          );
-          pl.addPotionEffect(
-            new PotionEffect(PotionEffectType.SLOWNESS, 40, 2, true, false)
-          );
-        }
-        
-        if (LocUtils.near(Pos.of(pl), enemyCore, 20)) {
-          pl.setHealth(1);
-          PlayerUtils.teleportToSpawnPoint(pl);
-          
-          PlayerUtils.broadcast(
-            TextUtils.$(
-              "game.truce.sent-spawn",
-              List.of(Placeholder.component("player", PlayerUtils.getName(pl)))
-            )
-          );
+          if (isInTruce()) {
+            if (LocUtils.near(Pos.of(pl), enemyCore, 30)) {
+              pl.sendActionBar(TextUtils.$("game.truce.warning"));
+              
+              PlayerUtils.addPassiveEffect(
+                pl,
+                PotionEffectType.BLINDNESS,
+                40,
+                1
+              );
+              PlayerUtils.addPassiveEffect(
+                pl,
+                PotionEffectType.SLOWNESS,
+                40,
+                3
+              );
+            }
+            
+            if (LocUtils.near(Pos.of(pl), enemyCore, 20)) {
+              pl.setHealth(1);
+              PlayerUtils.teleportToSpawnPoint(pl);
+              
+              PlayerUtils.broadcast(
+                TextUtils.$(
+                  "game.truce.sent-spawn",
+                  List.of(
+                    Placeholder.component("player", PlayerUtils.getName(pl))
+                  )
+                )
+              );
+            }
+          }
         }
       }
       
@@ -1941,11 +2188,19 @@ public class Game {
         }
         
         if (pl.getY() >= restY) {
-          if (!pl.hasPotionEffect(PotionEffectType.NAUSEA)) pl.addPotionEffect(
-            new PotionEffect(PotionEffectType.NAUSEA, 10 * 20, 0, true, false)
-          );
-          pl.addPotionEffect(
-            new PotionEffect(PotionEffectType.DARKNESS, 40, 0, true, false)
+          if (!pl.hasPotionEffect(PotionEffectType.NAUSEA)) {
+            PlayerUtils.addPassiveEffect(
+              pl,
+              PotionEffectType.NAUSEA,
+              10 * 20,
+              1
+            );
+          }
+          PlayerUtils.addPassiveEffect(
+            pl,
+            PotionEffectType.DARKNESS,
+            40,
+            1
           );
           
           if (pl.getFreezeTicks() < 40 * 20) pl.setFreezeTicks(
@@ -1965,6 +2220,9 @@ public class Game {
         Map.entry(Side.GREEN, new SideData())
       )
     );
+    
+    cropDrops.put(Material.CARROTS, Material.CARROT);
+    cropDrops.put(Material.BEETROOTS, Material.BEETROOT);
     
     recreateTeams();
     createScoreboards();
@@ -2541,6 +2799,7 @@ public class Game {
           && p.getFreezeTicks() > 140
           && p.getFreezeTicks() % 20 == 1
       ) {
+        p.setHealth(Math.max(0, p.getHealth() - 1));
         p.damage(1, DamageSource.builder(DamageType.FREEZE).build());
       }
     }
@@ -2619,11 +2878,17 @@ public class Game {
               Material.ENDER_CHEST
             )
         ) {
-          p.addPotionEffect(
-            new PotionEffect(PotionEffectType.SLOWNESS, 30, 2, true, false)
+          PlayerUtils.addPassiveEffect(
+            p,
+            PotionEffectType.SLOWNESS,
+            30,
+            3
           );
-          p.addPotionEffect(
-            new PotionEffect(PotionEffectType.WEAKNESS, 30, 9, true, false)
+          PlayerUtils.addPassiveEffect(
+            p,
+            PotionEffectType.WEAKNESS,
+            30,
+            10
           );
         }
         

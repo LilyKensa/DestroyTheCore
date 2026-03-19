@@ -46,6 +46,14 @@ public class UsableItemGen extends ItemGen {
     );
   }
   
+  /**
+   * @implNote Optional - If item is instant-use, will check first so that
+   *           emerald don't get taken away
+   */
+  public boolean canUse(Player pl) {
+    return true;
+  }
+  
   /** @implNote Required - The functionality when right clicked */
   public void use(Player pl, Block block) {
     PlayerUtils.prefixedSend(

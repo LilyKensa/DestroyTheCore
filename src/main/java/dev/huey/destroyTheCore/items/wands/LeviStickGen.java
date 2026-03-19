@@ -10,7 +10,6 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class LeviStickGen extends UsableItemGen {
@@ -32,8 +31,11 @@ public class LeviStickGen extends UsableItemGen {
       target,
       Particle.WHITE_SMOKE,
       () -> {
-        target.addPotionEffect(
-          new PotionEffect(PotionEffectType.LEVITATION, 20, 4, false, true)
+        PlayerUtils.addEffect(
+          target,
+          PotionEffectType.LEVITATION,
+          20,
+          5
         );
         
         pl.sendActionBar(

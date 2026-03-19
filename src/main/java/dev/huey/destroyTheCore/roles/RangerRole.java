@@ -24,7 +24,6 @@ import org.bukkit.damage.DamageSource;
 import org.bukkit.damage.DamageType;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class RangerRole extends Role {
@@ -57,6 +56,7 @@ public class RangerRole extends Role {
         !DestroyTheCore.game.getPlayerData(pl).side
           .equals(mine.side.opposite())
       ) continue;
+      if (MoleRole.moleModeTime.containsKey(pl.getUniqueId())) continue;
       
       if (!LocUtils.near(Pos.of(pl), Pos.of(mine.loc), mine.radius)) continue;
       
@@ -75,8 +75,11 @@ public class RangerRole extends Role {
           mine.loc
         ).withDirectEntity(owner).withCausingEntity(owner).build()
       );
-      pl.addPotionEffect(
-        new PotionEffect(PotionEffectType.POISON, 5 * 20, 9, false, true)
+      PlayerUtils.addEffect(
+        pl,
+        PotionEffectType.POISON,
+        5 * 20,
+        10
       );
       
       if (owner == null) {
@@ -172,9 +175,14 @@ public class RangerRole extends Role {
         pl.getInventory().getItemInMainHand().getType().equals(
           Material.CROSSBOW
         )
-      ) pl.addPotionEffect(
-        new PotionEffect(PotionEffectType.RESISTANCE, 15, 0, true, false)
-      );
+      ) {
+        PlayerUtils.addPassiveEffect(
+          pl,
+          PotionEffectType.RESISTANCE,
+          15,
+          1
+        );
+      }
     }
   }
   

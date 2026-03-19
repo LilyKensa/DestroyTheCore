@@ -110,8 +110,10 @@ public abstract class Mission implements Listener {
     start();
     active = true;
     
+    Bukkit.broadcast(Component.empty());
     broadcast(TextUtils.$("missions.%s.title".formatted(id)));
     broadcast(TextUtils.$("missions.%s.desc".formatted(id)));
+    Bukkit.broadcast(Component.empty());
     
     cancelClock();
     clock = Bukkit.getScheduler().runTaskLater(

@@ -21,7 +21,6 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class KekkaiMasterRole extends Role {
@@ -198,8 +197,11 @@ public class KekkaiMasterRole extends Role {
       center.getAttribute(Attribute.MAX_HEALTH).setBaseValue(health);
       center.setHealth(health);
       
-      center.addPotionEffect(
-        new PotionEffect(PotionEffectType.RESISTANCE, 5 * 20, 9, true, false)
+      PlayerUtils.addPassiveEffect(
+        center,
+        PotionEffectType.RESISTANCE,
+        5 * 20,
+        10
       );
     }
     
@@ -293,15 +295,16 @@ public class KekkaiMasterRole extends Role {
           if (d.side != kekkai.side) continue;
           if (!kekkai.contains(p.getLocation())) continue;
           
-          if (kekkai.effectType != null) p.addPotionEffect(
-            new PotionEffect(
+          if (kekkai.effectType != null) {
+            PlayerUtils.addEffect(
+              p,
               kekkai.effectType,
               30,
-              kekkai.effectLevel - 1,
+              kekkai.effectLevel,
               true,
               true
-            )
-          );
+            );
+          }
           
           if (kekkai.type == Kekkai.Type.SATURATION) {
             if (p.getFoodLevel() < 20) p.setFoodLevel(p.getFoodLevel() + 2);
@@ -309,14 +312,29 @@ public class KekkaiMasterRole extends Role {
           }
           
           if (kekkai.type == Kekkai.Type.SOUL) {
-            p.addPotionEffect(
-              new PotionEffect(PotionEffectType.SPEED, 30, 1, true, true)
+            PlayerUtils.addEffect(
+              p,
+              PotionEffectType.SPEED,
+              30,
+              2,
+              true,
+              true
             );
-            p.addPotionEffect(
-              new PotionEffect(PotionEffectType.RESISTANCE, 30, 1, true, true)
+            PlayerUtils.addEffect(
+              p,
+              PotionEffectType.RESISTANCE,
+              30,
+              2,
+              true,
+              true
             );
-            p.addPotionEffect(
-              new PotionEffect(PotionEffectType.STRENGTH, 30, 1, true, true)
+            PlayerUtils.addEffect(
+              p,
+              PotionEffectType.STRENGTH,
+              30,
+              2,
+              true,
+              true
             );
             
             d.addRespawnTime(1);
@@ -411,8 +429,11 @@ public class KekkaiMasterRole extends Role {
     }
     
     if (DestroyTheCore.ticksManager.isSeconds()) {
-      pl.addPotionEffect(
-        new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 30, 0, true, false)
+      PlayerUtils.addPassiveEffect(
+        pl,
+        PotionEffectType.FIRE_RESISTANCE,
+        30,
+        1
       );
     }
   }
@@ -431,7 +452,7 @@ public class KekkaiMasterRole extends Role {
       }
     }
     if (replacedWarning > 0) {
-      pl.setCooldown(Material.KNOWLEDGE_BOOK, 0);
+      pl.setCooldown(Material.KNOWLEDGE_BOOK, 10);
       pl.sendActionBar(
         TextUtils.$(
           "roles.kekkai-master.skill.inside-kekkai",
@@ -465,7 +486,7 @@ public class KekkaiMasterRole extends Role {
     ) type = Kekkai.Type.SOUL;
     
     if (type == null) {
-      pl.setCooldown(Material.KNOWLEDGE_BOOK, 0);
+      pl.setCooldown(Material.KNOWLEDGE_BOOK, 10);
       pl.sendActionBar(TextUtils.$("roles.kekkai-master.skill.no-material"));
       return;
     }

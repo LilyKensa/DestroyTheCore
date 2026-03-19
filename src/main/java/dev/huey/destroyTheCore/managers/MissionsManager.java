@@ -49,7 +49,9 @@ public class MissionsManager {
   
   public void restart() {
     if (waitingBar != null) {
-      for (Player p : Bukkit.getOnlinePlayers()) waitingBar.removeViewer(p);
+      for (Player p : Bukkit.getOnlinePlayers()) {
+        waitingBar.removeViewer(p);
+      }
     }
     
     mission = RandomUtils.pick(

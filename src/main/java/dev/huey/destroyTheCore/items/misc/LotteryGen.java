@@ -19,7 +19,6 @@ import org.bukkit.damage.DamageSource;
 import org.bukkit.damage.DamageType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -51,7 +50,7 @@ public class LotteryGen extends UsableItemGen {
       public void run() {
         if (age == 20) {
           int totalChance = 0;
-          if (percentage < (totalChance += 25)) {
+          if (percentage < (totalChance += 30)) {
             data.lotteryShift += 2;
             giveTreasure(pl);
             color = Color.ORANGE;
@@ -275,8 +274,11 @@ public class LotteryGen extends UsableItemGen {
       30,
       pl -> {
         for (Player p : PlayerUtils.getTeammates(pl)) {
-          p.addPotionEffect(
-            new PotionEffect(PotionEffectType.POISON, 5 * 20, 255, false, true)
+          PlayerUtils.addEffect(
+            p,
+            PotionEffectType.POISON,
+            5 * 20,
+            256
           );
         }
         
@@ -434,7 +436,12 @@ public class LotteryGen extends UsableItemGen {
             PotionEffectType.SLOW_FALLING
           )
         ) {
-          pl.addPotionEffect(new PotionEffect(type, 10 * 20, 9, true, true));
+          PlayerUtils.addEffect(
+            pl,
+            type,
+            10 * 20,
+            10
+          );
         }
         
         announce(

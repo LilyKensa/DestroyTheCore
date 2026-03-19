@@ -3,7 +3,6 @@ package dev.huey.destroyTheCore.commands;
 import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.Subcommand;
-import dev.huey.destroyTheCore.utils.CoreUtils;
 import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
@@ -98,9 +97,9 @@ public class JoinTeamCommand extends Subcommand {
     
     DestroyTheCore.boardsManager.refresh(target);
     
-    CoreUtils.setTickOut(() -> {
+    if (LocUtils.inLive(target)) {
       PlayerUtils.refreshSpectatorAbilities(target);
       PlayerUtils.refreshAllSpectatorVisibilities();
-    });
+    }
   }
 }

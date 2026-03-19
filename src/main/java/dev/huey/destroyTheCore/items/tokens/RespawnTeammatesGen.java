@@ -12,7 +12,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class RespawnTeammatesGen extends UsableItemGen {
@@ -33,8 +32,11 @@ public class RespawnTeammatesGen extends UsableItemGen {
       if (!d.alive) PlayerUtils.respawn(p);
       
       PlayerUtils.fullyHeal(p);
-      p.addPotionEffect(
-        new PotionEffect(PotionEffectType.ABSORPTION, 120 * 20, 4, true, true)
+      PlayerUtils.addEffect(
+        p,
+        PotionEffectType.ABSORPTION,
+        120 * 20,
+        5
       );
     }
     

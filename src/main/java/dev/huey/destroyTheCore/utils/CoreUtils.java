@@ -1,6 +1,7 @@
 package dev.huey.destroyTheCore.utils;
 
 import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.Game;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -11,14 +12,16 @@ import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.util.Vector;
 
 public class CoreUtils {
   
   /** if {@code value} is null, return {@code defValue} */
-  static public <T> T def(Object value, T defValue) {
-    return value == null ? defValue : (T) value;
+  static public <T> T def(T value, T defValue) {
+    return value == null ? defValue : value;
   }
   
   /** Fix numbers to specific after point */
@@ -65,8 +68,14 @@ public class CoreUtils {
   
   /** Randomly add drops count */
   static public int applyFortune(int levels) {
-    if (levels <= 0) return 1;
-    return (Math.floorMod(RandomUtils.nextInt(), Math.min(levels + 1, 64)) + 1);
+    int result = 1;
+    
+    for (int i = 0; i < levels; ++i) {
+      if (RandomUtils.nextDouble() < 0.5) break;
+      result++;
+    }
+    
+    return result;
   }
   
   static public Component formatTimeComp(int totalSeconds, TextColor color) {
@@ -87,6 +96,15 @@ public class CoreUtils {
       meta.setHideTooltip(true);
     });
     return item;
+  }
+  
+  static public void dyeTeamColor(ItemStack item, Game.Side side) {
+    item.editMeta(uncastedMeta -> {
+      LeatherArmorMeta meta = (LeatherArmorMeta) uncastedMeta;
+      
+      meta.setColor(side.dyeColor);
+      meta.addItemFlags(ItemFlag.HIDE_DYE);
+    });
   }
   
   @SuppressWarnings("unchecked")

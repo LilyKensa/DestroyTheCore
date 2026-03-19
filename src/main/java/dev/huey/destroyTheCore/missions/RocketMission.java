@@ -9,7 +9,6 @@ import dev.huey.destroyTheCore.utils.TextUtils;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class RocketMission extends TimedMission {
@@ -45,8 +44,11 @@ public class RocketMission extends TimedMission {
   @Override
   public void innerFinish() {
     for (Player pl : PlayerUtils.allGaming()) {
-      pl.addPotionEffect(
-        new PotionEffect(PotionEffectType.LEVITATION, 20, 79, true, false)
+      PlayerUtils.addPassiveEffect(
+        pl,
+        PotionEffectType.LEVITATION,
+        20,
+        80
       );
       
       new ParticleBuilder(Particle.CLOUD)

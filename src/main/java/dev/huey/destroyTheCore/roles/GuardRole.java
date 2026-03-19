@@ -17,7 +17,6 @@ import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlotGroup;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class GuardRole extends Role {
@@ -61,8 +60,12 @@ public class GuardRole extends Role {
       )
     ) {
       if (DestroyTheCore.ticksManager.ticksCount % 25 == 0) {
-        pl.addPotionEffect(
-          new PotionEffect(PotionEffectType.REGENERATION, 50, 1, true, false)
+        
+        PlayerUtils.addPassiveEffect(
+          pl,
+          PotionEffectType.REGENERATION,
+          50,
+          2
         ); // Regen 2 = every 25 ticks
       }
     }
@@ -80,9 +83,14 @@ public class GuardRole extends Role {
           List.of(Placeholder.unparsed("role", name))
         )
       );
-      if (DestroyTheCore.ticksManager.isUpdateTick()) pl.addPotionEffect(
-        new PotionEffect(PotionEffectType.WITHER, 60, 2, true, false)
-      ); // Wither 3 = every 10 ticks
+      if (DestroyTheCore.ticksManager.isUpdateTick()) {
+        PlayerUtils.addEffect(
+          pl,
+          PotionEffectType.WITHER,
+          60,
+          3
+        ); // Wither 3 = every 10 ticks
+      }
     }
   }
   
@@ -90,8 +98,11 @@ public class GuardRole extends Role {
   public void useSkill(Player pl) {
     skillFeedback(pl);
     
-    pl.addPotionEffect(
-      new PotionEffect(PotionEffectType.STRENGTH, 5 * 20, 0, false, true)
+    PlayerUtils.addEffect(
+      pl,
+      PotionEffectType.STRENGTH,
+      5 * 20,
+      1
     );
     PlayerUtils.auraBroadcast(
       pl.getLocation(),
@@ -140,32 +151,18 @@ public class GuardRole extends Role {
           e,
           Particle.ENCHANTED_HIT,
           () -> {
-            e.addPotionEffect(
-              new PotionEffect(
-                PotionEffectType.GLOWING,
-                60 * 20,
-                0,
-                true,
-                false
-              )
+            PlayerUtils.glow(e, 60 * 20);
+            PlayerUtils.addPassiveEffect(
+              e,
+              PotionEffectType.SLOWNESS,
+              5 * 20,
+              5
             );
-            e.addPotionEffect(
-              new PotionEffect(
-                PotionEffectType.SLOWNESS,
-                5 * 20,
-                4,
-                true,
-                false
-              )
-            );
-            e.addPotionEffect(
-              new PotionEffect(
-                PotionEffectType.MINING_FATIGUE,
-                5 * 20,
-                4,
-                true,
-                false
-              )
+            PlayerUtils.addPassiveEffect(
+              e,
+              PotionEffectType.MINING_FATIGUE,
+              5 * 20,
+              5
             );
             
             new ParticleBuilder(Particle.ELDER_GUARDIAN)
@@ -175,8 +172,8 @@ public class GuardRole extends Role {
             e.playSound(
               e.getLocation(),
               Sound.ENTITY_ELDER_GUARDIAN_CURSE,
-              1,
-              1
+              1, // Volume
+              1 // Pitch
             );
           }
         );

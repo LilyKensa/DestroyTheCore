@@ -5,6 +5,7 @@ import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.managers.RolesManager;
 import dev.huey.destroyTheCore.utils.LocUtils;
+import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,6 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Snowball;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
@@ -59,16 +59,25 @@ public class WandererRole extends Role {
         for (Player p : Bukkit.getOnlinePlayers()) {
           if (!elevator.contains(p.getLocation())) continue;
           
-          p.addPotionEffect(
-            new PotionEffect(PotionEffectType.LEVITATION, 20, 4, false, true)
+          PlayerUtils.addPassiveEffect(
+            p,
+            PotionEffectType.LEVITATION,
+            20,
+            5
           );
           
           if (!p.getLocation().add(0, -0.01, 0).getBlock().isCollidable()) {
-            p.addPotionEffect(
-              new PotionEffect(PotionEffectType.WEAKNESS, 20, 0, false, true)
+            PlayerUtils.addPassiveEffect(
+              p,
+              PotionEffectType.WEAKNESS,
+              20,
+              1
             );
-            p.addPotionEffect(
-              new PotionEffect(PotionEffectType.JUMP_BOOST, 20, 0, false, true)
+            PlayerUtils.addPassiveEffect(
+              p,
+              PotionEffectType.JUMP_BOOST,
+              20,
+              1
             );
           }
         }
@@ -122,16 +131,25 @@ public class WandererRole extends Role {
       ItemStack offItem = pl.getInventory().getItemInOffHand();
       
       if (offItem.getType().name().endsWith("SWORD")) {
-        pl.addPotionEffect(
-          new PotionEffect(PotionEffectType.SPEED, 20, 0, true, false)
+        PlayerUtils.addPassiveEffect(
+          pl,
+          PotionEffectType.SPEED,
+          20,
+          1
         );
-        pl.addPotionEffect(
-          new PotionEffect(PotionEffectType.REGENERATION, 20, 0, true, false)
+        PlayerUtils.addPassiveEffect(
+          pl,
+          PotionEffectType.REGENERATION,
+          20,
+          1
         );
       }
       else {
-        pl.addPotionEffect(
-          new PotionEffect(PotionEffectType.SLOWNESS, 20, 0, true, false)
+        PlayerUtils.addPassiveEffect(
+          pl,
+          PotionEffectType.SLOWNESS,
+          20,
+          1
         );
       }
       

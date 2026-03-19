@@ -6,7 +6,6 @@ import dev.huey.destroyTheCore.utils.PlayerUtils;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class InkAssistGen extends AssistItemGen {
@@ -22,8 +21,11 @@ public class InkAssistGen extends AssistItemGen {
       attacker,
       Particle.SQUID_INK,
       () -> {
-        attacker.addPotionEffect(
-          new PotionEffect(PotionEffectType.BLINDNESS, 5 * 20, 0, false, true)
+        PlayerUtils.addEffect(
+          attacker,
+          PotionEffectType.BLINDNESS,
+          5 * 20,
+          1
         );
       }
     );

@@ -26,14 +26,12 @@ public class InvisMission extends InstantMission {
         .extra(0.02)
         .spawn();
       
-      p.addPotionEffect(
-        new PotionEffect(
-          PotionEffectType.INVISIBILITY,
-          PotionEffect.INFINITE_DURATION,
-          0,
-          true,
-          false
-        )
+      
+      PlayerUtils.addPassiveEffect(
+        p,
+        PotionEffectType.INVISIBILITY,
+        PotionEffect.INFINITE_DURATION,
+        1
       );
     }
   }

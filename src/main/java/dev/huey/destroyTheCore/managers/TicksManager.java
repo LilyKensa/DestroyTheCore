@@ -2,13 +2,14 @@ package dev.huey.destroyTheCore.managers;
 
 import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.roles.KekkaiMasterRole;
+import dev.huey.destroyTheCore.roles.MoleRole;
 import dev.huey.destroyTheCore.roles.RangerRole;
 import dev.huey.destroyTheCore.roles.WandererRole;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class TicksManager {
   
-  static public final int particleRate = 4, updateRate = 10;
+  static public final int particleRate = 4, updateRate = 10, tipRate = 5 * 60 * 20;
   
   /** Ticks elapsed from last game start */
   public int ticksCount = 0;
@@ -21,6 +22,11 @@ public class TicksManager {
   /** Update tick is every {@value #updateRate} ticks */
   public boolean isUpdateTick() {
     return ticksCount % updateRate == 0;
+  }
+  
+  /** Tip tick is every {@value #tipRate} ticks */
+  public boolean isTipTick() {
+    return ticksCount % tipRate == 0;
   }
   
   /** Second is every 20 ticks */
@@ -47,6 +53,7 @@ public class TicksManager {
         KekkaiMasterRole.onParticleTick();
         RangerRole.onParticleTick();
         WandererRole.onParticleTick();
+        MoleRole.onParticleTick();
         
         DestroyTheCore.game.onParticleTick();
       }
@@ -55,6 +62,11 @@ public class TicksManager {
         DestroyTheCore.itemsManager.onUpdateTick();
         
         RangerRole.onUpdateTick();
+        MoleRole.onUpdateTick();
+      }
+      
+      if (isTipTick()) {
+        DestroyTheCore.tipsManager.onTipTick();
       }
       
       if (isSeconds()) {
@@ -67,6 +79,7 @@ public class TicksManager {
   TicksRunnable task;
   
   public void init() {
-    (task = new TicksRunnable()).runTaskTimer(DestroyTheCore.instance, 0, 1);
+    task = new TicksRunnable();
+    task.runTaskTimer(DestroyTheCore.instance, 0, 1);
   }
 }

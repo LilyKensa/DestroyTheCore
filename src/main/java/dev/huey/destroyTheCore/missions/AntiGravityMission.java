@@ -5,10 +5,10 @@ import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.missions.TimedMission;
 import dev.huey.destroyTheCore.records.PlayerData;
+import dev.huey.destroyTheCore.utils.PlayerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class AntiGravityMission extends TimedMission {
@@ -29,13 +29,19 @@ public class AntiGravityMission extends TimedMission {
         if (!d.alive) continue;
         if (d.side == Game.Side.SPECTATOR) continue;
         
-        p.addPotionEffect(
-          new PotionEffect(PotionEffectType.SLOW_FALLING, 30, 0, true, false)
+        PlayerUtils.addPassiveEffect(
+          p,
+          PotionEffectType.SLOW_FALLING,
+          30,
+          1
         );
         
         if (p.isSneaking()) {
-          p.addPotionEffect(
-            new PotionEffect(PotionEffectType.LEVITATION, 15, 5, true, false)
+          PlayerUtils.addPassiveEffect(
+            p,
+            PotionEffectType.LEVITATION,
+            15,
+            6
           );
           
           new ParticleBuilder(Particle.CLOUD)

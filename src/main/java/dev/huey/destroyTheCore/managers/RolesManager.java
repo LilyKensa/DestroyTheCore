@@ -34,8 +34,9 @@ public class RolesManager {
     WANDERER,
     ASSASSIN,
     CONSTRUCTOR,
-    EATER,
     PROVOCATEUR,
+    MOLE,
+    BOMBER
   }
   
   public Map<RoleKey, Role> roles;
@@ -51,7 +52,8 @@ public class RolesManager {
       new AssassinRole(),
       new ConstructorRole(),
       new WandererRole(),
-      new ProvocateurRole()
+      new ProvocateurRole(),
+      new MoleRole()
     ).collect(
       Collectors.toMap(r -> r.id, r -> r, (e, n) -> e, LinkedHashMap::new)
     );
@@ -145,17 +147,20 @@ public class RolesManager {
       ));
   }
   
-  public boolean canTakeExclusiveItem(Player pl, ItemStack item) {
-    if (!isExclusiveItem(item)) return true;
-    
-    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
+  public boolean checkExclusiveItem(ItemStack item, RoleKey key) {
+    if (!isExclusiveItem(item)) return false;
     
     String roleIdStr = item.getItemMeta().getPersistentDataContainer().get(
       Role.exclusiveItemNamespace,
       PersistentDataType.STRING
     );
     
-    return RolesManager.RoleKey.valueOf(roleIdStr).equals(data.role.id);
+    return RolesManager.RoleKey.valueOf(roleIdStr).equals(key);
+  }
+  
+  public boolean canTakeExclusiveItem(Player pl, ItemStack item) {
+    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
+    return !isExclusiveItem(item) || checkExclusiveItem(item, data.role.id);
   }
   
   public void onPhaseChange(Game.Phase phase) {

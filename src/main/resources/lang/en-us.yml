@@ -5,10 +5,24 @@ general:
 
 chat:
   format: "<player>: <white><message></white>"
+  broadcast:
+    prefix: "[<gold>Broadcast</gold>] "
+    name: "Server"
   shout:
     prefix: "[<gold>Shout</gold>] "
-    empty: "I am an idiot, I shouted but I got no message to say!"
+    empty: "I'm an idiot, I shouted but I got no message to say!"
+    empty-troll: "I'm an idiot, I shouted but I typed '<message>'"
     cooldown: "<red>You need to wait <value> seconds to shout again!</red>"
+
+tips:
+  prefix: "[<dark_aqua>Tip</dark_aqua>] "
+  tip-1:
+    title: "<aqua>Join Our Discord!</aqua>"
+    content-1: "<click:open_url:'https://discord.gg/JygVAym6by'>https://discord.gg/JygVAym6by</click>"
+  tip-2:
+    title: "<aqua>About Sin Value...</aqua>"
+    content-1: "The sin value increases when you kill a person or attack the core"
+    content-2: "Having more sin means it takes you longer to respawn"
 
 player:
   no-perm: "<red>You don't have the permissions to do so!</red>"
@@ -54,6 +68,7 @@ game:
     attack:
       teammate: "<red>You can't attack your teammate!</red>"
       spectator: "<red>Spectators can't attack!</red>"
+      post-respawn: "<red>The player is in protected state after respawning!</red>"
     use:
       time: "<red>You can't do anything now!</red>"
       lobby: "<red>You can't use blocks in lobby!</red>"
@@ -73,7 +88,7 @@ game:
       own-core: "<red>That's your own core!</red>"
       spectator: "<red>Spectators can't break blocks!</red>"
     pour: "<red>You can't pour liquids near cores!</red>"
-    open-enemy-container: "<red>You cannot access containers in enemy's area!</red>"
+    open-enemy-container: "<red>You cannot access <type>s in enemy's area!</red>"
   bounty:
     prefix: "[<light_purple>Bounty</light_purple>] "
     reward: "<player> got <white>Emerald</white> × <dark_aqua><amount></dark_aqua>"
@@ -259,6 +274,7 @@ board:
   attacks: "<white>Core Attacks</white>: <light_purple><value></light_purple>"
   skills: "<white>Skills Casted</white>: <light_purple><value></light_purple>"
   ores: "<white>Ores Mined</white>: <light_purple><value></light_purple>"
+  ore-type: "  <type>: <dark_purple><value></dark_purple>"
   wins: "<white>Wins</white>: <aqua><wins></aqua>/<dark_aqua><all></dark_aqua> <gold><ratio>%</gold>"
 
 command:
@@ -492,6 +508,9 @@ items:
   kekkai-master-leggings:
     name: "<aqua>Rune Pants</aqua>"
     desc-1: "- <red>Bound item for Kekkai Masters</red>"
+  mole-boots:
+    name: "<aqua>Claw Seal</aqua>"
+    desc-1: "- <red>Bound item for Moles</red>"
   assign-clear-inv:
     name: "[<white>Token</white>] <light_purple>Thieves Gather</light_purple>"
     desc-1: "Clears a random enemy's inventory"
@@ -874,7 +893,7 @@ roles:
     desc-1: "<gold>Absolute tank, help teammates take damage!</gold>"
     feature-1: "Transfer 60% damage of teammates within 10 blocks to themself"
     feature-2: "When absorption effect is applied, transfer 90% damage instead"
-    feature-3: "Forever gets Weakness I"
+    feature-3: "All damage output is reduce by 20%"
     item:
       name: "<aqua>Super Pie</aqua>"
       detail: "Sweeping Edge III pumpkin pie"
@@ -882,3 +901,17 @@ roles:
       name: "Become the Shield"
       desc-1: "<dark_purple>Gets Absorption X & Resistance III & Weakness & Glowing (10s)</dark_purple>"
       announce: "<player> used <yellow><role></yellow>'s skill, increased health!"
+  mole:
+    name: "Mole"
+    desc-1: "<gold>Moles dig holes!</gold>"
+    feature-1: "Dig insanely fast, but can't break blocks that's too hard"
+    feature-2: "Gets darkness when under sunlight"
+    item:
+      name: "<aqua>Mole's Claws</aqua>"
+      detail: "Dig insanely fast, but can't break blocks that's too hard"
+    skill:
+      name: "Dive Underground"
+      desc-1: "<dark_purple>Hide into the ground and move extremely fast (5s)</dark_purple>"
+      desc-2: "<dark_purple>Jumping out will cause explosion and damage nearby enemies</dark_purple>"
+      announce: "<player> used <yellow><role></yellow>'s skill, dived underground!"
+    block-too-hard: "<red>This block is too hard, your claws hurt!</red>"

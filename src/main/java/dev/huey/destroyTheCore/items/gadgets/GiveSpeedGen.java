@@ -9,7 +9,6 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class GiveSpeedGen extends UsableItemGen {
@@ -32,8 +31,11 @@ public class GiveSpeedGen extends UsableItemGen {
     
     PlayerUtils.takeOneItemFromHand(pl);
     
-    pl.addPotionEffect(
-      new PotionEffect(PotionEffectType.SPEED, 6 * 20, 9, false, true)
+    PlayerUtils.addEffect(
+      pl,
+      PotionEffectType.SPEED,
+      6 * 20,
+      10
     );
     
     PlayerUtils.broadcast(

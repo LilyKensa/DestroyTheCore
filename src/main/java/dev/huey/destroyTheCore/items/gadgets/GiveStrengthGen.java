@@ -9,7 +9,6 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class GiveStrengthGen extends UsableItemGen {
@@ -25,8 +24,11 @@ public class GiveStrengthGen extends UsableItemGen {
     
     PlayerUtils.takeOneItemFromHand(pl);
     
-    pl.addPotionEffect(
-      new PotionEffect(PotionEffectType.STRENGTH, 6 * 20, 2, false, true)
+    PlayerUtils.addEffect(
+      pl,
+      PotionEffectType.STRENGTH,
+      6 * 20,
+      3
     );
     
     PlayerUtils.broadcast(
