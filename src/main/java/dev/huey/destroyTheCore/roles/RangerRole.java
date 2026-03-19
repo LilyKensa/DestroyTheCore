@@ -114,6 +114,8 @@ public class RangerRole extends Role {
   }
   
   static public void onUpdateTick() {
+    if (DestroyTheCore.game.paused) return;
+    
     for (Mine mine : mines) {
       if (mine.prepareTicks > 0) {
         mine.prepareTicks -= TicksManager.updateRate;

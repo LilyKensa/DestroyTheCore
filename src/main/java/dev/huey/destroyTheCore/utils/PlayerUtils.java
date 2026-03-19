@@ -426,7 +426,7 @@ public class PlayerUtils {
       ).contains(pl.getGameMode());
     
     pl.setInvisible(state);
-    pl.setInvulnerable(creativeAbility);
+    pl.setInvulnerable(state);
     pl.setAllowFlight(creativeAbility);
     
     ItemStack teleporterItem = DestroyTheCore.itemsManager.gens.get(
@@ -616,6 +616,11 @@ public class PlayerUtils {
       
       @Override
       public void run() {
+        if (!pl.isOnline()) {
+          cancel();
+          return;
+        }
+        
         if (data.alive) {
           DestroyTheCore.quizManager.discard(pl);
           

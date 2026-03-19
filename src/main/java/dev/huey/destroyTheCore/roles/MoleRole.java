@@ -104,6 +104,8 @@ public class MoleRole extends Role {
   static Map<UUID, Integer> moleModeTime = new HashMap<>();
   
   static public void onUpdateTick() {
+    if (DestroyTheCore.game.paused) return;
+    
     Iterator<Map.Entry<UUID, Integer>> it = moleModeTime.entrySet().iterator();
     while (it.hasNext()) {
       Map.Entry<UUID, Integer> entry = it.next();

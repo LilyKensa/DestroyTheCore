@@ -18,7 +18,7 @@ tips:
   prefix: "[<dark_aqua>提示</dark_aqua>] "
   tip-1:
     title: "<aqua>加入我們的 Discord 群組!</aqua>"
-    content-1: "<click:open_url:'https://discord.gg/JygVAym6by'>https://discord.gg/JygVAym6by</click>"
+    content-1: "<click:open_url:'https://discord.gg/JygVAym6by'><u>https://discord.gg/JygVAym6by</u></click>"
   tip-2:
     title: "<aqua>關於罪惡值...</aqua>"
     content-1: "殺人或挖核心會增加你的罪惡值"
@@ -177,7 +177,7 @@ tool:
 role:
   prefix: "[<light_purple>職業</light_purple>] "
   name: "<yellow><name></yellow>"
-  name-locked: "<red>🔒 <name></red> (Unlocks at level <dark_aqua><levels></dark_aqua>)"
+  name-locked: "<red>🔒 <name></red> (<white>等級 <aqua><levels></aqua> 解鎖</white>)"
   change: "<player> 轉職成為<yellow><role></yellow>"
   skill:
     title: "[<white>技能</white>] <light_purple><name></light_purple>"
@@ -278,7 +278,7 @@ board:
   ores: "<white>總礦物數</white>: <light_purple><value></light_purple>"
   ore-type: "  <type>: <dark_purple><value></dark_purple>"
   wins: "<white>贏局</white>: <aqua><wins></aqua>/<dark_aqua><all></dark_aqua> <gold><ratio>%</gold>"
-  exp: "<dark_aqua>等級</dark_aqua> <green><levels></green> [<bar>] <aqua><percent>%</aqua>"
+  exp: "<white>等級</white> <green><levels></green> [<bar>] <aqua><percent>%</aqua>"
 
 command:
   not-found: "沒有這種指令!"
@@ -290,11 +290,14 @@ world:
   template-warning: "<red>你在模板世界中!</red>"
 
 commands:
+  pause:
+    yes: "<green>遊戲被 <player> 暫停</green>"
+    no: "<green>遊戲被 <player> 繼續</green>"
   level:
     changed: "<aqua><player> 現在的等級是 <value> 等</aqua>"
   night-vision:
-    on: "<green>已啟用夜視效果</green>"
-    off: "<green>已關閉夜視效果/green>"
+    yes: "<green>已啟用夜視效果</green>"
+    no: "<green>已關閉夜視效果/green>"
   edit:
     unclear: "<red>請指定一個工具組!</red>"
     loaded: "<green>已載入工具組!</green>"

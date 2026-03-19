@@ -345,7 +345,7 @@ public class Role extends GUIItem {
     return new ItemBuilder(iconType)
       .setDisplayName(
         TextUtils.$r(
-          stat.levels > levelReq ? "role.name" : "role.name-locked"
+          stat.levels >= levelReq ? "role.name" : "role.name-locked"
         )
           .replaceAll("<name>", name)
           .replaceAll("<levels>", "%d".formatted(levelReq))

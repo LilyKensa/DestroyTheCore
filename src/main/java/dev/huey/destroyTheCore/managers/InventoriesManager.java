@@ -16,7 +16,7 @@ public class InventoriesManager {
   
   /** Store the player's inventory, use {@link #restore} to restore */
   public void store(Player pl) {
-    if (savedInventories.containsKey(pl)) return;
+    if (savedInventories.containsKey(pl.getUniqueId())) return;
     
     savedInventories.put(pl.getUniqueId(), pl.getInventory().getContents());
     pl.getInventory().clear();

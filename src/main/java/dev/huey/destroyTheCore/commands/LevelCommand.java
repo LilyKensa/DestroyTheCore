@@ -44,14 +44,13 @@ public class LevelCommand extends Subcommand {
     Stats stat = DestroyTheCore.game.getStats(target);
     
     switch (action) {
-      case "add" -> stat.levels += amount;
-      case "minus" -> stat.levels -= amount;
-      case "clear" -> stat.levels = 0;
+      case "add" -> stat.addLevels(amount);
+      case "minus" -> stat.minusLevels(amount);
+      case "clear" -> stat.clearLevels();
       case null, default -> {
       }
     }
     
-    stat.levels = Math.min(Math.max(0, stat.levels), 15);
     DestroyTheCore.game.enforceLevelScore(target);
     
     pl.sendMessage(

@@ -14,7 +14,7 @@ public class DefaultRole extends Role {
   public DefaultRole() {
     super(RolesManager.RoleKey.DEFAULT);
     addInfo(Material.VILLAGER_SPAWN_EGG);
-    addSkill(60);
+    addSkill(30 * 20);
   }
   
   @Override

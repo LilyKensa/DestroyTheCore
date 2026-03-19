@@ -31,6 +31,8 @@ commands:
     description: See other player's stats
   broadcast:
     description: Broadcast message
+  pause:
+    description: Pause the game
 permissions:
   dtc.admin:
     description: The admin permission

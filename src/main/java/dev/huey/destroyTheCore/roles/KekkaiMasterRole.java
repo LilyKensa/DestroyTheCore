@@ -256,6 +256,8 @@ public class KekkaiMasterRole extends Role {
   }
   
   static public void onTick() {
+    if (DestroyTheCore.game.paused) return;
+    
     for (Kekkai kekkai : kekkais) {
       if (kekkai.isBulletProof()) {
         for (
@@ -403,6 +405,7 @@ public class KekkaiMasterRole extends Role {
       }
     );
     addSkill(30 * 20);
+    addLevelReq(2);
   }
   
   @Override

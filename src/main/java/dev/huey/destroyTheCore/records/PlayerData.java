@@ -23,11 +23,18 @@ public class PlayerData {
   );
   public boolean alive = false;
   
-  public int respawnTime = minRespawnTime, extraSkillReload = 0,
-    rrtProgress = -20, shoutCooldown = 0, quizQuota = 10,
-    lotteryShift = 0, killStreak = 0, respawnAt = -9999,
-    kills = 0, deaths = 0,
-    coreAttacks = 0, skills = 0, exp = 0;
+  public int respawnTime = minRespawnTime;
+  public int extraSkillReload = 0;
+  public int rrtProgress = -20;
+  public int shoutCooldown = 0;
+  public int quizQuota = 10;
+  public int lotteryShift = 0;
+  public int killStreak = 0;
+  public int respawnAt = -9999;
+  public int kills = 0, deaths = 0;
+  public int coreAttacks = 0;
+  public int skills = 0;
+  public int extraExp = 0;
   public Map<Material, Integer> ores = new HashMap<>();
   
   public PlayerData(Player owner) {
@@ -97,8 +104,8 @@ public class PlayerData {
     addRespawnTime(corePunishment);
   }
   
-  public void addExp(int amount) {
-    exp += amount;
+  public void addExtraExp(int amount) {
+    extraExp += amount;
   }
   
   public void addOre(Material type) {

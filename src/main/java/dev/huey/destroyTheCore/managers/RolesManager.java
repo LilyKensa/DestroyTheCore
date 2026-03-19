@@ -47,13 +47,13 @@ public class RolesManager {
       new AttackerRole(),
       new GuardRole(),
       new GoldDiggerRole(),
-      new RangerRole(),
-      new KekkaiMasterRole(),
-      new AssassinRole(),
-      new ConstructorRole(),
-      new WandererRole(),
-      new ProvocateurRole(),
-      new MoleRole()
+      new KekkaiMasterRole(), // Lv 2
+      new ProvocateurRole(), // Lv 3
+      new ConstructorRole(), // Lv 5
+      new AssassinRole(), // Lv 7
+      new RangerRole(), // Lv 9
+      new WandererRole(), // Lv 10
+      new MoleRole() // Lv 12
     ).collect(
       Collectors.toMap(r -> r.id, r -> r, (e, n) -> e, LinkedHashMap::new)
     );

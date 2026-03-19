@@ -44,6 +44,6 @@ public class CoreInvulnGen extends UsableItemGen {
       )
     );
     
-    DestroyTheCore.game.getPlayerData(pl).addExp(25);
+    DestroyTheCore.game.getPlayerData(pl).addExtraExp(25);
   }
 }

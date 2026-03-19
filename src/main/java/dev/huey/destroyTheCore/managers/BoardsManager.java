@@ -170,7 +170,7 @@ public class BoardsManager {
     else { // Not playing
       Stats stat = DestroyTheCore.game.getStats(pl);
       
-      double levelRatio = (double) stat.exp / (stat.levels * 100 + 500);
+      double levelRatio = Math.min(Math.max(0, stat.exp / stat.maxExp), 1);
       
       lines.addAll(
         List.of(
@@ -232,7 +232,9 @@ public class BoardsManager {
                   JoinConfiguration.noSeparators(),
                   Component.text("|".repeat((int) (levelRatio * 8)))
                     .color(NamedTextColor.AQUA),
-                  Component.text("|".repeat(8 - (int) (levelRatio * 8)))
+                  Component.text(
+                    "|".repeat(8 - (int) (levelRatio * 8))
+                  )
                 )
               ),
               Placeholder.unparsed(
@@ -240,7 +242,8 @@ public class BoardsManager {
                 "%.2f".formatted(100 * levelRatio)
               )
             )
-          )
+          ),
+          ""
         )
       );
     }

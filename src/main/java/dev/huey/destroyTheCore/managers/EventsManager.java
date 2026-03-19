@@ -6,12 +6,15 @@ import dev.huey.destroyTheCore.bases.itemGens.ProjItemGen;
 import dev.huey.destroyTheCore.items.gadgets.GrenadeGen;
 import dev.huey.destroyTheCore.roles.*;
 import dev.huey.destroyTheCore.utils.LocUtils;
+import dev.huey.destroyTheCore.utils.PlayerUtils;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import java.util.List;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
@@ -25,8 +28,25 @@ import org.bukkit.inventory.ItemStack;
 
 public class EventsManager implements Listener {
   
+  boolean checkPaused(Cancellable ev) {
+    if (DestroyTheCore.game.paused) {
+      ev.setCancelled(true);
+      return true;
+    }
+    
+    return false;
+  }
+  
+  boolean checkPaused(Cancellable ev, Entity origin) {
+    if (origin instanceof Player pl && !PlayerUtils.shouldHandle(pl))
+      return false;
+    return checkPaused(ev);
+  }
+  
   @EventHandler
   public void onPlayerInteract(PlayerInteractEvent ev) {
+    if (checkPaused(ev, ev.getPlayer())) return;
+    
     DestroyTheCore.game.handleInteract(ev);
     DestroyTheCore.itemsManager.onPlayerInteract(ev);
     DestroyTheCore.toolsManager.onPlayerInteract(ev);
@@ -34,16 +54,22 @@ public class EventsManager implements Listener {
   
   @EventHandler
   public void onPlayerInteractEntity(PlayerInteractEntityEvent ev) {
+    if (checkPaused(ev, ev.getPlayer())) return;
+    
     DestroyTheCore.game.handleInteractEntity(ev);
   }
   
   @EventHandler
   public void onBlockPlace(BlockPlaceEvent ev) {
+    if (checkPaused(ev, ev.getPlayer())) return;
+    
     DestroyTheCore.game.handleBlockPlace(ev);
   }
   
   @EventHandler
   public void onBlockBreak(BlockBreakEvent ev) {
+    if (checkPaused(ev, ev.getPlayer())) return;
+    
     Player pl = ev.getPlayer();
     Block block = ev.getBlock();
     
@@ -73,6 +99,8 @@ public class EventsManager implements Listener {
   
   @EventHandler
   public void onPlayerBucketEmpty(PlayerBucketEmptyEvent ev) {
+    if (checkPaused(ev, ev.getPlayer())) return;
+    
     DestroyTheCore.game.handlePourLiquid(ev);
   }
   
@@ -91,6 +119,8 @@ public class EventsManager implements Listener {
   
   @EventHandler
   public void onPlayerTeleport(PlayerTeleportEvent ev) {
+    if (checkPaused(ev, ev.getPlayer())) return;
+    
     if (!LocUtils.isSameWorld(ev.getFrom(), ev.getTo())) {
       DestroyTheCore.worldsManager.onPlayerChangeWorld(
         ev.getPlayer(),
@@ -101,6 +131,8 @@ public class EventsManager implements Listener {
   
   @EventHandler
   public void onPlayerDropItem(PlayerDropItemEvent ev) {
+    if (checkPaused(ev, ev.getPlayer())) return;
+    
     Player pl = ev.getPlayer();
     ItemStack item = ev.getItemDrop().getItemStack();
     
@@ -111,21 +143,31 @@ public class EventsManager implements Listener {
   
   @EventHandler
   public void onPlayerAttemptPickupItem(PlayerAttemptPickupItemEvent ev) {
+    if (checkPaused(ev, ev.getPlayer())) return;
+    
     DestroyTheCore.game.handlePickupItem(ev);
   }
   
   @EventHandler
   public void onPlayerPickUpArrow(PlayerPickupArrowEvent ev) {
+    if (checkPaused(ev, ev.getPlayer())) return;
+    
     DestroyTheCore.game.handlePickupArrow(ev);
   }
   
   @EventHandler
   public void onFoodLevelChange(FoodLevelChangeEvent ev) {
+    if (checkPaused(ev, ev.getEntity())) return;
+    
     DestroyTheCore.game.handleHungry(ev);
   }
   
   @EventHandler
   public void onInventoryClick(InventoryClickEvent ev) {
+    if (!(ev.getWhoClicked() instanceof Player pl)) return;
+    
+    if (checkPaused(ev, pl)) return;
+    
     Inventory inv = ev.getClickedInventory();
     if (inv == null) return;
     
@@ -133,7 +175,6 @@ public class EventsManager implements Listener {
     if (item == null) return;
     
     ClickType click = ev.getClick();
-    if (!(ev.getWhoClicked() instanceof Player pl)) return;
     
     DestroyTheCore.game.handleInventoryClick(inv, pl, item, click, ev);
   }
@@ -166,6 +207,8 @@ public class EventsManager implements Listener {
   @EventHandler
   public void onPlayerMove(PlayerMoveEvent ev) {
     if (ev.hasChangedPosition()) {
+      if (checkPaused(ev, ev.getPlayer())) return;
+      
       RangerRole.onPlayerMove(ev.getPlayer());
       AssassinRole.onPlayerMove(ev.getPlayer());
       DestroyTheCore.game.handlePlayerMove(ev.getPlayer());
@@ -184,6 +227,8 @@ public class EventsManager implements Listener {
   
   @EventHandler
   public void onEntityDamageByEntity(EntityDamageByEntityEvent ev) {
+    if (checkPaused(ev, ev.getDamager())) return;
+    
     DestroyTheCore.game.handleEntityDamage(ev);
   }
   
@@ -204,6 +249,8 @@ public class EventsManager implements Listener {
   
   @EventHandler
   public void onEntityShootBow(EntityShootBowEvent ev) {
+    if (checkPaused(ev, ev.getEntity())) return;
+    
     for (ProjItemGen g : DestroyTheCore.itemsManager.projGens.values())
       g.outerOnEntityShootBow(
         ev

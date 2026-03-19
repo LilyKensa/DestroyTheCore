@@ -7,12 +7,33 @@ import org.bukkit.Material;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
 public class Stats implements ConfigurationSerializable {
+  static public final int levelOneMaxExp = 500, maxExpIncrement = 100;
   static public final int maxLevels = 100;
   
   public boolean nightVision = false;
-  public int games = 0, wins = 0, kills = 0, deaths = 0, coreAttacks = 0,
-    skills = 0, exp = 0, maxExp = 500, levels = 0;
+  public int games = 0, wins = 0;
+  public int kills = 0, deaths = 0;
+  public int coreAttacks = 0;
+  public int skills = 0;
+  public int exp = 0, maxExp = levelOneMaxExp;
+  public int levels = 1;
   public Map<Material, Integer> ores = new HashMap<>();
+  
+  public void addLevels(int n) {
+    maxExp += n * maxExpIncrement;
+    levels += n;
+  }
+  
+  public void minusLevels(int n) {
+    maxExp -= n * maxExpIncrement;
+    levels -= n;
+  }
+  
+  public void clearLevels() {
+    exp = 0;
+    maxExp = levelOneMaxExp;
+    levels = 1;
+  }
   
   public void addFromPlayerData(PlayerData data, boolean win) {
     games++;
@@ -22,15 +43,14 @@ public class Stats implements ConfigurationSerializable {
     coreAttacks += data.coreAttacks;
     skills += data.skills;
     
-    exp += data.exp + 5 * kills + 3 * coreAttacks;
+    exp += 5 * data.kills + 3 * data.coreAttacks + data.extraExp;
     for (int value : data.ores.values()) {
       exp += value / 4;
     }
     
-    while (exp >= maxExp && levels < maxLevels) {
+    while (exp >= maxExp && levels <= maxLevels) {
       exp -= maxExp;
-      maxExp += 100;
-      levels++;
+      addLevels(1);
     }
     
     for (Material type : data.ores.keySet()) {
@@ -84,8 +104,8 @@ public class Stats implements ConfigurationSerializable {
     stats.skills = (int) map.getOrDefault("skills", 0);
     stats.coreAttacks = (int) map.getOrDefault("core-attacks", 0);
     stats.exp = (int) map.getOrDefault("exp", 0);
-    stats.maxExp = (int) map.getOrDefault("max-exp", 500);
-    stats.levels = (int) map.getOrDefault("levels", 0);
+    stats.maxExp = (int) map.getOrDefault("max-exp", levelOneMaxExp);
+    stats.levels = (int) map.getOrDefault("levels", 1);
     
     Map<String, Integer> stringOres = (Map<String, Integer>) map.getOrDefault(
       "ores",

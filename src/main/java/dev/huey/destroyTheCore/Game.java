@@ -62,6 +62,7 @@ import org.bukkit.util.Vector;
 
 public class Game {
   public boolean isPlaying = false;
+  public boolean paused = false;
   
   static public class LobbyPos implements ConfigurationSerializable {
     public Pos spawn = null;
@@ -657,6 +658,9 @@ public class Game {
     PlayerUtils.refreshSpectatorAbilities(pl);
     PlayerUtils.fullyHeal(pl);
     
+    enforceRTScore(pl);
+    enforceLevelScore(pl);
+    
     if (isPlaying) {
       CoreUtils.setTickOut(() -> {
         PlayerUtils.prefixedSend(pl, TextUtils.$("game.prompt-rejoin"));
@@ -709,12 +713,12 @@ public class Game {
     if (!isPlaying) return;
     
     Player pl = ev.getPlayer();
-    Game.Side side = DestroyTheCore.game.getPlayerData(pl).side;
+    Game.Side side = getPlayerData(pl).side;
     
     ev.viewers().removeIf(
       audience -> audience instanceof Player p
         && side != Side.SPECTATOR
-        && DestroyTheCore.game.getPlayerData(p).side
+        && getPlayerData(p).side
           .equals(side.opposite())
     );
   }
@@ -1111,7 +1115,7 @@ public class Game {
         PlayerUtils.setHandCooldown(pl, data.role.skillCooldown);
         
         data.role.useSkill(pl);
-        data.addExp(10);
+        data.addExtraExp(10);
       }
     }
   }
@@ -1215,8 +1219,8 @@ public class Game {
     }
     
     for (Pos rest : new Pos[]{
-      DestroyTheCore.game.map.restArea, LocUtils.flip(
-        DestroyTheCore.game.map.restArea
+      map.restArea, LocUtils.flip(
+        map.restArea
       )
     }) {
       if (
@@ -1621,8 +1625,8 @@ public class Game {
     }
     
     for (Pos rest : new Pos[]{
-      DestroyTheCore.game.map.restArea, LocUtils.flip(
-        DestroyTheCore.game.map.restArea
+      map.restArea, LocUtils.flip(
+        map.restArea
       )
     }) {
       if (
@@ -1781,8 +1785,8 @@ public class Game {
   
   public boolean unmovable(Block block) {
     for (Pos rest : new Pos[]{
-      DestroyTheCore.game.map.restArea, LocUtils.flip(
-        DestroyTheCore.game.map.restArea
+      map.restArea, LocUtils.flip(
+        map.restArea
       )
     }) {
       if (LocUtils.near(Pos.of(block), rest, 6)) {
@@ -2144,8 +2148,8 @@ public class Game {
         if (pd.alive || pd.side == Side.SPECTATOR) continue;
         
         for (Pos rest : new Pos[]{
-          DestroyTheCore.game.map.restArea, LocUtils.flip(
-            DestroyTheCore.game.map.restArea
+          map.restArea, LocUtils.flip(
+            map.restArea
           ),
         }) {
           if (
@@ -2528,7 +2532,7 @@ public class Game {
     
     for (PlayerData data : playerData.values()) {
       data.setRespawnTime(Math.max(data.respawnTime, phase.minRespawnTime()));
-      data.addExp(25);
+      data.addExtraExp(25);
     }
   }
   
@@ -2827,7 +2831,7 @@ public class Game {
       }
     }
     
-    if (!isPlaying) return;
+    if (!isPlaying || paused) return;
     
     if (phaseTimer <= 0) {
       nextPhase();

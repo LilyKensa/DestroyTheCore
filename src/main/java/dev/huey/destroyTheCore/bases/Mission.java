@@ -146,7 +146,7 @@ public abstract class Mission implements Listener {
     DestroyTheCore.game.getSideData(side).missionsCompleted++;
     
     for (Player p : PlayerUtils.getTeammates(side)) {
-      DestroyTheCore.game.getPlayerData(p).addExp(25);
+      DestroyTheCore.game.getPlayerData(p).addExtraExp(25);
     }
     
     RandomUtils.pick(results).run(side);

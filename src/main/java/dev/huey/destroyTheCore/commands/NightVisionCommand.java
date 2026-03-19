@@ -23,7 +23,7 @@ public class NightVisionCommand extends Subcommand {
     
     PlayerUtils.prefixedSend(
       pl,
-      TextUtils.$("commands.night-vision." + (stats.nightVision ? "on" : "off"))
+      TextUtils.$("commands.night-vision." + (stats.nightVision ? "yes" : "no"))
     );
   }
 }
