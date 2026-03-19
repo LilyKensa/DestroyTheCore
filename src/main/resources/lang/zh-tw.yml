@@ -276,7 +276,7 @@ board:
   ores: "<white>總礦物數</white>: <light_purple><value></light_purple>"
   ore-type: "  <type>: <dark_purple><value></dark_purple>"
   wins: "<white>贏局</white>: <aqua><wins></aqua>/<dark_aqua><all></dark_aqua> <gold><ratio>%</gold>"
-  exp: "<white>經驗值</white>: <aqua><exp></aqua>/<dark_aqua><threshold></dark_aqua>"
+  exp: "<dark_aqua>等級</dark_aqua>: <green><levels></green> <white>[</white><aqua><bar_aqua></aqua><gray><bar_gray></gray><white>]</white> <aqua><percentage>%</aqua>"
   levels: "<white>等級</white>: <grey><levels></grey>"
 
 command:

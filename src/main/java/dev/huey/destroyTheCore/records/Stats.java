@@ -15,8 +15,8 @@ public class Stats implements ConfigurationSerializable {
   public Map<Material, Integer> ores = new HashMap<>();
   public char[] expBarAqua = new char[8];
   public char[] expBarGray = new char[8];
-  public char[] expBar = "▇▇▇▇▇▇▇▇".toCharArray();
-
+  public static char[] expBar = "||||||||".toCharArray();
+  
   public void addFromPlayerData(PlayerData data, boolean win) {
     games++;
     if (win) wins++;
@@ -87,6 +87,16 @@ public class Stats implements ConfigurationSerializable {
     stats.coreAttacks = (int) map.getOrDefault("core-attacks", 0);
     stats.levels = (int) map.getOrDefault("levels", 0);
     stats.exp = (int) map.getOrDefault("exp", 0);
+    stats.expBarAqua = Arrays.copyOfRange(
+      expBar,
+      0,
+      stats.exp / ((100 * stats.levels + 500) / 8)
+    );
+    stats.expBarGray = Arrays.copyOfRange(
+      expBar,
+      0,
+      8 - stats.exp / ((100 * stats.levels + 500) / 8)
+    );
 
     Map<String, Integer> stringOres = (Map<String, Integer>) map.getOrDefault(
       "ores",

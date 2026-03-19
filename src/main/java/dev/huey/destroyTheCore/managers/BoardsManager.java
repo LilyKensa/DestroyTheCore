@@ -223,22 +223,16 @@ public class BoardsManager {
               Placeholder.component("exp", Component.text(stats.exp)),
               Placeholder.component("levels", Component.text(stats.levels)),
               Placeholder.component(
-                "threshold",
-                Component.text(stats.levels * 100 + 500)
-              
-              )
-            )
-          ),
-          TextUtils.$r(
-            "<white>[</white><aqua><bar_aqua></aqua><gray><bar_gray></gray><white>]</white>",
-            List.of(
+                "percentage",
+                Component.text(100 * stats.exp / (stats.levels * 100 + 500))
+              ),
               Placeholder.component(
                 "bar_aqua",
-                Component.text(Arrays.toString(stats.expBarAqua))
+                Component.text(String.valueOf(stats.expBarAqua))
               ),
               Placeholder.component(
                 "bar_gray",
-                Component.text(Arrays.toString(stats.expBarGray))
+                Component.text(String.valueOf(stats.expBarGray))
               )
             )
           )
