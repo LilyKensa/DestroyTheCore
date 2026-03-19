@@ -217,7 +217,25 @@ public class BoardsManager {
               )
             )
           ),
-          ""
+          TextUtils.$r(
+            "board.exp",
+            List.of(
+              Placeholder.component("exp", Component.text(stats.exp)),
+              Placeholder.component("levels", Component.text(stats.levels)),
+              Placeholder.component(
+                "percentage",
+                Component.text(100 * stats.exp / (stats.levels * 100 + 500))
+              ),
+              Placeholder.component(
+                "bar_aqua",
+                Component.text(String.valueOf(stats.expBarAqua))
+              ),
+              Placeholder.component(
+                "bar_gray",
+                Component.text(String.valueOf(stats.expBarGray))
+              )
+            )
+          )
         )
       );
     }

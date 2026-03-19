@@ -27,6 +27,7 @@ public class GoldDiggerRole extends Role {
       }
     );
     addSkill(120 * 20);
+    addLvlreq(0);
   }
   
   @Override

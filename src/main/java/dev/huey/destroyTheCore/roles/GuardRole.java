@@ -45,6 +45,7 @@ public class GuardRole extends Role {
       }
     );
     addSkill(300 * 20);
+    addLvlreq(0);
   }
   
   @Override

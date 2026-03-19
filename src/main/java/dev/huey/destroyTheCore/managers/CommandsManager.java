@@ -43,7 +43,8 @@ public class CommandsManager implements TabCompleter, CommandExecutor {
       new ShopCommand(),
       new HelpCommand(),
       new StatsCommand(),
-      new BroadcastCommand()
+      new BroadcastCommand(),
+      new LevelCommand()
     );
   }
   

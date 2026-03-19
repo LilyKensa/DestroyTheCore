@@ -27,7 +27,7 @@ public class PlayerData {
     rrtProgress = -20, shoutCooldown = 0, quizQuota = 10,
     lotteryShift = 0, killStreak = 0, respawnAt = -9999,
     kills = 0, deaths = 0,
-    coreAttacks = 0, skills = 0;
+    coreAttacks = 0, skills = 0, exp = 0;
   public Map<Material, Integer> ores = new HashMap<>();
   
   public PlayerData(Player owner) {
@@ -59,21 +59,9 @@ public class PlayerData {
   
   public void revive() {
     alive = true;
-    respawnAt = DestroyTheCore.ticksManager.ticksCount;
-    
-    if (DestroyTheCore.game.phase != null) {
-      setRespawnTime(
-        DestroyTheCore.game.phase.minRespawnTime()
-      );
-    }
-  }
-  
-  public boolean isPostRespawn() {
-    return DestroyTheCore.ticksManager.ticksCount - respawnAt < 10 * 20;
-  }
-  
-  public void removePostRevive() {
-    respawnAt = -9999;
+    if (DestroyTheCore.game.phase != null) setRespawnTime(
+      DestroyTheCore.game.phase.minRespawnTime()
+    );
   }
   
   public void kill() {
@@ -97,6 +85,10 @@ public class PlayerData {
     addRespawnTime(corePunishment);
   }
   
+  public void addExp(int amount) {
+    exp += amount;
+  }
+
   public void addOre(Material type) {
     ores.put(type, ores.getOrDefault(type, 0) + 1);
   }

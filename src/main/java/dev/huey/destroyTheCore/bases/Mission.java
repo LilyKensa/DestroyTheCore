@@ -147,6 +147,11 @@ public abstract class Mission implements Listener {
   /** Call this to announce the winner */
   public void declareWinner(Game.Side side) {
     DestroyTheCore.game.getSideData(side).missionsCompleted++;
+    for (Player p : Bukkit.getOnlinePlayers()) {
+      if (DestroyTheCore.game.getPlayerData(p).side == side) {
+        DestroyTheCore.game.getPlayerData(p).addExp(25);
+      }
+    }
     RandomUtils.pick(results).run(side);
   }
   

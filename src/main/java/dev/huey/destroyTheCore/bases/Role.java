@@ -64,6 +64,7 @@ public class Role extends GUIItem {
    * - {@link #addFeature}<br>
    * - {@link #addExclusiveItem}<br>
    * - {@link #addSkill}
+   * - {@link #addLvlreq}
    */
   public Role(RolesManager.RoleKey id) {
     this.id = id;
@@ -107,6 +108,8 @@ public class Role extends GUIItem {
   public List<String> skillDesc;
   public int skillCooldown;
   
+  public int lvlReq;
+  
   public void addInfo(Material iconType) {
     this.iconType = iconType;
     this.name = TextUtils.stripColor($r("roles.%s.name"));
@@ -133,6 +136,10 @@ public class Role extends GUIItem {
     skillName = TextUtils.stripColor($r("roles.%s.skill.name"));
     skillDesc = $ra("roles.%s.skill.desc");
     skillCooldown = cd;
+  }
+  
+  public void addLvlreq(int lvl) {
+    lvlReq = lvl;
   }
   
   /** Announce that a player has changed to this role */
@@ -347,15 +354,26 @@ public class Role extends GUIItem {
   public void handleClick(
     ClickType clickType, Player pl, InventoryClickEvent ev
   ) {
-    announce(pl);
-    pl.playSound(
-      pl.getLocation(),
-      Sound.ENTITY_EXPERIENCE_ORB_PICKUP,
-      1, // Volume
-      1 // Pitch
-    );
-    
-    DestroyTheCore.rolesManager.setRole(pl, this);
+    if (DestroyTheCore.game.stats.get(pl.getUniqueId()).levels >= this.lvlReq) {
+      announce(pl);
+      pl.playSound(
+        pl.getLocation(),
+        Sound.ENTITY_EXPERIENCE_ORB_PICKUP,
+        1, // Volume
+        1 // Pitch
+      );
+      
+      DestroyTheCore.rolesManager.setRole(pl, this);
+    }
+    else {
+      pl.playSound(
+        pl.getLocation(),
+        Sound.ENTITY_ENDERMAN_TELEPORT,
+        1, //
+        1
+      );
+      pl.sendActionBar(TextUtils.$("items.choose-role.not-unlock"));
+    }
     closeWindow(pl);
   }
 }
