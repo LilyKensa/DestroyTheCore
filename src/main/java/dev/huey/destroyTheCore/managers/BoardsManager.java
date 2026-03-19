@@ -229,7 +229,19 @@ public class BoardsManager {
               )
             )
           ),
-          "▇▇▇▇▇▇▇▇"
+          TextUtils.$r(
+            "<white>[</white><aqua><bar_aqua></aqua><gray><bar_gray></gray><white>]</white>",
+            List.of(
+              Placeholder.component(
+                "bar_aqua",
+                Component.text(Arrays.toString(stats.expBarAqua))
+              ),
+              Placeholder.component(
+                "bar_gray",
+                Component.text(Arrays.toString(stats.expBarGray))
+              )
+            )
+          )
         )
       );
     }

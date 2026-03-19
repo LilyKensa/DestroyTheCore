@@ -1,5 +1,6 @@
 package dev.huey.destroyTheCore.records;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -12,7 +13,10 @@ public class Stats implements ConfigurationSerializable {
   public int games = 0, wins = 0, kills = 0, deaths = 0, coreAttacks = 0,
     skills = 0, exp = 0, levels = 0;
   public Map<Material, Integer> ores = new HashMap<>();
-  
+  public char[] expBarAqua = new char[8];
+  public char[] expBarGray = new char[8];
+  public char[] expBar = "▇▇▇▇▇▇▇▇".toCharArray();
+
   public void addFromPlayerData(PlayerData data, boolean win) {
     games++;
     if (win) wins++;
@@ -30,6 +34,9 @@ public class Stats implements ConfigurationSerializable {
       exp -= 100 * levels + 500;
       levels++;
     }
+    int barCount = exp / ((100 * levels + 500) / 8);
+    expBarAqua = Arrays.copyOfRange(expBar, 0, barCount);
+    expBarGray = Arrays.copyOfRange(expBar, 0, 8 - barCount);
 
     for (Material type : data.ores.keySet()) ores.put(
       type,
