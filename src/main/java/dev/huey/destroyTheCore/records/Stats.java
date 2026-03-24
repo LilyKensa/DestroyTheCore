@@ -1,6 +1,5 @@
 package dev.huey.destroyTheCore.records;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -8,14 +7,33 @@ import org.bukkit.Material;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
 public class Stats implements ConfigurationSerializable {
+  static public final int levelOneMaxExp = 500, maxExpIncrement = 100;
+  static public final int maxLevels = 100;
   
   public boolean nightVision = false;
-  public int games = 0, wins = 0, kills = 0, deaths = 0, coreAttacks = 0,
-    skills = 0, exp = 0, levels = 0;
+  public int games = 0, wins = 0;
+  public int kills = 0, deaths = 0;
+  public int coreAttacks = 0;
+  public int skills = 0;
+  public int exp = 0, maxExp = levelOneMaxExp;
+  public int levels = 1;
   public Map<Material, Integer> ores = new HashMap<>();
-  public char[] expBarAqua = new char[8];
-  public char[] expBarGray = new char[8];
-  public static char[] expBar = "||||||||".toCharArray();
+  
+  public void addLevels(int n) {
+    maxExp += n * maxExpIncrement;
+    levels += n;
+  }
+  
+  public void minusLevels(int n) {
+    maxExp -= n * maxExpIncrement;
+    levels -= n;
+  }
+  
+  public void clearLevels() {
+    exp = 0;
+    maxExp = levelOneMaxExp;
+    levels = 1;
+  }
   
   public void addFromPlayerData(PlayerData data, boolean win) {
     games++;
@@ -24,24 +42,23 @@ public class Stats implements ConfigurationSerializable {
     deaths += data.deaths;
     coreAttacks += data.coreAttacks;
     skills += data.skills;
-
-    exp += data.exp + 5 * kills + 3 * coreAttacks;
-    for (int value : ores.values()) {
+    
+    exp += 5 * data.kills + 3 * data.coreAttacks + data.extraExp;
+    for (int value : data.ores.values()) {
       exp += value / 4;
     }
     
-    if (exp >= 100 * levels + 500 && levels < 15) {
-      exp -= 100 * levels + 500;
-      levels++;
+    while (exp >= maxExp && levels <= maxLevels) {
+      exp -= maxExp;
+      addLevels(1);
     }
-    int barCount = exp / ((100 * levels + 500) / 8);
-    expBarAqua = Arrays.copyOfRange(expBar, 0, barCount);
-    expBarGray = Arrays.copyOfRange(expBar, 0, 8 - barCount);
-
-    for (Material type : data.ores.keySet()) ores.put(
-      type,
-      ores.getOrDefault(type, 0) + data.ores.getOrDefault(type, 0)
-    );
+    
+    for (Material type : data.ores.keySet()) {
+      ores.put(
+        type,
+        ores.getOrDefault(type, 0) + data.ores.getOrDefault(type, 0)
+      );
+    }
   }
   
   public void addFromPlayerData(PlayerData data) {
@@ -63,8 +80,9 @@ public class Stats implements ConfigurationSerializable {
     pusher.accept("deaths", deaths);
     pusher.accept("skills", skills);
     pusher.accept("core-attacks", coreAttacks);
-    pusher.accept("levels", levels);
     pusher.accept("exp", exp);
+    pusher.accept("max-exp", maxExp);
+    pusher.accept("levels", levels);
     
     Map<String, Integer> stringOres = new HashMap<>();
     for (Map.Entry<Material, Integer> entry : ores.entrySet()) {
@@ -85,19 +103,10 @@ public class Stats implements ConfigurationSerializable {
     stats.deaths = (int) map.getOrDefault("deaths", 0);
     stats.skills = (int) map.getOrDefault("skills", 0);
     stats.coreAttacks = (int) map.getOrDefault("core-attacks", 0);
-    stats.levels = (int) map.getOrDefault("levels", 0);
     stats.exp = (int) map.getOrDefault("exp", 0);
-    stats.expBarAqua = Arrays.copyOfRange(
-      expBar,
-      0,
-      stats.exp / ((100 * stats.levels + 500) / 8)
-    );
-    stats.expBarGray = Arrays.copyOfRange(
-      expBar,
-      0,
-      8 - stats.exp / ((100 * stats.levels + 500) / 8)
-    );
-
+    stats.maxExp = (int) map.getOrDefault("max-exp", levelOneMaxExp);
+    stats.levels = (int) map.getOrDefault("levels", 1);
+    
     Map<String, Integer> stringOres = (Map<String, Integer>) map.getOrDefault(
       "ores",
       new HashMap<>()

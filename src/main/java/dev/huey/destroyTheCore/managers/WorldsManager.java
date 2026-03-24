@@ -92,6 +92,17 @@ public class WorldsManager {
   
   public void init() {
     lobby = Bukkit.getWorlds().getFirst();
+    
+    lobby.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+    lobby.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
+    lobby.setGameRule(GameRule.DO_FIRE_TICK, false);
+    lobby.setGameRule(GameRule.DO_VINES_SPREAD, false);
+    lobby.setGameRule(GameRule.DO_MOB_SPAWNING, false);
+    lobby.setGameRule(GameRule.RANDOM_TICK_SPEED, 0);
+    
+    lobby.setGameRule(GameRule.SPAWN_CHUNK_RADIUS, 0);
+    lobby.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
+    lobby.setGameRule(GameRule.COMMAND_BLOCK_OUTPUT, false);
   }
   
   public void clearLiveWorldPlayers() {
@@ -158,43 +169,6 @@ public class WorldsManager {
     
     isReady = true;
   }
-  
-//  public void refreshForceLoadChunks() {
-//    template = createTemplateWorld();
-//    live = createLiveWorld();
-//
-//    Set<Chunk> toLoad = new HashSet<>();
-//    Consumer<Location> addForceLoad = loc -> {
-//      if (loc == null) return;
-//
-//      toLoad.add(loc.getChunk());
-//      toLoad.add(LocUtils.flip(loc).getChunk());
-//      toLoad.add(LocUtils.live(loc).getChunk());
-//      toLoad.add(LocUtils.live(LocUtils.flip(loc)).getChunk());
-//    };
-//
-//    addForceLoad.accept(DestroyTheCore.game.map.restArea);
-//    addForceLoad.accept(DestroyTheCore.game.map.core);
-//    for (Location loc : DestroyTheCore.game.map.spawnpoints)
-//      addForceLoad.accept(
-//        loc
-//      );
-//
-//    for (Chunk chunk : toLoad) {
-//      chunk.addPluginChunkTicket(DestroyTheCore.instance);
-//    }
-//
-//    for (Chunk chunk : template.getForceLoadedChunks()) {
-//      if (!toLoad.contains(chunk)) chunk.removePluginChunkTicket(
-//        DestroyTheCore.instance
-//      );
-//    }
-//    for (Chunk chunk : live.getForceLoadedChunks()) {
-//      if (!toLoad.contains(chunk)) chunk.removePluginChunkTicket(
-//        DestroyTheCore.instance
-//      );
-//    }
-//  }
   
   public void onPlayerChangeWorld(Player pl, World world) {
     if (template == null) return;

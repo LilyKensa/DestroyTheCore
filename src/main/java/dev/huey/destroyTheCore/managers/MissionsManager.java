@@ -139,6 +139,8 @@ public class MissionsManager {
   }
   
   public void onTick() {
+    if (DestroyTheCore.game.paused) return;
+    
     if (mission != null && mission.active) {
       mission.onTick();
     }

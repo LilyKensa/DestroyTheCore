@@ -12,9 +12,8 @@ import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.RandomUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -45,6 +44,10 @@ public class RangerRole extends Role {
   
   static public List<Mine> mines = new ArrayList<>();
   
+  static public final int maxMinesCount = 3;
+  
+  static public Map<UUID, Integer> minesCount = new HashMap<>();
+  
   static public void onPlayerMove(Player pl) {
     boolean updatedMines = false;
     
@@ -60,6 +63,11 @@ public class RangerRole extends Role {
       
       if (!LocUtils.near(Pos.of(pl), Pos.of(mine.loc), mine.radius)) continue;
       
+      minesCount.put(
+        mine.ownerId,
+        minesCount.getOrDefault(mine.ownerId, 1) - 1
+      );
+      
       new ParticleBuilder(Particle.LAVA)
         .allPlayers()
         .location(mine.loc)
@@ -69,12 +77,14 @@ public class RangerRole extends Role {
       
       Player owner = Bukkit.getPlayer(mine.ownerId);
       
-      if (owner != null) pl.damage(
-        1,
-        DamageSource.builder(DamageType.ARROW).withDamageLocation(
-          mine.loc
-        ).withDirectEntity(owner).withCausingEntity(owner).build()
-      );
+      if (owner != null) {
+        pl.damage(
+          1,
+          DamageSource.builder(DamageType.ARROW).withDamageLocation(
+            mine.loc
+          ).withDirectEntity(owner).withCausingEntity(owner).build()
+        );
+      }
       PlayerUtils.addEffect(
         pl,
         PotionEffectType.POISON,
@@ -114,6 +124,8 @@ public class RangerRole extends Role {
   }
   
   static public void onUpdateTick() {
+    if (DestroyTheCore.game.paused) return;
+    
     for (Mine mine : mines) {
       if (mine.prepareTicks > 0) {
         mine.prepareTicks -= TicksManager.updateRate;
@@ -161,7 +173,7 @@ public class RangerRole extends Role {
       }
     );
     addSkill(150 * 20);
-    addLvlreq(9);
+    addLevelReq(9);
   }
   
   @Override
@@ -194,6 +206,24 @@ public class RangerRole extends Role {
   
   @Override
   public void useSkill(Player pl) {
+    if (PlayerUtils.shouldHandle(pl)) {
+      UUID id = pl.getUniqueId();
+      int count = minesCount.getOrDefault(id, 0);
+      if (count >= maxMinesCount) {
+        pl.sendActionBar(
+          TextUtils.$(
+            "roles.ranger.skill.too-many",
+            List.of(
+              Placeholder.component("amount", Component.text(maxMinesCount))
+            )
+          )
+        );
+        pl.setCooldown(Material.KNOWLEDGE_BOOK, 20);
+        return;
+      }
+      minesCount.put(id, count + 1);
+    }
+    
     skillFeedback(pl);
     
     mines.add(new Mine(pl.getLocation().add(0, 0.1, 0), pl));

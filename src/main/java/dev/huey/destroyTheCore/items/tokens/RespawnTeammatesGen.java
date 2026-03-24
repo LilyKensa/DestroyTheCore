@@ -23,7 +23,6 @@ public class RespawnTeammatesGen extends UsableItemGen {
   @Override
   public void use(Player pl, Block block) {
     PlayerData data = DestroyTheCore.game.getPlayerData(pl);
-//    PlayerUtils.takeOneItemFromHand(pl);
     
     for (Player p : Bukkit.getOnlinePlayers()) {
       PlayerData d = DestroyTheCore.game.getPlayerData(p);
@@ -49,6 +48,7 @@ public class RespawnTeammatesGen extends UsableItemGen {
         )
       )
     );
-    DestroyTheCore.game.getPlayerData(pl).addExp(25);
+    
+    DestroyTheCore.game.getPlayerData(pl).addExtraExp(25);
   }
 }

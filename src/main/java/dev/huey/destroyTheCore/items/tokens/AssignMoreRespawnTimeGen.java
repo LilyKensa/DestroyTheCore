@@ -34,8 +34,6 @@ public class AssignMoreRespawnTimeGen extends UsableItemGen {
       return;
     }
     
-//    PlayerUtils.takeOneItemFromHand(pl);
-    
     PlayerUtils.delayAssign(
       pl,
       target,
@@ -63,6 +61,7 @@ public class AssignMoreRespawnTimeGen extends UsableItemGen {
         );
       }
     );
-    DestroyTheCore.game.getPlayerData(pl).addExp(25);
+    
+    DestroyTheCore.game.getPlayerData(pl).addExtraExp(25);
   }
 }

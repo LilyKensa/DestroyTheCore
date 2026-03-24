@@ -8,10 +8,10 @@ import org.bukkit.entity.Villager;
 public class Constants {
   
   public record OreData(
-    Material dropType,
-    long cooldownSeconds,
-    int minXp,
-    int maxXp
+                        Material dropType,
+                        long cooldownSeconds,
+                        int minXp,
+                        int maxXp
   ) {
   }
   
@@ -35,7 +35,19 @@ public class Constants {
     Material.IRON_INGOT,
     Material.GOLD_INGOT,
     Material.RAW_IRON,
-    Material.RAW_GOLD
+    Material.RAW_GOLD,
+    Material.IRON_NUGGET,
+    Material.GOLD_NUGGET,
+    Material.COAL_BLOCK,
+    Material.LAPIS_BLOCK,
+    Material.DIAMOND_BLOCK,
+    Material.EMERALD_BLOCK,
+    Material.REDSTONE_BLOCK,
+    Material.IRON_BLOCK,
+    Material.GOLD_BLOCK,
+    Material.RAW_IRON_BLOCK,
+    Material.RAW_GOLD_BLOCK,
+    Material.WOODEN_HOE // Easter Egg :)
   );
   
   static public final Map<Villager.Type, Material> villagerIcons = Map

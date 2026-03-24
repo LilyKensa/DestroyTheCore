@@ -23,8 +23,6 @@ public class CoreInvulnGen extends UsableItemGen {
   public void use(Player pl, Block block) {
     if (DestroyTheCore.game.map.core == null) return;
     
-//    PlayerUtils.takeOneItemFromHand(pl);
-    
     SideData sideData = DestroyTheCore.game.getSideData(pl);
     sideData.invulnTicks += 60 * 20;
     DestroyTheCore.boardsManager.refresh();
@@ -43,6 +41,7 @@ public class CoreInvulnGen extends UsableItemGen {
         )
       )
     );
-    DestroyTheCore.game.getPlayerData(pl).addExp(25);
+    
+    DestroyTheCore.game.getPlayerData(pl).addExtraExp(25);
   }
 }

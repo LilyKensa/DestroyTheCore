@@ -54,10 +54,13 @@ public class WandererRole extends Role {
   static public List<Elevator> elevators = new ArrayList<>();
   
   static public void onTick() {
+    if (DestroyTheCore.game.paused) return;
+    
     for (Elevator elevator : elevators) {
       if (DestroyTheCore.ticksManager.isUpdateTick()) {
         for (Player p : Bukkit.getOnlinePlayers()) {
           if (!elevator.contains(p.getLocation())) continue;
+          if (MoleRole.moleModeTime.containsKey(p.getUniqueId())) continue;
           
           PlayerUtils.addPassiveEffect(
             p,
@@ -121,7 +124,7 @@ public class WandererRole extends Role {
       }
     );
     addSkill(60 * 20);
-    addLvlreq(10);
+    addLevelReq(10);
   }
   
   @Override

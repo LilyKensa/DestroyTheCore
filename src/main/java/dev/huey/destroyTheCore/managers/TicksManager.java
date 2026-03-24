@@ -9,7 +9,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class TicksManager {
   
-  static public final int particleRate = 4, updateRate = 10, tipRate = 5 * 60 * 20;
+  static public final int particleRate = 4, updateRate = 10,
+    tipRate = 5 * 60 * 20;
   
   /** Ticks elapsed from last game start */
   public int ticksCount = 0;

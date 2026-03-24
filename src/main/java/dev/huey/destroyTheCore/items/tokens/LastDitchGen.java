@@ -27,7 +27,12 @@ public class LastDitchGen extends UsableItemGen {
     SideData self = DestroyTheCore.game.getSideData(data.side),
       enemy = DestroyTheCore.game.getSideData(data.side.opposite());
     
-    return self.coreHealth <= enemy.coreHealth - 30;
+    if (self.coreHealth > enemy.coreHealth - 30) {
+      pl.sendActionBar(TextUtils.$("items.last-ditch.health-too-high"));
+      return false;
+    }
+    
+    return true;
   }
   
   @Override
@@ -35,14 +40,7 @@ public class LastDitchGen extends UsableItemGen {
     PlayerData data = DestroyTheCore.game.getPlayerData(pl);
     SideData enemy = DestroyTheCore.game.getSideData(data.side.opposite());
     
-    if (!canUse(pl)) {
-      pl.sendActionBar(TextUtils.$("items.last-ditch.health-too-high"));
-      return;
-    }
-    
     enemy.extraDamageTicks += 120 * 20;
-    
-//    PlayerUtils.takeOneItemFromHand(pl);
     
     for (Player p : PlayerUtils.getTeammates(data.side)) {
       PlayerUtils.fullyHeal(p);
@@ -70,6 +68,7 @@ public class LastDitchGen extends UsableItemGen {
         )
       )
     );
-    DestroyTheCore.game.getPlayerData(pl).addExp(25);
+    
+    DestroyTheCore.game.getPlayerData(pl).addExtraExp(25);
   }
 }

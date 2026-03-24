@@ -22,9 +22,7 @@ public class IgnoreCoreInvulnGen extends UsableItemGen {
   }
   
   @Override
-  public void use(Player pl, Block block) {
-    if (DestroyTheCore.game.map.core == null) return;
-    
+  public boolean canUse(Player pl) {
     PlayerData data = DestroyTheCore.game.getPlayerData(pl);
     SideData oppositeSideData = DestroyTheCore.game.getSideData(
       data.side.opposite()
@@ -32,10 +30,20 @@ public class IgnoreCoreInvulnGen extends UsableItemGen {
     
     if (!oppositeSideData.isInvuln()) {
       pl.sendActionBar(TextUtils.$("items.ignore-core-invuln.no-effect"));
-      return;
+      return false;
     }
     
-//    PlayerUtils.takeOneItemFromHand(pl);
+    return true;
+  }
+  
+  @Override
+  public void use(Player pl, Block block) {
+    if (DestroyTheCore.game.map.core == null) return;
+    
+    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
+    SideData oppositeSideData = DestroyTheCore.game.getSideData(
+      data.side.opposite()
+    );
     
     oppositeSideData.invulnTicks = 0;
     DestroyTheCore.boardsManager.refresh();
@@ -54,6 +62,7 @@ public class IgnoreCoreInvulnGen extends UsableItemGen {
         )
       )
     );
-    DestroyTheCore.game.getPlayerData(pl).addExp(25);
+    
+    DestroyTheCore.game.getPlayerData(pl).addExtraExp(25);
   }
 }

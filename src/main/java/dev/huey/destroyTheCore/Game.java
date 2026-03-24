@@ -45,10 +45,7 @@ import org.bukkit.damage.DamageType;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.block.*;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.FoodLevelChangeEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.*;
 import org.bukkit.event.vehicle.VehicleDamageEvent;
@@ -62,6 +59,7 @@ import org.bukkit.util.Vector;
 
 public class Game {
   public boolean isPlaying = false;
+  public boolean paused = false;
   
   static public class LobbyPos implements ConfigurationSerializable {
     public Pos spawn = null;
@@ -281,8 +279,6 @@ public class Game {
   
   public List<Shop> shops = new ArrayList<>();
   
-  public Map<UUID, Stats> stats = new HashMap<>();
-  
   public enum Phase {
     CoreWilting(5, "core-wilting", null),
     DoubleDamage(4, "double-core-damage", CoreWilting),
@@ -493,18 +489,19 @@ public class Game {
     sd -> sd.maxNoShopTicks
   );
   
+  Team itemsTeam;
   Team spectatorTeam;
   Map<Side, Map<RolesManager.RoleKey, Team>> teams = new HashMap<>();
   
-  public Team getTeam(Side side, Role role) {
+  public Team getTeam(Side side, RolesManager.RoleKey roleId) {
     if (side == Side.SPECTATOR) return spectatorTeam;
     
-    return teams.get(side).get(role.id);
+    return teams.get(side).get(roleId);
   }
   
   public Team getTeam(Player pl) {
     PlayerData data = getPlayerData(pl);
-    return getTeam(data.side, data.role);
+    return getTeam(data.side, data.role.id);
   }
   
   public void enforceTeam(Player pl) {
@@ -521,8 +518,10 @@ public class Game {
     
     teams.clear();
     
-    spectatorTeam = board.registerNewTeam("spectator");
+    itemsTeam = board.registerNewTeam("items");
+    itemsTeam.color(NamedTextColor.AQUA);
     
+    spectatorTeam = board.registerNewTeam("spectator");
     spectatorTeam.color(Side.SPECTATOR.color);
     spectatorTeam.displayName(Side.SPECTATOR.titleComp());
     spectatorTeam.prefix(
@@ -583,8 +582,6 @@ public class Game {
         Criteria.HEALTH,
         Component.text("❤").color(NamedTextColor.RED)
       );
-      
-      healthBoard.setDisplaySlot(DisplaySlot.BELOW_NAME);
     }
     
     levelBoard = board.getObjective("level");
@@ -596,31 +593,45 @@ public class Game {
           NamedTextColor.DARK_AQUA
         )
       );
+      
+      levelBoard.setDisplaySlot(DisplaySlot.BELOW_NAME);
     }
   }
   
-  public void hideRTScore() {
-    Scoreboard board = Bukkit.getServer().getScoreboardManager()
-      .getMainScoreboard();
-    board.clearSlot(DisplaySlot.PLAYER_LIST);
-  }
-  
-  public void showRTScore() {
-    respawnTimeBoard.setDisplaySlot(DisplaySlot.PLAYER_LIST);
+  public void refreshScoreboardSlots() {
+    if (isPlaying) {
+      respawnTimeBoard.setDisplaySlot(DisplaySlot.PLAYER_LIST);
+      healthBoard.setDisplaySlot(DisplaySlot.BELOW_NAME);
+    }
+    else {
+      levelBoard.setDisplaySlot(DisplaySlot.PLAYER_LIST);
+      levelBoard.setDisplaySlot(DisplaySlot.BELOW_NAME);
+    }
   }
   
   public void enforceRTScore(Player pl) {
-    Scoreboard board = Bukkit.getServer().getScoreboardManager()
-      .getMainScoreboard();
-    Objective respawnTimeBoard = board.getObjective("respawn-time");
-    
     PlayerData data = getPlayerData(pl);
     Score score = respawnTimeBoard.getScore(pl);
     
-    if (
-      data.side.equals(Side.SPECTATOR)
-    ) score.resetScore();
-    else score.setScore(data.respawnTime);
+    if (data.side.equals(Side.SPECTATOR)) {
+      score.resetScore();
+    }
+    else {
+      score.setScore(data.respawnTime);
+    }
+  }
+  
+  public void enforceLevelScore(Player pl) {
+    Stats stat = getStats(pl);
+    Score score = levelBoard.getScore(pl);
+    
+    score.setScore(stat.levels);
+  }
+  
+  public Map<UUID, Stats> stats = new HashMap<>();
+  
+  public Stats getStats(OfflinePlayer pl) {
+    return stats.get(pl.getUniqueId());
   }
   
   public Map<UUID, PlayerData> playerData = new HashMap<>();
@@ -646,6 +657,9 @@ public class Game {
     PlayerUtils.enforceNightVision(pl);
     PlayerUtils.refreshSpectatorAbilities(pl);
     PlayerUtils.fullyHeal(pl);
+    
+    enforceRTScore(pl);
+    enforceLevelScore(pl);
     
     if (isPlaying) {
       CoreUtils.setTickOut(() -> {
@@ -680,7 +694,9 @@ public class Game {
   public void handleQuitedPlayer(Player pl) {
     if (!isPlaying) return;
     
-    DestroyTheCore.inventoriesManager.store(pl);
+    if (getPlayerData(pl).alive) {
+      DestroyTheCore.inventoriesManager.store(pl);
+    }
   }
   
   public void handleChat(AsyncChatEvent ev) {
@@ -699,12 +715,12 @@ public class Game {
     if (!isPlaying) return;
     
     Player pl = ev.getPlayer();
-    Game.Side side = DestroyTheCore.game.getPlayerData(pl).side;
+    Game.Side side = getPlayerData(pl).side;
     
     ev.viewers().removeIf(
       audience -> audience instanceof Player p
         && side != Side.SPECTATOR
-        && DestroyTheCore.game.getPlayerData(p).side
+        && getPlayerData(p).side
           .equals(side.opposite())
     );
   }
@@ -738,18 +754,6 @@ public class Game {
         && ev.getEntity() instanceof Player victim
     ) {
       handlePlayerDamage(shooter, victim, proj, ev);
-    }
-    
-    if (ev.getEntity() instanceof Item itemEntity) {
-      ItemStack item = itemEntity.getItemStack();
-      if (
-        Set.of(Material.ENCHANTING_TABLE, Material.ENDER_CHEST).contains(
-          item.getType()
-        )
-      ) {
-        ev.setCancelled(true);
-        return;
-      }
     }
   }
   
@@ -1101,6 +1105,7 @@ public class Game {
         PlayerUtils.setHandCooldown(pl, data.role.skillCooldown);
         
         data.role.useSkill(pl);
+        data.addExtraExp(10);
       }
     }
   }
@@ -1204,8 +1209,8 @@ public class Game {
     }
     
     for (Pos rest : new Pos[]{
-      DestroyTheCore.game.map.restArea, LocUtils.flip(
-        DestroyTheCore.game.map.restArea
+      map.restArea, LocUtils.flip(
+        map.restArea
       )
     }) {
       if (
@@ -1610,8 +1615,8 @@ public class Game {
     }
     
     for (Pos rest : new Pos[]{
-      DestroyTheCore.game.map.restArea, LocUtils.flip(
-        DestroyTheCore.game.map.restArea
+      map.restArea, LocUtils.flip(
+        map.restArea
       )
     }) {
       if (
@@ -1770,8 +1775,8 @@ public class Game {
   
   public boolean unmovable(Block block) {
     for (Pos rest : new Pos[]{
-      DestroyTheCore.game.map.restArea, LocUtils.flip(
-        DestroyTheCore.game.map.restArea
+      map.restArea, LocUtils.flip(
+        map.restArea
       )
     }) {
       if (LocUtils.near(Pos.of(block), rest, 6)) {
@@ -1873,6 +1878,20 @@ public class Game {
     }
   }
   
+  EnumSet<Material> importantItemTypes = EnumSet.of(
+    Material.ENCHANTING_TABLE,
+    Material.ENDER_CHEST
+  );
+  
+  public void handleItemSpawn(Item entity, ItemStack item, ItemSpawnEvent ev) {
+    if (importantItemTypes.contains(item.getType())) {
+      entity.setInvulnerable(true);
+      
+      itemsTeam.addEntity(entity);
+      entity.setGlowing(true);
+    }
+  }
+  
   public void handlePickupItem(PlayerAttemptPickupItemEvent ev) {
     Player pl = ev.getPlayer();
     ItemStack item = ev.getItem().getItemStack();
@@ -1947,9 +1966,12 @@ public class Game {
         
         ItemGen gen = DestroyTheCore.itemsManager.getGen(item);
         if (gen instanceof UsableItemGen ugen && ugen.isInstantUse()) {
-          if (!ugen.canUse(pl)) return;
-          
           ev.setCancelled(true);
+          
+          if (!ugen.canUse(pl)) {
+            inv.close();
+            return;
+          }
           
           Map<Material, Integer> costs = new HashMap<>();
           Map<Material, Integer> given = new HashMap<>();
@@ -2133,8 +2155,8 @@ public class Game {
         if (pd.alive || pd.side == Side.SPECTATOR) continue;
         
         for (Pos rest : new Pos[]{
-          DestroyTheCore.game.map.restArea, LocUtils.flip(
-            DestroyTheCore.game.map.restArea
+          map.restArea, LocUtils.flip(
+            map.restArea
           ),
         }) {
           if (
@@ -2237,7 +2259,7 @@ public class Game {
     
     recreateTeams();
     createScoreboards();
-    hideRTScore();
+    refreshScoreboardSlots();
   }
   
   public void setBothCoreMaterial(Material type) {
@@ -2438,15 +2460,13 @@ public class Game {
     }
     if (!mapGood) return;
     
-//    DestroyTheCore.worldsManager.refreshForceLoadChunks();
-    
     isPlaying = true;
     
     phase = Phase.CoreProtected;
     phaseTimer = 10 * 60 * 20;
     truceTimer = 0;
     
-    showRTScore();
+    refreshScoreboardSlots();
     
     setBothCoreMaterial(Material.BEDROCK);
     setDiamonds(Material.BEDROCK);
@@ -2474,8 +2494,6 @@ public class Game {
     
     PlayerUtils.refreshAllSpectatorVisibilities();
     
-    healthBoard.setDisplaySlot(DisplaySlot.BELOW_NAME);
-    
     // After 0: respawn, 1: give essential items
     CoreUtils.setTickOut(
       () -> DestroyTheCore.rolesManager.onPhaseChange(phase),
@@ -2486,9 +2504,6 @@ public class Game {
   public void nextPhase() {
     phase = phase.next;
     phaseTimer = 10 * 60 * 20;
-    for (Player p : Bukkit.getOnlinePlayers()) {
-      DestroyTheCore.game.getPlayerData(p).exp += 25;
-    }
     
     if (phase == null) {
       checkWinner();
@@ -2524,6 +2539,7 @@ public class Game {
     
     for (PlayerData data : playerData.values()) {
       data.setRespawnTime(Math.max(data.respawnTime, phase.minRespawnTime()));
+      data.addExtraExp(25);
     }
   }
   
@@ -2537,22 +2553,17 @@ public class Game {
         p,
         false
       );
+      
+      enforceLevelScore(p);
     }
     
     PlayerUtils.refreshAllSpectatorVisibilities();
     
-    hideRTScore();
+    refreshScoreboardSlots();
     
     DestroyTheCore.boardsManager.refresh();
     
     CoreUtils.setTickOut(this::showCredits);
-    
-    levelBoard.setDisplaySlot(DisplaySlot.BELOW_NAME);
-    for (Player p : Bukkit.getOnlinePlayers()) {
-      levelBoard.getScore(p.getName()).setScore(
-        DestroyTheCore.game.stats.get(p.getUniqueId()).levels
-      );
-    }
   }
   
   public void reset() {
@@ -2762,7 +2773,7 @@ public class Game {
       );
       
       PlayerData data = getPlayerData(p);
-      Stats stat = stats.get(p.getUniqueId());
+      Stats stat = getStats(p);
       
       if (data.side.equals(Side.SPECTATOR)) continue;
       
@@ -2773,7 +2784,7 @@ public class Game {
   public void reflectResult(Side winner, String reasonKey) {
     for (Player p : Bukkit.getOnlinePlayers()) {
       PlayerData data = getPlayerData(p);
-      Stats stat = stats.get(p.getUniqueId());
+      Stats stat = getStats(p);
       
       String titleKey;
       Sound sound;
@@ -2827,7 +2838,12 @@ public class Game {
       }
     }
     
-    if (!isPlaying) return;
+    for (Player p : Bukkit.getOnlinePlayers()) {
+      PlayerData d = getPlayerData(p);
+      if (d.shoutCooldown > 0) d.shoutCooldown--;
+    }
+    
+    if (!isPlaying || paused) return;
     
     if (phaseTimer <= 0) {
       nextPhase();
@@ -2980,8 +2996,6 @@ public class Game {
     for (Player p : Bukkit.getOnlinePlayers()) {
       PlayerData d = getPlayerData(p);
       if (d.side == Side.SPECTATOR) continue;
-      
-      if (d.shoutCooldown > 0) d.shoutCooldown--;
       
       d.role.onTick(p);
     }

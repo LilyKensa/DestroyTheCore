@@ -12,9 +12,10 @@ import org.bukkit.entity.Player;
 public class PlayerData {
   
   /** Constants */
-  static public final int minRespawnTime = 5, maxRespawnTime = 180,
-    killPunishment = 2, corePunishment = 5,
-    shoutCooldownDuration = 10 * 20, rrtDuration = 5 * 20; // Reduce respawn time
+  static public final int minRespawnTime = 5, maxRespawnTime = 180;
+  static public final int killPunishment = 2, corePunishment = 5;
+  static public final int shoutCooldownDuration = 10 * 20;
+  static public final int rrtDuration = 5 * 20; // Reduce respawn time
   
   public Player owner;
   public Game.Side side = Game.Side.SPECTATOR;
@@ -23,11 +24,20 @@ public class PlayerData {
   );
   public boolean alive = false;
   
-  public int respawnTime = minRespawnTime, extraSkillReload = 0,
-    rrtProgress = -20, shoutCooldown = 0, quizQuota = 10,
-    lotteryShift = 0, killStreak = 0, respawnAt = -9999,
-    kills = 0, deaths = 0,
-    coreAttacks = 0, skills = 0, exp = 0;
+  public int respawnTime = minRespawnTime;
+  public int extraSkillReload = 0;
+  public int rrtProgress = -20;
+  public int shoutCooldown = 0;
+  public int quizQuota = 10;
+  public int lotteryShift = 0;
+  public int killStreak = 0;
+  public int respawnAt = -9999;
+  public boolean clearedInv = false;
+  
+  public int kills = 0, deaths = 0;
+  public int coreAttacks = 0;
+  public int skills = 0;
+  public int extraExp = 0;
   public Map<Material, Integer> ores = new HashMap<>();
   
   public PlayerData(Player owner) {
@@ -59,9 +69,21 @@ public class PlayerData {
   
   public void revive() {
     alive = true;
-    if (DestroyTheCore.game.phase != null) setRespawnTime(
-      DestroyTheCore.game.phase.minRespawnTime()
-    );
+    respawnAt = DestroyTheCore.ticksManager.ticksCount;
+    
+    if (DestroyTheCore.game.phase != null) {
+      setRespawnTime(
+        DestroyTheCore.game.phase.minRespawnTime()
+      );
+    }
+  }
+  
+  public boolean isPostRespawn() {
+    return DestroyTheCore.ticksManager.ticksCount - respawnAt < 10 * 20;
+  }
+  
+  public void removePostRevive() {
+    respawnAt = -9999;
   }
   
   public void kill() {
@@ -85,10 +107,10 @@ public class PlayerData {
     addRespawnTime(corePunishment);
   }
   
-  public void addExp(int amount) {
-    exp += amount;
+  public void addExtraExp(int amount) {
+    extraExp += amount;
   }
-
+  
   public void addOre(Material type) {
     ores.put(type, ores.getOrDefault(type, 0) + 1);
   }

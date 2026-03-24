@@ -28,7 +28,7 @@ public class RejoinCommand extends Subcommand {
       return;
     }
     
-    PlayerUtils.broadcast(
+    PlayerUtils.prefixedBroadcast(
       TextUtils.$(
         "commands.rejoin.announce",
         List.of(Placeholder.component("player", PlayerUtils.getName(pl)))

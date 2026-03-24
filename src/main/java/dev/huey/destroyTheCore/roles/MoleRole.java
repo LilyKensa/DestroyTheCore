@@ -104,6 +104,8 @@ public class MoleRole extends Role {
   static Map<UUID, Integer> moleModeTime = new HashMap<>();
   
   static public void onUpdateTick() {
+    if (DestroyTheCore.game.paused) return;
+    
     Iterator<Map.Entry<UUID, Integer>> it = moleModeTime.entrySet().iterator();
     while (it.hasNext()) {
       Map.Entry<UUID, Integer> entry = it.next();
@@ -212,7 +214,7 @@ public class MoleRole extends Role {
       return;
     }
     
-    pl.setExhaustion(pl.getExhaustion() + 0.045f);
+    pl.setExhaustion(pl.getExhaustion() + 0.095f);
   }
   
   public MoleRole() {
@@ -235,6 +237,7 @@ public class MoleRole extends Role {
       }
     );
     addSkill(60 * 20);
+    addLevelReq(12);
   }
   
   @Override
@@ -251,7 +254,7 @@ public class MoleRole extends Role {
         PlayerUtils.addPassiveEffect(
           pl,
           PotionEffectType.DARKNESS,
-          40,
+          3 * 20,
           1
         );
       }

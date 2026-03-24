@@ -46,10 +46,15 @@ import xyz.xenondevs.invui.window.Window;
 
 public class GUIManager {
   
-  Gui roleGui;
-  
-  public void init() {
-    roleGui = PagedGui.items().setStructure(
+  public void openRoleSelection(Player pl) {
+    pl.playSound(
+      pl,
+      Sound.BLOCK_ENDER_CHEST_OPEN,
+      1, // Volume
+      1 // Pitch
+    );
+    
+    Gui roleGui = PagedGui.items().setStructure(
       "# # # # # # # # #",
       "# x x x x x x x #",
       "# x x x x x x x #",
@@ -68,19 +73,10 @@ public class GUIManager {
       'x',
       Markers.CONTENT_LIST_SLOT_HORIZONTAL
     ).setContent(
-      DestroyTheCore.rolesManager.roles.values().stream().map(
-        r -> (Item) r
-      ).toList()
+      DestroyTheCore.rolesManager.roles.values().stream()
+        .map(role -> (Item) role)
+        .toList()
     ).build();
-  }
-  
-  public void openRoleSelection(Player pl) {
-    pl.playSound(
-      pl,
-      Sound.BLOCK_ENDER_CHEST_OPEN,
-      1, // Volume
-      1 // Pitch
-    );
     
     Window window = Window.single().setViewer(pl).setTitle(
       TextUtils.$r(

@@ -24,7 +24,6 @@ public class AttackerRole extends Role {
       }
     );
     addSkill(60 * 20);
-    addLvlreq(0);
   }
   
   @Override

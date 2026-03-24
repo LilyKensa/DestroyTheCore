@@ -2,40 +2,39 @@ package dev.huey.destroyTheCore.commands;
 
 import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.bases.Subcommand;
-import dev.huey.destroyTheCore.records.PlayerData;
-import dev.huey.destroyTheCore.records.Stats;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import java.util.List;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 
-public class StopCommand extends Subcommand {
-  
-  public StopCommand() {
-    super("stop");
+public class PauseCommand extends Subcommand {
+  public PauseCommand() {
+    super("pause");
   }
   
   @Override
   public void execute(Player pl, List<String> args) {
-    if (!PlayerUtils.isAdmin(pl)) {
-      PlayerUtils.reportNoPerm(pl);
-      return;
-    }
+    if (!DestroyTheCore.game.isPlaying) return;
+    
+    DestroyTheCore.game.paused = !DestroyTheCore.game.paused;
+    
+    Bukkit.getServer().getServerTickManager()
+      .setFrozen(DestroyTheCore.game.paused);
     
     for (Player p : Bukkit.getOnlinePlayers()) {
-      PlayerData data = DestroyTheCore.game.getPlayerData(p);
-      Stats stat = DestroyTheCore.game.getStats(p);
-      
-      stat.addFromPlayerData(data);
+      p.getAttribute(Attribute.GRAVITY)
+        .setBaseValue(DestroyTheCore.game.paused ? 0 : 0.08);
     }
     
-    DestroyTheCore.game.stop();
     PlayerUtils.prefixedBroadcast(
       TextUtils.$(
-        "commands.stop.announce",
-        List.of(Placeholder.component("player", PlayerUtils.getName(pl)))
+        "commands.pause." + DestroyTheCore.game.paused,
+        List.of(
+          Placeholder.component("player", PlayerUtils.getName(pl))
+        )
       )
     );
   }

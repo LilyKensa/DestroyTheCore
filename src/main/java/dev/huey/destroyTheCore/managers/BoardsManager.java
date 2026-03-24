@@ -11,6 +11,8 @@ import fr.mrmicky.fastboard.FastBoard;
 import java.util.*;
 import java.util.function.Function;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.JoinConfiguration;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -166,7 +168,12 @@ public class BoardsManager {
       }
     }
     else { // Not playing
-      Stats stats = DestroyTheCore.game.stats.get(pl.getUniqueId());
+      Stats stat = DestroyTheCore.game.getStats(pl);
+      
+      double levelRatio = Math.min(
+        Math.max(0, (double) stat.exp / stat.maxExp),
+        1
+      );
       
       lines.addAll(
         List.of(
@@ -174,12 +181,12 @@ public class BoardsManager {
           TextUtils.$r(
             "board.wins",
             List.of(
-              Placeholder.component("wins", Component.text(stats.wins)),
-              Placeholder.component("all", Component.text(stats.games)),
+              Placeholder.component("wins", Component.text(stat.wins)),
+              Placeholder.component("all", Component.text(stat.games)),
               Placeholder.unparsed(
                 "ratio",
-                stats.games == 0 ? "0.0" : CoreUtils.toFixed(
-                  100D * stats.wins / stats.games
+                stat.games == 0 ? "0.0" : CoreUtils.toFixed(
+                  100D * stat.wins / stat.games
                 )
               )
             )
@@ -187,14 +194,14 @@ public class BoardsManager {
           TextUtils.$r(
             "board.kd",
             List.of(
-              Placeholder.component("kills", Component.text(stats.kills)),
-              Placeholder.component("deaths", Component.text(stats.deaths))
+              Placeholder.component("kills", Component.text(stat.kills)),
+              Placeholder.component("deaths", Component.text(stat.deaths))
             )
           ),
           TextUtils.$r(
             "board.attacks",
             List.of(
-              Placeholder.component("value", Component.text(stats.coreAttacks))
+              Placeholder.component("value", Component.text(stat.coreAttacks))
             )
           ),
           TextUtils.$r(
@@ -203,7 +210,7 @@ public class BoardsManager {
               Placeholder.component(
                 "value",
                 Component.text(
-                  stats.ores.values().stream().reduce(0, Integer::sum)
+                  stat.ores.values().stream().reduce(0, Integer::sum)
                 )
               )
             )
@@ -213,29 +220,37 @@ public class BoardsManager {
             List.of(
               Placeholder.component(
                 "value",
-                Component.text(stats.skills)
+                Component.text(stat.skills)
               )
             )
           ),
+          "",
           TextUtils.$r(
             "board.exp",
             List.of(
-              Placeholder.component("exp", Component.text(stats.exp)),
-              Placeholder.component("levels", Component.text(stats.levels)),
+              Placeholder.component("levels", Component.text(stat.levels)),
               Placeholder.component(
-                "percentage",
-                Component.text(100 * stats.exp / (stats.levels * 100 + 500))
+                "bar",
+                Component.join(
+                  JoinConfiguration.noSeparators(),
+                  Component.text("|".repeat((int) (levelRatio * 8)))
+                    .color(NamedTextColor.AQUA),
+                  Component.text(
+                    "|".repeat(8 - (int) (levelRatio * 8))
+                  )
+                )
               ),
               Placeholder.component(
-                "bar_aqua",
-                Component.text(String.valueOf(stats.expBarAqua))
+                "exp",
+                Component.text(stat.exp)
               ),
               Placeholder.component(
-                "bar_gray",
-                Component.text(String.valueOf(stats.expBarGray))
+                "max",
+                Component.text(stat.maxExp)
               )
             )
-          )
+          ),
+          ""
         )
       );
     }

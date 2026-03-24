@@ -27,6 +27,8 @@ public class KekkaiMasterRole extends Role {
   
   static public class Kekkai {
     
+    static public final double minSize = 3;
+    
     public enum Type {
       SPEED(Material.IRON_INGOT, Particle.WAX_OFF),
       HEALING(
@@ -112,7 +114,7 @@ public class KekkaiMasterRole extends Role {
       }
     }
     
-    int size = 15;
+    double size = 15;
     int duration;
     public Type type;
     public Location loc;
@@ -140,7 +142,7 @@ public class KekkaiMasterRole extends Role {
         }
         case RESISTANCE_PLUS -> {
           effectType = PotionEffectType.RESISTANCE;
-          effectLevel = 4;
+          effectLevel = 3;
         }
         case STRENGTH -> {
           effectType = PotionEffectType.STRENGTH;
@@ -185,6 +187,10 @@ public class KekkaiMasterRole extends Role {
       
       center.setAI(false);
       center.setSize(0);
+      
+      DestroyTheCore.game.getTeam(side, RolesManager.RoleKey.KEKKAI_MASTER)
+        .addEntity(center);
+      center.setGlowing(true);
       
       center.customName(
         Component.join(
@@ -242,7 +248,7 @@ public class KekkaiMasterRole extends Role {
         ev.getDrops().clear();
         ev.setDroppedExp(5);
         
-        kekkai.duration = -1;
+        kekkai.size = 0;
         
         for (Player p : Bukkit.getOnlinePlayers()) p.playSound(
           kekkai.loc,
@@ -252,10 +258,12 @@ public class KekkaiMasterRole extends Role {
         );
       }
     }
-    kekkais.removeIf(k -> k.duration <= 0);
+    kekkais.removeIf(k -> k.size <= Kekkai.minSize);
   }
   
   static public void onTick() {
+    if (DestroyTheCore.game.paused) return;
+    
     for (Kekkai kekkai : kekkais) {
       if (kekkai.isBulletProof()) {
         for (
@@ -377,13 +385,18 @@ public class KekkaiMasterRole extends Role {
         }
       }
       
-      kekkai.duration--;
-      if (kekkai.duration <= 0) {
+      if (kekkai.duration > 0) {
+        kekkai.duration--;
+      }
+      else {
+        kekkai.size -= 0.5;
+      }
+      if (kekkai.size <= Kekkai.minSize) {
         CoreUtils.setTickOut(() -> kekkai.center.remove());
       }
     }
     
-    kekkais.removeIf(k -> k.duration <= 0);
+    kekkais.removeIf(k -> k.size <= Kekkai.minSize);
   }
   
   static public void onParticleTick() {
@@ -403,7 +416,7 @@ public class KekkaiMasterRole extends Role {
       }
     );
     addSkill(30 * 20);
-    addLvlreq(0);
+    addLevelReq(2);
   }
   
   @Override
