@@ -45,10 +45,7 @@ import org.bukkit.damage.DamageType;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.block.*;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.FoodLevelChangeEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.*;
 import org.bukkit.event.vehicle.VehicleDamageEvent;
@@ -492,18 +489,19 @@ public class Game {
     sd -> sd.maxNoShopTicks
   );
   
+  Team itemsTeam;
   Team spectatorTeam;
   Map<Side, Map<RolesManager.RoleKey, Team>> teams = new HashMap<>();
   
-  public Team getTeam(Side side, Role role) {
+  public Team getTeam(Side side, RolesManager.RoleKey roleId) {
     if (side == Side.SPECTATOR) return spectatorTeam;
     
-    return teams.get(side).get(role.id);
+    return teams.get(side).get(roleId);
   }
   
   public Team getTeam(Player pl) {
     PlayerData data = getPlayerData(pl);
-    return getTeam(data.side, data.role);
+    return getTeam(data.side, data.role.id);
   }
   
   public void enforceTeam(Player pl) {
@@ -520,8 +518,10 @@ public class Game {
     
     teams.clear();
     
-    spectatorTeam = board.registerNewTeam("spectator");
+    itemsTeam = board.registerNewTeam("items");
+    itemsTeam.color(NamedTextColor.AQUA);
     
+    spectatorTeam = board.registerNewTeam("spectator");
     spectatorTeam.color(Side.SPECTATOR.color);
     spectatorTeam.displayName(Side.SPECTATOR.titleComp());
     spectatorTeam.prefix(
@@ -694,7 +694,9 @@ public class Game {
   public void handleQuitedPlayer(Player pl) {
     if (!isPlaying) return;
     
-    DestroyTheCore.inventoriesManager.store(pl);
+    if (getPlayerData(pl).alive) {
+      DestroyTheCore.inventoriesManager.store(pl);
+    }
   }
   
   public void handleChat(AsyncChatEvent ev) {
@@ -752,18 +754,6 @@ public class Game {
         && ev.getEntity() instanceof Player victim
     ) {
       handlePlayerDamage(shooter, victim, proj, ev);
-    }
-    
-    if (ev.getEntity() instanceof Item itemEntity) {
-      ItemStack item = itemEntity.getItemStack();
-      if (
-        Set.of(Material.ENCHANTING_TABLE, Material.ENDER_CHEST).contains(
-          item.getType()
-        )
-      ) {
-        ev.setCancelled(true);
-        return;
-      }
     }
   }
   
@@ -1888,6 +1878,20 @@ public class Game {
     }
   }
   
+  EnumSet<Material> importantItemTypes = EnumSet.of(
+    Material.ENCHANTING_TABLE,
+    Material.ENDER_CHEST
+  );
+  
+  public void handleItemSpawn(Item entity, ItemStack item, ItemSpawnEvent ev) {
+    if (importantItemTypes.contains(item.getType())) {
+      entity.setInvulnerable(true);
+      
+      itemsTeam.addEntity(entity);
+      entity.setGlowing(true);
+    }
+  }
+  
   public void handlePickupItem(PlayerAttemptPickupItemEvent ev) {
     Player pl = ev.getPlayer();
     ItemStack item = ev.getItem().getItemStack();
@@ -1962,9 +1966,12 @@ public class Game {
         
         ItemGen gen = DestroyTheCore.itemsManager.getGen(item);
         if (gen instanceof UsableItemGen ugen && ugen.isInstantUse()) {
-          if (!ugen.canUse(pl)) return;
-          
           ev.setCancelled(true);
+          
+          if (!ugen.canUse(pl)) {
+            inv.close();
+            return;
+          }
           
           Map<Material, Integer> costs = new HashMap<>();
           Map<Material, Integer> given = new HashMap<>();
@@ -2831,6 +2838,11 @@ public class Game {
       }
     }
     
+    for (Player p : Bukkit.getOnlinePlayers()) {
+      PlayerData d = getPlayerData(p);
+      if (d.shoutCooldown > 0) d.shoutCooldown--;
+    }
+    
     if (!isPlaying || paused) return;
     
     if (phaseTimer <= 0) {
@@ -2984,8 +2996,6 @@ public class Game {
     for (Player p : Bukkit.getOnlinePlayers()) {
       PlayerData d = getPlayerData(p);
       if (d.side == Side.SPECTATOR) continue;
-      
-      if (d.shoutCooldown > 0) d.shoutCooldown--;
       
       d.role.onTick(p);
     }

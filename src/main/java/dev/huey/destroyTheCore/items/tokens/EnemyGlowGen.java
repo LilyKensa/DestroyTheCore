@@ -24,8 +24,6 @@ public class EnemyGlowGen extends UsableItemGen {
     Game.Side side = DestroyTheCore.game.getPlayerData(pl).side;
     if (side.equals(Game.Side.SPECTATOR)) return;
     
-//    PlayerUtils.takeOneItemFromHand(pl);
-    
     for (Player p : PlayerUtils.getEnemies(side)) {
       PlayerUtils.delayAssign(
         pl,

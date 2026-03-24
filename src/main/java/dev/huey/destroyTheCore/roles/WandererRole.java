@@ -60,6 +60,7 @@ public class WandererRole extends Role {
       if (DestroyTheCore.ticksManager.isUpdateTick()) {
         for (Player p : Bukkit.getOnlinePlayers()) {
           if (!elevator.contains(p.getLocation())) continue;
+          if (MoleRole.moleModeTime.containsKey(p.getUniqueId())) continue;
           
           PlayerUtils.addPassiveEffect(
             p,

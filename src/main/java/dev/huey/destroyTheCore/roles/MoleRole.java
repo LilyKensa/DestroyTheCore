@@ -214,7 +214,7 @@ public class MoleRole extends Role {
       return;
     }
     
-    pl.setExhaustion(pl.getExhaustion() + 0.045f);
+    pl.setExhaustion(pl.getExhaustion() + 0.095f);
   }
   
   public MoleRole() {
@@ -254,7 +254,7 @@ public class MoleRole extends Role {
         PlayerUtils.addPassiveEffect(
           pl,
           PotionEffectType.DARKNESS,
-          40,
+          3 * 20,
           1
         );
       }

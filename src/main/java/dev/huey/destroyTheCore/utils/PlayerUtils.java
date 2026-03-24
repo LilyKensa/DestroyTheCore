@@ -60,7 +60,7 @@ public class PlayerUtils {
   }
   
   static public boolean isUnderSky(Player pl) {
-    int count = 0;
+    int emptyCount = 0;
     
     for (int dx = -1; dx <= 1; ++dx) {
       horizontalLoop: for (int dz = -1; dz <= 1; ++dz) {
@@ -69,11 +69,11 @@ public class PlayerUtils {
             continue horizontalLoop;
         }
         
-        count++;
+        emptyCount++;
       }
     }
     
-    return count > 4;
+    return emptyCount > 4;
   }
   
   static public void send(Player pl, Component component) {
@@ -746,6 +746,11 @@ public class PlayerUtils {
     give(pl, key, 1);
   }
   
+  static final Pattern weaponSuffix = Pattern.compile(
+    "_(sword|axe)",
+    Pattern.CASE_INSENSITIVE
+  );
+  
   /** Give a player basic armors, weapons & skill books */
   static public void giveEssentials(Player pl) {
     PlayerData data = DestroyTheCore.game.getPlayerData(pl);
@@ -777,12 +782,12 @@ public class PlayerUtils {
       }
     }
     
-    Predicate<ItemStack> isWeapon = item -> Pattern.compile(
-      "_(sword|axe)",
-      Pattern.CASE_INSENSITIVE
-    ).matcher(item.getType().name()).find();
+    Predicate<ItemStack> isWeapon = item -> weaponSuffix.matcher(
+      item.getType().name()
+    ).find();
     
-    boolean hasFood = false, hasAnyWeapon = false, hasRoleItem = false;
+    boolean hasFood = false, hasAnyWeapon = false, hasRoleItem = false,
+      hasPickaxe = false;
     
     ItemStack roleItem = data.role.getExclusiveItem();
     
@@ -824,6 +829,15 @@ public class PlayerUtils {
     if (!inv.contains(Material.KNOWLEDGE_BOOK)) {
       give(pl, data.role.getSkillItem());
     }
+    
+    for (ItemStack item : inv.getContents()) {
+      if (item != null && Tag.ITEMS_PICKAXES.isTagged(item.getType())) {
+        hasPickaxe = true;
+        break;
+      }
+    }
+    
+    if (!hasPickaxe) give(pl, Material.GOLDEN_PICKAXE);
   }
   
   static public void growNearbyCrops(Player pl) {

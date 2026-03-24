@@ -278,7 +278,7 @@ board:
   ores: "<white>Ores Mined</white>: <light_purple><value></light_purple>"
   ore-type: "  <type>: <dark_purple><value></dark_purple>"
   wins: "<white>Wins</white>: <aqua><wins></aqua>/<dark_aqua><all></dark_aqua> <gold><ratio>%</gold>"
-  exp: "<white>Level</white> <green><levels></green> [<bar>] <aqua><percent>%</aqua>"
+  exp: "<white>Level</white> <green><levels></green> [<bar>] <aqua><exp></aqua>/<dark_aqua><max></dark_aqua>"
 
 command:
   not-found: "Unknown command!"
@@ -291,13 +291,13 @@ world:
 
 commands:
   pause:
-    on: "<green>Game paused by <player></green>"
-    off: "<green>Game resumed <player></green>"
+    true: "<green>Game paused by <player></green>"
+    false: "<green>Game resumed <player></green>"
   level:
     changed: "<aqua><player>'s level is now <value>!</aqua>"
   night-vision:
-    on: "<green>Enabled Night Vision</green>"
-    off: "<green>Disabled Night Vision</green>"
+    true: "<green>Enabled Night Vision</green>"
+    false: "<green>Disabled Night Vision</green>"
   edit:
     unclear: "<red>Please specify which kit!</red>"
     loaded: "<green>Editor kit loaded!</green>"
@@ -798,9 +798,10 @@ roles:
       detail: "Quick Charge III crossbow"
     skill:
       name: "Hunter Trap"
-      desc-1: "<dark_purple>Places a trap</dark_purple>"
+      desc-1: "<dark_purple>Places a trap (Max 3 at a time)</dark_purple>"
       desc-2: "<dark_purple>Enemies trapped will get Poison X (5s)</dark_purple>"
       announce: "<player> used <yellow><role></yellow>'s skill, placed a trap!"
+      too-many: "<red>You can only place <amount> traps!</red>"
       trap-hit:
         owner: "<enemy> fell into your trap!"
         enemy: "You fell into <owner>'s trap!"
@@ -825,7 +826,7 @@ roles:
       desc-8: "<dark_purple>Iron Block - Speed V (30s)</dark_purple>"
       desc-9: "<dark_purple>Gold Block - Recovers food level (10s)</dark_purple>"
       desc-10: "<dark_purple>Redstone Block - Bullet Proof (180s)</dark_purple>"
-      desc-11: "<dark_purple>Emerald Block - Resistance IV (30s)</dark_purple>"
+      desc-11: "<dark_purple>Emerald Block - Resistance III (30s)</dark_purple>"
       desc-12: "<dark_purple>Lapis Block - Halves ores cooldown (180s)</dark_purple>"
       desc-13: "<dark_purple>Diamond Block - Strength III (180s)</dark_purple>"
       desc-14: "<dark_purple>Mysterious Relic - Random Effect III (10s)</dark_purple>"

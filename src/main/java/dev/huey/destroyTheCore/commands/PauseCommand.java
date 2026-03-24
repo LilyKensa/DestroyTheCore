@@ -31,7 +31,7 @@ public class PauseCommand extends Subcommand {
     
     PlayerUtils.prefixedBroadcast(
       TextUtils.$(
-        "commands.pause." + (DestroyTheCore.game.paused ? "yes" : "no"),
+        "commands.pause." + DestroyTheCore.game.paused,
         List.of(
           Placeholder.component("player", PlayerUtils.getName(pl))
         )

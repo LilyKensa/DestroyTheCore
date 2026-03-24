@@ -170,7 +170,10 @@ public class BoardsManager {
     else { // Not playing
       Stats stat = DestroyTheCore.game.getStats(pl);
       
-      double levelRatio = Math.min(Math.max(0, stat.exp / stat.maxExp), 1);
+      double levelRatio = Math.min(
+        Math.max(0, (double) stat.exp / stat.maxExp),
+        1
+      );
       
       lines.addAll(
         List.of(
@@ -237,9 +240,13 @@ public class BoardsManager {
                   )
                 )
               ),
-              Placeholder.unparsed(
-                "percent",
-                "%.2f".formatted(100 * levelRatio)
+              Placeholder.component(
+                "exp",
+                Component.text(stat.exp)
+              ),
+              Placeholder.component(
+                "max",
+                Component.text(stat.maxExp)
               )
             )
           ),

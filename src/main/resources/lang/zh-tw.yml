@@ -278,7 +278,7 @@ board:
   ores: "<white>總礦物數</white>: <light_purple><value></light_purple>"
   ore-type: "  <type>: <dark_purple><value></dark_purple>"
   wins: "<white>贏局</white>: <aqua><wins></aqua>/<dark_aqua><all></dark_aqua> <gold><ratio>%</gold>"
-  exp: "<white>等級</white> <green><levels></green> [<bar>] <aqua><percent>%</aqua>"
+  exp: "<white>等級</white> <green><levels></green> [<bar>] <aqua><exp></aqua>/<dark_aqua><max></dark_aqua>"
 
 command:
   not-found: "沒有這種指令!"
@@ -291,13 +291,13 @@ world:
 
 commands:
   pause:
-    yes: "<green>遊戲被 <player> 暫停</green>"
-    no: "<green>遊戲被 <player> 繼續</green>"
+    true: "<green>遊戲被 <player> 暫停</green>"
+    false: "<green>遊戲被 <player> 繼續</green>"
   level:
     changed: "<aqua><player> 現在的等級是 <value> 等</aqua>"
   night-vision:
-    yes: "<green>已啟用夜視效果</green>"
-    no: "<green>已關閉夜視效果/green>"
+    true: "<green>已啟用夜視效果</green>"
+    false: "<green>已關閉夜視效果</green>"
   edit:
     unclear: "<red>請指定一個工具組!</red>"
     loaded: "<green>已載入工具組!</green>"
@@ -803,9 +803,10 @@ roles:
       detail: "快速上弦 III 弩"
     skill:
       name: "獵人陷阱"
-      desc-1: "<dark_purple>放置一個陷阱</dark_purple>"
+      desc-1: "<dark_purple>放置一個陷阱 (最多存在 3 個)</dark_purple>"
       desc-2: "<dark_purple>踩上去的敵人獲得中毒 X (5s)</dark_purple>"
       announce: "<player> 使用了<yellow><role></yellow>技能, 放置了一個陷阱!"
+      too-many: "<red>你最多只能放置 <amount> 個陷阱!</red>"
       trap-hit:
         owner: "<enemy> 採到你的陷阱!"
         enemy: "你踩到 <owner> 的陷阱!"
@@ -827,10 +828,11 @@ roles:
       desc-5: "<dark_purple>綠寶石 - 抗性 II (30s)</dark_purple>"
       desc-6: "<dark_purple>青金石 - 礦物冷卻時間減半 (30s)</dark_purple>"
       desc-7: "<dark_purple>鑽石 - 力量 I (30s)</dark_purple>"
+      desc-7: "<dark_purple>鑽石 - 力量 I (30s)</dark_purple>"
       desc-8: "<dark_purple>鐵磚 - 加速 V (30s)</dark_purple>"
       desc-9: "<dark_purple>金磚 - 恢復飽食度 (10s)</dark_purple>"
       desc-10: "<dark_purple>紅石磚 - 防彈 (180s)</dark_purple>"
-      desc-11: "<dark_purple>綠寶石磚 - 抗性 IV (30s)</dark_purple>"
+      desc-11: "<dark_purple>綠寶石磚 - 抗性 III (30s)</dark_purple>"
       desc-12: "<dark_purple>青金石磚 - 礦物冷卻時間減半 (180s)</dark_purple>"
       desc-13: "<dark_purple>鑽石磚 - 力量 III (180s)</dark_purple>"
       desc-14: "<dark_purple>渾沌之物 - 隨機效果 III (10s)</dark_purple>"

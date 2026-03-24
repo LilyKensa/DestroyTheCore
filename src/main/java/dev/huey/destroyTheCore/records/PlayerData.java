@@ -12,9 +12,10 @@ import org.bukkit.entity.Player;
 public class PlayerData {
   
   /** Constants */
-  static public final int minRespawnTime = 5, maxRespawnTime = 180,
-    killPunishment = 2, corePunishment = 5,
-    shoutCooldownDuration = 10 * 20, rrtDuration = 5 * 20; // Reduce respawn time
+  static public final int minRespawnTime = 5, maxRespawnTime = 180;
+  static public final int killPunishment = 2, corePunishment = 5;
+  static public final int shoutCooldownDuration = 10 * 20;
+  static public final int rrtDuration = 5 * 20; // Reduce respawn time
   
   public Player owner;
   public Game.Side side = Game.Side.SPECTATOR;
@@ -31,6 +32,8 @@ public class PlayerData {
   public int lotteryShift = 0;
   public int killStreak = 0;
   public int respawnAt = -9999;
+  public boolean clearedInv = false;
+  
   public int kills = 0, deaths = 0;
   public int coreAttacks = 0;
   public int skills = 0;

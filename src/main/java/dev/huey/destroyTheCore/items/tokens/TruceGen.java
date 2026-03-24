@@ -21,23 +21,25 @@ public class TruceGen extends UsableItemGen {
   
   @Override
   public boolean canUse(Player pl) {
-    return !DestroyTheCore.game.phase.isAfter(Game.Phase.DoubleDamage);
+    SideData sideData = DestroyTheCore.game.getSideData(pl);
+    
+    if (sideData.usedTruce) {
+      pl.sendActionBar(TextUtils.$("items.truce.duped-usage"));
+      return false;
+    }
+    
+    if (DestroyTheCore.game.phase.isAfter(Game.Phase.DoubleDamage)) {
+      pl.sendActionBar(TextUtils.$("items.truce.too-late"));
+      return false;
+    }
+    
+    return true;
   }
   
   @Override
   public void use(Player pl, Block block) {
-    if (!canUse(pl)) {
-      pl.sendActionBar(TextUtils.$("items.truce.too-late"));
-      return;
-    }
-    
     SideData sideData = DestroyTheCore.game.getSideData(pl);
-    if (sideData.usedTruce) {
-      pl.sendActionBar(TextUtils.$("items.truce.duped-usage"));
-      return;
-    }
     
-//    PlayerUtils.takeOneItemFromHand(pl);
     sideData.usedTruce = true;
     
     DestroyTheCore.game.truceTimer += 5 * 60 * 20;

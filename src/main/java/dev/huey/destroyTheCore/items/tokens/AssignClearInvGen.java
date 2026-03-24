@@ -54,16 +54,7 @@ public class AssignClearInvGen extends UsableItemGen {
     Game.Side side = DestroyTheCore.game.getPlayerData(pl).side;
     SideData sideData = DestroyTheCore.game.getSideData(side);
     
-    return sideData.clearInvCooldown <= 0;
-  }
-  
-  @Override
-  public void use(Player pl, Block block) {
-    Game.Side side = DestroyTheCore.game.getPlayerData(pl).side;
-    SideData sideData = DestroyTheCore.game.getSideData(side);
-    if (side.equals(Game.Side.SPECTATOR)) return;
-    
-    if (!canUse(pl)) {
+    if (sideData.clearInvCooldown > 0) {
       pl.sendActionBar(
         TextUtils.$(
           "items.assign-clear-inv.cooldown",
@@ -75,18 +66,36 @@ public class AssignClearInvGen extends UsableItemGen {
           )
         )
       );
-      return;
+      return false;
     }
     
-    Player target = RandomUtils.pick(PlayerUtils.getEnemies(side));
-    if (target == null) {
+    if (
+      PlayerUtils.getEnemies(side).stream()
+        .anyMatch(p -> !DestroyTheCore.game.getPlayerData(p).clearedInv)
+    ) {
       pl.sendActionBar(TextUtils.$("items.assign-clear-inv.not-found"));
-      return;
+      return false;
     }
     
-//    PlayerUtils.takeOneItemFromHand(pl);
+    return true;
+  }
+  
+  @Override
+  public void use(Player pl, Block block) {
+    Game.Side side = DestroyTheCore.game.getPlayerData(pl).side;
+    SideData sideData = DestroyTheCore.game.getSideData(side);
+    if (side.equals(Game.Side.SPECTATOR)) return;
     
     sideData.clearInvCooldown = 10 * 60 * 20;
+    
+    Player target = RandomUtils.pick(
+      PlayerUtils.getEnemies(side).stream()
+        .filter(p -> !DestroyTheCore.game.getPlayerData(p).clearedInv)
+        .toList()
+    );
+    if (target == null) return;
+    
+    DestroyTheCore.game.getPlayerData(target).clearedInv = true;
     
     PlayerUtils.delayAssign(
       pl,

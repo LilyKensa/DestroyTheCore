@@ -34,8 +34,6 @@ public class AssignMoreRespawnTimeGen extends UsableItemGen {
       return;
     }
     
-//    PlayerUtils.takeOneItemFromHand(pl);
-    
     PlayerUtils.delayAssign(
       pl,
       target,

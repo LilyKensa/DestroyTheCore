@@ -25,7 +25,6 @@ public class LevelCommand extends Subcommand {
   }
   
   public void execute(Player pl, List<String> args) {
-    // 1. Permission Check
     if (!PlayerUtils.isAdmin(pl)) {
       PlayerUtils.reportNoPerm(pl);
       return;
