@@ -24,6 +24,7 @@ import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.*;
 import org.bukkit.event.vehicle.VehicleDamageEvent;
+import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -128,6 +129,13 @@ public class EventsManager implements Listener {
         ev.getTo().getWorld()
       );
     }
+  }
+  
+  @EventHandler
+  public void onVehicleEnter(VehicleEnterEvent ev) {
+    if (!(ev.getEntered() instanceof Player pl)) return;
+    
+    DestroyTheCore.game.handlePlayerRide(pl, ev.getVehicle(), ev);
   }
   
   @EventHandler

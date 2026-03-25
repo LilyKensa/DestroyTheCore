@@ -4,6 +4,7 @@ import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.itemGens.UsableItemGen;
 import dev.huey.destroyTheCore.managers.ItemsManager;
+import dev.huey.destroyTheCore.records.PlayerData;
 import dev.huey.destroyTheCore.records.SideData;
 import dev.huey.destroyTheCore.utils.*;
 import java.util.List;
@@ -71,7 +72,10 @@ public class AssignClearInvGen extends UsableItemGen {
     
     if (
       PlayerUtils.getEnemies(side).stream()
-        .anyMatch(p -> !DestroyTheCore.game.getPlayerData(p).clearedInv)
+        .noneMatch(p -> {
+          PlayerData d = DestroyTheCore.game.getPlayerData(p);
+          return d.alive && !d.clearedInv;
+        })
     ) {
       pl.sendActionBar(TextUtils.$("items.assign-clear-inv.not-found"));
       return false;
@@ -90,7 +94,10 @@ public class AssignClearInvGen extends UsableItemGen {
     
     Player target = RandomUtils.pick(
       PlayerUtils.getEnemies(side).stream()
-        .filter(p -> !DestroyTheCore.game.getPlayerData(p).clearedInv)
+        .filter(p -> {
+          PlayerData d = DestroyTheCore.game.getPlayerData(p);
+          return d.alive && !d.clearedInv;
+        })
         .toList()
     );
     if (target == null) return;

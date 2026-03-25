@@ -49,6 +49,7 @@ import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.*;
 import org.bukkit.event.vehicle.VehicleDamageEvent;
+import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.potion.PotionEffectType;
@@ -1213,7 +1214,8 @@ public class Game {
     
     if (LocUtils.inLobby(pl)) {
       if (
-        DestroyTheCore.worldsManager.isReady
+        PlayerUtils.isAdmin(pl)
+          && DestroyTheCore.worldsManager.isReady
           && lobby.startButton != null
           && Pos.of(block).isSameBlockAs(lobby.startButton)
       ) {
@@ -1889,6 +1891,19 @@ public class Game {
     if (anyUnmovable(ev.getBlocks())) ev.setCancelled(true);
   }
   
+  public void handlePlayerRide(
+    Player pl, Vehicle ridden, VehicleEnterEvent ev
+  ) {
+    PlayerData data = getPlayerData(pl);
+    
+    if (
+      ridden instanceof Horse && data.role.id != RolesManager.RoleKey.JOCKEY
+    ) {
+      ev.setCancelled(true);
+      return;
+    }
+  }
+  
   final List<String> toolTiers = List.of(
     "WOODEN",
     "STONE",
@@ -2103,6 +2118,12 @@ public class Game {
     if (!(ev.getPlayer() instanceof Player pl)) return;
     if (!PlayerUtils.shouldHandle(pl)) return;
     if (!isPlaying) return;
+    
+    if (ev.getInventory() instanceof HorseInventory hinv) {
+      hinv.close();
+      ev.setCancelled(true);
+      return;
+    }
     
     if (ev.getInventory().getHolder() instanceof BlockInventoryHolder holder) {
       if (!LocUtils.canAccess(pl, holder.getBlock())) {

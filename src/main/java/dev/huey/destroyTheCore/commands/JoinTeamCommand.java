@@ -2,7 +2,9 @@ package dev.huey.destroyTheCore.commands;
 
 import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.Game;
+import dev.huey.destroyTheCore.bases.ItemGen;
 import dev.huey.destroyTheCore.bases.Subcommand;
+import dev.huey.destroyTheCore.utils.CoreUtils;
 import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
@@ -11,6 +13,9 @@ import java.util.List;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.persistence.PersistentDataType;
 
 public class JoinTeamCommand extends Subcommand {
   
@@ -100,6 +105,20 @@ public class JoinTeamCommand extends Subcommand {
     if (LocUtils.inLive(target)) {
       PlayerUtils.refreshSpectatorAbilities(target);
       PlayerUtils.refreshAllSpectatorVisibilities();
+    }
+    
+    for (ItemStack item : pl.getInventory().getContents()) {
+      if (item == null || item.getType().isAir()) continue;
+      if (!(item.getItemMeta() instanceof LeatherArmorMeta meta)) continue;
+      if (!DestroyTheCore.itemsManager.isGen(item)) continue;
+      if (
+        !item.getPersistentDataContainer().get(
+          ItemGen.dataNamespace,
+          PersistentDataType.STRING
+        ).startsWith("STARTER")
+      ) continue;
+      
+      CoreUtils.dyeTeamColor(item, side);
     }
   }
 }

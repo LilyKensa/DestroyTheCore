@@ -23,6 +23,46 @@ tips:
     title: "<aqua>關於罪惡值...</aqua>"
     content-1: "殺人或挖核心會增加你的罪惡值"
     content-2: "罪惡值越高, 重生所需時間越久"
+  tip-3:
+    title: "<aqua>關於等級系統...</aqua>"
+    content-1: "經歷每一個階段, 挖礦, 殺人, 攻擊核心等都會增加經驗值"
+    content-2: "不斷累積經驗, 等級條滿了便可以升級, 解鎖更多職業"
+  tip-4:
+    title: "<aqua>關於小偷...</aqua>"
+    content-1: "離敵人家比較近的箱子不能開"
+    content-2: "持有附魔台及終界箱會獲得緩速 X"
+  tip-5:
+    title: "<aqua>關於殺人...</aqua>"
+    content-1: "殺人時會獲得一小段時間負面效果, 包含虛弱, 失明 & 緩速等等"
+    content-2: "連續殺 10 個人會成為殺人隊長, 擊殺後會獲得獎勵 10 顆綠寶石"
+  tip-6:
+    title: "<aqua>關於核心...</aqua>"
+    content-1: "核心的能量非常強大, 附近的水, 岩漿都會被吸收, 黑曜石會被破壞"
+    content-2: "挖掘核心會受到一小段時間挖掘緩速 & 發光效果"
+  tip-7:
+    title: "<aqua>關於礦物...</aqua>"
+    content-1: "資源平衡是除了打架技術以外最重要的"
+    content-2: "除了黃金和綠寶石是商店購物的貨幣, 礦工也要記得挖青金石幫隊友附魔裝備和武器"
+  tip-8:
+    title: "<aqua>關於噴裝...</aqua>"
+    content-1: "每次死亡身上的每樣物品都有 10% 機率會噴出"
+    content-2: "另外, 附魔台和終界箱一定會噴出"
+  tip-9:
+    title: "<aqua>關於隱形...</aqua>"
+    content-1: "隱形時, 只要受到超過 1 顆心的傷害就會解除"
+  tip-10:
+    title: "<aqua>關於抽獎...</aqua>"
+    content-1: "商店有販賣抽獎核心, 有機會抽中各種特殊裝備和道具"
+    content-2: "不過也有機率是負面的效果, 所以要注意抽獎的時機"
+    content-3: "每次抽中大獎 (金色), 那個人接下來抽中大獎的機率就會降低一些"
+  tip-11:
+    title: "<aqua>關於熔爐...</aqua>"
+    content-1: "遊戲中的熔爐燒製速度都是 5 倍, 經驗值也有顯著提高"
+    content-2: "除了鐵和金, 商店也有販賣一些生食, 可以買回家自己煮"
+  tip-12:
+    title: "<aqua>關於作物...</aqua>"
+    content-1: "遊戲中的作物並不會自然生長, 需要有人蹲在旁邊照顧"
+    content-2: "空手或持鋤頭時可以右鍵採收礦物"
 
 player:
   no-perm: "<red>你沒有權限這麼做!</red>"
@@ -962,7 +1002,7 @@ roles:
       desc-1: "<dark_purple>給所有隊友額外 6 顆心 (60s)</dark_purple>"
       announce: "<player> 使用了<yellow><role></yellow>技能, 隊友血量增加!"
   glutton:
-    name: "暴食者"
+    name: "大胃王"
     desc-1: "<gold>吸收附近敵人的飽食度並獲得抗性或速度!</gold>"
     feature-1: "無法自主進食, 必須靠既能回復飽食度"
     feature-2: "中毒時緩速 III"

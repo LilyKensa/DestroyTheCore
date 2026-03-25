@@ -27,8 +27,6 @@ public class KekkaiMasterRole extends Role {
   
   static public class Kekkai {
     
-    static public final double minSize = 3;
-    
     public enum Type {
       SPEED(Material.IRON_INGOT, Particle.WAX_OFF),
       HEALING(
@@ -258,7 +256,7 @@ public class KekkaiMasterRole extends Role {
         );
       }
     }
-    kekkais.removeIf(k -> k.size <= Kekkai.minSize);
+    kekkais.removeIf(k -> k.size <= 0);
   }
   
   static public void onTick() {
@@ -351,7 +349,7 @@ public class KekkaiMasterRole extends Role {
         }
       }
       
-      kekkai.centerYaw += 5;
+      kekkai.centerYaw += 20;
       if (kekkai.centerYaw >= 360) kekkai.centerYaw -= 360;
       kekkai.center.setRotation(kekkai.centerYaw, 0);
       
@@ -391,12 +389,12 @@ public class KekkaiMasterRole extends Role {
       else {
         kekkai.size -= 0.5;
       }
-      if (kekkai.size <= Kekkai.minSize) {
+      if (kekkai.size <= 0) {
         CoreUtils.setTickOut(() -> kekkai.center.remove());
       }
     }
     
-    kekkais.removeIf(k -> k.size <= Kekkai.minSize);
+    kekkais.removeIf(k -> k.size <= 0);
   }
   
   static public void onParticleTick() {
@@ -454,8 +452,12 @@ public class KekkaiMasterRole extends Role {
   
   @Override
   public void useSkill(Player pl) {
+    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
+    
     int replacedWarning = 0;
     for (Kekkai kekkai : kekkais) {
+      if (DestroyTheCore.game.playerData.get(kekkai.ownerId).side != data.side)
+        continue;
       if (!kekkai.contains(pl.getLocation())) continue;
       
       if (pl.isSneaking()) {

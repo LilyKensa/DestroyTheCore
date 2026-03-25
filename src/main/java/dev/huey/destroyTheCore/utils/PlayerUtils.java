@@ -382,7 +382,7 @@ public class PlayerUtils {
         pl,
         PotionEffectType.NIGHT_VISION,
         PotionEffect.INFINITE_DURATION,
-        0
+        1
       );
     }
     else {
@@ -513,7 +513,7 @@ public class PlayerUtils {
         && LocUtils.near(
           Pos.of(pl),
           LocUtils.selfSide(DestroyTheCore.game.map.core, d.side),
-          3
+          5
         )
     ) {
       if (d.respawnTime <= PlayerData.minRespawnTime) {
@@ -862,7 +862,7 @@ public class PlayerUtils {
           if (!(block.getBlockData() instanceof Ageable ageable)) continue;
           if (ageable.getAge() >= ageable.getMaximumAge()) continue;
           
-          if (RandomUtils.range(100) < 5) {
+          if (RandomUtils.range(10) < 2) {
             ageable.setAge(ageable.getAge() + 1);
             block.setBlockData(ageable);
             
