@@ -39,8 +39,12 @@ public class LastDitchGen extends UsableItemGen {
   public void use(Player pl, Block block) {
     PlayerData data = DestroyTheCore.game.getPlayerData(pl);
     SideData enemy = DestroyTheCore.game.getSideData(data.side.opposite());
-    
-    enemy.extraDamageTicks += 120 * 20;
+
+    enemy.addExtraDamage(
+      SideData.ExtraDamage.Reason.LAST_DITCH,
+      null,
+      120 * 20
+    );
     
     for (Player p : PlayerUtils.getTeammates(data.side)) {
       PlayerUtils.fullyHeal(p);

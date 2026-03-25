@@ -162,12 +162,17 @@ public class EventsManager implements Listener {
     
     DestroyTheCore.game.handlePickupArrow(ev);
   }
+
+  @EventHandler
+  public void onPlayerItemConsume(PlayerItemConsumeEvent ev) {
+    DestroyTheCore.game.handleItemUsed(ev.getPlayer(), ev.getItem(), ev);
+  }
   
   @EventHandler
   public void onFoodLevelChange(FoodLevelChangeEvent ev) {
     if (checkPaused(ev, ev.getEntity())) return;
     
-    DestroyTheCore.game.handleHungry(ev);
+    DestroyTheCore.game.handleFoodLevelChange(ev);
   }
   
   @EventHandler

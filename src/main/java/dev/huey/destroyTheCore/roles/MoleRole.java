@@ -7,6 +7,7 @@ import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.managers.RolesManager;
 import dev.huey.destroyTheCore.managers.TicksManager;
 import dev.huey.destroyTheCore.records.PlayerData;
+import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import java.util.*;
@@ -74,6 +75,8 @@ public class MoleRole extends Role {
     }
     
     for (Player e : PlayerUtils.getEnemies(pl)) {
+      if (!LocUtils.isSameWorld(e, pl)) continue;
+
       double distance = e.getLocation().distance(pl.getLocation());
       
       if (distance > radius) continue;

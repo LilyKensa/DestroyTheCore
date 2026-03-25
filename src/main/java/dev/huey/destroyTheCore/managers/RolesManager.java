@@ -36,7 +36,10 @@ public class RolesManager {
     CONSTRUCTOR,
     PROVOCATEUR,
     MOLE,
-    BOMBER
+    JOCKEY,
+    ROYAL,
+    GLUTTON,
+    HACKER
   }
   
   public Map<RoleKey, Role> roles;
@@ -49,11 +52,15 @@ public class RolesManager {
       new GoldDiggerRole(),
       new KekkaiMasterRole(), // Lv 2
       new ProvocateurRole(), // Lv 3
+      new JockeyRole(), // Lv 4
       new ConstructorRole(), // Lv 5
+      new RoyalRole(), // Lv 6
       new AssassinRole(), // Lv 7
+      new GluttonRole(), // Lv 8
       new RangerRole(), // Lv 9
       new WandererRole(), // Lv 10
-      new MoleRole() // Lv 12
+      new HackerRole() // Lv 11
+//      new MoleRole() // Lv 12
     ).collect(
       Collectors.toMap(r -> r.id, r -> r, (e, n) -> e, LinkedHashMap::new)
     );

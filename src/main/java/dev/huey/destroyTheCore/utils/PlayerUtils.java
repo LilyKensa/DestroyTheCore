@@ -539,6 +539,10 @@ public class PlayerUtils {
         DestroyTheCore.boardsManager.refresh(pl);
         
         pl.sendActionBar(TextUtils.$("game.reduce-respawn-time.done"));
+
+        if (d.role.id == RolesManager.RoleKey.HACKER) {
+          PlayerUtils.give(pl, Material.IRON_INGOT);
+        }
         
         pl.playSound(
           pl.getLocation(),
@@ -561,7 +565,7 @@ public class PlayerUtils {
             List.of(
               Placeholder.component(
                 "progress",
-                Component.text(d.rrtProgress / 20 + 1)
+                Component.text(d.rrtProgress / 20)
               )
             )
           )

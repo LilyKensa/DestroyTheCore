@@ -1009,6 +1009,15 @@ public class Game {
     
     DestroyTheCore.boardsManager.refresh(pl);
     PlayerUtils.scheduleRespawn(pl);
+
+    for (Player p : PlayerUtils.getEnemies(pl)) {
+      if (!LocUtils.near(p, pl, 15)) continue;
+
+      PlayerData d = getPlayerData(p);
+      if (d.alive && d.role.id == RolesManager.RoleKey.ROYAL) {
+        PlayerUtils.give(p, Material.GOLD_INGOT);
+      }
+    }
     
     List<Player> teammates = new ArrayList<>();
     int teammateCount = 0, enemyCount = 0;
@@ -1044,8 +1053,31 @@ public class Game {
       }
     }
   }
+
+  public void handleItemUsed(Player pl, ItemStack item, PlayerItemConsumeEvent ev) {
+    PlayerData data = getPlayerData(pl);
+
+    if (
+      item.getType().isEdible() &&
+      item.getType() != Material.POTION &&
+      data.role.id == RolesManager.RoleKey.GLUTTON
+    ) {
+      pl.sendActionBar(TextUtils.$("roles.glutton.eat-warning"));
+      ev.setCancelled(true);
+      return;
+    }
+
+    if (
+      item.getType() == Material.POTION &&
+      data.role.id == RolesManager.RoleKey.HACKER
+    ) {
+      pl.sendActionBar(TextUtils.$("roles.hacker.potion-warning"));
+      ev.setCancelled(true);
+      return;
+    }
+  }
   
-  public void handleHungry(FoodLevelChangeEvent ev) {
+  public void handleFoodLevelChange(FoodLevelChangeEvent ev) {
     if (!(ev.getEntity() instanceof Player pl)) return;
     
     if (LocUtils.inLobby(pl) || !getPlayerData(pl).isGaming()) {
@@ -1524,9 +1556,43 @@ public class Game {
     
     PlayerData data = getPlayerData(pl);
     data.addCoreAttack();
-    
+
     Side oppositeSide = data.side.opposite();
     SideData ocd = getSideData(oppositeSide);
+
+    double totalImmuneChance = ocd.immuneChances.stream().mapToDouble(ic -> ic.chance).sum();
+
+    if (RandomUtils.nextDouble() < totalImmuneChance) {
+      for (SideData.ImmuneChance ic : ocd.immuneChances) {
+        if (ic.origin == null || ic.origin.isOnline()) continue;
+
+        PlayerData d = getPlayerData(ic.origin);
+        if (!d.alive) continue;
+
+        d.addRespawnTime(5);
+      }
+
+      for (Player p : Bukkit.getOnlinePlayers()) {
+        p.playSound(
+          LocUtils.live(
+            LocUtils.selfSide(map.core.center(), oppositeSide)
+          ),
+          Sound.ENTITY_ENDER_DRAGON_FLAP,
+          0.8f, // Volume
+          1 // Pitch
+        );
+
+        p.playSound(
+          p.getLocation(),
+          Sound.ENTITY_ENDER_DRAGON_FLAP,
+          0.2f, // Volume
+          1 // Pitch
+        );
+      }
+
+      return;
+    }
+
     ocd.attackCore();
     
     DestroyTheCore.boardsManager.refresh();
@@ -2521,6 +2587,12 @@ public class Game {
     if (phase.equals(Phase.MissionsStarted.next)) {
       DestroyTheCore.missionsManager.stop();
     }
+
+    if (phase.equals(Phase.DoubleDamage)) {
+      for (SideData sd : sideData.values()) {
+        sd.addExtraDamage(SideData.ExtraDamage.Reason.PHASE, null, Integer.MAX_VALUE);
+      }
+    }
     
     DestroyTheCore.rolesManager.onPhaseChange(phase);
     
@@ -2776,7 +2848,7 @@ public class Game {
       Stats stat = getStats(p);
       
       if (data.side.equals(Side.SPECTATOR)) continue;
-      
+
       stat.addFromPlayerData(data);
     }
   }
@@ -2863,9 +2935,15 @@ public class Game {
         sd.clearInvCooldown--;
       }
       
-      if (sd.extraDamageTicks > 0) {
-        sd.extraDamageTicks--;
+      for (SideData.ExtraDamage ed : sd.extraDamages) {
+        ed.ticks--;
       }
+      sd.extraDamages.removeIf(ed -> ed.ticks <= 0);
+
+      for (SideData.ImmuneChance ic : sd.immuneChances) {
+        ic.ticks--;
+      }
+      sd.immuneChances.removeIf(ic -> ic.ticks <= 0);
       
       if (sd.noOresTicks > 0) {
         sd.noOresTicks--;
