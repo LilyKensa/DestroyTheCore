@@ -76,7 +76,7 @@ public class MoleRole extends Role {
     
     for (Player e : PlayerUtils.getEnemies(pl)) {
       if (!LocUtils.isSameWorld(e, pl)) continue;
-
+      
       double distance = e.getLocation().distance(pl.getLocation());
       
       if (distance > radius) continue;

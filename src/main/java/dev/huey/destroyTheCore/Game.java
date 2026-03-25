@@ -1009,10 +1009,10 @@ public class Game {
     
     DestroyTheCore.boardsManager.refresh(pl);
     PlayerUtils.scheduleRespawn(pl);
-
+    
     for (Player p : PlayerUtils.getEnemies(pl)) {
       if (!LocUtils.near(p, pl, 15)) continue;
-
+      
       PlayerData d = getPlayerData(p);
       if (d.alive && d.role.id == RolesManager.RoleKey.ROYAL) {
         PlayerUtils.give(p, Material.GOLD_INGOT);
@@ -1053,23 +1053,28 @@ public class Game {
       }
     }
   }
-
-  public void handleItemUsed(Player pl, ItemStack item, PlayerItemConsumeEvent ev) {
+  
+  public void handleItemUsed(
+    Player pl, ItemStack item, PlayerItemConsumeEvent ev
+  ) {
     PlayerData data = getPlayerData(pl);
-
+    
     if (
-      item.getType().isEdible() &&
-      item.getType() != Material.POTION &&
-      data.role.id == RolesManager.RoleKey.GLUTTON
+      item.getType().isEdible()
+        &&
+        item.getType() != Material.POTION
+        &&
+        data.role.id == RolesManager.RoleKey.GLUTTON
     ) {
       pl.sendActionBar(TextUtils.$("roles.glutton.eat-warning"));
       ev.setCancelled(true);
       return;
     }
-
+    
     if (
-      item.getType() == Material.POTION &&
-      data.role.id == RolesManager.RoleKey.HACKER
+      item.getType() == Material.POTION
+        &&
+        data.role.id == RolesManager.RoleKey.HACKER
     ) {
       pl.sendActionBar(TextUtils.$("roles.hacker.potion-warning"));
       ev.setCancelled(true);
@@ -1124,11 +1129,9 @@ public class Game {
       
       if (
         LocUtils.inLive(pl)
-          &&
-          ev.getHand() == EquipmentSlot.HAND
+          && ev.getHand() == EquipmentSlot.HAND
           && item != null
-          && item
-            .hasItemMeta()
+          && item.hasItemMeta()
           && item.getItemMeta().getPersistentDataContainer().has(
             Role.skillNamespace
           )
@@ -1556,22 +1559,24 @@ public class Game {
     
     PlayerData data = getPlayerData(pl);
     data.addCoreAttack();
-
+    
     Side oppositeSide = data.side.opposite();
     SideData ocd = getSideData(oppositeSide);
-
-    double totalImmuneChance = ocd.immuneChances.stream().mapToDouble(ic -> ic.chance).sum();
-
+    
+    double totalImmuneChance = ocd.immuneChances.stream().mapToDouble(
+      ic -> ic.chance
+    ).sum();
+    
     if (RandomUtils.nextDouble() < totalImmuneChance) {
       for (SideData.ImmuneChance ic : ocd.immuneChances) {
-        if (ic.origin == null || ic.origin.isOnline()) continue;
-
+        if (ic.origin == null || !ic.origin.isOnline()) continue;
+        
         PlayerData d = getPlayerData(ic.origin);
         if (!d.alive) continue;
-
+        
         d.addRespawnTime(5);
       }
-
+      
       for (Player p : Bukkit.getOnlinePlayers()) {
         p.playSound(
           LocUtils.live(
@@ -1581,7 +1586,7 @@ public class Game {
           0.8f, // Volume
           1 // Pitch
         );
-
+        
         p.playSound(
           p.getLocation(),
           Sound.ENTITY_ENDER_DRAGON_FLAP,
@@ -1589,10 +1594,10 @@ public class Game {
           1 // Pitch
         );
       }
-
+      
       return;
     }
-
+    
     ocd.attackCore();
     
     DestroyTheCore.boardsManager.refresh();
@@ -2587,10 +2592,14 @@ public class Game {
     if (phase.equals(Phase.MissionsStarted.next)) {
       DestroyTheCore.missionsManager.stop();
     }
-
+    
     if (phase.equals(Phase.DoubleDamage)) {
       for (SideData sd : sideData.values()) {
-        sd.addExtraDamage(SideData.ExtraDamage.Reason.PHASE, null, Integer.MAX_VALUE);
+        sd.addExtraDamage(
+          SideData.ExtraDamage.Reason.PHASE,
+          null,
+          Integer.MAX_VALUE
+        );
       }
     }
     
@@ -2848,7 +2857,7 @@ public class Game {
       Stats stat = getStats(p);
       
       if (data.side.equals(Side.SPECTATOR)) continue;
-
+      
       stat.addFromPlayerData(data);
     }
   }
@@ -2939,7 +2948,7 @@ public class Game {
         ed.ticks--;
       }
       sd.extraDamages.removeIf(ed -> ed.ticks <= 0);
-
+      
       for (SideData.ImmuneChance ic : sd.immuneChances) {
         ic.ticks--;
       }

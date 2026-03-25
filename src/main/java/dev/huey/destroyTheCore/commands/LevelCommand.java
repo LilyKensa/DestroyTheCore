@@ -52,6 +52,8 @@ public class LevelCommand extends Subcommand {
     
     DestroyTheCore.game.enforceLevelScore(target);
     
+    DestroyTheCore.boardsManager.refresh(target);
+    
     pl.sendMessage(
       TextUtils.$(
         "commands.level.changed",

@@ -6,6 +6,7 @@ import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.managers.RolesManager;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
+import java.util.List;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -18,12 +19,10 @@ import org.bukkit.inventory.HorseInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.List;
-
 public class JockeyRole extends Role {
   public JockeyRole() {
     super(RolesManager.RoleKey.JOCKEY);
-    addInfo(Material.HORSE_SPAWN_EGG);
+    addInfo(Material.DIAMOND_HORSE_ARMOR);
     addFeature();
     addExclusiveItem(Material.LEAD, meta -> {
       meta.addEnchant(Enchantment.KNOCKBACK, 1, true);
@@ -31,7 +30,7 @@ public class JockeyRole extends Role {
     addSkill(60 * 20);
     addLevelReq(4);
   }
-
+  
   @Override
   public void onTick(Player pl) {
     if (DestroyTheCore.ticksManager.isUpdateTick()) {
@@ -59,11 +58,11 @@ public class JockeyRole extends Role {
       }
     }
   }
-
+  
   @Override
   public void useSkill(Player pl) {
     skillFeedback(pl);
-
+    
     PlayerUtils.auraBroadcast(
       pl.getLocation(),
       10,
@@ -72,46 +71,51 @@ public class JockeyRole extends Role {
         List.of(
           Placeholder.component("player", PlayerUtils.getName(pl)),
           Placeholder.unparsed("role", name),
-          Placeholder.component("action", TextUtils.$("roles.jockey.skill.actions." + (
-            pl.getVehicle() instanceof Horse
-              ? "enhance"
-              : "summon"
-          )))
+          Placeholder.component(
+            "action",
+            TextUtils.$(
+              "roles.jockey.skill.actions." + (pl
+                .getVehicle() instanceof Horse ? "enhance" : "summon")
+            )
+          )
         )
       )
     );
-
+    
     if (pl.getVehicle() instanceof Horse horse) {
       horse.getAttribute(Attribute.MAX_HEALTH).setBaseValue(30);
       horse.setHealth(horse.getAttribute(Attribute.MAX_HEALTH).getBaseValue());
-
+      
       HorseInventory inv = horse.getInventory();
-      Material armorType = null;
-      switch (inv.getArmor().getType()) {
-        case AIR -> armorType = Material.IRON_HORSE_ARMOR;
-        case IRON_HORSE_ARMOR -> armorType = Material.DIAMOND_HORSE_ARMOR;
+      Material armorType;
+      if (inv.getArmor() == null) {
+        armorType = Material.IRON_HORSE_ARMOR;
       }
-
-      if (armorType != null) {
-        inv.setArmor(new ItemStack(armorType));
+      else {
+        armorType = Material.DIAMOND_HORSE_ARMOR;
       }
-
+      
+      inv.setArmor(new ItemStack(armorType));
+      
       new ParticleBuilder(Particle.HEART)
         .allPlayers()
         .location(horse.getEyeLocation())
-        .offset(0.2, 0.2, 0.2)
-        .count(3)
+        .offset(0.6, 0.2, 0.6)
+        .count(10)
         .extra(0)
         .spawn();
     }
     else {
-      Horse horse = (Horse) pl.getWorld().spawnEntity(pl.getLocation(), EntityType.HORSE);
-
+      Horse horse = (Horse) pl.getWorld().spawnEntity(
+        pl.getLocation(),
+        EntityType.HORSE
+      );
+      
       horse.setColor(Horse.Color.WHITE);
       horse.setStyle(Horse.Style.NONE);
-
+      
       horse.getInventory().setSaddle(new ItemStack(Material.SADDLE));
-
+      
       horse.setOwner(pl);
       horse.addPassenger(pl);
     }

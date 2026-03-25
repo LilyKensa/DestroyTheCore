@@ -8,18 +8,16 @@ import dev.huey.destroyTheCore.records.SideData;
 import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
-import net.kyori.adventure.text.Component;
+import java.util.List;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.List;
-
 public class HackerRole extends Role {
   public HackerRole() {
-    super(RolesManager.RoleKey.ROYAL);
+    super(RolesManager.RoleKey.HACKER);
     addInfo(Material.MUSIC_DISC_5);
     addFeature();
     addExclusiveItem(Material.SPYGLASS, meta -> {
@@ -28,25 +26,27 @@ public class HackerRole extends Role {
     addSkill(200 * 20);
     addLevelReq(11);
   }
-
-
+  
+  
   @Override
   public void onTick(Player pl) {
     if (DestroyTheCore.ticksManager.isUpdateTick()) {
       pl.removePotionEffect(PotionEffectType.INVISIBILITY);
     }
   }
-
+  
   @Override
   public void useSkill(Player pl) {
     skillFeedback(pl);
-
+    
     PlayerData data = DestroyTheCore.game.getPlayerData(pl);
-
+    
     boolean self = LocUtils.canAccess(data.side, pl.getLocation());
-
-    SideData sd = DestroyTheCore.game.getSideData(data.side);
-
+    
+    SideData sd = DestroyTheCore.game.getSideData(
+      self ? data.side : data.side.opposite()
+    );
+    
     if (self) {
       sd.addImmuneChance(
         SideData.ImmuneChance.Reason.ROLE_HACKER,
@@ -62,12 +62,12 @@ public class HackerRole extends Role {
         30 * 20
       );
     }
-
+    
     PlayerUtils.auraBroadcast(
       pl.getLocation(),
       10,
       TextUtils.$(
-        "roles.glutton.skill.announce",
+        "roles.hacker.skill.announce",
         List.of(
           Placeholder.component("player", PlayerUtils.getName(pl)),
           Placeholder.unparsed("role", name),

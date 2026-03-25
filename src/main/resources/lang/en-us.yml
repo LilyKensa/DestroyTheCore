@@ -927,7 +927,7 @@ roles:
     block-too-hard: "<red>This block is too hard, your claws hurt!</red>"
   jockey:
     name: "Jockey"
-    desc-1: "Strong on the horseback, useless when dismounted!"
+    desc-1: "<gold>Strong on the horseback, useless when dismounted!</gold>"
     feature-1: "Strength I & Resistance II when riding a vehicle"
     feature-2: "Slowness I otherwise"
     item:
@@ -946,11 +946,11 @@ roles:
         enhance: "enhanced"
   royal:
     name: "Royal"
-    desc-1: "Such a distinguished figure, it's an honor to be next to them!"
+    desc-1: "<gold>Such a distinguished figure, it's an honor to be next to them!</gold>"
     feature-1: "Gives teammates within 10 blocks Resistance I"
     feature-2: "Gets a gold ingot when an enemy died within 15 blocks"
     item:
-      name: "Royal Sword"
+      name: "<aqua>Royal Sword</aqua>"
       detail: "Fire Aspect I golden sword"
     skill:
       name: "Royal Patronage"
@@ -958,39 +958,39 @@ roles:
       announce: "<player> used <yellow><role></yellow>'s skill, teammates health increased!"
   glutton:
     name: "Glutton"
-    desc-1: "Absorb the saturation of others and use it to gain resistance or speed!"
+    desc-1: "<gold>Absorb the saturation of others and use it to gain resistance or speed!</gold>"
     feature-1: "Unable to eat on their own, they must use skills to fill their saturation"
     feature-2: "Slowness III when poisoned"
     item:
-      name: "Sharp Fish"
+      name: "<aqua>Sharp Fish</aqua>"
       detail: "Sharpness II cooked salmon"
     skill:
       name: "Binge Eating"
       desc-1: "<dark_purple>Steal food level from players within 5 blocks</dark_purple>"
       desc-2: "<dark_purple>Gains Regeneration IV (2s) & Weakness II (10s)</dark_purple>"
       desc-3: "<dark_purple>Gains extra effect based on absorbed players count:</dark_purple>"
-      desc-4: "<dark_purple>- For each teammate: Resistance (Max: IV)</dark_purple>"
-      desc-5: "<dark_purple>- For each enemy: Speed (Max: IV)</dark_purple>"
+      desc-4: "<dark_purple>- For each teammate: 5s Resistance (Max: IV)</dark_purple>"
+      desc-5: "<dark_purple>- For each enemy: 5s Speed (Max: IV)</dark_purple>"
       announce: "<player> used <yellow><role></yellow>'s skill, absorbed <aqua><amount></aqua> players' saturation!"
       not-hungry: "<red>You're full right now!</red>"
       no-target: "<red>No absorb target!</red>"
-      target: "<red>Your saturation is stolen by <player>!</red>"
+      stolen: "<red>Your saturation is stolen by <player>!</red>"
     eat-warning: "<red>You can't eat food!</red>"
   hacker:
     name: "Hacker"
-    desc-1: "Every successful network engineer has actually learned a little bit of hacking techniques"
+    desc-1: "<gold>Every successful network engineer has actually learned a little bit of hacking techniques</gold>"
     feature-1: "Stay atoning at the core will grant you iron ingots"
     feature-2: "Can't drink potions, can't get invisibility"
     feature-3: "Gains 5 sins for each core attacks when using skills"
     item:
-      name: "Single-lens Reflex Camera"
+      name: "<aqua>Single-lens Reflex Camera</aqua>"
       detail: "Bane of Arthropods V Spyglass"
     skill:
       name: "Implant Virus"
-      desc-1: "When closer to team core, defend it for 30s"
-      desc-2: "- Each attack have a 1/3 chance to fail"
-      desc-3: "When closer to enemy core, weaken it for 30s"
-      desc-4: "- Every attack does extra damage"
+      desc-1: "<dark_purple>When closer to team core, defend it for 30s</dark_purple>"
+      desc-2: "<dark_purple>- Each attack have a 1/3 chance to fail</dark_purple>"
+      desc-3: "<dark_purple>When closer to enemy core, weaken it for 30s</dark_purple>"
+      desc-4: "<dark_purple>- Every attack does extra damage</dark_purple>"
       announce: "<player> used <yellow><role></yellow>'s skill, implanted <aqua><type></aqua> virus to <side>!"
       types:
         self: "protection"

@@ -39,7 +39,7 @@ public class LastDitchGen extends UsableItemGen {
   public void use(Player pl, Block block) {
     PlayerData data = DestroyTheCore.game.getPlayerData(pl);
     SideData enemy = DestroyTheCore.game.getSideData(data.side.opposite());
-
+    
     enemy.addExtraDamage(
       SideData.ExtraDamage.Reason.LAST_DITCH,
       null,

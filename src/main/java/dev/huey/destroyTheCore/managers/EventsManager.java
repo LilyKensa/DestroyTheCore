@@ -162,7 +162,7 @@ public class EventsManager implements Listener {
     
     DestroyTheCore.game.handlePickupArrow(ev);
   }
-
+  
   @EventHandler
   public void onPlayerItemConsume(PlayerItemConsumeEvent ev) {
     DestroyTheCore.game.handleItemUsed(ev.getPlayer(), ev.getItem(), ev);

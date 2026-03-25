@@ -454,6 +454,8 @@ public class PlayerUtils {
   static public void addEffect(
     LivingEntity pl, PotionEffectType type, int ticks, int level, boolean beacon, boolean particles
   ) {
+    if (level <= 0) return;
+    
     pl.addPotionEffect(
       new PotionEffect(type, ticks, level - 1, beacon, particles)
     );
@@ -539,7 +541,7 @@ public class PlayerUtils {
         DestroyTheCore.boardsManager.refresh(pl);
         
         pl.sendActionBar(TextUtils.$("game.reduce-respawn-time.done"));
-
+        
         if (d.role.id == RolesManager.RoleKey.HACKER) {
           PlayerUtils.give(pl, Material.IRON_INGOT);
         }
