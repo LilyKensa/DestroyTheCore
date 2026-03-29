@@ -44,7 +44,7 @@ public class GluttonRole extends Role {
   public void useSkill(Player pl) {
     skillFeedback(pl);
     
-    if (pl.getFoodLevel() >= 18) {
+    if (pl.getFoodLevel() == 20) {
       pl.sendActionBar(TextUtils.$("roles.glutton.skill.not-hungry"));
       pl.setCooldown(Material.KNOWLEDGE_BOOK, 20);
       return;
@@ -59,8 +59,8 @@ public class GluttonRole extends Role {
       if (p == pl) continue;
       if (!LocUtils.near(p, pl, 5)) continue;
       
-      int food = Math.min(10, p.getFoodLevel());
-      float saturation = Math.min(4, p.getSaturation());
+      int food = Math.min(18, p.getFoodLevel());
+      float saturation = Math.min(6, p.getSaturation());
       
       if (food <= 0) continue;
       

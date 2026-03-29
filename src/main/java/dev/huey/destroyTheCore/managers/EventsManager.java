@@ -221,6 +221,11 @@ public class EventsManager implements Listener {
   }
   
   @EventHandler
+  public void onPrepareGrindstone(PrepareGrindstoneEvent ev) {
+    DestroyTheCore.game.handleGrinding(ev);
+  }
+  
+  @EventHandler
   public void onPrepareItemEnchant(EnchantItemEvent ev) {
     GuardRole.onEnchant(ev.getEnchanter());
   }

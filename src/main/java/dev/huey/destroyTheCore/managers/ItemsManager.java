@@ -106,7 +106,8 @@ public class ItemsManager {
     KEKKAI_MASTER_LEGGINGS,
     CONSTRUCTOR_HELMET,
     PROVOCATEUR_HELMET,
-    MOLE_BOOTS
+    MOLE_BOOTS,
+    ROYAL_HELMET
   }
   
   /** Filter item-gens by type */
@@ -190,7 +191,8 @@ public class ItemsManager {
       new KekkaiMasterLeggingsGen(),
       new ConstructorHelmetGen(),
       new ProvocateurHelmetGen(),
-      new MoleBootsGen()
+      new MoleBootsGen(),
+      new RoyalHelmetGen()
     ).collect(Collectors.toMap(ci -> ci.id, ci -> ci));
     
     usableGens = filterGens(UsableItemGen.class);

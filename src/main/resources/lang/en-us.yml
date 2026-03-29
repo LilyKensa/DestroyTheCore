@@ -290,6 +290,9 @@ world:
   template-warning: "<red>You're in the template world!</red>"
 
 commands:
+  suicide:
+    announce: "<player> <action>!"
+    actions: "suicided (This part is supposed to be some funny random message, but I'm too lazy at this moment, if you see this, please contact @._hueeey_. on Discord and tell him to move his lazy ass)"
   pause:
     true: "<green>Game paused by <player></green>"
     false: "<green>Game resumed <player></green>"
@@ -513,13 +516,16 @@ items:
     desc-1: "- <red>Bound item for Rangers</red>"
   constructor-helmet:
     name: "<aqua>Construction Site Helmet</aqua>"
-    desc-1: "- <red>Bound item for Constructor</red>"
+    desc-1: "- <red>Bound item for Constructors</red>"
   kekkai-master-leggings:
     name: "<aqua>Rune Pants</aqua>"
     desc-1: "- <red>Bound item for Kekkai Masters</red>"
   mole-boots:
     name: "<aqua>Claw Seal</aqua>"
     desc-1: "- <red>Bound item for Moles</red>"
+  royal-helmet:
+    name: "<aqua>Royal Hat</aqua>"
+    desc-1: "- <red>Bound item for Royals</red>"
   assign-clear-inv:
     name: "[<white>Token</white>] <light_purple>Thieves Gather</light_purple>"
     desc-1: "Clears a random enemy's inventory"

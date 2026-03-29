@@ -2195,22 +2195,40 @@ public class Game {
     }
   }
   
+  boolean checkTwoGen(ItemStack first, ItemStack second) {
+    return (first != null
+      &&
+      DestroyTheCore.itemsManager.isGen(first))
+      || (second != null
+        &&
+        DestroyTheCore.itemsManager.isGen(second));
+  }
+  
   public void handleRepair(PrepareAnvilEvent ev) {
     AnvilInventory inv = ev.getInventory();
+    
+    ItemStack result = ev.getResult();
+    if (result == null) return;
+    
     ItemStack left = inv.getItem(0);
     ItemStack right = inv.getItem(1);
+    
+    if (checkTwoGen(left, right)) {
+      ev.setResult(null);
+    }
+  }
+  
+  public void handleGrinding(PrepareGrindstoneEvent ev) {
+    GrindstoneInventory inv = ev.getInventory();
+    
     ItemStack result = ev.getResult();
+    if (result == null) return;
     
-    if (result == null || left == null || right == null) return;
+    ItemStack top = inv.getItem(0);
+    ItemStack bottom = inv.getItem(1);
     
-    if (left.isRepairableBy(right) || left.getType() == right.getType()) {
-      if (
-        DestroyTheCore.itemsManager.isGen(
-          left
-        ) || DestroyTheCore.itemsManager.isGen(right)
-      ) {
-        ev.setResult(null);
-      }
+    if (checkTwoGen(top, bottom)) {
+      ev.setResult(null);
     }
   }
   

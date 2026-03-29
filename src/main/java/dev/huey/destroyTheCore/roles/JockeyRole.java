@@ -84,7 +84,7 @@ public class JockeyRole extends Role {
     
     if (pl.getVehicle() instanceof Horse horse) {
       horse.getAttribute(Attribute.MAX_HEALTH).setBaseValue(30);
-      horse.setHealth(horse.getAttribute(Attribute.MAX_HEALTH).getBaseValue());
+      horse.setHealth(horse.getAttribute(Attribute.MAX_HEALTH).getValue());
       
       HorseInventory inv = horse.getInventory();
       Material armorType;

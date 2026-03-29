@@ -330,6 +330,9 @@ world:
   template-warning: "<red>你在模板世界中!</red>"
 
 commands:
+  suicide:
+    announce: "<player> <action>!"
+    actions: "決定跳過人生所有階段, 直接到達終點|意識到自己連續 10 天沒喝水了|忽然忘了怎麼呼吸|用脖子與房樑拔河|發現自己每天醒著就是滑手機 8 小時, 好像沒什麼意義|發現未來大家都要被 AI 取代, 感到人生無望|看了看銀行帳單, 決定退出人生|所有科目都被當, 但發現自己是亞洲人|大考前發現自己都沒讀書, 感到壓力山大"
   pause:
     true: "<green>遊戲被 <player> 暫停</green>"
     false: "<green>遊戲被 <player> 繼續</green>"
@@ -547,7 +550,7 @@ items:
     desc-1: "- <red>淘金者綁定物品</red>"
   provocateur-helmet:
     name: "<aqua>厚紙板箱子</aqua>"
-    desc-1: "- <red>挑釁者綁定物品</red>"
+    desc-1: "- <red>小丑綁定物品</red>"
   ranger-helmet:
     name: "<aqua>遊俠帽</aqua>"
     desc-1: "- <red>遊俠綁定物品</red>"
@@ -560,6 +563,9 @@ items:
   mole-boots:
     name: "<aqua>腳爪封印</aqua>"
     desc-1: "- <red>地鼠綁定物品</red>"
+  royal-helmet:
+    name: "<aqua>皇冠</aqua>"
+    desc-1: "- <red>公主綁定物品</red>"
   assign-clear-inv:
     name: "[<white>令牌</white>] <light_purple>盜賊集結</light_purple>"
     desc-1: "清空隨機敵人的背包"
@@ -783,7 +789,7 @@ roles:
       desc-1: "<dark_purple>後悔沒有找個好工作</dark_purple>"
       announce: "<player> 正在後悔沒有找個好工作..."
   attacker:
-    name: "突襲者"
+    name: "前鋒"
     desc-1: "<gold>衝鋒陷陣的主要攻擊核心者!</gold>"
     feature-1: "重生時間減半"
     item:
@@ -794,7 +800,7 @@ roles:
       desc-1: "<dark_purple>獲得加速 I (5s), 抗性 I (10s)</dark_purple>"
       announce: "<player> 使用了<yellow><role></yellow>技能, 跑速抗性增加!"
   guard:
-    name: "守護者"
+    name: "守衛"
     desc-1: "<gold>守護核心的重要防禦角色!</gold>"
     feature-1: "在自家核心旁 15 格內獲得回復 II"
     feature-2: "贖罪經驗值 ×3"
@@ -916,7 +922,7 @@ roles:
     no-bow: "<red>你不能使用弓箭!</red>"
   constructor:
     name: "建築師"
-    desc-1: "<gold>工人隨身攜帶一把榔頭也是正常的吧</gold>"
+    desc-1: "<gold>工人隨身攜帶一把榔頭也是正常的吧!</gold>"
     feature-1: "破壞木頭時:"
     feature-2: "- 得到 2 秒挖掘加速 I"
     feature-3: "- 有 5% 機會回復飽食度"
@@ -929,7 +935,7 @@ roles:
       announce: "<player> 使用了<yellow><role></yellow>技能, 蓋了一間豆腐屋!"
     eat-wood: "<aqua>挖木頭時不小心吃到了木屑, 飽食度已回復!</aqua>"
   wanderer:
-    name: "流浪者"
+    name: "孤狼"
     desc-1: "<gold>浪跡天涯心自高, 雙劍乾坤我獨豪</gold>"
     desc-2: "<gold>副持長劍更飄逸, 一技使人飛上天</gold>"
     feature-1: "副手持劍時加速 I, 回復 I"
@@ -944,8 +950,8 @@ roles:
       announce: "<player> 使用了<yellow><role></yellow>技能, 創造了引力電梯!"
     no-shield: "<red>你不能穿戴盾牌!</red>"
   provocateur:
-    name: "挑釁者"
-    desc-1: "<gold>完美的肉盾, 幫隊友擋傷害!</gold>"
+    name: "小丑"
+    desc-1: "<gold>太欠揍了, 想不打他都不行!</gold>"
     feature-1: "轉移 10 格內隊友受的 60% 傷害給自己"
     feature-2: "若自身正在套用吸收效果, 則改為轉移 90% 傷害"
     feature-3: "永久傷害輸出減少 20%"
@@ -953,7 +959,7 @@ roles:
       name: "<aqua>超派</aqua>"
       detail: "橫掃之刃 III 南瓜派"
     skill:
-      name: "成為肉盾"
+      name: "戴上面具"
       desc-1: "<dark_purple>獲得吸收 X & 抗性 III & 虛弱 & 發光 (10s)</dark_purple>"
       announce: "<player> 使用了<yellow><role></yellow>技能, 血量增加!"
   mole:
@@ -990,8 +996,8 @@ roles:
         summon: "召喚"
         enhance: "強化"
   royal:
-    name: "皇族"
-    desc-1: "<gold>一個尊貴的存在, 光是站在他旁邊就感到很榮幸!</gold>"
+    name: "公主"
+    desc-1: "<gold>最尊貴的存在, 光是待在她身旁就感到很榮幸!</gold>"
     feature-1: "給予 10 格內隊友抗性 I"
     feature-2: "15 格內敵人死亡獲得金碇"
     item:

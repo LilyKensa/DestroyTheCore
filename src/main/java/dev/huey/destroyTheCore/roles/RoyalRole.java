@@ -2,6 +2,7 @@ package dev.huey.destroyTheCore.roles;
 
 import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.bases.Role;
+import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.managers.RolesManager;
 import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
@@ -9,6 +10,7 @@ import dev.huey.destroyTheCore.utils.TextUtils;
 import java.util.List;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
@@ -23,6 +25,11 @@ public class RoyalRole extends Role {
     });
     addSkill(180 * 20);
     addLevelReq(6);
+  }
+  
+  @Override
+  public ItemsManager.ItemKey defHelmet() {
+    return ItemsManager.ItemKey.ROYAL_HELMET;
   }
   
   @Override
@@ -60,14 +67,21 @@ public class RoyalRole extends Role {
     );
     
     for (Player p : PlayerUtils.getTeammates(pl)) {
-      if (DestroyTheCore.game.getPlayerData(p).role.id != this.id) {
-        PlayerUtils.addPassiveEffect(
-          p,
-          PotionEffectType.ABSORPTION,
-          60 * 20,
-          3
-        );
-      }
+      if (DestroyTheCore.game.getPlayerData(p).role.id == this.id) continue;
+      
+      PlayerUtils.delayAssign(
+        pl,
+        p,
+        Particle.HEART,
+        () -> {
+          PlayerUtils.addPassiveEffect(
+            p,
+            PotionEffectType.ABSORPTION,
+            60 * 20,
+            3
+          );
+        }
+      );
     }
   }
 }

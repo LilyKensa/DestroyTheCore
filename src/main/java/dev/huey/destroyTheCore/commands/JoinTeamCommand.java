@@ -107,7 +107,7 @@ public class JoinTeamCommand extends Subcommand {
       PlayerUtils.refreshAllSpectatorVisibilities();
     }
     
-    for (ItemStack item : pl.getInventory().getContents()) {
+    for (ItemStack item : target.getInventory().getContents()) {
       if (item == null || item.getType().isAir()) continue;
       if (!(item.getItemMeta() instanceof LeatherArmorMeta meta)) continue;
       if (!DestroyTheCore.itemsManager.isGen(item)) continue;

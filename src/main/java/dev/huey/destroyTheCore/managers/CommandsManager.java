@@ -45,7 +45,8 @@ public class CommandsManager implements TabCompleter, CommandExecutor {
       new StatsCommand(),
       new BroadcastCommand(),
       new LevelCommand(),
-      new PauseCommand()
+      new PauseCommand(),
+      new SuicideCommand()
     );
   }
   

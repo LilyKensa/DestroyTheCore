@@ -21,6 +21,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.title.Title;
 import net.kyori.adventure.title.TitlePart;
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.Openable;
@@ -112,7 +113,9 @@ public class PlayerUtils {
   
   /** Broadcast to everyone */
   static public void broadcast(Component comp) {
-    for (Player pl : Bukkit.getOnlinePlayers()) send(pl, comp);
+    for (Player pl : Bukkit.getOnlinePlayers()) {
+      send(pl, comp);
+    }
   }
   
   /** Broadcast to nearby players */
@@ -369,7 +372,7 @@ public class PlayerUtils {
   
   static public void fullyHeal(Player pl) {
     resetHunger(pl);
-    pl.setHealth(20);
+    pl.setHealth(pl.getAttribute(Attribute.MAX_HEALTH).getValue());
     pl.setFireTicks(0);
     pl.setFreezeTicks(0);
     pl.setFallDistance(0);
@@ -912,7 +915,7 @@ public class PlayerUtils {
         Vector offset = LocUtils.hitboxCenter(to).subtract(pos).toVector();
         double dist = offset.length();
         
-        if (dist < 0.3) {
+        if (dist < 0.25) {
           apply();
           return;
         }
@@ -920,13 +923,18 @@ public class PlayerUtils {
         if (dist < 5) offset = offset.multiply(5 / dist);
         if (dist > 100) offset = offset.multiply(100 / dist);
         
-        pos.add(offset.multiply(0.1));
+        pos.add(offset.multiply(0.2));
         
-        new ParticleBuilder(particle)
-          .allPlayers()
-          .location(pos)
-          .extra(0)
-          .spawn();
+        if (
+          !to.isInvisible()
+            && !to.hasPotionEffect(PotionEffectType.INVISIBILITY)
+        ) {
+          new ParticleBuilder(particle)
+            .allPlayers()
+            .location(pos)
+            .extra(0)
+            .spawn();
+        }
       }
     }.runTaskTimer(DestroyTheCore.instance, 0, 1);
   }
