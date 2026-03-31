@@ -291,6 +291,8 @@ world:
 
 commands:
   suicide:
+    bad-time: "<red>You can't suicide right now!</red>"
+    already-dead: "<red>You're already dead!</red>"
     announce: "<player> <action>!"
     actions: "suicided (This part is supposed to be some funny random message, but I'm too lazy at this moment, if you see this, please contact @._hueeey_. on Discord and tell him to move his lazy ass)"
   pause:

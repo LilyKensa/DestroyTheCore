@@ -372,7 +372,7 @@ public class PlayerUtils {
   
   static public void fullyHeal(Player pl) {
     resetHunger(pl);
-    pl.setHealth(pl.getAttribute(Attribute.MAX_HEALTH).getValue());
+    pl.setHealth(AttributeUtils.get(pl, Attribute.MAX_HEALTH));
     pl.setFireTicks(0);
     pl.setFreezeTicks(0);
     pl.setFallDistance(0);
@@ -840,7 +840,7 @@ public class PlayerUtils {
     }
     
     for (ItemStack item : inv.getContents()) {
-      if (item != null && Tag.ITEMS_PICKAXES.isTagged(item.getType())) {
+      if (item != null && item.getType() == Material.GOLDEN_PICKAXE) {
         hasPickaxe = true;
         break;
       }

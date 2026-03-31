@@ -198,7 +198,7 @@ public class KekkaiMasterRole extends Role {
         ).color(side.color).decoration(TextDecoration.ITALIC, false)
       );
       
-      center.getAttribute(Attribute.MAX_HEALTH).setBaseValue(health);
+      AttributeUtils.set(center, Attribute.MAX_HEALTH, health);
       center.setHealth(health);
       
       PlayerUtils.addPassiveEffect(

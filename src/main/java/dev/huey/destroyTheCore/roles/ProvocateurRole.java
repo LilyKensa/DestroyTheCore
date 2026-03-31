@@ -4,6 +4,7 @@ import com.destroystokyo.paper.ParticleBuilder;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.managers.RolesManager;
+import dev.huey.destroyTheCore.utils.CoreUtils;
 import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
@@ -55,6 +56,10 @@ public class ProvocateurRole extends Role {
   @Override
   public void useSkill(Player pl) {
     skillFeedback(pl);
+    
+    if (CoreUtils.isSpecialDate(4, 1)) {
+      PlayerUtils.setHandCooldown(pl, skillCooldown / 2);
+    }
     
     PlayerUtils.glow(pl, 10 * 20);
     PlayerUtils.addEffect(

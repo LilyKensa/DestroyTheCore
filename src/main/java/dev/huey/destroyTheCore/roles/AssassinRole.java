@@ -5,10 +5,7 @@ import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.managers.RolesManager;
-import dev.huey.destroyTheCore.utils.LocUtils;
-import dev.huey.destroyTheCore.utils.ParticleUtils;
-import dev.huey.destroyTheCore.utils.PlayerUtils;
-import dev.huey.destroyTheCore.utils.TextUtils;
+import dev.huey.destroyTheCore.utils.*;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
@@ -103,9 +100,10 @@ public class AssassinRole extends Role {
       );
     }
     else if (
-      pl.getHealth() >= pl.getAttribute(
+      pl.getHealth() >= AttributeUtils.get(
+        pl,
         Attribute.MAX_HEALTH
-      ).getValue()
+      )
         && DestroyTheCore.game.phase != null
         && DestroyTheCore.game.phase.isAfter(
           Game.Phase.DoubleDamage

@@ -19,10 +19,19 @@ public class SuicideCommand extends Subcommand {
   
   @Override
   public void execute(Player pl, List<String> args) {
-    if (!DestroyTheCore.game.isPlaying || DestroyTheCore.game.paused) return;
+    if (!DestroyTheCore.game.isPlaying || DestroyTheCore.game.paused) {
+      PlayerUtils.prefixedSend(pl, TextUtils.$("commands.suicide.bad-time"));
+      return;
+    }
     
     PlayerData data = DestroyTheCore.game.getPlayerData(pl);
-    if (!data.alive) return;
+    if (!data.alive) {
+      PlayerUtils.prefixedSend(
+        pl,
+        TextUtils.$("commands.suicide.already-dead")
+      );
+      return;
+    }
     
     PlayerUtils.broadcast(
       TextUtils.$(

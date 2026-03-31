@@ -80,7 +80,7 @@ public class RangerRole extends Role {
       if (owner != null) {
         pl.damage(
           1,
-          DamageSource.builder(DamageType.ARROW).withDamageLocation(
+          DamageSource.builder(DamageType.MAGIC).withDamageLocation(
             mine.loc
           ).withDirectEntity(owner).withCausingEntity(owner).build()
         );

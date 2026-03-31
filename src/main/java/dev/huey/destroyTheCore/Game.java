@@ -845,7 +845,7 @@ public class Game {
       PotionEffectType.INVISIBILITY
     );
     
-    DestroyTheCore.itemsManager.onPlayerDamage(attacker, victim);
+    DestroyTheCore.itemsManager.onPlayerDamage(attacker, victim, ev.getCause());
   }
   
   static public Component bountyPrefix;
@@ -888,6 +888,7 @@ public class Game {
     
     DestroyTheCore.inventoriesManager.applyVanishingCurse(pl);
     DestroyTheCore.inventoriesManager.dropSome(pl, nextPlayerDropAll ? 1 : 0.1);
+    DestroyTheCore.inventoriesManager.dropXp(pl);
     DestroyTheCore.inventoriesManager.store(pl);
     
     nextPlayerDropAll = false;
@@ -1203,6 +1204,20 @@ public class Game {
     }
   }
   
+  boolean nearRest(Location loc) {
+    if (!LocUtils.inLive(loc)) return false;
+    
+    for (Pos rest : new Pos[]{
+      map.restArea, LocUtils.flip(map.restArea)
+    }) {
+      if (LocUtils.near(Pos.of(loc), rest, 6)) {
+        return true;
+      }
+    }
+    
+    return false;
+  }
+  
   EnumMap<Material, Material> cropDrops = new EnumMap<>(Material.class);
   
   public void handleRightClickBlock(PlayerInteractEvent ev) {
@@ -1245,19 +1260,10 @@ public class Game {
       return;
     }
     
-    for (Pos rest : new Pos[]{
-      map.restArea, LocUtils.flip(
-        map.restArea
-      )
-    }) {
-      if (
-        LocUtils.inLive(pl)
-          && LocUtils.near(Pos.of(block), rest, 6)
-      ) {
-        ev.getPlayer().sendActionBar(TextUtils.$("game.banned.use.rest-area"));
-        ev.setCancelled(true);
-        return;
-      }
+    if (nearRest(block.getLocation())) {
+      ev.getPlayer().sendActionBar(TextUtils.$("game.banned.use.rest-area"));
+      ev.setCancelled(true);
+      return;
     }
     
     if (
@@ -1346,6 +1352,12 @@ public class Game {
     
     if (!LocUtils.inLive(blockLoc)) {
       pl.sendActionBar(TextUtils.$("game.banned.place.lobby"));
+      ev.setCancelled(true);
+      return;
+    }
+    
+    if (nearRest(block.getLocation())) {
+      ev.getPlayer().sendActionBar(TextUtils.$("game.banned.use.rest-area"));
       ev.setCancelled(true);
       return;
     }
@@ -1687,18 +1699,10 @@ public class Game {
       return;
     }
     
-    for (Pos rest : new Pos[]{
-      map.restArea, LocUtils.flip(
-        map.restArea
-      )
-    }) {
-      if (
-        LocUtils.near(Pos.of(block), rest, 6)
-      ) {
-        pl.sendActionBar(TextUtils.$("game.banned.break.rest-area"));
-        ev.setCancelled(true);
-        return;
-      }
+    if (nearRest(block.getLocation())) {
+      ev.getPlayer().sendActionBar(TextUtils.$("game.banned.break.rest-area"));
+      ev.setCancelled(true);
+      return;
     }
     
     if (!data.alive) {
