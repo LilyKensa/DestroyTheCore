@@ -17,6 +17,10 @@ public class GiveCommand extends Subcommand {
         key -> key.name().toLowerCase()
       ).toList()
     );
+    addArgument(
+      "amount",
+      () -> List.of("<amount>")
+    );
   }
   
   @Override

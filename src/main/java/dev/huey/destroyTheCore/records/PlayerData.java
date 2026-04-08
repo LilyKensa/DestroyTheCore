@@ -33,6 +33,7 @@ public class PlayerData {
   public int killStreak = 0;
   public int respawnAt = -1;
   public boolean clearedInv = false;
+  public boolean skillReloadedMessage = true;
   
   public int kills = 0, deaths = 0;
   public int coreAttacks = 0;

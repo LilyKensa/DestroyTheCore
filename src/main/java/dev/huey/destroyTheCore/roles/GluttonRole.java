@@ -3,6 +3,7 @@ package dev.huey.destroyTheCore.roles;
 import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.managers.RolesManager;
+import dev.huey.destroyTheCore.records.PlayerData;
 import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
@@ -16,7 +17,7 @@ import org.bukkit.potion.PotionEffectType;
 
 public class GluttonRole extends Role {
   public GluttonRole() {
-    super(RolesManager.RoleKey.GLUTTON);
+    super(RolesManager.RoleType.ASSISTANCE, RolesManager.RoleKey.GLUTTON);
     addInfo(Material.COOKED_SALMON);
     addFeature();
     addExclusiveItem(Material.COOKED_SALMON, meta -> {
@@ -42,13 +43,17 @@ public class GluttonRole extends Role {
   
   @Override
   public void useSkill(Player pl) {
-    skillFeedback(pl);
+    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
     
     if (pl.getFoodLevel() == 20) {
       pl.sendActionBar(TextUtils.$("roles.glutton.skill.not-hungry"));
-      pl.setCooldown(Material.KNOWLEDGE_BOOK, 20);
+      data.skillReloadedMessage = true;
+      
+      pl.setCooldown(Material.KNOWLEDGE_BOOK, 10);
       return;
     }
+    
+    skillFeedback(pl);
     
     int amount = 0;
     int resistance = 0, speed = 0;
@@ -89,7 +94,9 @@ public class GluttonRole extends Role {
     
     if (amount <= 0) {
       pl.sendActionBar(TextUtils.$("roles.glutton.skill.no-target"));
-      pl.setCooldown(Material.KNOWLEDGE_BOOK, 20);
+      data.skillReloadedMessage = true;
+      
+      pl.setCooldown(Material.KNOWLEDGE_BOOK, 10);
       return;
     }
     

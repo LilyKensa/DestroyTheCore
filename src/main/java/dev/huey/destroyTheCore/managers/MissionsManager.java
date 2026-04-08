@@ -6,6 +6,9 @@ import dev.huey.destroyTheCore.missions.*;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.RandomUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -31,6 +34,49 @@ public class MissionsManager {
     PlayerUtils.broadcast(prefix.append(comp));
   }
   
+  Set<Mission> pool = new HashSet<>();
+  
+  void initializePool() {
+    pool = new HashSet<>(
+      List.of(
+        new ChickenMission(),
+        new RollCallMission(),
+        new CollectStarsMission(),
+        new OccupyCenterMission(),
+        new OresMission(),
+        new NoJumpMission(),
+        new TeleportCoreMission(),
+        new HungryMission(),
+        new EarthquakeCowMission(),
+        new NextDropAllMission(),
+        new JumpMission(),
+        new EatCakeMission(),
+        new DiscountTraderMission(),
+        new FreeMoneyMission(),
+        new DropOresMission(),
+        new AntiGravityMission(),
+        new XpFountainMission(),
+        new AngryBeesMission(),
+        new SwapPosMission(),
+        new SwapAllPosMission(),
+        new CovidMission(),
+        new RandomRoleMission(),
+        new FreeSoupMission(),
+        new HeroMission(),
+        new SneakWalkMission(),
+        new InvisMission(),
+        new CargoMission(),
+        new ExplodeMission(),
+        new InfiniteOresMission(),
+        new RocketMission(),
+        new ColdMission(),
+        new CursedItemMission(),
+        new GoOutsideMission(),
+        new FindSkullMission()
+      )
+    );
+  }
+  
   public void start() {
     prefix = TextUtils.$("mission.prefix");
     
@@ -54,42 +100,11 @@ public class MissionsManager {
       }
     }
     
-    mission = RandomUtils.pick(
-      new ChickenMission(),
-      new RollCallMission(),
-      new CollectStarsMission(),
-      new OccupyCenterMission(),
-      new OresMission(),
-      new NoJumpMission(),
-      new TeleportCoreMission(),
-      new HungryMission(),
-      new EarthquakeCowMission(),
-      new NextDropAllMission(),
-      new JumpMission(),
-      new EatCakeMission(),
-      new DiscountTraderMission(),
-      new FreeMoneyMission(),
-      new DropOresMission(),
-      new AntiGravityMission(),
-      new XpFountainMission(),
-      new AngryBeesMission(),
-      new SwapPosMission(),
-      new SwapAllPosMission(),
-      new CovidMission(),
-      new RandomRoleMission(),
-      new FreeSoupMission(),
-      new HeroMission(),
-      new SneakWalkMission(),
-      new InvisMission(),
-      new CargoMission(),
-      new ExplodeMission(),
-      new InfiniteOresMission(),
-      new RocketMission(),
-      new ColdMission(),
-      new CursedItemMission(),
-      new GoOutsideMission(),
-      new FindSkullMission()
-    );
+    if (pool.isEmpty()) {
+      initializePool();
+    }
+    
+    mission = RandomUtils.pickPop(pool);
     mission.init();
   }
   

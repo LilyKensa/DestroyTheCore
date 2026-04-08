@@ -3,6 +3,7 @@ package dev.huey.destroyTheCore.utils;
 import com.destroystokyo.paper.ParticleBuilder;
 import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.Game;
+import dev.huey.destroyTheCore.bases.ItemGen;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.managers.RolesManager;
 import dev.huey.destroyTheCore.records.PlayerData;
@@ -606,7 +607,15 @@ public class PlayerUtils {
     refreshAllSpectatorVisibilities();
     if (data.side.equals(Game.Side.SPECTATOR)) return;
     
-    pl.setCooldown(Material.KNOWLEDGE_BOOK, 0);
+    pl.setCooldown(
+      Material.KNOWLEDGE_BOOK,
+      Math.max(
+        pl.getCooldown(Material.KNOWLEDGE_BOOK) - data.extraSkillReload,
+        0
+      ) / 2
+    );
+    data.extraSkillReload = 0;
+    
     DestroyTheCore.inventoriesManager.restore(pl);
     CoreUtils.setTickOut(() -> giveEssentials(pl));
     
@@ -736,6 +745,17 @@ public class PlayerUtils {
   }
   
   static public void give(Player pl, Material type, int count) {
+    int maxCount = type.getMaxStackSize();
+    if (count > maxCount * 9) {
+      count = maxCount * 9;
+    }
+    
+    if (count > maxCount) {
+      give(pl, type, maxCount);
+      give(pl, type, count - maxCount);
+      return;
+    }
+    
     give(pl, new ItemStack(type, count));
   }
   
@@ -744,11 +764,20 @@ public class PlayerUtils {
   }
   
   static public void give(Player pl, ItemsManager.ItemKey key, int count) {
-    give(
-      pl,
-      DestroyTheCore.itemsManager.gens
-        .get(key).getItem(count)
-    );
+    ItemGen gen = DestroyTheCore.itemsManager.gens.get(key);
+    
+    int maxCount = gen.iconType.getMaxStackSize();
+    if (count > maxCount * 9) {
+      count = maxCount * 9;
+    }
+    
+    if (count > maxCount) {
+      give(pl, key, maxCount);
+      give(pl, key, count - maxCount);
+      return;
+    }
+    
+    give(pl, gen.getItem(count));
   }
   
   static public void give(Player pl, ItemsManager.ItemKey key) {
@@ -795,8 +824,10 @@ public class PlayerUtils {
       item.getType().name()
     ).find();
     
-    boolean hasFood = false, hasAnyWeapon = false, hasRoleItem = false,
-      hasPickaxe = false;
+    boolean hasFood = false;
+    boolean hasAnyWeapon = false;
+    boolean hasRoleItem = false;
+    boolean hasPickaxe = false;
     
     ItemStack roleItem = data.role.getExclusiveItem();
     
@@ -824,7 +855,17 @@ public class PlayerUtils {
       }
     }
     
-    if (!hasRoleItem) give(pl, roleItem);
+    if (!hasRoleItem) {
+      if (
+        roleItem.getType() == Material.SHIELD
+          && inv.getItemInOffHand().isEmpty()
+      ) {
+        inv.setItemInOffHand(roleItem);
+      }
+      else {
+        give(pl, roleItem);
+      }
+    }
     
     for (ItemStack item : inv.getContents()) {
       if (item != null && item.getType().isEdible()) {
@@ -847,6 +888,28 @@ public class PlayerUtils {
     }
     
     if (!hasPickaxe) give(pl, Material.GOLDEN_PICKAXE);
+  }
+  
+  static public boolean banBothHandItem(Player pl, Material type) {
+    boolean found = false;
+    
+    for (EquipmentSlot slot : new EquipmentSlot[]{
+      EquipmentSlot.HAND, EquipmentSlot.OFF_HAND
+    }) {
+      ItemStack item = pl.getInventory().getItem(slot);
+      
+      if (item.getType().equals(type)) {
+        pl.getInventory().setItem(slot, ItemStack.empty());
+        pl.getWorld().dropItemNaturally(
+          LocUtils.hitboxCenter(pl),
+          item
+        ).setPickupDelay(20);
+        
+        found = true;
+      }
+    }
+    
+    return found;
   }
   
   static public void growNearbyCrops(Player pl) {

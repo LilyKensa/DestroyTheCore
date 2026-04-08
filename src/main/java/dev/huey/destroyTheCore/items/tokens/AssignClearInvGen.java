@@ -26,13 +26,6 @@ public class AssignClearInvGen extends UsableItemGen {
   }
   
   public Allay summonAllayWithItem(Location location, ItemStack item) {
-    if (item == null || item.isEmpty()) return null;
-    if (
-      item.getType() == Material.KNOWLEDGE_BOOK
-        ||
-        DestroyTheCore.rolesManager.isExclusiveItem(item)
-    ) return null;
-    
     Allay allay = (Allay) location.getWorld().spawnEntity(
       location,
       EntityType.ALLAY
@@ -112,7 +105,6 @@ public class AssignClearInvGen extends UsableItemGen {
         PlayerInventory inv = target.getInventory();
         
         ItemStack[] items = inv.getContents();
-        inv.clear();
         
         new BukkitRunnable() {
           int index = 0;
@@ -127,10 +119,18 @@ public class AssignClearInvGen extends UsableItemGen {
                 return;
               }
               
-              summonAllayWithItem(
-                LocUtils.hitboxCenter(target),
-                items[index]
-              );
+              ItemStack item = items[index];
+              
+              if (
+                item == null
+                  || item.isEmpty()
+                  || item.getType() == Material.KNOWLEDGE_BOOK
+                  || DestroyTheCore.rolesManager.isExclusiveItem(item)
+              ) continue;
+              
+              inv.setItem(index, ItemStack.empty());
+              
+              summonAllayWithItem(LocUtils.hitboxCenter(target), item);
             }
           }
         }.runTaskTimer(DestroyTheCore.instance, 0, 2);

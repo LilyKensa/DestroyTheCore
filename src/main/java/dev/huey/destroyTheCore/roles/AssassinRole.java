@@ -5,6 +5,7 @@ import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.managers.RolesManager;
+import dev.huey.destroyTheCore.records.PlayerData;
 import dev.huey.destroyTheCore.utils.*;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -15,6 +16,8 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.AbstractArrow;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityShootBowEvent;
@@ -45,30 +48,43 @@ public class AssassinRole extends Role {
     resetStanding(pl);
   }
   
+  /**
+   * Not used as roles with {@code RolesManager.RoleType.ATTACKING} will now
+   * drop bows on use
+   */
   static public void onPlayerShootBow(Player pl, EntityShootBowEvent ev) {
     if (!PlayerUtils.shouldHandle(pl)) return;
     
     if (
       DestroyTheCore.game.getPlayerData(
         pl
-      ).role.id == RolesManager.RoleKey.ASSASSIN
-    ) {
-      if (ev.getConsumable() != null) {
-        Item itemEntity = pl.getWorld().dropItem(
-          pl.getEyeLocation(),
-          ev.getConsumable()
-        );
-        itemEntity.setPickupDelay(20);
-        itemEntity.setVelocity(ev.getProjectile().getVelocity());
-      }
+      ).role.id != RolesManager.RoleKey.ASSASSIN
+    ) return;
+    
+    if (ev.getConsumable() != null) {
+      Item itemEntity = pl.getWorld().dropItem(
+        pl.getEyeLocation(),
+        ev.getConsumable()
+      );
       
-      pl.sendActionBar(TextUtils.$("roles.assassin.no-bow"));
-      ev.setCancelled(true);
+      itemEntity.setPickupDelay(20);
+      itemEntity.setVelocity(ev.getProjectile().getVelocity());
+      
+      if (
+        ev.getProjectile() instanceof Arrow arrow
+          && arrow.getPickupStatus() != AbstractArrow.PickupStatus.ALLOWED
+      ) {
+        itemEntity.setCanPlayerPickup(false);
+        itemEntity.setCanMobPickup(false);
+      }
     }
+    
+    pl.sendActionBar(TextUtils.$("roles.assassin.no-bow"));
+    ev.setCancelled(true);
   }
   
   public AssassinRole() {
-    super(RolesManager.RoleKey.ASSASSIN);
+    super(RolesManager.RoleType.ATTACKING, RolesManager.RoleKey.ASSASSIN);
     addInfo(Material.ENDER_PEARL);
     addFeature();
     addExclusiveItem(
@@ -131,8 +147,12 @@ public class AssassinRole extends Role {
   
   @Override
   public void useSkill(Player pl) {
+    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
+    
     if (!pl.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
       pl.setCooldown(Material.KNOWLEDGE_BOOK, 10);
+      data.skillReloadedMessage = true;
+      
       pl.sendActionBar(TextUtils.$("roles.assassin.skill.not-invis"));
       return;
     }
@@ -156,6 +176,8 @@ public class AssassinRole extends Role {
     
     if (nearest == null) {
       pl.setCooldown(Material.KNOWLEDGE_BOOK, 10);
+      data.skillReloadedMessage = true;
+      
       pl.sendActionBar(TextUtils.$("roles.assassin.skill.no-target"));
       return;
     }

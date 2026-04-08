@@ -195,9 +195,14 @@ public class EventsManager implements Listener {
     ItemStack item = ev.getCurrentItem();
     if (item == null) return;
     
-    ClickType click = ev.getClick();
-    
-    DestroyTheCore.game.handleInventoryClick(inv, pl, item, click, ev);
+    DestroyTheCore.game.handleInventoryClick(
+      inv,
+      pl,
+      item,
+      ev.getClick(),
+      ev.getAction(),
+      ev
+    );
   }
   
   @EventHandler
@@ -281,10 +286,6 @@ public class EventsManager implements Listener {
       g.outerOnEntityShootBow(
         ev
       );
-    if (ev.getEntity() instanceof Player pl) AssassinRole.onPlayerShootBow(
-      pl,
-      ev
-    );
   }
   
   @EventHandler
@@ -302,6 +303,7 @@ public class EventsManager implements Listener {
   @EventHandler
   public void onEntityDeath(EntityDeathEvent ev) {
     KekkaiMasterRole.onEntityDeath(ev);
+    DestroyTheCore.game.handleEntityDeath(ev);
   }
   
   @EventHandler

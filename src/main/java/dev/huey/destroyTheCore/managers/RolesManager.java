@@ -5,24 +5,31 @@ import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.records.PlayerData;
 import dev.huey.destroyTheCore.roles.*;
+import dev.huey.destroyTheCore.utils.CoreUtils;
+import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.apache.logging.log4j.util.TriConsumer;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.persistence.PersistentDataType;
 
 public class RolesManager {
+  
+  public enum RoleType {
+    USELESS,
+    ATTACKING,
+    DEFENSE,
+    WORKING,
+    ASSISTANCE
+  }
   
   public enum RoleKey {
     DEFAULT,
@@ -67,7 +74,10 @@ public class RolesManager {
   }
   
   public void setRole(Player pl, Role role) {
-    DestroyTheCore.game.getPlayerData(pl).setRole(role);
+    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
+    
+    data.setRole(role);
+    
     DestroyTheCore.game.enforceTeam(pl);
     DestroyTheCore.boardsManager.refresh(pl);
     
@@ -75,53 +85,38 @@ public class RolesManager {
     
     PlayerInventory inv = pl.getInventory();
     
-    TriConsumer<Supplier<ItemStack>, Consumer<ItemStack>, ItemsManager.ItemKey> replacer = (
-      getter, setter, key
-    ) -> {
-      ItemStack replacement = DestroyTheCore.itemsManager.gens.get(
-        key
-      ).getItem();
+    BiConsumer<EquipmentSlot, ItemsManager.ItemKey> replacer = (slot, key) -> {
+      ItemStack replacement = DestroyTheCore.itemsManager.gens
+        .get(key).getItem();
+      
+      if (key.name().startsWith("STARTER")) {
+        CoreUtils.dyeTeamColor(replacement, data.side);
+      }
+      
+      ItemStack item = inv.getItem(slot);
       
       if (
-        key.name().startsWith("STARTER")
-      ) replacement.editMeta(uncastedMeta -> {
-        LeatherArmorMeta meta = (LeatherArmorMeta) uncastedMeta;
-        
-        meta.setColor(DestroyTheCore.game.getPlayerData(pl).side.dyeColor);
-        meta.addItemFlags(ItemFlag.HIDE_DYE);
-      });
-      
-      if (
-        getter.get() == null
-          || getter.get().isEmpty()
-          || (DestroyTheCore.itemsManager.isGen(
-            getter.get()
-          )
-            && DestroyTheCore.itemsManager.getGen(
-              getter.get()
-            ).isTrash())
+        item.isEmpty()
+          || (DestroyTheCore.itemsManager.isGen(item)
+            && DestroyTheCore.itemsManager.getGen(item).isTrash())
       ) {
-        setter.accept(replacement);
+        inv.setItem(slot, replacement);
       }
       else if (
         replacement.hasItemMeta()
-          && replacement.getItemMeta().hasEnchant(
-            Enchantment.BINDING_CURSE
-          )
+          && replacement.getItemMeta().hasEnchant(Enchantment.BINDING_CURSE)
       ) {
-        PlayerUtils.give(pl, getter.get());
-        setter.accept(replacement);
+        pl.getWorld()
+          .dropItemNaturally(LocUtils.hitboxCenter(pl), item)
+          .setPickupDelay(20);
+        inv.setItem(slot, replacement);
       }
     };
     
-    replacer.accept(inv::getHelmet, inv::setHelmet, role.defHelmet());
-    replacer.accept(
-      inv::getChestplate,
-      inv::setChestplate,
-      role.defChestplate()
-    );
-    replacer.accept(inv::getLeggings, inv::setLeggings, role.defLeggings());
-    replacer.accept(inv::getBoots, inv::setBoots, role.defBoots());
+    replacer.accept(EquipmentSlot.HEAD, role.defHelmet());
+    replacer.accept(EquipmentSlot.CHEST, role.defChestplate());
+    replacer.accept(EquipmentSlot.LEGS, role.defLeggings());
+    replacer.accept(EquipmentSlot.FEET, role.defBoots());
     
     ItemStack[] contents = inv.getContents();
     boolean hasItem = false;
@@ -129,8 +124,12 @@ public class RolesManager {
       ItemStack item = contents[i];
       if (item == null) continue;
       
-      if (item.getType() == Material.KNOWLEDGE_BOOK) {
-        contents[i] = role.getSkillItem();
+      if (
+        item.hasItemMeta()
+          && item.getItemMeta().getPersistentDataContainer()
+            .has(Role.skillNamespace)
+      ) {
+        contents[i].editMeta(role::editSkillItemMeta);
       }
       if (isExclusiveItem(item)) {
         hasItem = true;

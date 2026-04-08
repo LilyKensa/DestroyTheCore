@@ -222,7 +222,7 @@ public class MoleRole extends Role {
   }
   
   public MoleRole() {
-    super(RolesManager.RoleKey.MOLE);
+    super(RolesManager.RoleType.ATTACKING, RolesManager.RoleKey.MOLE);
     addInfo(Material.RABBIT_HIDE);
     addFeature();
     addExclusiveItem(

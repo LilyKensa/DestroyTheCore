@@ -17,9 +17,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.persistence.PersistentDataType;
 
-public class JoinTeamCommand extends Subcommand {
+public class SetTeamCommand extends Subcommand {
   
-  public JoinTeamCommand() {
+  public SetTeamCommand() {
     super("team");
     addArgument(
       "team",

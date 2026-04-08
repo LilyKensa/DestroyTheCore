@@ -28,9 +28,10 @@ public class MaybeGen implements ConfigurationSerializable {
   }
   
   public ItemStack get() {
-    if (key != null) return DestroyTheCore.itemsManager.gens.get(key).getItem(
-      amount
-    );
+    if (key != null) {
+      return DestroyTheCore.itemsManager.gens
+        .get(key).getItem(amount);
+    }
     
     return stack;
   }

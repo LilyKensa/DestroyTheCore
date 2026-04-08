@@ -18,9 +18,16 @@ import org.bukkit.potion.PotionEffectType;
 
 public class ProvocateurRole extends Role {
   
+  static public final double damageRatio = 0.9;
+  
+  static public double getTransferRatio(Player pl) {
+    return pl.hasPotionEffect(PotionEffectType.ABSORPTION) ? 0.9 : 0.6;
+  }
+  
   public ProvocateurRole() {
-    super(RolesManager.RoleKey.PROVOCATEUR);
+    super(RolesManager.RoleType.ASSISTANCE, RolesManager.RoleKey.PROVOCATEUR);
     addInfo(Material.HEAVY_CORE);
+    addFeature();
     addExclusiveItem(
       Material.PUMPKIN_PIE,
       meta -> {

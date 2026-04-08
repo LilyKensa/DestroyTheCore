@@ -114,7 +114,7 @@ public class WandererRole extends Role {
   }
   
   public WandererRole() {
-    super(RolesManager.RoleKey.WANDERER);
+    super(RolesManager.RoleType.ATTACKING, RolesManager.RoleKey.WANDERER);
     addInfo(Material.IRON_SWORD);
     addFeature();
     addExclusiveItem(
@@ -157,13 +157,7 @@ public class WandererRole extends Role {
         );
       }
       
-      if (offItem.getType().equals(Material.SHIELD)) {
-        pl.getInventory().setItemInOffHand(ItemStack.empty());
-        pl.getWorld().dropItemNaturally(
-          LocUtils.hitboxCenter(pl),
-          offItem
-        ).setPickupDelay(20);
-        
+      if (PlayerUtils.banBothHandItem(pl, Material.SHIELD)) {
         pl.sendActionBar(TextUtils.$("roles.wanderer.no-shield"));
       }
     }

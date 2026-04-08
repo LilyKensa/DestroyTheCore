@@ -42,11 +42,11 @@ public class RangerRole extends Role {
     }
   }
   
-  static public List<Mine> mines = new ArrayList<>();
+  static public Set<Mine> mines = new HashSet<>();
   
   static public final int maxMinesCount = 3;
   
-  static public Map<UUID, Integer> minesCount = new HashMap<>();
+  static public Map<UUID, List<Mine>> minesOwned = new HashMap<>();
   
   static public void onPlayerMove(Player pl) {
     boolean updatedMines = false;
@@ -63,10 +63,7 @@ public class RangerRole extends Role {
       
       if (!LocUtils.near(Pos.of(pl), Pos.of(mine.loc), mine.radius)) continue;
       
-      minesCount.put(
-        mine.ownerId,
-        minesCount.getOrDefault(mine.ownerId, 1) - 1
-      );
+      minesOwned.get(mine.ownerId).remove(mine);
       
       new ParticleBuilder(Particle.LAVA)
         .allPlayers()
@@ -163,7 +160,7 @@ public class RangerRole extends Role {
   }
   
   public RangerRole() {
-    super(RolesManager.RoleKey.RANGER);
+    super(RolesManager.RoleType.ATTACKING, RolesManager.RoleKey.RANGER);
     addInfo(Material.CROSSBOW);
     addFeature();
     addExclusiveItem(
@@ -206,10 +203,14 @@ public class RangerRole extends Role {
   
   @Override
   public void useSkill(Player pl) {
-    if (PlayerUtils.shouldHandle(pl)) {
-      UUID id = pl.getUniqueId();
-      int count = minesCount.getOrDefault(id, 0);
-      if (count >= maxMinesCount) {
+    UUID id = pl.getUniqueId();
+    
+    if (PlayerUtils.shouldHandle(pl) && minesOwned.containsKey(id)) {
+      List<Mine> owned = minesOwned.get(id);
+      if (owned.size() >= maxMinesCount) {
+        mines.remove(owned.getFirst());
+        owned.removeFirst();
+        
         pl.sendActionBar(
           TextUtils.$(
             "roles.ranger.skill.too-many",
@@ -218,15 +219,17 @@ public class RangerRole extends Role {
             )
           )
         );
-        pl.setCooldown(Material.KNOWLEDGE_BOOK, 20);
-        return;
       }
-      minesCount.put(id, count + 1);
     }
     
     skillFeedback(pl);
     
-    mines.add(new Mine(pl.getLocation().add(0, 0.1, 0), pl));
+    Mine mine = new Mine(pl.getLocation().add(0, 0.1, 0), pl);
+    mines.add(mine);
+    
+    if (!minesOwned.containsKey(id))
+      minesOwned.put(id, new ArrayList<>());
+    minesOwned.get(id).add(mine);
     
     PlayerUtils.auraBroadcast(
       pl.getLocation(),

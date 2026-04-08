@@ -32,7 +32,7 @@ public class GuardRole extends Role {
   }
   
   public GuardRole() {
-    super(RolesManager.RoleKey.GUARD);
+    super(RolesManager.RoleType.DEFENSE, RolesManager.RoleKey.GUARD);
     addInfo(Material.SHIELD);
     addFeature();
     addExclusiveItem(

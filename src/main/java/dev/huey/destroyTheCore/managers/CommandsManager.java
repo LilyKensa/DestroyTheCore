@@ -26,7 +26,7 @@ public class CommandsManager implements TabCompleter, CommandExecutor {
       new NightVisionCommand(),
       new ReloadCommand(),
       new SaveCommand(),
-      new JoinTeamCommand(),
+      new SetTeamCommand(),
       new SetRoleCommand(),
       new ShuffleTeamCommand(),
       new RejoinCommand(),

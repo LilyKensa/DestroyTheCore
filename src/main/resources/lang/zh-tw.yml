@@ -68,6 +68,7 @@ player:
   no-perm: "<red>你沒有權限這麼做!</red>"
   in-cooldown: "<red>這項物品冷卻還有 <value> 秒</red>"
   group-in-cooldown: "<red>此物品群組冷卻還有 <value> 秒</red>"
+  skill-reloaded: "<green>技能冷卻完成!</green>"
   respawning: "在 <seconds> 秒後重生"
   respawned: "<yellow>已重生</yellow>"
   item-sent-to-spawn: "<green>你被給予某樣物品, 但因為你正在等待重生, 已改為送至你的重生點!</green>"
@@ -128,7 +129,7 @@ game:
       own-core: "<red>你幹麻挖你自己核心!</red>"
       spectator: "<red>旁觀者不能破壞方塊!</red>"
     pour: "<red>你不能在核心旁倒液體!</red>"
-    open-enemy-container: "<red>你不能翻敵人的<type>!</red>"
+    open-enemy-container: "<red>你不能打開敵人的<type>!</red>"
   bounty:
     prefix: "[<light_purple>懸賞</light_purple>] "
     reward: "<player> 得到了 <white>綠寶石</white> × <dark_aqua><amount></dark_aqua>"
@@ -221,8 +222,15 @@ role:
   change: "<player> 轉職成為<yellow><role></yellow>"
   skill:
     title: "[<white>技能</white>] <light_purple><name></light_purple>"
-    cooldown: "- <light_purple>冷卻: <cooldown> 秒</light_purple>"
+    cooldown: "- <light_purple>冷卻 <cooldown> 秒</light_purple>"
   desc:
+    type: "<white>類型</white>: <dark_green><type></dark_green>"
+    types:
+      useless: "米蟲"
+      attacking: "進攻"
+      defense: "防守"
+      working: "工作"
+      assistance: "輔助"
     feature:
       first: "<white>特色</white>: <aqua><desc></aqua>"
       others: "<black>特色:</black> <aqua><desc></aqua>"
@@ -408,7 +416,7 @@ items:
     desc-2: "挖掘核心時有這麼多血量肯定撐很久!"
   god-helmet:
     name: "<aqua>朱雀神盔</aqua>"
-    desc-1: "由朱雀之羽打造合成, 具有強大抗擊效果!"
+    desc-1: "由朱雀之羽打造合成, 看 15 格內的人們就好像他們會發光!"
     desc-2: "防禦力和鐵製的一模一樣!"
   god-chestplate:
     name: "<aqua>玄武盾鎧</aqua>"
@@ -801,6 +809,7 @@ roles:
       name: "閃電戰開始"
       desc-1: "<dark_purple>獲得加速 I (5s), 抗性 I (10s)</dark_purple>"
       announce: "<player> 使用了<yellow><role></yellow>技能, 跑速抗性增加!"
+    no-bow: "<red>This role doesn't allow the use of bows!</red>"
   guard:
     name: "守衛"
     desc-1: "<gold>守護核心的重要防禦角色!</gold>"
@@ -811,7 +820,7 @@ roles:
       name: "<yellow>聖盾</yellow>"
       detail: "盾牌"
     skill:
-      name: "核心雜質清除"
+      name: "核心清理"
       desc-1: "<dark_purple>核心 15 格內的敵人將獲得:</dark_purple>"
       desc-2: "<dark_purple>- 發光 (60s)</dark_purple>"
       desc-3: "<dark_purple>- 緩速 V & 挖掘減速 V (5s)</dark_purple>"
@@ -854,7 +863,7 @@ roles:
       desc-1: "<dark_purple>放置一個陷阱 (最多存在 3 個)</dark_purple>"
       desc-2: "<dark_purple>踩上去的敵人獲得中毒 X (5s)</dark_purple>"
       announce: "<player> 使用了<yellow><role></yellow>技能, 放置了一個陷阱!"
-      too-many: "<red>你最多只能放置 <amount> 個陷阱!</red>"
+      too-many: "<red>你最多只能放置 <amount> 個陷阱, 所以第一個陷阱被移除了!</red>"
       trap-hit:
         owner: "<enemy> 採到你的陷阱!"
         enemy: "你踩到 <owner> 的陷阱!"
@@ -868,7 +877,7 @@ roles:
       name: "<aqua>結界杖</aqua>"
       detail: "擊退 I 釣竿"
     skill:
-      name: "結界展開"
+      name: "結界開張"
       desc-1: "<dark_purple>根據副手物品放置不同結界 (半徑 15 格)</dark_purple>"
       desc-2: "<dark_purple>鐵碇 - 加速 V (30s)</dark_purple>"
       desc-3: "<dark_purple>金碇 - 回復 II (30s)</dark_purple>"
@@ -950,13 +959,13 @@ roles:
       name: "引力電梯"
       desc-1: "<dark_purple>讓敵人起飛 & 虛弱 I</dark_purple>"
       announce: "<player> 使用了<yellow><role></yellow>技能, 創造了引力電梯!"
-    no-shield: "<red>你不能穿戴盾牌!</red>"
+    no-shield: "<red>此職業不允許使用盾牌!</red>"
   provocateur:
     name: "小丑"
     desc-1: "<gold>太欠揍了, 想不打他都不行!</gold>"
     feature-1: "轉移 10 格內隊友受的 60% 傷害給自己"
     feature-2: "若自身正在套用吸收效果, 則改為轉移 90% 傷害"
-    feature-3: "永久傷害輸出減少 20%"
+    feature-3: "永久傷害輸出減少 10%"
     item:
       name: "<aqua>超派</aqua>"
       detail: "橫掃之刃 III 南瓜派"
@@ -1049,3 +1058,4 @@ roles:
         self: "保護"
         enemy: "入侵"
     potion-warning: "<red>你不能喝藥水!</red>"
+    invis-warning: "<red>你不能隱形!</red>"

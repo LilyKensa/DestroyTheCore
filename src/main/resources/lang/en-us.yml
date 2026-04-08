@@ -28,6 +28,7 @@ player:
   no-perm: "<red>You don't have the permissions to do so!</red>"
   in-cooldown: "<red>This item is in <value>s cooldown</red>"
   group-in-cooldown: "<red>This item group is in <value>s cooldown</red>"
+  skill-reloaded: "<green>Skill reloaded!</green>"
   respawning: "Respawning in <seconds>"
   respawned: "<yellow>Respawned</yellow>"
   item-sent-to-spawn: "<green>You were given some item, but as you're dead, it was sent to your spawn!</green>"
@@ -181,8 +182,15 @@ role:
   change: "<player> changed role to <yellow><role></yellow>"
   skill:
     title: "[<white>Skill</white>] <light_purple><name></light_purple>"
-    cooldown: "- <light_purple>Cooldown: <cooldown>s</light_purple>"
+    cooldown: "- <light_purple>Cooldown <cooldown>s</light_purple>"
   desc:
+    type: "<white>Category</white>: <dark_green><type></dark_green>"
+    types:
+      useless: "Useless"
+      attacking: "Attacking"
+      defense: "Defense"
+      working: "Working"
+      assistance: "Assistance"
     feature:
       first: "<white>Feature</white>: <aqua><desc></aqua>"
       others: "<black>Feature:</black> <aqua><desc></aqua>"
@@ -368,7 +376,7 @@ items:
     desc-2: "With so much health, you can definitely last a long time when attacking the core!"
   god-helmet:
     name: "<aqua>Suzaku Helmet</aqua>"
-    desc-1: "Crafted from Suzaku feathers, it possesses powerful resistance!"
+    desc-1: "Crafted from Suzaku feathers, it can see players within 15 blocks as if they're glowing!"
     desc-2: "Its defense is identical to that of iron!"
   god-chestplate:
     name: "<aqua>Black Tortoise Armor</aqua>"
@@ -756,6 +764,7 @@ roles:
       name: "Blitz Launch"
       desc-1: "<dark_purple>Gets Speed I (5s), Resistance I (10s)</dark_purple>"
       announce: "<player> used <yellow><role></yellow>'s skill, increased speed and resistance!"
+    no-bow: "<red>This role doesn't allow the use of bows!</red>"
   guard:
     name: "Guard"
     desc-1: "<gold>An important defensive role guarding the core!</gold>"
@@ -809,7 +818,7 @@ roles:
       desc-1: "<dark_purple>Places a trap (Max 3 at a time)</dark_purple>"
       desc-2: "<dark_purple>Enemies trapped will get Poison X (5s)</dark_purple>"
       announce: "<player> used <yellow><role></yellow>'s skill, placed a trap!"
-      too-many: "<red>You can only place <amount> traps!</red>"
+      too-many: "<red>You can only place <amount> traps, so the first one is removed!</red>"
       trap-hit:
         owner: "<enemy> fell into your trap!"
         enemy: "You fell into <owner>'s trap!"
@@ -905,13 +914,13 @@ roles:
       name: "Anti-gravity Elevator"
       desc-1: "<dark_purple>Makes players levitate & Weakness I</dark_purple>"
       announce: "<player> used <yellow><role></yellow>'s skill, created an elevator!"
-    no-shield: "<red>You can't equip a shield!</red>"
+    no-shield: "<red>This role doesn't allow the use of shields!</red>"
   provocateur:
     name: "Provocateur"
     desc-1: "<gold>Absolute tank, help teammates take damage!</gold>"
     feature-1: "Transfer 60% damage of teammates within 10 blocks to themself"
     feature-2: "When absorption effect is applied, transfer 90% damage instead"
-    feature-3: "All damage output is reduce by 20%"
+    feature-3: "All damage output is reduce by 10%"
     item:
       name: "<aqua>Super Pie</aqua>"
       detail: "Sweeping Edge III pumpkin pie"
@@ -1004,3 +1013,4 @@ roles:
         self: "protection"
         enemy: "invasion"
     potion-warning: "<red>You can't drink potions!</red>"
+    invis-warning: "<red>You can't turn invisible!</red>"

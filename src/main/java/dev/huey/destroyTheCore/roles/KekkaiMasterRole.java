@@ -256,7 +256,7 @@ public class KekkaiMasterRole extends Role {
         );
       }
     }
-    kekkais.removeIf(k -> k.size <= 0);
+    kekkais.removeIf(k -> k.duration <= 0);
   }
   
   static public void onTick() {
@@ -386,15 +386,12 @@ public class KekkaiMasterRole extends Role {
       if (kekkai.duration > 0) {
         kekkai.duration--;
       }
-      else {
-        kekkai.size -= 0.5;
-      }
-      if (kekkai.size <= 0) {
+      if (kekkai.duration <= 0) {
         CoreUtils.setTickOut(() -> kekkai.center.remove());
       }
     }
     
-    kekkais.removeIf(k -> k.size <= 0);
+    kekkais.removeIf(k -> k.duration <= 0);
   }
   
   static public void onParticleTick() {
@@ -404,7 +401,7 @@ public class KekkaiMasterRole extends Role {
   }
   
   public KekkaiMasterRole() {
-    super(RolesManager.RoleKey.KEKKAI_MASTER);
+    super(RolesManager.RoleType.ASSISTANCE, RolesManager.RoleKey.KEKKAI_MASTER);
     addInfo(Material.BEACON);
     addFeature();
     addExclusiveItem(
@@ -469,6 +466,8 @@ public class KekkaiMasterRole extends Role {
     }
     if (replacedWarning > 0) {
       pl.setCooldown(Material.KNOWLEDGE_BOOK, 10);
+      data.skillReloadedMessage = true;
+      
       pl.sendActionBar(
         TextUtils.$(
           "roles.kekkai-master.skill.inside-kekkai",

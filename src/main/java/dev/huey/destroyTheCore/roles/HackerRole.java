@@ -17,7 +17,7 @@ import org.bukkit.potion.PotionEffectType;
 
 public class HackerRole extends Role {
   public HackerRole() {
-    super(RolesManager.RoleKey.HACKER);
+    super(RolesManager.RoleType.ASSISTANCE, RolesManager.RoleKey.HACKER);
     addInfo(Material.MUSIC_DISC_5);
     addFeature();
     addExclusiveItem(Material.SPYGLASS, meta -> {
@@ -31,7 +31,14 @@ public class HackerRole extends Role {
   @Override
   public void onTick(Player pl) {
     if (DestroyTheCore.ticksManager.isUpdateTick()) {
-      pl.removePotionEffect(PotionEffectType.INVISIBILITY);
+      if (
+        PlayerUtils.shouldHandle(pl)
+          && pl.hasPotionEffect(PotionEffectType.INVISIBILITY)
+      ) {
+        pl.removePotionEffect(PotionEffectType.INVISIBILITY);
+        
+        pl.sendActionBar(TextUtils.$("roles.hacker.invis-warning"));
+      }
     }
   }
   
