@@ -34,17 +34,41 @@ public class RandomUtils {
     return nextDouble() < chance;
   }
   
-  static public <T> T pick(List<T> list) {
-    if (list.isEmpty()) return null;
+  static <T> T generalPick(
+    Collection<T> collection, boolean remove
+  ) {
+    if (collection.isEmpty()) return null;
     
-    return list.get(Math.floorMod(nextInt(), list.size()));
+    int targetIndex = Math.floorMod(nextInt(), collection.size());
+    
+    Iterator<T> it = collection.iterator();
+    T result = null;
+    
+    for (int i = 0; i <= targetIndex; ++i) {
+      result = it.next();
+      if (i == targetIndex) {
+        if (remove) it.remove();
+        break;
+      }
+    }
+    
+    return result;
+  }
+  
+  static public <T> T pick(List<T> list) {
+    return generalPick(list, false);
+  }
+  
+  @SafeVarargs
+  static public <T> T pick(T... array) {
+    return pick(Arrays.asList(array));
   }
   
   static public <T> T pick(Set<T> set) {
-    return pick(new ArrayList<>(set));
+    return generalPick(set, false);
   }
   
-  static public <T> T pick(T... array) {
-    return pick(Arrays.asList(array));
+  static public <T> T pickPop(Set<T> set) {
+    return generalPick(set, true);
   }
 }

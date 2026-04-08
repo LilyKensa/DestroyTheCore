@@ -2,6 +2,9 @@ package dev.huey.destroyTheCore.utils;
 
 import dev.huey.destroyTheCore.DestroyTheCore;
 import org.bukkit.NamespacedKey;
+import org.bukkit.attribute.Attributable;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.inventory.EquipmentSlotGroup;
 
@@ -37,5 +40,24 @@ public class AttributeUtils {
       AttributeModifier.Operation.ADD_SCALAR,
       slot
     );
+  }
+  
+  static public AttributeInstance instance(
+    Attributable entity, Attribute attribute
+  ) {
+    return entity.getAttribute(attribute);
+  }
+  
+  static public double get(Attributable entity, Attribute attribute) {
+    return instance(entity, attribute).getValue();
+  }
+  
+  static public void set(
+    Attributable entity, Attribute attribute, double value
+  ) {
+    AttributeInstance instance = instance(entity, attribute);
+    if (instance == null) return;
+    
+    instance.setBaseValue(value);
   }
 }

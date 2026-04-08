@@ -3,6 +3,7 @@ package dev.huey.destroyTheCore.utils;
 import com.destroystokyo.paper.ParticleBuilder;
 import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.Game;
+import dev.huey.destroyTheCore.bases.ItemGen;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.managers.RolesManager;
 import dev.huey.destroyTheCore.records.PlayerData;
@@ -21,6 +22,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.title.Title;
 import net.kyori.adventure.title.TitlePart;
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.Openable;
@@ -112,7 +114,9 @@ public class PlayerUtils {
   
   /** Broadcast to everyone */
   static public void broadcast(Component comp) {
-    for (Player pl : Bukkit.getOnlinePlayers()) send(pl, comp);
+    for (Player pl : Bukkit.getOnlinePlayers()) {
+      send(pl, comp);
+    }
   }
   
   /** Broadcast to nearby players */
@@ -369,7 +373,7 @@ public class PlayerUtils {
   
   static public void fullyHeal(Player pl) {
     resetHunger(pl);
-    pl.setHealth(20);
+    pl.setHealth(AttributeUtils.get(pl, Attribute.MAX_HEALTH));
     pl.setFireTicks(0);
     pl.setFreezeTicks(0);
     pl.setFallDistance(0);
@@ -382,7 +386,7 @@ public class PlayerUtils {
         pl,
         PotionEffectType.NIGHT_VISION,
         PotionEffect.INFINITE_DURATION,
-        0
+        1
       );
     }
     else {
@@ -454,6 +458,8 @@ public class PlayerUtils {
   static public void addEffect(
     LivingEntity pl, PotionEffectType type, int ticks, int level, boolean beacon, boolean particles
   ) {
+    if (level <= 0) return;
+    
     pl.addPotionEffect(
       new PotionEffect(type, ticks, level - 1, beacon, particles)
     );
@@ -511,7 +517,7 @@ public class PlayerUtils {
         && LocUtils.near(
           Pos.of(pl),
           LocUtils.selfSide(DestroyTheCore.game.map.core, d.side),
-          3
+          5
         )
     ) {
       if (d.respawnTime <= PlayerData.minRespawnTime) {
@@ -540,6 +546,10 @@ public class PlayerUtils {
         
         pl.sendActionBar(TextUtils.$("game.reduce-respawn-time.done"));
         
+        if (d.role.id == RolesManager.RoleKey.HACKER) {
+          PlayerUtils.give(pl, Material.IRON_INGOT);
+        }
+        
         pl.playSound(
           pl.getLocation(),
           Sound.BLOCK_BEACON_POWER_SELECT,
@@ -561,7 +571,7 @@ public class PlayerUtils {
             List.of(
               Placeholder.component(
                 "progress",
-                Component.text(d.rrtProgress / 20 + 1)
+                Component.text(d.rrtProgress / 20)
               )
             )
           )
@@ -597,7 +607,15 @@ public class PlayerUtils {
     refreshAllSpectatorVisibilities();
     if (data.side.equals(Game.Side.SPECTATOR)) return;
     
-    pl.setCooldown(Material.KNOWLEDGE_BOOK, 0);
+    pl.setCooldown(
+      Material.KNOWLEDGE_BOOK,
+      Math.max(
+        pl.getCooldown(Material.KNOWLEDGE_BOOK) - data.extraSkillReload,
+        0
+      ) / 2
+    );
+    data.extraSkillReload = 0;
+    
     DestroyTheCore.inventoriesManager.restore(pl);
     CoreUtils.setTickOut(() -> giveEssentials(pl));
     
@@ -727,6 +745,17 @@ public class PlayerUtils {
   }
   
   static public void give(Player pl, Material type, int count) {
+    int maxCount = type.getMaxStackSize();
+    if (count > maxCount * 9) {
+      count = maxCount * 9;
+    }
+    
+    if (count > maxCount) {
+      give(pl, type, maxCount);
+      give(pl, type, count - maxCount);
+      return;
+    }
+    
     give(pl, new ItemStack(type, count));
   }
   
@@ -735,11 +764,20 @@ public class PlayerUtils {
   }
   
   static public void give(Player pl, ItemsManager.ItemKey key, int count) {
-    give(
-      pl,
-      DestroyTheCore.itemsManager.gens
-        .get(key).getItem(count)
-    );
+    ItemGen gen = DestroyTheCore.itemsManager.gens.get(key);
+    
+    int maxCount = gen.iconType.getMaxStackSize();
+    if (count > maxCount * 9) {
+      count = maxCount * 9;
+    }
+    
+    if (count > maxCount) {
+      give(pl, key, maxCount);
+      give(pl, key, count - maxCount);
+      return;
+    }
+    
+    give(pl, gen.getItem(count));
   }
   
   static public void give(Player pl, ItemsManager.ItemKey key) {
@@ -786,8 +824,10 @@ public class PlayerUtils {
       item.getType().name()
     ).find();
     
-    boolean hasFood = false, hasAnyWeapon = false, hasRoleItem = false,
-      hasPickaxe = false;
+    boolean hasFood = false;
+    boolean hasAnyWeapon = false;
+    boolean hasRoleItem = false;
+    boolean hasPickaxe = false;
     
     ItemStack roleItem = data.role.getExclusiveItem();
     
@@ -815,7 +855,17 @@ public class PlayerUtils {
       }
     }
     
-    if (!hasRoleItem) give(pl, roleItem);
+    if (!hasRoleItem) {
+      if (
+        roleItem.getType() == Material.SHIELD
+          && inv.getItemInOffHand().isEmpty()
+      ) {
+        inv.setItemInOffHand(roleItem);
+      }
+      else {
+        give(pl, roleItem);
+      }
+    }
     
     for (ItemStack item : inv.getContents()) {
       if (item != null && item.getType().isEdible()) {
@@ -831,13 +881,35 @@ public class PlayerUtils {
     }
     
     for (ItemStack item : inv.getContents()) {
-      if (item != null && Tag.ITEMS_PICKAXES.isTagged(item.getType())) {
+      if (item != null && item.getType() == Material.GOLDEN_PICKAXE) {
         hasPickaxe = true;
         break;
       }
     }
     
     if (!hasPickaxe) give(pl, Material.GOLDEN_PICKAXE);
+  }
+  
+  static public boolean banBothHandItem(Player pl, Material type) {
+    boolean found = false;
+    
+    for (EquipmentSlot slot : new EquipmentSlot[]{
+      EquipmentSlot.HAND, EquipmentSlot.OFF_HAND
+    }) {
+      ItemStack item = pl.getInventory().getItem(slot);
+      
+      if (item.getType().equals(type)) {
+        pl.getInventory().setItem(slot, ItemStack.empty());
+        pl.getWorld().dropItemNaturally(
+          LocUtils.hitboxCenter(pl),
+          item
+        ).setPickupDelay(20);
+        
+        found = true;
+      }
+    }
+    
+    return found;
   }
   
   static public void growNearbyCrops(Player pl) {
@@ -856,7 +928,7 @@ public class PlayerUtils {
           if (!(block.getBlockData() instanceof Ageable ageable)) continue;
           if (ageable.getAge() >= ageable.getMaximumAge()) continue;
           
-          if (RandomUtils.range(100) < 5) {
+          if (RandomUtils.range(10) < 2) {
             ageable.setAge(ageable.getAge() + 1);
             block.setBlockData(ageable);
             
@@ -906,7 +978,7 @@ public class PlayerUtils {
         Vector offset = LocUtils.hitboxCenter(to).subtract(pos).toVector();
         double dist = offset.length();
         
-        if (dist < 0.3) {
+        if (dist < 0.25) {
           apply();
           return;
         }
@@ -914,13 +986,18 @@ public class PlayerUtils {
         if (dist < 5) offset = offset.multiply(5 / dist);
         if (dist > 100) offset = offset.multiply(100 / dist);
         
-        pos.add(offset.multiply(0.1));
+        pos.add(offset.multiply(0.2));
         
-        new ParticleBuilder(particle)
-          .allPlayers()
-          .location(pos)
-          .extra(0)
-          .spawn();
+        if (
+          !to.isInvisible()
+            && !to.hasPotionEffect(PotionEffectType.INVISIBILITY)
+        ) {
+          new ParticleBuilder(particle)
+            .allPlayers()
+            .location(pos)
+            .extra(0)
+            .spawn();
+        }
       }
     }.runTaskTimer(DestroyTheCore.instance, 0, 1);
   }

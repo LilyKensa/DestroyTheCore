@@ -130,11 +130,6 @@ public class GlowManager {
       Player target = PlayerUtils.getPlayerByEntityId(entityId);
       if (target == null || target == viewer) return;
       
-      //      CoreUtils.log("Caught %s to %s".formatted(
-      //        target.getName(),
-      //        viewer.getName()
-      //      ));
-      
       boolean glow = shouldSeeGlow(viewer, target);
       
       List<WrappedDataValue> dataValues = packet
@@ -145,7 +140,6 @@ public class GlowManager {
         if (value.getIndex() != 0) continue;
         
         byte v = (byte) value.getValue();
-        //        CoreUtils.log("Value: %s".formatted(String.format("%8s", Integer.toBinaryString(v & 0xFF)).replace(' ', '0')));
         value.setValue(
           (byte) (glow ? v | MetadataBit.GLOWING.bit : v & ~MetadataBit.GLOWING.bit)
         );
@@ -179,12 +173,6 @@ public class GlowManager {
         boolean now = shouldSeeGlow(viewer, target);
         
         if (last != now) {
-          //          CoreUtils.log("Resending %s to %s: %c -> %c".formatted(
-          //            target.getName(),
-          //            viewer.getName(),
-          //            last ? 'O' : 'X',
-          //            now ? 'O' : 'X'
-          //          ));
           resend(viewer, target, now);
         }
       }

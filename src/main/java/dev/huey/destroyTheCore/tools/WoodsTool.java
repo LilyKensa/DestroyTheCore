@@ -19,8 +19,10 @@ public class WoodsTool extends RegionTool {
     Set<Pos> set = DestroyTheCore.game.map.woods;
     if (set.isEmpty()) return null;
     
-    double minX = 9999, minY = 9999, minZ = 9999;
-    double maxX = -9999, maxY = -9999, maxZ = -9999;
+    double minX = Integer.MAX_VALUE, minY = Integer.MAX_VALUE,
+      minZ = Integer.MAX_VALUE;
+    double maxX = Integer.MIN_VALUE, maxY = Integer.MIN_VALUE,
+      maxZ = Integer.MIN_VALUE;
     for (Pos pos : set) {
       double x = pos.getX();
       double y = pos.getY();

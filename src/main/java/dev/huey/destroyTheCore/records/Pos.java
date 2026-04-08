@@ -10,6 +10,9 @@ import org.bukkit.entity.Entity;
 import org.bukkit.util.Vector;
 
 public class Pos implements ConfigurationSerializable {
+  public record BlockRec(int x, int y, int z) {
+  }
+  
   double x, y, z;
   float yaw, pitch;
   
@@ -51,8 +54,8 @@ public class Pos implements ConfigurationSerializable {
     return new Location(world, x, y, z, yaw, pitch);
   }
   
-  public BlockPos toBlockPos() {
-    return new BlockPos((int) x, (int) y, (int) z);
+  public BlockRec toBlockRec() {
+    return new BlockRec((int) x, (int) y, (int) z);
   }
   
   public Pos clone() {

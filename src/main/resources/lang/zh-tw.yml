@@ -23,11 +23,52 @@ tips:
     title: "<aqua>關於罪惡值...</aqua>"
     content-1: "殺人或挖核心會增加你的罪惡值"
     content-2: "罪惡值越高, 重生所需時間越久"
+  tip-3:
+    title: "<aqua>關於等級系統...</aqua>"
+    content-1: "經歷每一個階段, 挖礦, 殺人, 攻擊核心等都會增加經驗值"
+    content-2: "不斷累積經驗, 等級條滿了便可以升級, 解鎖更多職業"
+  tip-4:
+    title: "<aqua>關於小偷...</aqua>"
+    content-1: "離敵人家比較近的箱子不能開"
+    content-2: "持有附魔台及終界箱會獲得緩速 X"
+  tip-5:
+    title: "<aqua>關於殺人...</aqua>"
+    content-1: "殺人時會獲得一小段時間負面效果, 包含虛弱, 失明 & 緩速等等"
+    content-2: "連續殺 10 個人會成為殺人隊長, 擊殺後會獲得獎勵 10 顆綠寶石"
+  tip-6:
+    title: "<aqua>關於核心...</aqua>"
+    content-1: "核心的能量非常強大, 附近的水, 岩漿都會被吸收, 黑曜石會被破壞"
+    content-2: "挖掘核心會受到一小段時間挖掘緩速 & 發光效果"
+  tip-7:
+    title: "<aqua>關於礦物...</aqua>"
+    content-1: "資源平衡是除了打架技術以外最重要的"
+    content-2: "除了黃金和綠寶石是商店購物的貨幣, 礦工也要記得挖青金石幫隊友附魔裝備和武器"
+  tip-8:
+    title: "<aqua>關於噴裝...</aqua>"
+    content-1: "每次死亡身上的每樣物品都有 10% 機率會噴出"
+    content-2: "另外, 附魔台和終界箱一定會噴出"
+  tip-9:
+    title: "<aqua>關於隱形...</aqua>"
+    content-1: "隱形時, 只要受到超過 1 顆心的傷害就會解除"
+  tip-10:
+    title: "<aqua>關於抽獎...</aqua>"
+    content-1: "商店有販賣抽獎核心, 有機會抽中各種特殊裝備和道具"
+    content-2: "不過也有機率是負面的效果, 所以要注意抽獎的時機"
+    content-3: "每次抽中大獎 (金色), 那個人接下來抽中大獎的機率就會降低一些"
+  tip-11:
+    title: "<aqua>關於熔爐...</aqua>"
+    content-1: "遊戲中的熔爐燒製速度都是 5 倍, 經驗值也有顯著提高"
+    content-2: "除了鐵和金, 商店也有販賣一些生食, 可以買回家自己煮"
+  tip-12:
+    title: "<aqua>關於作物...</aqua>"
+    content-1: "遊戲中的作物並不會自然生長, 需要有人蹲在旁邊照顧"
+    content-2: "空手或持鋤頭時可以右鍵採收礦物"
 
 player:
   no-perm: "<red>你沒有權限這麼做!</red>"
   in-cooldown: "<red>這項物品冷卻還有 <value> 秒</red>"
   group-in-cooldown: "<red>此物品群組冷卻還有 <value> 秒</red>"
+  skill-reloaded: "<green>技能冷卻完成!</green>"
   respawning: "在 <seconds> 秒後重生"
   respawned: "<yellow>已重生</yellow>"
   item-sent-to-spawn: "<green>你被給予某樣物品, 但因為你正在等待重生, 已改為送至你的重生點!</green>"
@@ -88,7 +129,7 @@ game:
       own-core: "<red>你幹麻挖你自己核心!</red>"
       spectator: "<red>旁觀者不能破壞方塊!</red>"
     pour: "<red>你不能在核心旁倒液體!</red>"
-    open-enemy-container: "<red>你不能翻敵人的<type>!</red>"
+    open-enemy-container: "<red>你不能打開敵人的<type>!</red>"
   bounty:
     prefix: "[<light_purple>懸賞</light_purple>] "
     reward: "<player> 得到了 <white>綠寶石</white> × <dark_aqua><amount></dark_aqua>"
@@ -181,8 +222,15 @@ role:
   change: "<player> 轉職成為<yellow><role></yellow>"
   skill:
     title: "[<white>技能</white>] <light_purple><name></light_purple>"
-    cooldown: "- <light_purple>冷卻: <cooldown> 秒</light_purple>"
+    cooldown: "- <light_purple>冷卻 <cooldown> 秒</light_purple>"
   desc:
+    type: "<white>類型</white>: <dark_green><type></dark_green>"
+    types:
+      useless: "米蟲"
+      attacking: "進攻"
+      defense: "防守"
+      working: "工作"
+      assistance: "輔助"
     feature:
       first: "<white>特色</white>: <aqua><desc></aqua>"
       others: "<black>特色:</black> <aqua><desc></aqua>"
@@ -290,6 +338,11 @@ world:
   template-warning: "<red>你在模板世界中!</red>"
 
 commands:
+  suicide:
+    bad-time: "<red>你現在不能自殺!</red>"
+    already-dead: "<red>你已經死了!</red>"
+    announce: "<player> <action>!"
+    actions: "決定跳過人生所有階段, 直接到達終點|意識到自己連續 10 天沒喝水了|忽然忘了怎麼呼吸|用脖子與房樑拔河|發現自己每天醒著就是滑手機 8 小時, 好像沒什麼意義|發現未來大家都要被 AI 取代, 感到人生無望|看了看銀行帳單, 決定退出人生|所有科目都被當, 但發現自己是亞洲人|大考前發現自己都沒讀書, 感到壓力山大"
   pause:
     true: "<green>遊戲被 <player> 暫停</green>"
     false: "<green>遊戲被 <player> 繼續</green>"
@@ -363,7 +416,7 @@ items:
     desc-2: "挖掘核心時有這麼多血量肯定撐很久!"
   god-helmet:
     name: "<aqua>朱雀神盔</aqua>"
-    desc-1: "由朱雀之羽打造合成, 具有強大抗擊效果!"
+    desc-1: "由朱雀之羽打造合成, 看 15 格內的人們就好像他們會發光!"
     desc-2: "防禦力和鐵製的一模一樣!"
   god-chestplate:
     name: "<aqua>玄武盾鎧</aqua>"
@@ -507,7 +560,7 @@ items:
     desc-1: "- <red>淘金者綁定物品</red>"
   provocateur-helmet:
     name: "<aqua>厚紙板箱子</aqua>"
-    desc-1: "- <red>挑釁者綁定物品</red>"
+    desc-1: "- <red>小丑綁定物品</red>"
   ranger-helmet:
     name: "<aqua>遊俠帽</aqua>"
     desc-1: "- <red>遊俠綁定物品</red>"
@@ -520,6 +573,9 @@ items:
   mole-boots:
     name: "<aqua>腳爪封印</aqua>"
     desc-1: "- <red>地鼠綁定物品</red>"
+  royal-helmet:
+    name: "<aqua>皇冠</aqua>"
+    desc-1: "- <red>公主綁定物品</red>"
   assign-clear-inv:
     name: "[<white>令牌</white>] <light_purple>盜賊集結</light_purple>"
     desc-1: "清空隨機敵人的背包"
@@ -743,7 +799,7 @@ roles:
       desc-1: "<dark_purple>後悔沒有找個好工作</dark_purple>"
       announce: "<player> 正在後悔沒有找個好工作..."
   attacker:
-    name: "突襲者"
+    name: "前鋒"
     desc-1: "<gold>衝鋒陷陣的主要攻擊核心者!</gold>"
     feature-1: "重生時間減半"
     item:
@@ -753,8 +809,9 @@ roles:
       name: "閃電戰開始"
       desc-1: "<dark_purple>獲得加速 I (5s), 抗性 I (10s)</dark_purple>"
       announce: "<player> 使用了<yellow><role></yellow>技能, 跑速抗性增加!"
+    no-bow: "<red>This role doesn't allow the use of bows!</red>"
   guard:
-    name: "守護者"
+    name: "守衛"
     desc-1: "<gold>守護核心的重要防禦角色!</gold>"
     feature-1: "在自家核心旁 15 格內獲得回復 II"
     feature-2: "贖罪經驗值 ×3"
@@ -763,7 +820,7 @@ roles:
       name: "<yellow>聖盾</yellow>"
       detail: "盾牌"
     skill:
-      name: "核心雜質清除"
+      name: "核心清理"
       desc-1: "<dark_purple>核心 15 格內的敵人將獲得:</dark_purple>"
       desc-2: "<dark_purple>- 發光 (60s)</dark_purple>"
       desc-3: "<dark_purple>- 緩速 V & 挖掘減速 V (5s)</dark_purple>"
@@ -790,7 +847,7 @@ roles:
     skill:
       name: "貪婪之心"
       desc-1: "<dark_purple>獲得幸運 III (15s)</dark_purple>"
-      announce: "<player> 使用了<yellow><role></yellow>技能!"
+      announce: "<player> 使用了<yellow><role></yellow>技能, 運氣提升!"
     ores-bonus: "<aqua><player> 的加成<ore></aqua>"
   ranger:
     name: "遊俠"
@@ -806,7 +863,7 @@ roles:
       desc-1: "<dark_purple>放置一個陷阱 (最多存在 3 個)</dark_purple>"
       desc-2: "<dark_purple>踩上去的敵人獲得中毒 X (5s)</dark_purple>"
       announce: "<player> 使用了<yellow><role></yellow>技能, 放置了一個陷阱!"
-      too-many: "<red>你最多只能放置 <amount> 個陷阱!</red>"
+      too-many: "<red>你最多只能放置 <amount> 個陷阱, 所以第一個陷阱被移除了!</red>"
       trap-hit:
         owner: "<enemy> 採到你的陷阱!"
         enemy: "你踩到 <owner> 的陷阱!"
@@ -820,14 +877,13 @@ roles:
       name: "<aqua>結界杖</aqua>"
       detail: "擊退 I 釣竿"
     skill:
-      name: "結界展開"
+      name: "結界開張"
       desc-1: "<dark_purple>根據副手物品放置不同結界 (半徑 15 格)</dark_purple>"
       desc-2: "<dark_purple>鐵碇 - 加速 V (30s)</dark_purple>"
       desc-3: "<dark_purple>金碇 - 回復 II (30s)</dark_purple>"
       desc-4: "<dark_purple>紅石 - 防彈 (30s)</dark_purple>"
       desc-5: "<dark_purple>綠寶石 - 抗性 II (30s)</dark_purple>"
       desc-6: "<dark_purple>青金石 - 礦物冷卻時間減半 (30s)</dark_purple>"
-      desc-7: "<dark_purple>鑽石 - 力量 I (30s)</dark_purple>"
       desc-7: "<dark_purple>鑽石 - 力量 I (30s)</dark_purple>"
       desc-8: "<dark_purple>鐵磚 - 加速 V (30s)</dark_purple>"
       desc-9: "<dark_purple>金磚 - 恢復飽食度 (10s)</dark_purple>"
@@ -877,7 +933,7 @@ roles:
     no-bow: "<red>你不能使用弓箭!</red>"
   constructor:
     name: "建築師"
-    desc-1: "<gold>工人隨身攜帶一把榔頭也是正常的吧</gold>"
+    desc-1: "<gold>工人隨身攜帶一把榔頭也是正常的吧!</gold>"
     feature-1: "破壞木頭時:"
     feature-2: "- 得到 2 秒挖掘加速 I"
     feature-3: "- 有 5% 機會回復飽食度"
@@ -890,7 +946,7 @@ roles:
       announce: "<player> 使用了<yellow><role></yellow>技能, 蓋了一間豆腐屋!"
     eat-wood: "<aqua>挖木頭時不小心吃到了木屑, 飽食度已回復!</aqua>"
   wanderer:
-    name: "流浪者"
+    name: "孤狼"
     desc-1: "<gold>浪跡天涯心自高, 雙劍乾坤我獨豪</gold>"
     desc-2: "<gold>副持長劍更飄逸, 一技使人飛上天</gold>"
     feature-1: "副手持劍時加速 I, 回復 I"
@@ -903,18 +959,18 @@ roles:
       name: "引力電梯"
       desc-1: "<dark_purple>讓敵人起飛 & 虛弱 I</dark_purple>"
       announce: "<player> 使用了<yellow><role></yellow>技能, 創造了引力電梯!"
-    no-shield: "<red>你不能穿戴盾牌!</red>"
+    no-shield: "<red>此職業不允許使用盾牌!</red>"
   provocateur:
-    name: "挑釁者"
-    desc-1: "<gold>完美的肉盾, 幫隊友擋傷害!</gold>"
+    name: "小丑"
+    desc-1: "<gold>太欠揍了, 想不打他都不行!</gold>"
     feature-1: "轉移 10 格內隊友受的 60% 傷害給自己"
     feature-2: "若自身正在套用吸收效果, 則改為轉移 90% 傷害"
-    feature-3: "永久傷害輸出減少 20%"
+    feature-3: "永久傷害輸出減少 10%"
     item:
       name: "<aqua>超派</aqua>"
       detail: "橫掃之刃 III 南瓜派"
     skill:
-      name: "成為肉盾"
+      name: "戴上面具"
       desc-1: "<dark_purple>獲得吸收 X & 抗性 III & 虛弱 & 發光 (10s)</dark_purple>"
       announce: "<player> 使用了<yellow><role></yellow>技能, 血量增加!"
   mole:
@@ -931,3 +987,75 @@ roles:
       desc-2: "<dark_purple>跳出潛伏狀態會造成爆炸, 對附近的敵人造成傷害</dark_purple>"
       announce: "<player> 使用了<yellow><role></yellow>技能, 潛入了地底!"
     block-too-hard: "<red>這個方塊太硬了, 你的爪子很痛!</red>"
+  jockey:
+    name: "騎士"
+    desc-1: "<gold>強在馬背上, 死在馬路上!</gold>"
+    feature-1: "在坐騎上時力量 I & 抗性 II"
+    feature-2: "否則緩速 I"
+    item:
+      name: "<aqua>馬鞭</aqua>"
+      detail: "擊退 I 栓繩"
+    skill:
+      name: "強化馬兒"
+      desc-1: "<dark_purple>騎馬時, 加強那批馬:</dark_purple>"
+      desc-2: "<dark_purple>- 強化最大血量至 15 心</dark_purple>"
+      desc-3: "<dark_purple>- 升級一階馬鎧 (無 → 鐵製 → 鑽石)</dark_purple>"
+      desc-4: "<dark_purple>- 回滿血量</dark_purple>"
+      desc-5: "<dark_purple>否則, 召喚一批馬</dark_purple>"
+      announce: "<player> 使用了<yellow><role></yellow>技能, <action>了馬兒!"
+      actions:
+        summon: "召喚"
+        enhance: "強化"
+  royal:
+    name: "公主"
+    desc-1: "<gold>最尊貴的存在, 光是待在她身旁就感到很榮幸!</gold>"
+    feature-1: "給予 10 格內隊友抗性 I"
+    feature-2: "15 格內敵人死亡獲得金碇"
+    item:
+      name: "<aqua>皇家寶劍</aqua>"
+      detail: "燃燒 I 金劍"
+    skill:
+      name: "皇家庇護"
+      desc-1: "<dark_purple>給所有隊友額外 6 顆心 (60s)</dark_purple>"
+      announce: "<player> 使用了<yellow><role></yellow>技能, 隊友血量增加!"
+  glutton:
+    name: "大胃王"
+    desc-1: "<gold>吸收附近敵人的飽食度並獲得抗性或速度!</gold>"
+    feature-1: "無法自主進食, 必須靠既能回復飽食度"
+    feature-2: "中毒時緩速 III"
+    item:
+      name: "<aqua>鋒利烤魚</aqua>"
+      detail: "鋒利 II 烤鮭魚"
+    skill:
+      name: "暴飲暴食"
+      desc-1: "<dark_purple>從 5 格內玩家盜取飽食度</dark_purple>"
+      desc-2: "<dark_purple>得到回復 IV (2s) & 虛弱 II (10s)</dark_purple>"
+      desc-3: "<dark_purple>根據身旁的玩家數量得到其他效果:</dark_purple>"
+      desc-4: "<dark_purple>- 對於每個隊友: 5s 抗性 (最高: IV)</dark_purple>"
+      desc-5: "<dark_purple>- 對於每個敵人: 5s 速度 (最高: IV)</dark_purple>"
+      announce: "<player> 使用了<yellow><role></yellow>技能, 吸取了 <aqua><amount></aqua> 位玩家的飽食度!"
+      not-hungry: "<red>你目前還很飽!</red>"
+      no-target: "<red>找不到吸食目標!</red>"
+      stolen: "<red>你的飽食度被 <player> 盜走了!</red>"
+    eat-warning: "<red>你不能主動進食!</red>"
+  hacker:
+    name: "駭客"
+    desc-1: "<gold>每個成功的網路工程師, 其實都有稍微學一點駭客技術</gold>"
+    feature-1: "宅在家贖罪時會獲得鐵碇"
+    feature-2: "不能喝藥水, 不能獲得隱形效果"
+    feature-3: "技能施放期間每下核心攻擊增加 5 點罪惡值"
+    item:
+      name: "<aqua>單眼相機</aqua>"
+      detail: "截肢剋星 V 望遠鏡"
+    skill:
+      name: "植入病毒"
+      desc-1: "<dark_purple>離自家核心比較近時, 保護它 30 秒:</dark_purple>"
+      desc-2: "<dark_purple>- 期間每下攻擊有 1/3 機率失敗</dark_purple>"
+      desc-3: "<dark_purple>離敵方核心比較近時, 弱化它 30 秒:</dark_purple>"
+      desc-4: "<dark_purple>- 期間每下攻擊產生額外傷害<dark_purple>"
+      announce: "<player> 使用了<yellow><role></yellow>技能, 植入<aqua><type></aqua>病毒到<side>核心!"
+      types:
+        self: "保護"
+        enemy: "入侵"
+    potion-warning: "<red>你不能喝藥水!</red>"
+    invis-warning: "<red>你不能隱形!</red>"

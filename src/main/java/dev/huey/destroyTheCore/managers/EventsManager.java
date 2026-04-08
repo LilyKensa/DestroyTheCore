@@ -24,6 +24,7 @@ import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.*;
 import org.bukkit.event.vehicle.VehicleDamageEvent;
+import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -131,6 +132,13 @@ public class EventsManager implements Listener {
   }
   
   @EventHandler
+  public void onVehicleEnter(VehicleEnterEvent ev) {
+    if (!(ev.getEntered() instanceof Player pl)) return;
+    
+    DestroyTheCore.game.handlePlayerRide(pl, ev.getVehicle(), ev);
+  }
+  
+  @EventHandler
   public void onPlayerDropItem(PlayerDropItemEvent ev) {
     if (checkPaused(ev, ev.getPlayer())) return;
     
@@ -164,10 +172,15 @@ public class EventsManager implements Listener {
   }
   
   @EventHandler
+  public void onPlayerItemConsume(PlayerItemConsumeEvent ev) {
+    DestroyTheCore.game.handleItemUsed(ev.getPlayer(), ev.getItem(), ev);
+  }
+  
+  @EventHandler
   public void onFoodLevelChange(FoodLevelChangeEvent ev) {
     if (checkPaused(ev, ev.getEntity())) return;
     
-    DestroyTheCore.game.handleHungry(ev);
+    DestroyTheCore.game.handleFoodLevelChange(ev);
   }
   
   @EventHandler
@@ -182,9 +195,14 @@ public class EventsManager implements Listener {
     ItemStack item = ev.getCurrentItem();
     if (item == null) return;
     
-    ClickType click = ev.getClick();
-    
-    DestroyTheCore.game.handleInventoryClick(inv, pl, item, click, ev);
+    DestroyTheCore.game.handleInventoryClick(
+      inv,
+      pl,
+      item,
+      ev.getClick(),
+      ev.getAction(),
+      ev
+    );
   }
   
   @EventHandler
@@ -205,6 +223,11 @@ public class EventsManager implements Listener {
   @EventHandler
   public void onPrepareAnvil(PrepareAnvilEvent ev) {
     DestroyTheCore.game.handleRepair(ev);
+  }
+  
+  @EventHandler
+  public void onPrepareGrindstone(PrepareGrindstoneEvent ev) {
+    DestroyTheCore.game.handleGrinding(ev);
   }
   
   @EventHandler
@@ -263,10 +286,6 @@ public class EventsManager implements Listener {
       g.outerOnEntityShootBow(
         ev
       );
-    if (ev.getEntity() instanceof Player pl) AssassinRole.onPlayerShootBow(
-      pl,
-      ev
-    );
   }
   
   @EventHandler
@@ -284,6 +303,7 @@ public class EventsManager implements Listener {
   @EventHandler
   public void onEntityDeath(EntityDeathEvent ev) {
     KekkaiMasterRole.onEntityDeath(ev);
+    DestroyTheCore.game.handleEntityDeath(ev);
   }
   
   @EventHandler

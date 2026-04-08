@@ -4,6 +4,7 @@ import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.itemGens.UsableItemGen;
 import dev.huey.destroyTheCore.managers.ItemsManager;
+import dev.huey.destroyTheCore.records.PlayerData;
 import dev.huey.destroyTheCore.records.SideData;
 import dev.huey.destroyTheCore.utils.*;
 import java.util.List;
@@ -25,13 +26,6 @@ public class AssignClearInvGen extends UsableItemGen {
   }
   
   public Allay summonAllayWithItem(Location location, ItemStack item) {
-    if (item == null || item.isEmpty()) return null;
-    if (
-      item.getType() == Material.KNOWLEDGE_BOOK
-        ||
-        DestroyTheCore.rolesManager.isExclusiveItem(item)
-    ) return null;
-    
     Allay allay = (Allay) location.getWorld().spawnEntity(
       location,
       EntityType.ALLAY
@@ -39,8 +33,8 @@ public class AssignClearInvGen extends UsableItemGen {
     
     allay.customName(TextUtils.$("items.assign-clear-inv.allay"));
     
-    allay.getAttribute(Attribute.SCALE).setBaseValue(1.2);
-    allay.getAttribute(Attribute.MAX_HEALTH).setBaseValue(1);
+    AttributeUtils.set(allay, Attribute.SCALE, 1.2);
+    AttributeUtils.set(allay, Attribute.MAX_HEALTH, 1);
     allay.setHealth(1);
     
     allay.getEquipment().setItemInMainHand(item);
@@ -71,7 +65,10 @@ public class AssignClearInvGen extends UsableItemGen {
     
     if (
       PlayerUtils.getEnemies(side).stream()
-        .anyMatch(p -> !DestroyTheCore.game.getPlayerData(p).clearedInv)
+        .noneMatch(p -> {
+          PlayerData d = DestroyTheCore.game.getPlayerData(p);
+          return d.alive && !d.clearedInv;
+        })
     ) {
       pl.sendActionBar(TextUtils.$("items.assign-clear-inv.not-found"));
       return false;
@@ -90,7 +87,10 @@ public class AssignClearInvGen extends UsableItemGen {
     
     Player target = RandomUtils.pick(
       PlayerUtils.getEnemies(side).stream()
-        .filter(p -> !DestroyTheCore.game.getPlayerData(p).clearedInv)
+        .filter(p -> {
+          PlayerData d = DestroyTheCore.game.getPlayerData(p);
+          return d.alive && !d.clearedInv;
+        })
         .toList()
     );
     if (target == null) return;
@@ -105,7 +105,6 @@ public class AssignClearInvGen extends UsableItemGen {
         PlayerInventory inv = target.getInventory();
         
         ItemStack[] items = inv.getContents();
-        inv.clear();
         
         new BukkitRunnable() {
           int index = 0;
@@ -120,10 +119,18 @@ public class AssignClearInvGen extends UsableItemGen {
                 return;
               }
               
-              summonAllayWithItem(
-                LocUtils.hitboxCenter(target),
-                items[index]
-              );
+              ItemStack item = items[index];
+              
+              if (
+                item == null
+                  || item.isEmpty()
+                  || item.getType() == Material.KNOWLEDGE_BOOK
+                  || DestroyTheCore.rolesManager.isExclusiveItem(item)
+              ) continue;
+              
+              inv.setItem(index, ItemStack.empty());
+              
+              summonAllayWithItem(LocUtils.hitboxCenter(target), item);
             }
           }
         }.runTaskTimer(DestroyTheCore.instance, 0, 2);

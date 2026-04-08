@@ -33,6 +33,8 @@ commands:
     description: Broadcast message
   pause:
     description: Pause the game
+  suicide:
+    description: Please don't
 permissions:
   dtc.admin:
     description: The admin permission

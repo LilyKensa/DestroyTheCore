@@ -63,10 +63,7 @@ public class TipsManager {
     PlayerUtils.send(pl, prefix.append(comp));
   }
   
-  public void sendRandom(Player pl) {
-    Tip tip = RandomUtils.pick(tips);
-    if (tip == null) return;
-    
+  void sendTip(Player pl, Tip tip) {
     pl.sendMessage(Component.empty());
     send(pl, tip.title);
     for (Component content : tip.contents) {
@@ -76,8 +73,11 @@ public class TipsManager {
   }
   
   public void sendRandomToAll() {
+    Tip tip = RandomUtils.pick(tips);
+    if (tip == null) return;
+    
     for (Player p : Bukkit.getOnlinePlayers()) {
-      sendRandom(p);
+      sendTip(p, tip);
     }
   }
   

@@ -28,6 +28,7 @@ player:
   no-perm: "<red>You don't have the permissions to do so!</red>"
   in-cooldown: "<red>This item is in <value>s cooldown</red>"
   group-in-cooldown: "<red>This item group is in <value>s cooldown</red>"
+  skill-reloaded: "<green>Skill reloaded!</green>"
   respawning: "Respawning in <seconds>"
   respawned: "<yellow>Respawned</yellow>"
   item-sent-to-spawn: "<green>You were given some item, but as you're dead, it was sent to your spawn!</green>"
@@ -181,8 +182,15 @@ role:
   change: "<player> changed role to <yellow><role></yellow>"
   skill:
     title: "[<white>Skill</white>] <light_purple><name></light_purple>"
-    cooldown: "- <light_purple>Cooldown: <cooldown>s</light_purple>"
+    cooldown: "- <light_purple>Cooldown <cooldown>s</light_purple>"
   desc:
+    type: "<white>Category</white>: <dark_green><type></dark_green>"
+    types:
+      useless: "Useless"
+      attacking: "Attacking"
+      defense: "Defense"
+      working: "Working"
+      assistance: "Assistance"
     feature:
       first: "<white>Feature</white>: <aqua><desc></aqua>"
       others: "<black>Feature:</black> <aqua><desc></aqua>"
@@ -290,6 +298,11 @@ world:
   template-warning: "<red>You're in the template world!</red>"
 
 commands:
+  suicide:
+    bad-time: "<red>You can't suicide right now!</red>"
+    already-dead: "<red>You're already dead!</red>"
+    announce: "<player> <action>!"
+    actions: "suicided (This part is supposed to be some funny random message, but I'm too lazy at this moment, if you see this, please contact @._hueeey_. on Discord and tell him to move his lazy ass)"
   pause:
     true: "<green>Game paused by <player></green>"
     false: "<green>Game resumed <player></green>"
@@ -363,7 +376,7 @@ items:
     desc-2: "With so much health, you can definitely last a long time when attacking the core!"
   god-helmet:
     name: "<aqua>Suzaku Helmet</aqua>"
-    desc-1: "Crafted from Suzaku feathers, it possesses powerful resistance!"
+    desc-1: "Crafted from Suzaku feathers, it can see players within 15 blocks as if they're glowing!"
     desc-2: "Its defense is identical to that of iron!"
   god-chestplate:
     name: "<aqua>Black Tortoise Armor</aqua>"
@@ -513,13 +526,16 @@ items:
     desc-1: "- <red>Bound item for Rangers</red>"
   constructor-helmet:
     name: "<aqua>Construction Site Helmet</aqua>"
-    desc-1: "- <red>Bound item for Constructor</red>"
+    desc-1: "- <red>Bound item for Constructors</red>"
   kekkai-master-leggings:
     name: "<aqua>Rune Pants</aqua>"
     desc-1: "- <red>Bound item for Kekkai Masters</red>"
   mole-boots:
     name: "<aqua>Claw Seal</aqua>"
     desc-1: "- <red>Bound item for Moles</red>"
+  royal-helmet:
+    name: "<aqua>Royal Hat</aqua>"
+    desc-1: "- <red>Bound item for Royals</red>"
   assign-clear-inv:
     name: "[<white>Token</white>] <light_purple>Thieves Gather</light_purple>"
     desc-1: "Clears a random enemy's inventory"
@@ -748,6 +764,7 @@ roles:
       name: "Blitz Launch"
       desc-1: "<dark_purple>Gets Speed I (5s), Resistance I (10s)</dark_purple>"
       announce: "<player> used <yellow><role></yellow>'s skill, increased speed and resistance!"
+    no-bow: "<red>This role doesn't allow the use of bows!</red>"
   guard:
     name: "Guard"
     desc-1: "<gold>An important defensive role guarding the core!</gold>"
@@ -785,7 +802,7 @@ roles:
     skill:
       name: "Greedy Heart"
       desc-1: "<dark_purple>Gets Luck III (15s)</dark_purple>"
-      announce: "<player> used <yellow><role></yellow>'s skill!"
+      announce: "<player> used <yellow><role></yellow>'s skill, increased luck!"
     ores-bonus: "<aqua>Bonus <ore> by <player></aqua>"
   ranger:
     name: "Ranger"
@@ -801,7 +818,7 @@ roles:
       desc-1: "<dark_purple>Places a trap (Max 3 at a time)</dark_purple>"
       desc-2: "<dark_purple>Enemies trapped will get Poison X (5s)</dark_purple>"
       announce: "<player> used <yellow><role></yellow>'s skill, placed a trap!"
-      too-many: "<red>You can only place <amount> traps!</red>"
+      too-many: "<red>You can only place <amount> traps, so the first one is removed!</red>"
       trap-hit:
         owner: "<enemy> fell into your trap!"
         enemy: "You fell into <owner>'s trap!"
@@ -897,13 +914,13 @@ roles:
       name: "Anti-gravity Elevator"
       desc-1: "<dark_purple>Makes players levitate & Weakness I</dark_purple>"
       announce: "<player> used <yellow><role></yellow>'s skill, created an elevator!"
-    no-shield: "<red>You can't equip a shield!</red>"
+    no-shield: "<red>This role doesn't allow the use of shields!</red>"
   provocateur:
     name: "Provocateur"
     desc-1: "<gold>Absolute tank, help teammates take damage!</gold>"
     feature-1: "Transfer 60% damage of teammates within 10 blocks to themself"
     feature-2: "When absorption effect is applied, transfer 90% damage instead"
-    feature-3: "All damage output is reduce by 20%"
+    feature-3: "All damage output is reduce by 10%"
     item:
       name: "<aqua>Super Pie</aqua>"
       detail: "Sweeping Edge III pumpkin pie"
@@ -925,3 +942,75 @@ roles:
       desc-2: "<dark_purple>Jumping out will cause explosion and damage nearby enemies</dark_purple>"
       announce: "<player> used <yellow><role></yellow>'s skill, dived underground!"
     block-too-hard: "<red>This block is too hard, your claws hurt!</red>"
+  jockey:
+    name: "Jockey"
+    desc-1: "<gold>Strong on the horseback, useless when dismounted!</gold>"
+    feature-1: "Strength I & Resistance II when riding a vehicle"
+    feature-2: "Slowness I otherwise"
+    item:
+      name: "<aqua>Horsewhip</aqua>"
+      detail: "Knockback I lead"
+    skill:
+      name: "Strengthen the Horse"
+      desc-1: "<dark_purple>When riding a horse, enhance it:</dark_purple>"
+      desc-2: "<dark_purple>- Set max health to 15 hearts</dark_purple>"
+      desc-3: "<dark_purple>- Equip next level horse armor (None → iron → diamond)</dark_purple>"
+      desc-4: "<dark_purple>- Heal to max health</dark_purple>"
+      desc-5: "<dark_purple>Otherwise, summon a horse</dark_purple>"
+      announce: "<player> used <yellow><role></yellow>'s skill, <action> a horse!"
+      actions:
+        summon: "summoned"
+        enhance: "enhanced"
+  royal:
+    name: "Royal"
+    desc-1: "<gold>Such a distinguished figure, it's an honor to be next to them!</gold>"
+    feature-1: "Gives teammates within 10 blocks Resistance I"
+    feature-2: "Gets a gold ingot when an enemy died within 15 blocks"
+    item:
+      name: "<aqua>Royal Sword</aqua>"
+      detail: "Fire Aspect I golden sword"
+    skill:
+      name: "Royal Patronage"
+      desc-1: "<dark_purple>Gives all teammates extra 6 hearts (60s)</dark_purple>"
+      announce: "<player> used <yellow><role></yellow>'s skill, teammates health increased!"
+  glutton:
+    name: "Glutton"
+    desc-1: "<gold>Absorb the saturation of others and use it to gain resistance or speed!</gold>"
+    feature-1: "Unable to eat on their own, they must use skills to fill their saturation"
+    feature-2: "Slowness III when poisoned"
+    item:
+      name: "<aqua>Sharp Fish</aqua>"
+      detail: "Sharpness II cooked salmon"
+    skill:
+      name: "Binge Eating"
+      desc-1: "<dark_purple>Steal food level from players within 5 blocks</dark_purple>"
+      desc-2: "<dark_purple>Gains Regeneration IV (2s) & Weakness II (10s)</dark_purple>"
+      desc-3: "<dark_purple>Gains extra effect based on absorbed players count:</dark_purple>"
+      desc-4: "<dark_purple>- For each teammate: 5s Resistance (Max: IV)</dark_purple>"
+      desc-5: "<dark_purple>- For each enemy: 5s Speed (Max: IV)</dark_purple>"
+      announce: "<player> used <yellow><role></yellow>'s skill, absorbed <aqua><amount></aqua> players' saturation!"
+      not-hungry: "<red>You're full right now!</red>"
+      no-target: "<red>No absorb target!</red>"
+      stolen: "<red>Your saturation is stolen by <player>!</red>"
+    eat-warning: "<red>You can't eat food!</red>"
+  hacker:
+    name: "Hacker"
+    desc-1: "<gold>Every successful network engineer has actually learned a little bit of hacking techniques</gold>"
+    feature-1: "Stay atoning at the core will grant you iron ingots"
+    feature-2: "Can't drink potions, can't get invisibility"
+    feature-3: "Gains 5 sins for each core attacks when using skills"
+    item:
+      name: "<aqua>Single-lens Reflex Camera</aqua>"
+      detail: "Bane of Arthropods V Spyglass"
+    skill:
+      name: "Implant Virus"
+      desc-1: "<dark_purple>When closer to team core, defend it for 30s</dark_purple>"
+      desc-2: "<dark_purple>- Each attack have a 1/3 chance to fail</dark_purple>"
+      desc-3: "<dark_purple>When closer to enemy core, weaken it for 30s</dark_purple>"
+      desc-4: "<dark_purple>- Every attack does extra damage</dark_purple>"
+      announce: "<player> used <yellow><role></yellow>'s skill, implanted <aqua><type></aqua> virus to <side>!"
+      types:
+        self: "protection"
+        enemy: "invasion"
+    potion-warning: "<red>You can't drink potions!</red>"
+    invis-warning: "<red>You can't turn invisible!</red>"

@@ -87,6 +87,15 @@ public class CollectStarsMission extends ProgressiveMission implements Listener 
           centerLoc.clone().add(0, RandomUtils.range(20, 30), 0),
           30
         );
+        
+        while (
+          starLoc.getBlock().isCollidable()
+            && starLoc.getY() >= starLoc.getWorld().getMinHeight()
+        ) {
+          starLoc.setY(starLoc.getY() - 1);
+        }
+        
+        
         Item itemEntity = starLoc.getWorld().dropItem(starLoc, getStarItem());
         starEntities.add(itemEntity.getUniqueId());
         

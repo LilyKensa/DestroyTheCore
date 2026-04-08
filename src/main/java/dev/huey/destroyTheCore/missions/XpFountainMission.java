@@ -41,7 +41,7 @@ public class XpFountainMission extends TimedMission {
       orb.setExperience(RandomUtils.range(5, 11));
       
       double angle = RandomUtils.nextDouble() * 2 * Math.PI;
-      double radius = Math.sqrt(RandomUtils.nextDouble()) * 0.1;
+      double radius = Math.sqrt(RandomUtils.nextDouble()) * 0.5;
       orb.setVelocity(
         new Vector(
           Math.cos(angle) * radius,

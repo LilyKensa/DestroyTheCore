@@ -4,10 +4,7 @@ import com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent;
 import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.Mission;
-import dev.huey.destroyTheCore.utils.LocUtils;
-import dev.huey.destroyTheCore.utils.PlayerUtils;
-import dev.huey.destroyTheCore.utils.RandomUtils;
-import dev.huey.destroyTheCore.utils.TextUtils;
+import dev.huey.destroyTheCore.utils.*;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -230,11 +227,11 @@ public class EarthquakeCowMission extends Mission implements Listener {
     cow.setCustomNameVisible(true);
     
     cow.setGlowing(true);
-    cow.getAttribute(Attribute.SCALE).setBaseValue(2);
-    cow.getAttribute(Attribute.MOVEMENT_SPEED).setBaseValue(0.2);
-    cow.getAttribute(Attribute.WATER_MOVEMENT_EFFICIENCY).setBaseValue(1);
-    cow.getAttribute(Attribute.KNOCKBACK_RESISTANCE).setBaseValue(1);
-    cow.getAttribute(Attribute.MAX_HEALTH).setBaseValue(150);
+    AttributeUtils.set(cow, Attribute.SCALE, 2);
+    AttributeUtils.set(cow, Attribute.MOVEMENT_SPEED, 0.2);
+    AttributeUtils.set(cow, Attribute.WATER_MOVEMENT_EFFICIENCY, 1);
+    AttributeUtils.set(cow, Attribute.KNOCKBACK_RESISTANCE, 1);
+    AttributeUtils.set(cow, Attribute.MAX_HEALTH, 150);
     cow.setHealth(150);
     
     cow.getPathfinder().setCanFloat(true);
@@ -251,9 +248,10 @@ public class EarthquakeCowMission extends Mission implements Listener {
     if (ev.getEntity().getUniqueId() != cow.getUniqueId()) return;
     
     healthBar.progress(
-      (float) (cow.getHealth() / cow.getAttribute(
+      (float) (cow.getHealth() / AttributeUtils.get(
+        cow,
         Attribute.MAX_HEALTH
-      ).getValue())
+      ))
     );
     
     addScore(pl, ev.getFinalDamage());

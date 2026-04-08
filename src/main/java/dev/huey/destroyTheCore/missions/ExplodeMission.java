@@ -71,7 +71,7 @@ public class ExplodeMission extends TimedMission {
         true // Exclude self
       );
       pl.damage(
-        9999,
+        Double.MAX_VALUE,
         DamageSource.builder(DamageType.EXPLOSION).build()
       );
     }

@@ -31,8 +31,9 @@ public class PlayerData {
   public int quizQuota = 10;
   public int lotteryShift = 0;
   public int killStreak = 0;
-  public int respawnAt = -9999;
+  public int respawnAt = -1;
   public boolean clearedInv = false;
+  public boolean skillReloadedMessage = true;
   
   public int kills = 0, deaths = 0;
   public int coreAttacks = 0;
@@ -79,11 +80,12 @@ public class PlayerData {
   }
   
   public boolean isPostRespawn() {
-    return DestroyTheCore.ticksManager.ticksCount - respawnAt < 10 * 20;
+    return respawnAt >= 0
+      && DestroyTheCore.ticksManager.ticksCount - respawnAt < 10 * 20;
   }
   
   public void removePostRevive() {
-    respawnAt = -9999;
+    respawnAt = -1;
   }
   
   public void kill() {

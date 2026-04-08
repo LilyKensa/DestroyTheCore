@@ -59,7 +59,7 @@ public class ConstructorRole extends Role {
   List<Set<Vector>> skillPlacePos = new ArrayList<>();
   
   public ConstructorRole() {
-    super(RolesManager.RoleKey.CONSTRUCTOR);
+    super(RolesManager.RoleType.WORKING, RolesManager.RoleKey.CONSTRUCTOR);
     addInfo(Material.STONE_AXE);
     addFeature();
     addExclusiveItem(

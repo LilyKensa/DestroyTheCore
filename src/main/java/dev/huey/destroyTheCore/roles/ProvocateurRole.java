@@ -4,6 +4,7 @@ import com.destroystokyo.paper.ParticleBuilder;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.managers.RolesManager;
+import dev.huey.destroyTheCore.utils.CoreUtils;
 import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
@@ -17,9 +18,16 @@ import org.bukkit.potion.PotionEffectType;
 
 public class ProvocateurRole extends Role {
   
+  static public final double damageRatio = 0.9;
+  
+  static public double getTransferRatio(Player pl) {
+    return pl.hasPotionEffect(PotionEffectType.ABSORPTION) ? 0.9 : 0.6;
+  }
+  
   public ProvocateurRole() {
-    super(RolesManager.RoleKey.PROVOCATEUR);
+    super(RolesManager.RoleType.ASSISTANCE, RolesManager.RoleKey.PROVOCATEUR);
     addInfo(Material.HEAVY_CORE);
+    addFeature();
     addExclusiveItem(
       Material.PUMPKIN_PIE,
       meta -> {
@@ -55,6 +63,10 @@ public class ProvocateurRole extends Role {
   @Override
   public void useSkill(Player pl) {
     skillFeedback(pl);
+    
+    if (CoreUtils.isSpecialDate(4, 1)) {
+      PlayerUtils.setHandCooldown(pl, skillCooldown / 2);
+    }
     
     PlayerUtils.glow(pl, 10 * 20);
     PlayerUtils.addEffect(

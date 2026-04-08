@@ -1,7 +1,6 @@
 package dev.huey.destroyTheCore.records;
 
 import dev.huey.destroyTheCore.DestroyTheCore;
-import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import java.util.*;
 import org.bukkit.Bukkit;
@@ -11,15 +10,59 @@ import org.bukkit.inventory.Inventory;
 
 public class SideData {
   
+  static public class ExtraDamage {
+    public enum Reason {
+      PHASE,
+      LAST_DITCH,
+      ROLE_HACKER
+    }
+    
+    public Reason reason;
+    public Player origin;
+    public int ticks;
+    
+    public ExtraDamage(Reason reason, Player origin, int ticks) {
+      this.reason = reason;
+      this.origin = origin;
+      this.ticks = ticks;
+    }
+  }
+  
+  static public class ImmuneChance {
+    public enum Reason {
+      ROLE_HACKER
+    }
+    
+    public Reason reason;
+    public Player origin;
+    public double chance;
+    public int ticks;
+    
+    public ImmuneChance(
+      Reason reason, Player origin, double chance, int ticks
+    ) {
+      this.reason = reason;
+      this.origin = origin;
+      this.chance = chance;
+      this.ticks = ticks;
+    }
+  }
+  
   /** Constants */
   static public final int maxCoreHealth = 75;
   
   public int coreHealth = maxCoreHealth;
-  public int invulnTicks = 0, clearInvCooldown = 0, extraDamageTicks = 0,
-    noOresTicks = 0, maxNoOresTicks = 0,
-    noShopTicks = 0, maxNoShopTicks = 0,
-    missionsCompleted = 0;
+  public int invulnTicks = 0;
+  public List<ExtraDamage> extraDamages = new ArrayList<>();
+  public List<ImmuneChance> immuneChances = new ArrayList<>();
+  
+  public int noOresTicks = 0, maxNoOresTicks = 0;
+  public int noShopTicks = 0, maxNoShopTicks = 0;
+  
+  public int clearInvCooldown = 0;
   public boolean usedTruce = false;
+  
+  public int missionsCompleted = 0;
   
   public Inventory enderChest = Bukkit.createInventory(
     null,
@@ -64,16 +107,33 @@ public class SideData {
   /** Remove 1 core health, with modifiers */
   public void attackCore() {
     directAttackCore();
-    if (DestroyTheCore.game.phase.isAfter(Game.Phase.DoubleDamage)) {
+    
+    for (ExtraDamage ed : extraDamages) {
       directAttackCore();
-    }
-    if (extraDamageTicks > 0) {
-      directAttackCore();
+      
+      if (ed.origin == null || !ed.origin.isOnline()) continue;
+      
+      PlayerData d = DestroyTheCore.game.getPlayerData(ed.origin);
+      if (!d.alive) continue;
+      
+      d.addRespawnTime(5);
     }
   }
   
   public boolean isInvuln() {
     return invulnTicks > 0;
+  }
+  
+  public void addExtraDamage(
+    ExtraDamage.Reason reason, Player origin, int ticks
+  ) {
+    extraDamages.add(new ExtraDamage(reason, origin, ticks));
+  }
+  
+  public void addImmuneChance(
+    ImmuneChance.Reason reason, Player origin, double chance, int ticks
+  ) {
+    immuneChances.add(new ImmuneChance(reason, origin, chance, ticks));
   }
   
   public void banOres(int ticks) {

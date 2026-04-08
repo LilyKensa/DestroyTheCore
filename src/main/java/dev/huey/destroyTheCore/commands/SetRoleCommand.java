@@ -32,6 +32,7 @@ public class SetRoleCommand extends Subcommand {
   public void execute(Player pl, List<String> args) {
     if (args.isEmpty()) {
       PlayerUtils.prefixedSend(pl, TextUtils.$("commands.role.unclear"));
+      return;
     }
     
     RolesManager.RoleKey key;

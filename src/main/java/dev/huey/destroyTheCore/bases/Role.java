@@ -3,10 +3,10 @@ package dev.huey.destroyTheCore.bases;
 import com.destroystokyo.paper.ParticleBuilder;
 import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.Game;
-import dev.huey.destroyTheCore.items.armors.StarterBootsGen;
-import dev.huey.destroyTheCore.items.armors.StarterChestplateGen;
-import dev.huey.destroyTheCore.items.armors.StarterHelmetGen;
-import dev.huey.destroyTheCore.items.armors.StarterLeggingsGen;
+import dev.huey.destroyTheCore.items.starter.StarterBootsGen;
+import dev.huey.destroyTheCore.items.starter.StarterChestplateGen;
+import dev.huey.destroyTheCore.items.starter.StarterHelmetGen;
+import dev.huey.destroyTheCore.items.starter.StarterLeggingsGen;
 import dev.huey.destroyTheCore.managers.GUIManager;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.managers.RolesManager;
@@ -56,6 +56,7 @@ public class Role extends GUIItem {
     PlayerUtils.send(pl, TextUtils.$("role.prefix").append(message));
   }
   
+  public RolesManager.RoleType type;
   public RolesManager.RoleKey id;
   public String translationName;
   
@@ -67,7 +68,8 @@ public class Role extends GUIItem {
    * - {@link #addSkill}
    * - {@link #addLevelReq}
    */
-  public Role(RolesManager.RoleKey id) {
+  public Role(RolesManager.RoleType type, RolesManager.RoleKey id) {
+    this.type = type;
     this.id = id;
     this.translationName = id.name().toLowerCase().replace('_', '-');
   }
@@ -156,52 +158,56 @@ public class Role extends GUIItem {
     );
   }
   
-  public ItemStack getSkillItem() {
-    ItemStack item = new ItemStack(Material.KNOWLEDGE_BOOK);
-    item.editMeta(meta -> {
-      meta.setEnchantmentGlintOverride(true);
-      
-      meta.displayName(
-        TextUtils.$(
-          "role.skill.title",
-          List.of(Placeholder.unparsed("name", skillName))
-        )
-      );
-      
-      List<Component> lore = new ArrayList<>();
-      for (String line : skillDesc) lore.add(
-        Component.text(line).decoration(
-          TextDecoration.ITALIC,
-          TextDecoration.State.FALSE
-        )
-      );
-      meta.lore(lore);
-      
-      lore.add(
-        TextUtils.$(
-          "role.skill.cooldown",
-          List.of(
-            Placeholder.component(
-              "cooldown",
-              Component.text(skillCooldown / 20)
-            )
+  public void editSkillItemMeta(ItemMeta meta) {
+    meta.setEnchantmentGlintOverride(true);
+    
+    meta.displayName(
+      TextUtils.$(
+        "role.skill.title",
+        List.of(Placeholder.unparsed("name", skillName))
+      )
+    );
+    
+    List<Component> lore = new ArrayList<>();
+    for (String line : skillDesc) lore.add(
+      Component.text(line).decoration(
+        TextDecoration.ITALIC,
+        TextDecoration.State.FALSE
+      )
+    );
+    
+    lore.add(Component.empty());
+    lore.add(
+      TextUtils.$(
+        "role.skill.cooldown",
+        List.of(
+          Placeholder.component(
+            "cooldown",
+            Component.text(skillCooldown / 20)
           )
         )
-      );
-      
-      meta.addItemFlags(
-        ItemFlag.HIDE_ATTRIBUTES,
-        ItemFlag.HIDE_ARMOR_TRIM,
-        ItemFlag.HIDE_DYE,
-        ItemFlag.HIDE_ADDITIONAL_TOOLTIP
-      );
-      
-      meta.getPersistentDataContainer().set(
-        skillNamespace,
-        PersistentDataType.BOOLEAN,
-        true
-      );
-    });
+      )
+    );
+    
+    meta.lore(lore);
+    
+    meta.addItemFlags(
+      ItemFlag.HIDE_ATTRIBUTES,
+      ItemFlag.HIDE_ARMOR_TRIM,
+      ItemFlag.HIDE_DYE,
+      ItemFlag.HIDE_ADDITIONAL_TOOLTIP
+    );
+    
+    meta.getPersistentDataContainer().set(
+      skillNamespace,
+      PersistentDataType.BOOLEAN,
+      true
+    );
+  }
+  
+  public ItemStack getSkillItem() {
+    ItemStack item = new ItemStack(Material.KNOWLEDGE_BOOK);
+    item.editMeta(this::editSkillItemMeta);
     return item;
   }
   
@@ -298,24 +304,41 @@ public class Role extends GUIItem {
   @Override
   public ItemProvider getItemProvider(Player pl) {
     List<String> combinedLore = new ArrayList<>();
+    
     if (lore != null) {
       combinedLore.addAll(lore);
       combinedLore.add("");
     }
+    
+    combinedLore.add(
+      TextUtils.$r(
+        "role.desc.type",
+        List.of(
+          Placeholder.unparsed(
+            "type",
+            DestroyTheCore.translationsManager.getRaw(
+              "role.desc.types." + type.name().toLowerCase()
+            )
+          )
+        )
+      )
+    );
+    
     if (featureDesc != null) {
-      String type = "first";
+      String featureLineType = "first";
       
       for (String line : featureDesc) {
         combinedLore.add(
           TextUtils.$r(
-            "role.desc.feature." + type,
+            "role.desc.feature." + featureLineType,
             List.of(Placeholder.unparsed("desc", line))
           )
         );
         
-        type = "others";
+        featureLineType = "others";
       }
     }
+    
     if (itemName != null) {
       combinedLore.add(
         TextUtils.$r(
@@ -327,9 +350,9 @@ public class Role extends GUIItem {
         )
       );
     }
-    if (
-      !combinedLore.isEmpty() && !combinedLore.getLast().isEmpty()
-    ) combinedLore.add("");
+    
+    if (!combinedLore.getLast().isEmpty()) combinedLore.add("");
+    
     if (skillName != null && skillDesc != null) {
       combinedLore.add(
         TextUtils.$r(
@@ -338,6 +361,17 @@ public class Role extends GUIItem {
         )
       );
       combinedLore.addAll(skillDesc);
+      combinedLore.add(
+        TextUtils.$r(
+          "role.skill.cooldown",
+          List.of(
+            Placeholder.component(
+              "cooldown",
+              Component.text(skillCooldown / 20)
+            )
+          )
+        )
+      );
     }
     
     Stats stat = DestroyTheCore.game.getStats(pl);

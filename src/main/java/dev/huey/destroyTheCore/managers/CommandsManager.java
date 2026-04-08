@@ -26,7 +26,7 @@ public class CommandsManager implements TabCompleter, CommandExecutor {
       new NightVisionCommand(),
       new ReloadCommand(),
       new SaveCommand(),
-      new JoinTeamCommand(),
+      new SetTeamCommand(),
       new SetRoleCommand(),
       new ShuffleTeamCommand(),
       new RejoinCommand(),
@@ -45,7 +45,8 @@ public class CommandsManager implements TabCompleter, CommandExecutor {
       new StatsCommand(),
       new BroadcastCommand(),
       new LevelCommand(),
-      new PauseCommand()
+      new PauseCommand(),
+      new SuicideCommand()
     );
   }
   

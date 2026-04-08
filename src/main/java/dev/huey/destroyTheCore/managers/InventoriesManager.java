@@ -6,9 +6,11 @@ import dev.huey.destroyTheCore.utils.RandomUtils;
 import java.util.*;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.util.Vector;
 
 public class InventoriesManager {
   
@@ -143,5 +145,38 @@ public class InventoriesManager {
       }
     }
     inv.setContents(contents);
+  }
+  
+  public void dropXp(Player pl) {
+    int currentLevel = pl.getLevel();
+    if (currentLevel <= 3) return;
+    
+    int xpBefore = pl.calculateTotalExperiencePoints();
+    
+    pl.setLevel(currentLevel - 3);
+    
+    int toDrop = xpBefore - pl.calculateTotalExperiencePoints();
+    
+    while (toDrop > 0) {
+      int value = Math.min(RandomUtils.range(2, 72), toDrop);
+      
+      ExperienceOrb orb = pl.getWorld().spawn(
+        pl.getLocation(),
+        ExperienceOrb.class
+      );
+      orb.setExperience(value);
+      
+      double angle = RandomUtils.nextDouble() * 2 * Math.PI;
+      double radius = Math.sqrt(RandomUtils.nextDouble()) * 0.5;
+      orb.setVelocity(
+        new Vector(
+          Math.cos(angle) * radius,
+          0.2 + RandomUtils.nextDouble() * 0.3,
+          Math.sin(angle) * radius
+        )
+      );
+      
+      toDrop -= value;
+    }
   }
 }

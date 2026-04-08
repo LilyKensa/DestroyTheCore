@@ -1,6 +1,5 @@
 package dev.huey.destroyTheCore.missions;
 
-import dev.huey.destroyTheCore.Constants;
 import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.bases.missions.TimedMission;
 import dev.huey.destroyTheCore.utils.LocUtils;
@@ -13,6 +12,31 @@ public class InfiniteOresMission extends TimedMission implements Listener {
   
   static public void set(Material type) {
     centerLoc.clone().add(0, -1, 0).getBlock().setType(type);
+  }
+  
+  static public Material getRandomOre() {
+    int rand = RandomUtils.range(100);
+    
+    if ((rand -= 45) < 0) {
+      return Material.IRON_ORE;
+    }
+    else if ((rand -= 15) < 0) {
+      return Material.REDSTONE_ORE;
+    }
+    else if ((rand -= 15) < 0) {
+      return Material.GOLD_ORE;
+    }
+    else if ((rand -= 12) < 0) {
+      return Material.EMERALD_ORE;
+    }
+    else if ((rand -= 12) < 0) {
+      return Material.LAPIS_ORE;
+    }
+    else if ((rand -= 1) < 0) {
+      return Material.DIAMOND_ORE;
+    }
+    
+    return Material.STONE;
   }
   
   static public boolean check(Location toCheck) {
@@ -30,7 +54,7 @@ public class InfiniteOresMission extends TimedMission implements Listener {
   @Override
   public void innerTick() {
     if (DestroyTheCore.ticksManager.ticksCount % 2 == 0) {
-      set(RandomUtils.pick(Constants.ores.keySet().toArray(new Material[0])));
+      set(getRandomOre());
     }
   }
   

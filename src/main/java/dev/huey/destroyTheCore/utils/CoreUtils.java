@@ -2,6 +2,8 @@ package dev.huey.destroyTheCore.utils;
 
 import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.Game;
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -160,5 +162,14 @@ public class CoreUtils {
     Location center, Location pos, Vector speed
   ) {
     return calculateBounce(center, pos, speed, 0.6);
+  }
+  
+  static public boolean isSpecialDate(Month month, int date) {
+    LocalDate today = LocalDate.now();
+    return today.getMonth() == month && today.getDayOfMonth() == date;
+  }
+  
+  static public boolean isSpecialDate(int month, int date) {
+    return isSpecialDate(Month.of(month), date);
   }
 }

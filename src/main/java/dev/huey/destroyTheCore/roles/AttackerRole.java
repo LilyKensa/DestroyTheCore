@@ -14,7 +14,7 @@ import org.bukkit.potion.PotionEffectType;
 public class AttackerRole extends Role {
   
   public AttackerRole() {
-    super(RolesManager.RoleKey.ATTACKER);
+    super(RolesManager.RoleType.ATTACKING, RolesManager.RoleKey.ATTACKER);
     addInfo(Material.WOODEN_SWORD);
     addFeature();
     addExclusiveItem(

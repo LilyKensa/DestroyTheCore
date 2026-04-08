@@ -21,6 +21,7 @@ import dev.huey.destroyTheCore.items.projectiles.IceArrowGen;
 import dev.huey.destroyTheCore.items.projectiles.PoisonArrowGen;
 import dev.huey.destroyTheCore.items.projectiles.WeaknessArrowGen;
 import dev.huey.destroyTheCore.items.roles.*;
+import dev.huey.destroyTheCore.items.starter.*;
 import dev.huey.destroyTheCore.items.tokens.*;
 import dev.huey.destroyTheCore.items.wands.LeviStickGen;
 import dev.huey.destroyTheCore.items.weapons.*;
@@ -33,6 +34,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -106,7 +108,8 @@ public class ItemsManager {
     KEKKAI_MASTER_LEGGINGS,
     CONSTRUCTOR_HELMET,
     PROVOCATEUR_HELMET,
-    MOLE_BOOTS
+    MOLE_BOOTS,
+    ROYAL_HELMET
   }
   
   /** Filter item-gens by type */
@@ -190,7 +193,8 @@ public class ItemsManager {
       new KekkaiMasterLeggingsGen(),
       new ConstructorHelmetGen(),
       new ProvocateurHelmetGen(),
-      new MoleBootsGen()
+      new MoleBootsGen(),
+      new RoyalHelmetGen()
     ).collect(Collectors.toMap(ci -> ci.id, ci -> ci));
     
     usableGens = filterGens(UsableItemGen.class);
@@ -239,15 +243,23 @@ public class ItemsManager {
     }
   }
   
-  public void onPlayerDamage(Player attacker, Player victim) {
+  public void onPlayerDamage(
+    Player attacker, Player victim, EntityDamageEvent.DamageCause cause
+  ) {
     if (
       !PlayerUtils.shouldHandle(attacker) || !PlayerUtils.shouldHandle(victim)
     ) return;
     
     ItemStack item = victim.getInventory().getItemInOffHand();
     
-    for (AssistItemGen ig : assistGens.values()) {
-      if (ig.checkItem(item)) ig.onAttack(victim, attacker);
+    switch (cause) {
+      case THORNS, MAGIC -> {
+      }
+      default -> {
+        for (AssistItemGen ig : assistGens.values()) {
+          if (ig.checkItem(item)) ig.onAttack(victim, attacker);
+        }
+      }
     }
   }
   

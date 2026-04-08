@@ -27,8 +27,6 @@ public class KekkaiMasterRole extends Role {
   
   static public class Kekkai {
     
-    static public final double minSize = 3;
-    
     public enum Type {
       SPEED(Material.IRON_INGOT, Particle.WAX_OFF),
       HEALING(
@@ -200,7 +198,7 @@ public class KekkaiMasterRole extends Role {
         ).color(side.color).decoration(TextDecoration.ITALIC, false)
       );
       
-      center.getAttribute(Attribute.MAX_HEALTH).setBaseValue(health);
+      AttributeUtils.set(center, Attribute.MAX_HEALTH, health);
       center.setHealth(health);
       
       PlayerUtils.addPassiveEffect(
@@ -258,7 +256,7 @@ public class KekkaiMasterRole extends Role {
         );
       }
     }
-    kekkais.removeIf(k -> k.size <= Kekkai.minSize);
+    kekkais.removeIf(k -> k.duration <= 0);
   }
   
   static public void onTick() {
@@ -351,7 +349,7 @@ public class KekkaiMasterRole extends Role {
         }
       }
       
-      kekkai.centerYaw += 5;
+      kekkai.centerYaw += 20;
       if (kekkai.centerYaw >= 360) kekkai.centerYaw -= 360;
       kekkai.center.setRotation(kekkai.centerYaw, 0);
       
@@ -388,15 +386,12 @@ public class KekkaiMasterRole extends Role {
       if (kekkai.duration > 0) {
         kekkai.duration--;
       }
-      else {
-        kekkai.size -= 0.5;
-      }
-      if (kekkai.size <= Kekkai.minSize) {
+      if (kekkai.duration <= 0) {
         CoreUtils.setTickOut(() -> kekkai.center.remove());
       }
     }
     
-    kekkais.removeIf(k -> k.size <= Kekkai.minSize);
+    kekkais.removeIf(k -> k.duration <= 0);
   }
   
   static public void onParticleTick() {
@@ -406,7 +401,7 @@ public class KekkaiMasterRole extends Role {
   }
   
   public KekkaiMasterRole() {
-    super(RolesManager.RoleKey.KEKKAI_MASTER);
+    super(RolesManager.RoleType.ASSISTANCE, RolesManager.RoleKey.KEKKAI_MASTER);
     addInfo(Material.BEACON);
     addFeature();
     addExclusiveItem(
@@ -454,8 +449,12 @@ public class KekkaiMasterRole extends Role {
   
   @Override
   public void useSkill(Player pl) {
+    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
+    
     int replacedWarning = 0;
     for (Kekkai kekkai : kekkais) {
+      if (DestroyTheCore.game.playerData.get(kekkai.ownerId).side != data.side)
+        continue;
       if (!kekkai.contains(pl.getLocation())) continue;
       
       if (pl.isSneaking()) {
@@ -467,6 +466,8 @@ public class KekkaiMasterRole extends Role {
     }
     if (replacedWarning > 0) {
       pl.setCooldown(Material.KNOWLEDGE_BOOK, 10);
+      data.skillReloadedMessage = true;
+      
       pl.sendActionBar(
         TextUtils.$(
           "roles.kekkai-master.skill.inside-kekkai",

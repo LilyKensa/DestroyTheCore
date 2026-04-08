@@ -32,10 +32,10 @@ public class LevelCommand extends Subcommand {
     
     String action = args.isEmpty() ? null : args.get(0).toLowerCase();
     
-    int amount = args.size() > 2 ? Integer.parseInt(args.get(1)) : 1;
+    int amount = args.size() >= 2 ? Integer.parseInt(args.get(1)) : 1;
     
     Player target = pl;
-    if (args.size() > 3) {
+    if (args.size() >= 3) {
       Player p = Bukkit.getPlayer(args.get(2));
       if (p != null) target = p;
     }
@@ -51,6 +51,8 @@ public class LevelCommand extends Subcommand {
     }
     
     DestroyTheCore.game.enforceLevelScore(target);
+    
+    DestroyTheCore.boardsManager.refresh(target);
     
     pl.sendMessage(
       TextUtils.$(

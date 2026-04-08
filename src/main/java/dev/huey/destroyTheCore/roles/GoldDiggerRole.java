@@ -17,7 +17,7 @@ import org.bukkit.potion.PotionEffectType;
 public class GoldDiggerRole extends Role {
   
   public GoldDiggerRole() {
-    super(RolesManager.RoleKey.GOLD_DIGGER);
+    super(RolesManager.RoleType.WORKING, RolesManager.RoleKey.GOLD_DIGGER);
     addInfo(Material.GOLDEN_PICKAXE);
     addFeature();
     addExclusiveItem(

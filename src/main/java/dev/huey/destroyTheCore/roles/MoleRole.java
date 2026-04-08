@@ -7,6 +7,8 @@ import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.managers.RolesManager;
 import dev.huey.destroyTheCore.managers.TicksManager;
 import dev.huey.destroyTheCore.records.PlayerData;
+import dev.huey.destroyTheCore.utils.AttributeUtils;
+import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import java.util.*;
@@ -32,9 +34,9 @@ public class MoleRole extends Role {
   static public void setMoleMode(Player pl) {
     pl.setInvisible(true);
     pl.setInvulnerable(true);
-    pl.getAttribute(Attribute.SCALE).setBaseValue(0.5);
-    pl.getAttribute(Attribute.MOVEMENT_SPEED).setBaseValue(0.15);
-    pl.getAttribute(Attribute.STEP_HEIGHT).setBaseValue(1.5);
+    AttributeUtils.set(pl, Attribute.SCALE, 0.5);
+    AttributeUtils.set(pl, Attribute.MOVEMENT_SPEED, 0.15);
+    AttributeUtils.set(pl, Attribute.STEP_HEIGHT, 1.5);
     
     DestroyTheCore.inventoriesManager.store(pl);
   }
@@ -42,9 +44,9 @@ public class MoleRole extends Role {
   static public void resetMoleMode(Player pl) {
     pl.setInvisible(false);
     pl.setInvulnerable(false);
-    pl.getAttribute(Attribute.SCALE).setBaseValue(1);
-    pl.getAttribute(Attribute.MOVEMENT_SPEED).setBaseValue(0.1);
-    pl.getAttribute(Attribute.STEP_HEIGHT).setBaseValue(0.6);
+    AttributeUtils.set(pl, Attribute.SCALE, 1);
+    AttributeUtils.set(pl, Attribute.MOVEMENT_SPEED, 0.1);
+    AttributeUtils.set(pl, Attribute.STEP_HEIGHT, 0.6);
     
     PlayerData data = DestroyTheCore.game.getPlayerData(pl);
     if (data.alive) {
@@ -74,6 +76,8 @@ public class MoleRole extends Role {
     }
     
     for (Player e : PlayerUtils.getEnemies(pl)) {
+      if (!LocUtils.isSameWorld(e, pl)) continue;
+      
       double distance = e.getLocation().distance(pl.getLocation());
       
       if (distance > radius) continue;
@@ -218,7 +222,7 @@ public class MoleRole extends Role {
   }
   
   public MoleRole() {
-    super(RolesManager.RoleKey.MOLE);
+    super(RolesManager.RoleType.ATTACKING, RolesManager.RoleKey.MOLE);
     addInfo(Material.RABBIT_HIDE);
     addFeature();
     addExclusiveItem(

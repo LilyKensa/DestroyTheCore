@@ -2,6 +2,7 @@ package dev.huey.destroyTheCore.missions.results;
 
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.Mission;
+import dev.huey.destroyTheCore.utils.AttributeUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import java.util.List;
@@ -41,9 +42,9 @@ public class SummonPigResult extends Mission.Result {
       piggy.customName(name.color(side.color));
       piggy.setCustomNameVisible(true);
       
-      piggy.getAttribute(Attribute.MOVEMENT_SPEED).setBaseValue(0.32);
-      piggy.getAttribute(Attribute.ATTACK_DAMAGE).setBaseValue(0.1);
-      piggy.getAttribute(Attribute.MAX_HEALTH).setBaseValue(50);
+      AttributeUtils.set(piggy, Attribute.MOVEMENT_SPEED, 0.32);
+      AttributeUtils.set(piggy, Attribute.ATTACK_DAMAGE, 0.1);
+      AttributeUtils.set(piggy, Attribute.MAX_HEALTH, 50);
       piggy.setHealth(50);
       
       ItemStack helmet = new ItemStack(Material.LEATHER_HELMET);
