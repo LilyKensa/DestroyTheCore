@@ -41,7 +41,7 @@ public class SuicideCommand extends Subcommand {
           Placeholder.unparsed(
             "action",
             RandomUtils.pick(
-              DestroyTheCore.translationsManager.getRaw(
+              DestroyTheCore.translationsManager.unparsed(
                 "commands.suicide.actions"
               )
                 .split("\\|")

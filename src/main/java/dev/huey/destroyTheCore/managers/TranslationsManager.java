@@ -103,7 +103,7 @@ public class TranslationsManager {
     return translator.has(currentLocale, key);
   }
   
-  public String getRaw(String key) {
+  public String unparsed(String key) {
     return translator.get(currentLocale, key);
   }
   

@@ -109,12 +109,15 @@ public class EventsManager implements Listener {
   @EventHandler
   public void onPlayerJoin(PlayerJoinEvent ev) {
     DestroyTheCore.game.handleJoinedPlayer(ev.getPlayer());
+    
     DestroyTheCore.boardsManager.onPlayerJoin(ev);
+    DestroyTheCore.advancementsManager.onPlayerJoin(ev);
   }
   
   @EventHandler
   public void onPlayerQuit(PlayerQuitEvent ev) {
     DestroyTheCore.game.handleQuitedPlayer(ev.getPlayer());
+    
     DestroyTheCore.boardsManager.onPlayerQuit(ev);
     DestroyTheCore.guiManager.onPlayerLeave(ev.getPlayer());
   }
@@ -133,9 +136,9 @@ public class EventsManager implements Listener {
   
   @EventHandler
   public void onVehicleEnter(VehicleEnterEvent ev) {
-    if (!(ev.getEntered() instanceof Player pl)) return;
-    
-    DestroyTheCore.game.handlePlayerRide(pl, ev.getVehicle(), ev);
+    if (ev.getEntered() instanceof Player pl) {
+      DestroyTheCore.game.handlePlayerRide(pl, ev.getVehicle(), ev);
+    }
   }
   
   @EventHandler

@@ -88,7 +88,9 @@ public class Role extends GUIItem {
       key = translateRoot.formatted(translationName) + "-" + i;
       
       if (DestroyTheCore.translationsManager.has(key)) list.add(
-        TextUtils.miniToRawCodes(DestroyTheCore.translationsManager.getRaw(key))
+        TextUtils.miniToRawCodes(
+          DestroyTheCore.translationsManager.unparsed(key)
+        )
       );
       else break;
     }
@@ -316,7 +318,7 @@ public class Role extends GUIItem {
         List.of(
           Placeholder.unparsed(
             "type",
-            DestroyTheCore.translationsManager.getRaw(
+            DestroyTheCore.translationsManager.unparsed(
               "role.desc.types." + type.name().toLowerCase()
             )
           )

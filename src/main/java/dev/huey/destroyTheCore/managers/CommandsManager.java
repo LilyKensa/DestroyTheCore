@@ -97,6 +97,7 @@ public class CommandsManager implements TabCompleter, CommandExecutor {
             Component.text(DestroyTheCore.version).color(NamedTextColor.YELLOW)
           ).colorIfAbsent(NamedTextColor.GRAY)
         );
+        PlayerUtils.prefixedSend(pl, TextUtils.$("commands.root.github"));
         return true;
       }
       

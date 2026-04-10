@@ -31,6 +31,7 @@ public final class DestroyTheCore extends JavaPlugin {
   static public MissionsManager missionsManager;
   static public GUIManager guiManager;
   static public TipsManager tipsManager;
+  static public AdvancementsManager advancementsManager;
   static public BoardsManager boardsManager;
   static public TicksManager ticksManager;
   
@@ -58,6 +59,7 @@ public final class DestroyTheCore extends JavaPlugin {
     missionsManager = new MissionsManager();
     guiManager = new GUIManager();
     tipsManager = new TipsManager();
+    advancementsManager = new AdvancementsManager();
     boardsManager = new BoardsManager();
     configManager = new ConfigManager();
     ticksManager = new TicksManager();
@@ -87,6 +89,7 @@ public final class DestroyTheCore extends JavaPlugin {
     recipesManager.init();
     rolesManager.init();
     tipsManager.init();
+    advancementsManager.init();
     ticksManager.init();
     
     game.init();

@@ -56,7 +56,7 @@ public class TextUtils {
   }
   
   static public String translateRaw(String key) {
-    return DestroyTheCore.translationsManager.getRaw(key);
+    return DestroyTheCore.translationsManager.unparsed(key);
   }
   
   static public String $r(String key, List<TagResolver> placeholders) {

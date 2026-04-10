@@ -2,6 +2,7 @@ package dev.huey.destroyTheCore.commands;
 
 import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.bases.Subcommand;
+import dev.huey.destroyTheCore.managers.ConfigManager;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import java.io.File;
@@ -14,7 +15,7 @@ public class MapCommand extends Subcommand {
   
   public MapCommand() {
     super("map");
-    addArgument("map", () -> List.of("<map>"));
+    addArgument("map", () -> DestroyTheCore.configManager.availableTemplates);
   }
   
   @Override
@@ -43,7 +44,10 @@ public class MapCommand extends Subcommand {
     }
     
     String mapName = args.getFirst();
-    File file = new File(Bukkit.getWorldContainer(), "template-" + mapName);
+    File file = new File(
+      Bukkit.getWorldContainer(),
+      ConfigManager.templateWorldPrefix + mapName
+    );
     if (!file.exists() || !file.isDirectory()) {
       PlayerUtils.send(pl, TextUtils.$("commands.map.not-found"));
       return;

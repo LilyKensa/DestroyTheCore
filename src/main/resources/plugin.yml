@@ -3,7 +3,7 @@ version: '${project.version}'
 main: dev.huey.destroyTheCore.DestroyTheCore
 api-version: '1.21'
 authors: [ _hueeey_ ]
-depend: [ ProtocolLib ]
+depend: [ ProtocolLib, UltimateAdvancementAPI ]
 commands:
   dtc:
     description: Main command of Destroy the Core 3

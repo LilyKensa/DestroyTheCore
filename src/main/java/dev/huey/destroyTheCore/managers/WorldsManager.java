@@ -81,7 +81,9 @@ public class WorldsManager {
   }
   
   public World createTemplateWorld() {
-    return Bukkit.createWorld(getCreator("template-" + mapName));
+    return Bukkit.createWorld(
+      getCreator(ConfigManager.templateWorldPrefix + mapName)
+    );
   }
   
   public World createLiveWorld() {
@@ -141,14 +143,14 @@ public class WorldsManager {
   public void cloneLive() {
     isReady = false;
     
-    Bukkit.unloadWorld("template-" + mapName, true);
+    Bukkit.unloadWorld(ConfigManager.templateWorldPrefix + mapName, true);
     
     PlayerUtils.prefixedNotice(TextUtils.$("world.deleting-live"));
     deleteLive();
     
     File sourceFolder = new File(
       Bukkit.getWorldContainer(),
-      "template-" + mapName
+      ConfigManager.templateWorldPrefix + mapName
     );
     File targetFolder = new File(Bukkit.getWorldContainer(), "live");
     PlayerUtils.prefixedNotice(TextUtils.$("world.copying-template"));

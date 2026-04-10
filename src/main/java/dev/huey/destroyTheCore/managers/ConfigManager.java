@@ -9,16 +9,46 @@ import dev.huey.destroyTheCore.records.Stats;
 import dev.huey.destroyTheCore.utils.CoreUtils;
 import java.io.File;
 import java.io.IOException;
-import java.util.Locale;
-import java.util.Map;
-import java.util.UUID;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.*;
 import java.util.stream.Collectors;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 
 public class ConfigManager {
-  static public File getFile(String path) {
+  
+  static public String templateWorldPrefix = "template-";
+  
+  public List<String> availableTemplates = new ArrayList<>();;
+  
+  void refreshTemplateWorlds() {
+    availableTemplates.clear();
+    
+    try (
+         DirectoryStream<Path> stream = Files.newDirectoryStream(
+           Bukkit.getWorldContainer().toPath(),
+           templateWorldPrefix + "*"
+         )
+    ) {
+      for (Path entry : stream) {
+        File file = entry.toFile();
+        if (!file.isDirectory()) continue;
+        
+        availableTemplates.add(
+          file.getName().substring(templateWorldPrefix.length())
+        );
+      }
+    }
+    catch (IOException ex) {
+      ex.printStackTrace();
+    }
+  }
+  
+  static public File getConfigFile(String path) {
     return new File(DestroyTheCore.instance.getDataFolder(), path);
   }
   
@@ -32,7 +62,7 @@ public class ConfigManager {
     }
     
     public void load() {
-      file = getFile(path);
+      file = getConfigFile(path);
       
       if (file.exists()) {
         config = YamlConfiguration.loadConfiguration(file);
@@ -155,6 +185,8 @@ public class ConfigManager {
   }
   
   public void load() {
+    refreshTemplateWorlds();
+    
     config.load();
     
     // Recreate as map changes

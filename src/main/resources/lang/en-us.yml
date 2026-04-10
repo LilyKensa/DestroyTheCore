@@ -298,6 +298,8 @@ world:
   template-warning: "<red>You're in the template world!</red>"
 
 commands:
+  root:
+    github: "Go to <click:open_url:'https://github.com/LilyKensa/DestroyTheCore'><u>https://github.com/LilyKensa/DestroyTheCore</u></click> for help"
   suicide:
     bad-time: "<red>You can't suicide right now!</red>"
     already-dead: "<red>You're already dead!</red>"

@@ -645,6 +645,8 @@ public class Game {
   public void handleJoinedPlayer(Player pl) {
     UUID id = pl.getUniqueId();
     
+    DestroyTheCore.advancementsManager.root.grant(pl);
+    
     if (!stats.containsKey(id)) stats.put(id, new Stats());
     if (getPlayerData(pl) == null) playerData.put(id, new PlayerData(pl));
     
@@ -2636,6 +2638,10 @@ public class Game {
         p.getUniqueId(),
         new PlayerData(p, oldData.side, oldData.role)
       );
+      
+      if (oldData.side != Side.SPECTATOR) {
+        DestroyTheCore.advancementsManager.played.grant(p);
+      }
       
       PlayerUtils.refreshSpectatorAbilities(p);
       PlayerUtils.respawn(p);

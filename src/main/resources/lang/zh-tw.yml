@@ -1059,3 +1059,11 @@ roles:
         enemy: "入侵"
     potion-warning: "<red>你不能喝藥水!</red>"
     invis-warning: "<red>你不能隱形!</red>"
+
+advancement:
+  tab: "殲滅攻城戰"
+
+advancements:
+  root:
+    title: "<white>殲滅攻城戰</white>"
+    desc-1: "<green>加入殲滅攻城戰的大家庭</green>"
