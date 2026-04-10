@@ -764,7 +764,7 @@ roles:
       name: "Blitz Launch"
       desc-1: "<dark_purple>Gets Speed I (5s), Resistance I (10s)</dark_purple>"
       announce: "<player> used <yellow><role></yellow>'s skill, increased speed and resistance!"
-    no-bow: "<red>This role doesn't allow the use of bows!</red>"
+    no-crossbow: "<red>This role doesn't allow the use of crossbows!</red>"
   guard:
     name: "Guard"
     desc-1: "<gold>An important defensive role guarding the core!</gold>"
@@ -885,7 +885,7 @@ roles:
       desc-3: "<dark_purple>Gain invisible for another 4 seconds & Strength III</dark_purple>"
       not-invis: "<red>You need to be invisible to use this skill!</red>"
       no-target: "<red>No target to teleport to!</red>"
-    no-bow: "<red>You can't use bow!</red>"
+    no-bow: "<red>This role doesn't allow the use of bows!</red>"
   constructor:
     name: "Constructor"
     desc-1: "<gold>It's normal for a worker to carry a hammer with them, right?</gold>"

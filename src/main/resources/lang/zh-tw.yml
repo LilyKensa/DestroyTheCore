@@ -809,7 +809,7 @@ roles:
       name: "閃電戰開始"
       desc-1: "<dark_purple>獲得加速 I (5s), 抗性 I (10s)</dark_purple>"
       announce: "<player> 使用了<yellow><role></yellow>技能, 跑速抗性增加!"
-    no-bow: "<red>This role doesn't allow the use of bows!</red>"
+    no-crossbow: "<red>此職業不允許使用十字弩!</red>"
   guard:
     name: "守衛"
     desc-1: "<gold>守護核心的重要防禦角色!</gold>"
@@ -930,7 +930,7 @@ roles:
       desc-3: "<dark_purple>得到額外 4 秒隱形及力量 III</dark_purple>"
       not-invis: "<red>你必須隱形才能使用技能!</red>"
       no-target: "<red>找不到傳送目標!</red>"
-    no-bow: "<red>你不能使用弓箭!</red>"
+    no-bow: "<red>此職業不允許使用弓箭!</red>"
   constructor:
     name: "建築師"
     desc-1: "<gold>工人隨身攜帶一把榔頭也是正常的吧!</gold>"

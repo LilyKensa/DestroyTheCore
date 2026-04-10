@@ -282,10 +282,13 @@ public class EventsManager implements Listener {
   public void onEntityShootBow(EntityShootBowEvent ev) {
     if (checkPaused(ev, ev.getEntity())) return;
     
-    for (ProjItemGen g : DestroyTheCore.itemsManager.projGens.values())
-      g.outerOnEntityShootBow(
-        ev
-      );
+    for (ProjItemGen g : DestroyTheCore.itemsManager.projGens.values()) {
+      g.outerOnEntityShootBow(ev);
+    }
+    
+    if (ev.getEntity() instanceof Player pl) {
+      AssassinRole.onPlayerShootBow(pl, ev);
+    }
   }
   
   @EventHandler

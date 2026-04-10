@@ -55,8 +55,8 @@ public class EarthquakeCowMission extends Mission implements Listener {
   }
   
   record BlockRecord(
-                     Block block, Material type, BlockData data,
-                     BlockState state
+    Block block, Material type, BlockData data,
+    BlockState state
   ) {
   }
   

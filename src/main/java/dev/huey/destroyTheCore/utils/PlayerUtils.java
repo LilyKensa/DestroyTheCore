@@ -456,7 +456,8 @@ public class PlayerUtils {
   
   /** Apply potion effect, level is 1-based */
   static public void addEffect(
-    LivingEntity pl, PotionEffectType type, int ticks, int level, boolean beacon, boolean particles
+    LivingEntity pl, PotionEffectType type, int ticks, int level,
+    boolean beacon, boolean particles
   ) {
     if (level <= 0) return;
     
@@ -478,7 +479,8 @@ public class PlayerUtils {
   }
   
   static public void setEffect(
-    LivingEntity pl, PotionEffectType type, int ticks, int level, boolean beacon, boolean particles
+    LivingEntity pl, PotionEffectType type, int ticks, int level,
+    boolean beacon, boolean particles
   ) {
     pl.removePotionEffect(type);
     addEffect(pl, type, ticks, level - 1, beacon, particles);
@@ -491,7 +493,8 @@ public class PlayerUtils {
   }
   
   static public void extendEffect(
-    LivingEntity pl, PotionEffectType type, int ticks, int level, boolean beacon, boolean particles
+    LivingEntity pl, PotionEffectType type, int ticks, int level,
+    boolean beacon, boolean particles
   ) {
     int duration = ticks;
     if (pl.hasPotionEffect(type))

@@ -766,7 +766,8 @@ public class Game {
   }
   
   public void handlePlayerDamage(
-    Player attacker, Player victim, Projectile proj, EntityDamageByEntityEvent ev
+    Player attacker, Player victim, Projectile proj,
+    EntityDamageByEntityEvent ev
   ) {
     if (isPlaying) {
       double damage = ev.getDamage(), finalDamage = ev.getFinalDamage();
@@ -1479,6 +1480,7 @@ public class Game {
         && InfiniteOresMission.check(block.getLocation())
     ) return;
     
+    oresTypeCache.put(Pos.of(block).toBlockRec(), originalType);
     block.setType(Material.BEDROCK);
     
     ProtocolManager manager = ProtocolLibrary.getProtocolManager();
@@ -2027,7 +2029,8 @@ public class Game {
   }
   
   public void handleInventoryClick(
-    Inventory inv, Player pl, ItemStack item, ClickType click, InventoryAction action, InventoryClickEvent ev
+    Inventory inv, Player pl, ItemStack item, ClickType click,
+    InventoryAction action, InventoryClickEvent ev
   ) {
     if (!PlayerUtils.shouldHandle(pl)) return;
     
@@ -3081,11 +3084,8 @@ public class Game {
           data.role.type == RolesManager.RoleType.ATTACKING
             && data.role.id != RolesManager.RoleKey.RANGER
         ) {
-          if (
-            PlayerUtils.banBothHandItem(p, Material.BOW)
-              || PlayerUtils.banBothHandItem(p, Material.CROSSBOW)
-          ) {
-            p.sendActionBar(TextUtils.$("roles.attacker.no-bow"));
+          if (PlayerUtils.banBothHandItem(p, Material.CROSSBOW)) {
+            p.sendActionBar(TextUtils.$("roles.attacker.no-crossbow"));
           }
         }
         

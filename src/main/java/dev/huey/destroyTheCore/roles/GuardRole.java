@@ -5,7 +5,6 @@ import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.managers.RolesManager;
 import dev.huey.destroyTheCore.records.Pos;
-import dev.huey.destroyTheCore.utils.AttributeUtils;
 import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
@@ -14,9 +13,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.potion.PotionEffectType;
 
 public class GuardRole extends Role {
@@ -38,10 +35,10 @@ public class GuardRole extends Role {
     addExclusiveItem(
       Material.SHIELD,
       meta -> {
-        meta.addAttributeModifier(
-          Attribute.MAX_HEALTH,
-          AttributeUtils.addition("max-health", EquipmentSlotGroup.OFFHAND, 10)
-        );
+        // meta.addAttributeModifier(
+        //   Attribute.MAX_HEALTH,
+        //   AttributeUtils.addition("max-health", EquipmentSlotGroup.OFFHAND, 10)
+        // );
       }
     );
     addSkill(300 * 20);

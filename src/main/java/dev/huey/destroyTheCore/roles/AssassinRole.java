@@ -48,10 +48,6 @@ public class AssassinRole extends Role {
     resetStanding(pl);
   }
   
-  /**
-   * Not used as roles with {@code RolesManager.RoleType.ATTACKING} will now
-   * drop bows on use
-   */
   static public void onPlayerShootBow(Player pl, EntityShootBowEvent ev) {
     if (!PlayerUtils.shouldHandle(pl)) return;
     
