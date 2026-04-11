@@ -402,7 +402,9 @@ public class Role extends GUIItem {
   public void handleClick(
     ClickType clickType, Player pl, InventoryClickEvent ev
   ) {
-    if (DestroyTheCore.game.getStats(pl).levels >= levelReq) {
+    if (
+      DestroyTheCore.game.getStats(pl).levels >= levelReq || PlayerUtils.isAdmin(pl)
+    ) {
       announce(pl);
       pl.playSound(
         pl.getLocation(),
@@ -417,8 +419,8 @@ public class Role extends GUIItem {
       pl.playSound(
         pl.getLocation(),
         Sound.ENTITY_ENDERMAN_TELEPORT,
-        1, //
-        1
+        1, // Volume
+        1 // Pitch
       );
       pl.sendActionBar(TextUtils.$("items.choose-role.locked"));
     }

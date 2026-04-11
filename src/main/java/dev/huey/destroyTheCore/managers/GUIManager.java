@@ -13,6 +13,7 @@ import dev.huey.destroyTheCore.gui.shop.DetailShopItem;
 import dev.huey.destroyTheCore.gui.shop.NewShopItem;
 import dev.huey.destroyTheCore.gui.shop.RenameShopItem;
 import dev.huey.destroyTheCore.records.MaybeGen;
+import dev.huey.destroyTheCore.utils.AdvUtils;
 import dev.huey.destroyTheCore.utils.CoreUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
@@ -94,6 +95,8 @@ public class GUIManager {
     });
     
     window.open();
+    
+    AdvUtils.grant(pl, DestroyTheCore.advancementsManager.chooseRoleAdv);
   }
   
   public void openTeleporter(Player pl) {

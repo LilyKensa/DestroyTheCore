@@ -338,6 +338,8 @@ world:
   template-warning: "<red>你在模板世界中!</red>"
 
 commands:
+  root:
+    github: "訪問 <click:open_url:'https://github.com/LilyKensa/DestroyTheCore'><u>https://github.com/LilyKensa/DestroyTheCore</u></click> 已獲得更多訊息"
   suicide:
     bad-time: "<red>你現在不能自殺!</red>"
     already-dead: "<red>你已經死了!</red>"
@@ -1067,3 +1069,27 @@ advancements:
   root:
     title: "<white>殲滅攻城戰</white>"
     desc-1: "<green>加入殲滅攻城戰的大家庭</green>"
+  chose-role:
+    title: "<white>琳瑯滿目</white>"
+    desc-1: "<green>打開職業選單</green>"
+  played-role:
+    title: "<white>天命<role></white>"
+    desc-1: "<green>在遊戲開始時選擇<role></green>"
+  played:
+    title: "<white>初出茅廬</white>"
+    desc-1: "<green>參與遊戲</green>"
+  played-spectator:
+    title: "<white>觀棋不語</white>"
+    desc-1: "<green>成為旁觀者</green>"
+  used-skill:
+    title: "<white>小試牛刀</white>"
+    desc-1: "<green>使用技能</green>"
+  used-many-skills:
+    title: "<white>一技之長</white>"
+    desc-1: "<green>精熟技能</green>"
+  used-lottery:
+    title: "<white>孤注一擲</white>"
+    desc-1: "<green>使用抽獎</green>"
+  used-many-lotteries:
+    title: "<white>賭徒上身</white>"
+    desc-1: "<green>瘋狂抽獎</green>"

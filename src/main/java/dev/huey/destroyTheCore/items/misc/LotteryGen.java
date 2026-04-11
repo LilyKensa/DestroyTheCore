@@ -37,6 +37,15 @@ public class LotteryGen extends UsableItemGen {
     
     PlayerUtils.takeOneItemFromHand(pl);
     
+    AdvUtils.grant(
+      pl,
+      DestroyTheCore.advancementsManager.usedLotteryAdv
+    );
+    AdvUtils.progress(
+      pl,
+      DestroyTheCore.advancementsManager.usedManyLotteriesAdv
+    );
+    
     final Location centerLoc = pl.getLocation().add(0, 0.1, 0);
     final int percentage = Math.floorMod(
       RandomUtils.nextInt(),

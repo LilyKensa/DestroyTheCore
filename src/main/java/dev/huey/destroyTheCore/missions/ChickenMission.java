@@ -3,7 +3,7 @@ package dev.huey.destroyTheCore.missions;
 import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.Mission;
-import dev.huey.destroyTheCore.utils.AttributeUtils;
+import dev.huey.destroyTheCore.utils.AttrUtils;
 import dev.huey.destroyTheCore.utils.RandomUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import java.util.HashMap;
@@ -70,10 +70,10 @@ public class ChickenMission extends Mission implements Listener {
     chicken.customName(TextUtils.$("missions.chicken.chicken"));
     chicken.setCustomNameVisible(true);
     chicken.setGlowing(true);
-    AttributeUtils.set(chicken, Attribute.MOVEMENT_SPEED, 2);
-    AttributeUtils.set(chicken, Attribute.WATER_MOVEMENT_EFFICIENCY, 1);
-    AttributeUtils.set(chicken, Attribute.KNOCKBACK_RESISTANCE, 1);
-    AttributeUtils.set(chicken, Attribute.MAX_HEALTH, 50);
+    AttrUtils.set(chicken, Attribute.MOVEMENT_SPEED, 2);
+    AttrUtils.set(chicken, Attribute.WATER_MOVEMENT_EFFICIENCY, 1);
+    AttrUtils.set(chicken, Attribute.KNOCKBACK_RESISTANCE, 1);
+    AttrUtils.set(chicken, Attribute.MAX_HEALTH, 50);
     chicken.setHealth(50);
     
     chicken.getPathfinder().setCanFloat(true);
@@ -89,7 +89,7 @@ public class ChickenMission extends Mission implements Listener {
     if (ev.getEntity().getUniqueId() != chicken.getUniqueId()) return;
     
     healthBar.progress(
-      (float) (chicken.getHealth() / AttributeUtils.get(
+      (float) (chicken.getHealth() / AttrUtils.get(
         chicken,
         Attribute.MAX_HEALTH
       ))

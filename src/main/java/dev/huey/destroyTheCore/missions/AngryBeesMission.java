@@ -2,7 +2,7 @@ package dev.huey.destroyTheCore.missions;
 
 import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.bases.Mission;
-import dev.huey.destroyTheCore.utils.AttributeUtils;
+import dev.huey.destroyTheCore.utils.AttrUtils;
 import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.RandomUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
@@ -74,10 +74,10 @@ public class AngryBeesMission extends Mission implements Listener {
     queenBee.setCustomNameVisible(true);
     
     queenBee.setGlowing(true);
-    AttributeUtils.set(queenBee, Attribute.SCALE, 2);
-    AttributeUtils.set(queenBee, Attribute.MOVEMENT_SPEED, 0.2);
-    AttributeUtils.set(queenBee, Attribute.WATER_MOVEMENT_EFFICIENCY, 1);
-    AttributeUtils.set(queenBee, Attribute.MAX_HEALTH, 100);
+    AttrUtils.set(queenBee, Attribute.SCALE, 2);
+    AttrUtils.set(queenBee, Attribute.MOVEMENT_SPEED, 0.2);
+    AttrUtils.set(queenBee, Attribute.WATER_MOVEMENT_EFFICIENCY, 1);
+    AttrUtils.set(queenBee, Attribute.MAX_HEALTH, 100);
     queenBee.setHealth(100);
     
     for (int i = 0; i < 4; ++i) {
@@ -88,9 +88,9 @@ public class AngryBeesMission extends Mission implements Listener {
       bee.customName(TextUtils.$("missions.angry-bees.normal-bee"));
       bee.setCustomNameVisible(true);
       bee.setGlowing(true);
-      AttributeUtils.set(bee, Attribute.MOVEMENT_SPEED, 0.2);
-      AttributeUtils.set(bee, Attribute.WATER_MOVEMENT_EFFICIENCY, 1);
-      AttributeUtils.set(bee, Attribute.MAX_HEALTH, 20);
+      AttrUtils.set(bee, Attribute.MOVEMENT_SPEED, 0.2);
+      AttrUtils.set(bee, Attribute.WATER_MOVEMENT_EFFICIENCY, 1);
+      AttrUtils.set(bee, Attribute.MAX_HEALTH, 20);
       bee.setHealth(20);
       
       DestroyTheCore.missionsManager.team.addEntity(bee);
@@ -108,7 +108,7 @@ public class AngryBeesMission extends Mission implements Listener {
     if (ev.getEntity().getUniqueId() != queenBee.getUniqueId()) return;
     
     healthBar.progress(
-      (float) (queenBee.getHealth() / AttributeUtils.get(
+      (float) (queenBee.getHealth() / AttrUtils.get(
         queenBee,
         Attribute.MAX_HEALTH
       ))

@@ -112,7 +112,7 @@ public class AssassinRole extends Role {
       );
     }
     else if (
-      pl.getHealth() >= AttributeUtils.get(
+      pl.getHealth() >= AttrUtils.get(
         pl,
         Attribute.MAX_HEALTH
       )

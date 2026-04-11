@@ -2,7 +2,7 @@ package dev.huey.destroyTheCore.items.roles;
 
 import dev.huey.destroyTheCore.bases.ItemGen;
 import dev.huey.destroyTheCore.managers.ItemsManager;
-import dev.huey.destroyTheCore.utils.AttributeUtils;
+import dev.huey.destroyTheCore.utils.AttrUtils;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -29,7 +29,7 @@ public class ProvocateurHelmetGen extends ItemGen {
     
     meta.addAttributeModifier(
       Attribute.ARMOR,
-      AttributeUtils.addition("protection", EquipmentSlotGroup.HEAD, 2)
+      AttrUtils.addition("protection", EquipmentSlotGroup.HEAD, 2)
     );
     
     meta.addEnchant(Enchantment.PROTECTION, 2, true);

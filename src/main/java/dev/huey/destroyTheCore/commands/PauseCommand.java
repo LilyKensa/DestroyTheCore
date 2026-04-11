@@ -2,7 +2,7 @@ package dev.huey.destroyTheCore.commands;
 
 import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.bases.Subcommand;
-import dev.huey.destroyTheCore.utils.AttributeUtils;
+import dev.huey.destroyTheCore.utils.AttrUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import java.util.List;
@@ -26,7 +26,7 @@ public class PauseCommand extends Subcommand {
       .setFrozen(DestroyTheCore.game.paused);
     
     for (Player p : Bukkit.getOnlinePlayers()) {
-      AttributeUtils.set(
+      AttrUtils.set(
         p,
         Attribute.GRAVITY,
         DestroyTheCore.game.paused ? 0 : 0.08

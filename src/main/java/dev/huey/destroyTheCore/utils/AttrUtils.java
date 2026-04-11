@@ -12,7 +12,7 @@ import org.bukkit.inventory.EquipmentSlotGroup;
  * Specifically made for {@link AttributeModifier}
  * Probably should move this to other places though
  */
-public class AttributeUtils {
+public class AttrUtils {
   
   static public AttributeModifier addition(
     String name, EquipmentSlotGroup slot, double amount

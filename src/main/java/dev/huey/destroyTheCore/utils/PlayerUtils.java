@@ -373,7 +373,7 @@ public class PlayerUtils {
   
   static public void fullyHeal(Player pl) {
     resetHunger(pl);
-    pl.setHealth(AttributeUtils.get(pl, Attribute.MAX_HEALTH));
+    pl.setHealth(AttrUtils.get(pl, Attribute.MAX_HEALTH));
     pl.setFireTicks(0);
     pl.setFreezeTicks(0);
     pl.setFallDistance(0);

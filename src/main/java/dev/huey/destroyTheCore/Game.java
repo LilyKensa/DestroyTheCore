@@ -645,7 +645,7 @@ public class Game {
   public void handleJoinedPlayer(Player pl) {
     UUID id = pl.getUniqueId();
     
-    DestroyTheCore.advancementsManager.root.grant(pl);
+    AdvUtils.grant(pl, DestroyTheCore.advancementsManager.rootAdv);
     
     if (!stats.containsKey(id)) stats.put(id, new Stats());
     if (getPlayerData(pl) == null) playerData.put(id, new PlayerData(pl));
@@ -1150,6 +1150,17 @@ public class Game {
         data.skillReloadedMessage = false;
         
         data.role.useSkill(pl);
+        
+        if (PlayerUtils.getHandCooldown(pl) > 20) {
+          AdvUtils.grant(
+            pl,
+            DestroyTheCore.advancementsManager.usedSkillAdv
+          );
+          AdvUtils.progress(
+            pl,
+            DestroyTheCore.advancementsManager.usedManySkillsAdv
+          );
+        }
         
         data.addExtraExp(10);
       }
@@ -2630,21 +2641,31 @@ public class Game {
     sideData.put(Side.RED, new SideData());
     sideData.put(Side.GREEN, new SideData());
     
-    for (Player p : Bukkit.getOnlinePlayers()) {
-      if (!PlayerUtils.shouldHandle(p)) continue;
+    for (Player pl : Bukkit.getOnlinePlayers()) {
+      if (!PlayerUtils.shouldHandle(pl)) continue;
       
-      PlayerData oldData = getPlayerData(p);
+      PlayerData oldData = getPlayerData(pl);
       playerData.put(
-        p.getUniqueId(),
-        new PlayerData(p, oldData.side, oldData.role)
+        pl.getUniqueId(),
+        new PlayerData(pl, oldData.side, oldData.role)
       );
       
-      if (oldData.side != Side.SPECTATOR) {
-        DestroyTheCore.advancementsManager.played.grant(p);
+      AdvUtils.grant(pl, DestroyTheCore.advancementsManager.playedAdv);
+      if (oldData.side == Side.SPECTATOR) {
+        AdvUtils.grant(
+          pl,
+          DestroyTheCore.advancementsManager.playedSpectatorAdv
+        );
+      }
+      else {
+        AdvUtils.grant(
+          pl,
+          DestroyTheCore.advancementsManager.roleAdvMap.get(oldData.role.id)
+        );
       }
       
-      PlayerUtils.refreshSpectatorAbilities(p);
-      PlayerUtils.respawn(p);
+      PlayerUtils.refreshSpectatorAbilities(pl);
+      PlayerUtils.respawn(pl);
     }
     DestroyTheCore.boardsManager.refresh();
     

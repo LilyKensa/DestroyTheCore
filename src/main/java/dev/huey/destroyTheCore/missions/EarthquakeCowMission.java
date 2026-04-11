@@ -227,11 +227,11 @@ public class EarthquakeCowMission extends Mission implements Listener {
     cow.setCustomNameVisible(true);
     
     cow.setGlowing(true);
-    AttributeUtils.set(cow, Attribute.SCALE, 2);
-    AttributeUtils.set(cow, Attribute.MOVEMENT_SPEED, 0.2);
-    AttributeUtils.set(cow, Attribute.WATER_MOVEMENT_EFFICIENCY, 1);
-    AttributeUtils.set(cow, Attribute.KNOCKBACK_RESISTANCE, 1);
-    AttributeUtils.set(cow, Attribute.MAX_HEALTH, 150);
+    AttrUtils.set(cow, Attribute.SCALE, 2);
+    AttrUtils.set(cow, Attribute.MOVEMENT_SPEED, 0.2);
+    AttrUtils.set(cow, Attribute.WATER_MOVEMENT_EFFICIENCY, 1);
+    AttrUtils.set(cow, Attribute.KNOCKBACK_RESISTANCE, 1);
+    AttrUtils.set(cow, Attribute.MAX_HEALTH, 150);
     cow.setHealth(150);
     
     cow.getPathfinder().setCanFloat(true);
@@ -248,7 +248,7 @@ public class EarthquakeCowMission extends Mission implements Listener {
     if (ev.getEntity().getUniqueId() != cow.getUniqueId()) return;
     
     healthBar.progress(
-      (float) (cow.getHealth() / AttributeUtils.get(
+      (float) (cow.getHealth() / AttrUtils.get(
         cow,
         Attribute.MAX_HEALTH
       ))

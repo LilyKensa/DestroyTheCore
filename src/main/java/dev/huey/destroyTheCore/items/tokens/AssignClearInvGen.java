@@ -33,8 +33,8 @@ public class AssignClearInvGen extends UsableItemGen {
     
     allay.customName(TextUtils.$("items.assign-clear-inv.allay"));
     
-    AttributeUtils.set(allay, Attribute.SCALE, 1.2);
-    AttributeUtils.set(allay, Attribute.MAX_HEALTH, 1);
+    AttrUtils.set(allay, Attribute.SCALE, 1.2);
+    AttrUtils.set(allay, Attribute.MAX_HEALTH, 1);
     allay.setHealth(1);
     
     allay.getEquipment().setItemInMainHand(item);

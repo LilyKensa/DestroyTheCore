@@ -4,7 +4,7 @@ import com.destroystokyo.paper.ParticleBuilder;
 import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.managers.RolesManager;
-import dev.huey.destroyTheCore.utils.AttributeUtils;
+import dev.huey.destroyTheCore.utils.AttrUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import java.util.List;
@@ -84,8 +84,8 @@ public class JockeyRole extends Role {
     );
     
     if (pl.getVehicle() instanceof Horse horse) {
-      AttributeUtils.set(horse, Attribute.MAX_HEALTH, 30);
-      horse.setHealth(AttributeUtils.get(horse, Attribute.MAX_HEALTH));
+      AttrUtils.set(horse, Attribute.MAX_HEALTH, 30);
+      horse.setHealth(AttrUtils.get(horse, Attribute.MAX_HEALTH));
       
       HorseInventory inv = horse.getInventory();
       Material armorType;
