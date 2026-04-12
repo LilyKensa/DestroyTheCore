@@ -24,7 +24,9 @@ public class GuardRole extends Role {
         DestroyTheCore.game.getPlayerData(
           e
         ).role.id == RolesManager.RoleKey.GUARD
-      ) send(e, TextUtils.$("roles.guard.enchanting-alarm"));
+      ) {
+        send(e, TextUtils.$("roles.guard.enchanting-alarm"));
+      }
     }
   }
   
@@ -177,6 +179,9 @@ public class GuardRole extends Role {
       }
     }
     
-    if (!found) send(pl, TextUtils.$("roles.guard.skill.found-enemy.none"));
+    if (!found) {
+      PlayerUtils.setHandCooldown(pl, skillCooldown / 2);
+      send(pl, TextUtils.$("roles.guard.skill.found-enemy.none"));
+    }
   }
 }

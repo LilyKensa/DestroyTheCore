@@ -147,9 +147,7 @@ public class CollectStarsMission extends ProgressiveMission implements Listener 
       }
     }
     
-    for (Game.Side side : new Game.Side[]{
-      Game.Side.RED, Game.Side.GREEN
-    }) {
+    for (Game.Side side : Game.bothSide) {
       if (
         counts.getOrDefault(side, 0) > counts.getOrDefault(side.opposite(), 0)
       ) {

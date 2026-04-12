@@ -550,7 +550,7 @@ public class PlayerUtils {
         pl.sendActionBar(TextUtils.$("game.reduce-respawn-time.done"));
         
         if (d.role.id == RolesManager.RoleKey.HACKER) {
-          PlayerUtils.give(pl, Material.IRON_INGOT);
+          give(pl, Material.IRON_INGOT);
         }
         
         pl.playSound(
@@ -728,6 +728,25 @@ public class PlayerUtils {
       .getPlayerData(b).side;
   }
   
+  /** Drop an item at spawnpoint */
+  static public void dropAtSpawn(Game.Side side, ItemStack item) {
+    DestroyTheCore.worldsManager.live.dropItemNaturally(
+      LocUtils.live(
+        LocUtils.selfSide(
+          LocUtils.toSpawnPoint(
+            RandomUtils.pick(DestroyTheCore.game.map.spawnpoints)
+          ),
+          side
+        )
+      ),
+      item
+    ).setPickupDelay(20);
+  }
+  
+  static public void dropAtSpawn(Player pl, ItemStack item) {
+    dropAtSpawn(DestroyTheCore.game.getPlayerData(pl).side, item);
+  }
+  
   /** Give a player an item, or send to their spawn if they're dead */
   static public void give(Player pl, ItemStack item) {
     if (item == null || item.isEmpty()) return;
@@ -738,17 +757,7 @@ public class PlayerUtils {
       pl.give(item);
     }
     else {
-      pl.getWorld().dropItemNaturally(
-        LocUtils.live(
-          LocUtils.selfSide(
-            LocUtils.toSpawnPoint(
-              RandomUtils.pick(DestroyTheCore.game.map.spawnpoints)
-            ),
-            data.side
-          )
-        ),
-        item
-      ).setPickupDelay(20);
+      dropAtSpawn(data.side, item);
       
       pl.sendActionBar(TextUtils.$("player.item-sent-to-spawn"));
     }

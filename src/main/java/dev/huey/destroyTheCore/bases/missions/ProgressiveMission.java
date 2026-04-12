@@ -5,8 +5,7 @@ import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.Mission;
 import dev.huey.destroyTheCore.records.PlayerData;
 import dev.huey.destroyTheCore.utils.TextUtils;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.EnumMap;
 import net.kyori.adventure.bossbar.BossBar;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -14,7 +13,9 @@ import org.bukkit.event.Listener;
 
 public abstract class ProgressiveMission extends Mission implements Listener {
   
-  Map<Game.Side, BossBar> bars = new HashMap();
+  EnumMap<Game.Side, BossBar> bars = new EnumMap<>(Game.Side.class);
+  EnumMap<Game.Side, Float> values = new EnumMap<>(Game.Side.class);
+  
   float displayRatio = 1;
   
   public ProgressiveMission(String id) {
@@ -41,6 +42,11 @@ public abstract class ProgressiveMission extends Mission implements Listener {
         BossBar.Overlay.PROGRESS
       )
     );
+    
+    for (Game.Side side : Game.bothSide) {
+      values.put(side, 0f);
+    }
+    
     for (Player p : Bukkit.getOnlinePlayers()) {
       PlayerData d = DestroyTheCore.game.getPlayerData(p);
       Game.Side firstSide = d.side.equals(
@@ -53,20 +59,26 @@ public abstract class ProgressiveMission extends Mission implements Listener {
     innerStart();
   }
   
-  public float progress(Game.Side side) {
-    BossBar bar = bars.get(side);
-    return bar.progress();
+  public void refresh(Game.Side side) {
+    bars.get(side).progress(values.get(side));
+  }
+  
+  public void refresh() {
+    for (Game.Side side : Game.bothSide) {
+      refresh(side);
+    }
   }
   
   public void progress(Game.Side side, float value) {
-    if (!bars.containsKey(side)) return;
-    BossBar bar = bars.get(side);
+    if (!values.containsKey(side)) return;
     
-    while (value * displayRatio > 1) {
+    while (value * displayRatio >= 1) {
       displayRatio /= 2;
     }
     
-    bar.progress(value * displayRatio);
+    values.put(side, value * displayRatio);
+    
+    refresh();
   }
   
   @Override

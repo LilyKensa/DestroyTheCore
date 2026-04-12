@@ -395,6 +395,10 @@ public class Game {
     }
   }
   
+  static public final Side[] bothSide = new Side[]{
+    Side.RED, Side.GREEN
+  };
+  
   public Map<Side, SideData> sideData;
   
   public SideData getSideData(Side side) {
@@ -534,9 +538,7 @@ public class Game {
       Team.OptionStatus.NEVER
     );
     
-    for (Side side : new Side[]{
-      Side.RED, Side.GREEN
-    }) {
+    for (Side side : bothSide) {
       Map<RolesManager.RoleKey, Team> sideTeams = new HashMap<>();
       
       for (Role role : DestroyTheCore.rolesManager.roles.values()) {
@@ -1558,9 +1560,7 @@ public class Game {
         
         if (stage == -1) {
           boolean shouldRestore = true;
-          sideLoop: for (Side side : new Side[]{
-            Side.RED, Side.GREEN
-          }) {
+          sideLoop: for (Side side : bothSide) {
             if (getSideData(side).noOresTicks <= 0) continue;
             
             for (Pos orePos : map.ores) {
@@ -1788,7 +1788,14 @@ public class Game {
     ) {
       PlayerUtils.damageHandItem(pl);
       
-      PlayerUtils.give(pl, ev.getBlock().getType(), 2);
+      PlayerUtils.give(
+        pl,
+        ev.getBlock().getType(),
+        CoreUtils.applyFortune(
+          pl.getInventory().getItemInMainHand()
+            .getEnchantmentLevel(Enchantment.FORTUNE)
+        ) + 1
+      );
       pl.giveExp(RandomUtils.range(1, 4));
       
       ev.setCancelled(true);
@@ -1847,13 +1854,28 @@ public class Game {
     }
   }
   
+  public void handleFallenBlock(
+    FallingBlock entity, Block block, EntityChangeBlockEvent ev
+  ) {
+    if (LocUtils.nearSpawn(block.getLocation())) {
+      ev.setCancelled(true);
+      entity.remove();
+      
+      for (ItemStack item : entity.getBlockState().getDrops()) {
+        block.getWorld().dropItemNaturally(
+          LocUtils.toBlockCenter(block.getLocation()),
+          item
+        );
+      }
+    }
+  }
+  
   public void handleBlockForm(BlockFormEvent ev) {
     Block block = ev.getBlock();
     
     if (
       LocUtils.inLive(block.getLocation())
-        &&
-        List.of(Material.OBSIDIAN, Material.CRYING_OBSIDIAN).contains(
+        && List.of(Material.OBSIDIAN, Material.CRYING_OBSIDIAN).contains(
           block.getType()
         )
         && LocUtils.nearAnyCore(
@@ -2756,6 +2778,13 @@ public class Game {
     DestroyTheCore.missionsManager.stop();
     
     for (Player p : Bukkit.getOnlinePlayers()) {
+      PlayerData d = getPlayerData(p);
+      
+      if (!d.alive) {
+        PlayerUtils.respawn(p);
+        d.alive = true;
+      }
+      
       PlayerUtils.refreshSpectatorAbilities(
         p,
         false
@@ -2810,6 +2839,8 @@ public class Game {
   }
   
   public void checkWinner() {
+    if (!isPlaying) return;
+    
     int redHealth = getSideData(Side.RED).coreHealth, greenHealth = getSideData(
       Side.GREEN
     ).coreHealth;

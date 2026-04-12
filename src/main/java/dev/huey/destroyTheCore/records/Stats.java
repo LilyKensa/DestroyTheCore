@@ -7,7 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
 public class Stats implements ConfigurationSerializable {
-  static public final int levelOneMaxExp = 500, maxExpIncrement = 100;
+  static public final int levelOneMaxExp = 100, maxExpIncrement = 10;
   static public final int maxLevels = 100;
   
   public boolean nightVision = false;

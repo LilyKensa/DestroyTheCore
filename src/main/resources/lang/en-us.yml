@@ -206,7 +206,7 @@ mission:
   draw: "The result was <yellow>tied</yellow>!"
   result:
     intro: "Whoever <action> the mission, "
-    assign: "As <side> team <action> the mission, "
+    outro: "As <side> team <action> the mission, "
     win: "<yellow>completed</yellow>"
     lose: "<yellow>failed</yellow>"
     random-player: "random player"
@@ -688,6 +688,7 @@ missions:
   xp-fountain:
     title: "<yellow>Experience Fountain</yellow>"
     desc: "Large amount of experience appeared at the center!"
+    bar: "<yellow>Experience Fountain: <time></yellow>"
   angry-bees:
     title: "<yellow>Angry Bees</yellow>"
     desc: "A mutant queen bee appeared in the center!"

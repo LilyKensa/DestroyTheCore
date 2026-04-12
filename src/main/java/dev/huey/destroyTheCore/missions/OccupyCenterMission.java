@@ -43,9 +43,7 @@ public class OccupyCenterMission extends ProgressiveMission {
         }
       }
       
-      for (Game.Side side : new Game.Side[]{
-        Game.Side.RED, Game.Side.GREEN,
-      }) {
+      for (Game.Side side : Game.bothSide) {
         if (!occupied.contains(side)) {
           seconds.put(side, Math.max(seconds.getOrDefault(side, 0) - 1, 0));
         }
@@ -53,7 +51,7 @@ public class OccupyCenterMission extends ProgressiveMission {
         float ratio = seconds.get(side) / 30F;
         progress(side, ratio);
         
-        if (ratio == 1) {
+        if (ratio >= 1) {
           end();
           return;
         }
@@ -63,9 +61,7 @@ public class OccupyCenterMission extends ProgressiveMission {
   
   @Override
   public void innerFinish() {
-    for (Game.Side side : new Game.Side[]{
-      Game.Side.RED, Game.Side.GREEN
-    }) {
+    for (Game.Side side : Game.bothSide) {
       if (seconds.get(side).equals(seconds.get(side.opposite()))) {
         declareDraw();
         return;

@@ -26,6 +26,8 @@ public class ColdMission extends TimedMission {
   public void innerTick() {
     if (DestroyTheCore.ticksManager.ticksCount % 5 == 0) {
       for (Player p : PlayerUtils.allGaming()) {
+        if (!PlayerUtils.shouldHandle(p)) continue;
+        
         int freeze = p.getFreezeTicks();
         if (isClose.contains(p)) {
           p.setFreezeTicks(freeze / 2);

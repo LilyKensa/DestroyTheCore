@@ -13,6 +13,7 @@ import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -86,7 +87,14 @@ public class EventsManager implements Listener {
   }
   
   @EventHandler
-  public void onBlockChange(BlockFormEvent ev) {
+  public void onEntityChangeBlock(EntityChangeBlockEvent ev) {
+    if (ev.getEntity() instanceof FallingBlock fb) {
+      DestroyTheCore.game.handleFallenBlock(fb, ev.getBlock(), ev);
+    }
+  }
+  
+  @EventHandler
+  public void onBlockForm(BlockFormEvent ev) {
     DestroyTheCore.game.handleBlockForm(ev);
   }
   

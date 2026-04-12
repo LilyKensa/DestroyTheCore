@@ -48,9 +48,7 @@ public class RollCallMission extends ProgressiveMission {
         }
       }
       
-      for (Game.Side side : new Game.Side[]{
-        Game.Side.RED, Game.Side.GREEN,
-      }) {
+      for (Game.Side side : Game.bothSide) {
         int allCount = all.getOrDefault(side, 0);
         if (allCount == 0) allCount = 1;
         

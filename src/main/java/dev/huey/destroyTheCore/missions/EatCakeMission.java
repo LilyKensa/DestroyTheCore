@@ -41,7 +41,7 @@ public class EatCakeMission extends ProgressiveMission implements Listener {
     if (pl.getFoodLevel() >= 20) return;
     
     count.put(data.side, count.get(data.side) + 1);
-    progress(data.side, (float) Math.min(count.get(data.side) / 30D, 1));
+    progress(data.side, count.get(data.side) / 30F);
   }
   
   @Override
@@ -50,9 +50,7 @@ public class EatCakeMission extends ProgressiveMission implements Listener {
   
   @Override
   public void innerFinish() {
-    for (Game.Side side : new Game.Side[]{
-      Game.Side.RED, Game.Side.GREEN
-    }) {
+    for (Game.Side side : Game.bothSide) {
       if (count.get(side) > count.get(side.opposite())) {
         declareWinner(side);
         return;

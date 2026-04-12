@@ -246,7 +246,7 @@ mission:
   draw: "任務結果為<yellow>平手</yellow>!"
   result:
     intro: "任務<action>的小隊, "
-    assign: "<side>因任務<action>, "
+    outro: "<side>因任務<action>, "
     win: "<yellow>成功</yellow>"
     lose: "<yellow>失敗</yellow>"
     random-player: "隨機一位隊員"
@@ -728,6 +728,7 @@ missions:
   xp-fountain:
     title: "<yellow>經驗噴泉</yellow>"
     desc: "中央任務點出現大量的經驗值!"
+    bar: "<yellow>經驗噴泉: <time></yellow>"
   angry-bees:
     title: "<yellow>女王蜂來襲</yellow>"
     desc: "中央出現了突變的女王蜂! 擊殺會掉落綠寶石!"

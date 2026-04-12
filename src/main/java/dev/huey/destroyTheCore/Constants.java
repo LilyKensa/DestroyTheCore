@@ -16,12 +16,12 @@ public class Constants {
   }
   
   static public final Map<Material, OreData> ores = Map.ofEntries(
-    Map.entry(Material.COAL_ORE, new OreData(Material.COAL, 5, 3, 6)),
+    Map.entry(Material.COAL_ORE, new OreData(Material.COAL, 5, 3, 9)),
     Map.entry(Material.IRON_ORE, new OreData(Material.RAW_IRON, 7, 0, 0)),
     Map.entry(Material.GOLD_ORE, new OreData(Material.RAW_GOLD, 8, 0, 0)),
-    Map.entry(Material.REDSTONE_ORE, new OreData(Material.REDSTONE, 5, 1, 4)),
-    Map.entry(Material.LAPIS_ORE, new OreData(Material.LAPIS_LAZULI, 10, 1, 4)),
-    Map.entry(Material.EMERALD_ORE, new OreData(Material.EMERALD, 13, 2, 5)),
+    Map.entry(Material.REDSTONE_ORE, new OreData(Material.REDSTONE, 5, 1, 5)),
+    Map.entry(Material.LAPIS_ORE, new OreData(Material.LAPIS_LAZULI, 10, 1, 5)),
+    Map.entry(Material.EMERALD_ORE, new OreData(Material.EMERALD, 13, 2, 6)),
     Map.entry(Material.DIAMOND_ORE, new OreData(Material.DIAMOND, 90, 4, 8))
   );
   

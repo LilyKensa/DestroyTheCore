@@ -41,6 +41,8 @@ public class CovidMission extends TimedMission {
       }
       
       for (Player p : isClose) {
+        if (!PlayerUtils.shouldHandle(p)) continue;
+        
         PlayerUtils.addPassiveEffect(
           p,
           PotionEffectType.POISON,

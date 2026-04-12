@@ -33,7 +33,7 @@ public class JumpMission extends ProgressiveMission implements Listener {
     if (data.side.equals(Game.Side.SPECTATOR)) return;
     
     count.put(data.side, count.get(data.side) + 1);
-    progress(data.side, (float) Math.min(count.get(data.side) / 100D, 1));
+    progress(data.side, count.get(data.side) / 100F);
   }
   
   @Override
@@ -42,9 +42,7 @@ public class JumpMission extends ProgressiveMission implements Listener {
   
   @Override
   public void innerFinish() {
-    for (Game.Side side : new Game.Side[]{
-      Game.Side.RED, Game.Side.GREEN
-    }) {
+    for (Game.Side side : Game.bothSide) {
       if (count.get(side) > count.get(side.opposite())) {
         declareWinner(side);
         return;
