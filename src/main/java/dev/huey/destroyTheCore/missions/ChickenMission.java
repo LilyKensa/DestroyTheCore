@@ -41,6 +41,7 @@ public class ChickenMission extends Mission implements Listener {
   
   public ChickenMission() {
     super("chicken");
+    addResult();
   }
   
   public void move() {

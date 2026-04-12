@@ -16,6 +16,7 @@ public class OccupyCenterMission extends ProgressiveMission {
   
   public OccupyCenterMission() {
     super("occupy-center");
+    addResult();
   }
   
   Map<Game.Side, Integer> seconds = new HashMap<>();

@@ -15,6 +15,7 @@ public class NoJumpMission extends ProgressiveMission implements Listener {
   
   public NoJumpMission() {
     super("no-jump");
+    addResult();
   }
   
   Map<Game.Side, Integer> quota = new HashMap<>();

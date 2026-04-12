@@ -1,6 +1,7 @@
 package dev.huey.destroyTheCore.commands;
 
 import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.Subcommand;
 import dev.huey.destroyTheCore.records.PlayerData;
 import dev.huey.destroyTheCore.utils.CoreUtils;
@@ -25,7 +26,7 @@ public class SuicideCommand extends Subcommand {
     }
     
     PlayerData data = DestroyTheCore.game.getPlayerData(pl);
-    if (!data.alive) {
+    if (!data.alive || data.side == Game.Side.SPECTATOR) {
       PlayerUtils.prefixedSend(
         pl,
         TextUtils.$("commands.suicide.already-dead")

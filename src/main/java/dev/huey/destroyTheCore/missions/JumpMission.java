@@ -15,6 +15,7 @@ public class JumpMission extends ProgressiveMission implements Listener {
   
   public JumpMission() {
     super("jump");
+    addResult();
   }
   
   Map<Game.Side, Integer> count = new HashMap<>();

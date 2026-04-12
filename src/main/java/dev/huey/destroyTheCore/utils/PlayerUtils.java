@@ -654,9 +654,16 @@ public class PlayerUtils {
         if (DestroyTheCore.quizManager.isEnded(pl)) {
           updateTitle = true;
           
-          if (DestroyTheCore.quizManager.isCorrect(pl)) waitTicks -= 10 * 20;
+          if (DestroyTheCore.quizManager.isCorrect(pl)) {
+            waitTicks -= 10 * 20;
+          }
           
-          if (waitTicks > 0) DestroyTheCore.quizManager.start(pl);
+          if (data.quizQuota <= 0) {
+            DestroyTheCore.quizManager.discard(pl);
+          }
+          else if (waitTicks > 0) {
+            DestroyTheCore.quizManager.start(pl);
+          }
         }
         
         if (waitTicks <= 0) {
@@ -942,6 +949,8 @@ public class PlayerUtils {
               .extra(0)
               .count(5)
               .spawn();
+            
+            pl.giveExp(RandomUtils.range(1, 4));
           }
         }
       }

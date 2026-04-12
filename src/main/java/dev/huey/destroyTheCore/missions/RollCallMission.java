@@ -17,6 +17,7 @@ public class RollCallMission extends ProgressiveMission {
   
   public RollCallMission() {
     super("roll-call");
+    addResult();
   }
   
   @Override

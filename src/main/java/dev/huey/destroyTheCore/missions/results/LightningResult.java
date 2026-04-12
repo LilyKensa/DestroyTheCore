@@ -9,12 +9,12 @@ import org.bukkit.potion.PotionEffectType;
 public class LightningResult extends Mission.Result {
   
   public LightningResult() {
-    super("lightning");
+    super("lightning", false);
   }
   
   @Override
   public void forLoser(Game.Side side) {
-    announce(side);
+    outro(side);
     
     for (Player p : PlayerUtils.getTeammates(side)) {
       p.getWorld().strikeLightning(p.getLocation());

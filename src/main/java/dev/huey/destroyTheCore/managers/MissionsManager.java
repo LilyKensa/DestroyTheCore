@@ -3,6 +3,7 @@ package dev.huey.destroyTheCore.managers;
 import dev.huey.destroyTheCore.DestroyTheCore;
 import dev.huey.destroyTheCore.bases.Mission;
 import dev.huey.destroyTheCore.missions.*;
+import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.RandomUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
@@ -79,6 +80,8 @@ public class MissionsManager {
   
   public void start() {
     prefix = TextUtils.$("mission.prefix");
+    
+    Mission.centerLoc = LocUtils.live(DestroyTheCore.game.map.mission);
     
     Scoreboard board = Bukkit.getServer().getScoreboardManager()
       .getMainScoreboard();

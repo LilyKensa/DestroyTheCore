@@ -92,8 +92,6 @@ public class QuizManager {
   Map<UUID, Quiz> quizzes = new HashMap<>();
   
   public void start(Player pl) {
-    if (DestroyTheCore.game.getPlayerData(pl).quizQuota <= 0) return;
-    
     quizzes.put(pl.getUniqueId(), new Quiz(pl));
   }
   

@@ -8,12 +8,12 @@ import org.bukkit.entity.Player;
 public class ClearXpResult extends Mission.Result {
   
   public ClearXpResult() {
-    super("clear-xp");
+    super("clear-xp", false);
   }
   
   @Override
   public void forLoser(Game.Side side) {
-    announce(side);
+    outro(side);
     
     for (Player p : PlayerUtils.getTeammates(side)) {
       p.setExperienceLevelAndProgress(0);

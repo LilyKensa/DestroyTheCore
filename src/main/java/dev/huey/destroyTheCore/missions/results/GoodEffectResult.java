@@ -7,6 +7,7 @@ import dev.huey.destroyTheCore.utils.RandomUtils;
 import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -35,23 +36,26 @@ public class GoodEffectResult extends Mission.Result {
     getEffect(PotionEffectType.STRENGTH, 1, 30)
   );
   
+  PotionEffect effect;
+  
   public GoodEffectResult() {
-    super("good-effect");
+    super("good-effect", true);
+    effect = RandomUtils.pick(effects);
+  }
+  
+  @Override
+  public List<TagResolver> getExtraPlaceholers() {
+    return List.of(
+      Placeholder.component(
+        "effect",
+        Component.translatable(effect.getType().translationKey())
+      )
+    );
   }
   
   @Override
   public void forWinner(Game.Side side) {
-    PotionEffect effect = RandomUtils.pick(effects);
-    
-    announce(
-      side,
-      List.of(
-        Placeholder.component(
-          "effect",
-          Component.translatable(effect.getType().translationKey())
-        )
-      )
-    );
+    outro(side);
     
     for (Player p : PlayerUtils.getTeammates(side)) {
       p.addPotionEffect(effect);

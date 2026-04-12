@@ -403,7 +403,8 @@ public class Role extends GUIItem {
     ClickType clickType, Player pl, InventoryClickEvent ev
   ) {
     if (
-      DestroyTheCore.game.getStats(pl).levels >= levelReq || PlayerUtils.isAdmin(pl)
+      DestroyTheCore.game.getStats(pl).levels >= levelReq
+        || PlayerUtils.isAdmin(pl)
     ) {
       announce(pl);
       pl.playSound(

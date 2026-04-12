@@ -56,6 +56,7 @@ public class CargoMission extends Mission implements Listener {
   
   public CargoMission() {
     super("cargo");
+    addResult();
   }
   
   boolean draw = true;

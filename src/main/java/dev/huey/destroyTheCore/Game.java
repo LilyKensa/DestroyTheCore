@@ -1348,6 +1348,26 @@ public class Game {
       
       ageable.setAge(0);
       block.setBlockData(ageable);
+      
+      Location centerLoc = block.getLocation().add(0.5, 0.2, 0.5);
+      
+      new ParticleBuilder(Particle.BLOCK)
+        .data(Bukkit.createBlockData(block.getType()))
+        .allPlayers()
+        .location(centerLoc)
+        .offset(0.2, 0.1, 0.2)
+        .extra(0)
+        .count(20)
+        .spawn();
+      
+      for (Player p : Bukkit.getOnlinePlayers()) {
+        p.playSound(
+          centerLoc,
+          ageable.getSoundGroup().getBreakSound(),
+          1, // Volume
+          1 // Pitch
+        );
+      }
     }
   }
   

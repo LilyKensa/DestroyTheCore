@@ -17,6 +17,7 @@ public class OresMission extends ProgressiveMission implements Listener {
   
   public OresMission() {
     super("ores");
+    addResult();
   }
   
   Map<Game.Side, Integer> count = new HashMap<>();

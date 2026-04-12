@@ -7,12 +7,12 @@ import dev.huey.destroyTheCore.bases.Mission;
 public class BanOresResult extends Mission.Result {
   
   public BanOresResult() {
-    super("ban-ores");
+    super("ban-ores", false);
   }
   
   @Override
   public void forLoser(Game.Side side) {
-    announce(side);
+    outro(side);
     
     DestroyTheCore.game.banOres(side);
     DestroyTheCore.game.getSideData(side).banOres(120 * 20);

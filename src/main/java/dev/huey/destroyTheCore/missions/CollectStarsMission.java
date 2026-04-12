@@ -57,6 +57,7 @@ public class CollectStarsMission extends ProgressiveMission implements Listener 
   
   public CollectStarsMission() {
     super("collect-stars");
+    addResult();
   }
   
   static public Location randomLocation(Location center, double radius) {

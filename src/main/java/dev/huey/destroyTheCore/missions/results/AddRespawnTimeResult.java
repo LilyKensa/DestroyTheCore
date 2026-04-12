@@ -9,12 +9,12 @@ import org.bukkit.entity.Player;
 public class AddRespawnTimeResult extends Mission.Result {
   
   public AddRespawnTimeResult() {
-    super("add-respawn-time");
+    super("add-respawn-time", false);
   }
   
   @Override
   public void forLoser(Game.Side side) {
-    announce(side);
+    outro(side);
     
     for (Player p : PlayerUtils.getTeammates(side)) {
       DestroyTheCore.game.getPlayerData(p).addRespawnTime(20);

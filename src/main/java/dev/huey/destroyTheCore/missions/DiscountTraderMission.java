@@ -16,6 +16,8 @@ import org.bukkit.entity.WanderingTrader;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantRecipe;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public class DiscountTraderMission extends InstantMission {
   
@@ -33,11 +35,20 @@ public class DiscountTraderMission extends InstantMission {
       TextUtils.$("missions.discount-trader.trader").color(null)
     );
     trader.setCustomNameVisible(true);
-    trader.setInvulnerable(true);
     
     trader.setCanDrinkPotion(false);
     trader.setCanDrinkMilk(false);
     trader.setCanPickupItems(false);
+    
+    trader.addPotionEffect(
+      new PotionEffect(
+        PotionEffectType.RESISTANCE,
+        PotionEffect.INFINITE_DURATION,
+        255,
+        false,
+        false
+      )
+    );
     
     List<MerchantRecipe> trades = new ArrayList<>();
     

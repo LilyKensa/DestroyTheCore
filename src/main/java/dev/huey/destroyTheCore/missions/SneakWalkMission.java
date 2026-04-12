@@ -15,6 +15,7 @@ public class SneakWalkMission extends ProgressiveMission implements Listener {
   
   public SneakWalkMission() {
     super("sneak-walk");
+    addResult();
   }
   
   Map<Game.Side, Double> dist = new HashMap<>();

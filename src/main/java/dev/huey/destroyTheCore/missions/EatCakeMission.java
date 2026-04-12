@@ -18,6 +18,7 @@ public class EatCakeMission extends ProgressiveMission implements Listener {
   
   public EatCakeMission() {
     super("eat-cake");
+    addResult();
   }
   
   Map<Game.Side, Integer> count = new HashMap<>();

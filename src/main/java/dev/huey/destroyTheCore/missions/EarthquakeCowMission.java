@@ -199,6 +199,7 @@ public class EarthquakeCowMission extends Mission implements Listener {
   
   public EarthquakeCowMission() {
     super("earthquake-cow");
+    addResult();
   }
   
   public void move() {
