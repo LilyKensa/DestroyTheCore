@@ -122,10 +122,12 @@ public class AssignClearInvGen extends UsableItemGen {
               ItemStack item = items[index];
               
               if (
-                item == null
-                  || item.isEmpty()
-                  || item.getType() == Material.KNOWLEDGE_BOOK
-                  || DTC.rolesManager.isExclusiveItem(item)
+                item == null ||
+                  item.isEmpty() ||
+                  item
+                    .getType() == Material.KNOWLEDGE_BOOK ||
+                  DTC.rolesManager
+                    .isExclusiveItem(item)
               ) continue;
               
               inv.setItem(index, ItemStack.empty());

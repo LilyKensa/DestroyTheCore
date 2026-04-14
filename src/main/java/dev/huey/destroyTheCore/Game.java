@@ -10,6 +10,7 @@ import dev.huey.destroyTheCore.bases.ItemGen;
 import dev.huey.destroyTheCore.bases.Mission;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.bases.itemGens.UsableItemGen;
+import dev.huey.destroyTheCore.managers.AntiCheatManager;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.managers.RolesManager;
 import dev.huey.destroyTheCore.managers.TicksManager;
@@ -36,6 +37,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.title.TitlePart;
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.DoubleChest;
@@ -171,8 +173,12 @@ public class Game {
       
       PlayerUtils.allGaming().stream()
         .filter(
-          p -> p.getGameMode() != GameMode.SPECTATOR
-            && LocUtils.near(p, villager, 5)
+          p -> p.getGameMode() != GameMode.SPECTATOR &&
+            LocUtils.near(
+              p,
+              villager,
+              5
+            )
         )
         .map(
           p -> LocUtils.hitboxCenter(p)
@@ -727,9 +733,11 @@ public class Game {
     Game.Side side = getPlayerData(pl).side;
     
     ev.viewers().removeIf(
-      audience -> audience instanceof Player p
-        && side != Side.SPECTATOR
-        && getPlayerData(p).side
+      audience -> audience instanceof Player p &&
+        side != Side.SPECTATOR &&
+        getPlayerData(
+          p
+        ).side
           .equals(side.opposite())
     );
   }
@@ -753,14 +761,20 @@ public class Game {
       }
       
       if (ev.getEntity() instanceof Player victim) {
+        if (!ev.getDamageSource().isIndirect()) {
+          checkAttackRange(attacker, victim);
+        }
+
         handlePlayerDamage(attacker, victim, null, ev);
       }
     }
     
     if (
-      ev.getDamager() instanceof Projectile proj
-        && proj.getShooter() instanceof Player shooter
-        && ev.getEntity() instanceof Player victim
+      ev.getDamager() instanceof Projectile proj &&
+        proj
+          .getShooter() instanceof Player shooter &&
+        ev
+          .getEntity() instanceof Player victim
     ) {
       handlePlayerDamage(shooter, victim, proj, ev);
     }
@@ -769,6 +783,29 @@ public class Game {
   public void handleEntityDeath(EntityDeathEvent ev) {
     if (ev.getEntity() instanceof Horse) {
       ev.getDrops().clear();
+    }
+  }
+
+  public void checkAttackRange(Player attacker, Player victim) {
+    if (
+      !LocUtils.near(
+        victim,
+        attacker,
+        AttrUtils.get(attacker, Attribute.ENTITY_INTERACTION_RANGE) + 0.5
+      )
+    ) {
+      DTC.antiCheatManager.track(
+        attacker,
+        AntiCheatManager.Cheat.ATTACK_RANGE,
+        40
+      );
+    }
+    else {
+      DTC.antiCheatManager.track(
+        attacker,
+        AntiCheatManager.Cheat.ATTACK_RANGE,
+        -20
+      );
     }
   }
   
@@ -1075,10 +1112,9 @@ public class Game {
     PlayerData data = getPlayerData(pl);
     
     if (
-      item.getType().isEdible()
-        &&
-        item.getType() != Material.POTION
-        &&
+      item.getType().isEdible() &&
+        item
+          .getType() != Material.POTION &&
         data.role.id == RolesManager.RoleKey.GLUTTON
     ) {
       pl.sendActionBar(TextUtils.$("roles.glutton.eat-warning"));
@@ -1087,8 +1123,9 @@ public class Game {
     }
     
     if (
-      item.getType() == Material.POTION
-        && data.role.id == RolesManager.RoleKey.HACKER
+      item
+        .getType() == Material.POTION &&
+        data.role.id == RolesManager.RoleKey.HACKER
     ) {
       pl.sendActionBar(TextUtils.$("roles.hacker.potion-warning"));
       ev.setCancelled(true);
@@ -1124,10 +1161,10 @@ public class Game {
         !PlayerUtils.checkUsingBlock(
           pl,
           ev.getClickedBlock()
-        )
-          && item != null
-          && !item.isEmpty()
-          && item
+        ) &&
+          item != null &&
+          !item.isEmpty() &&
+          item
             .getType().equals(
               Material.KNOWLEDGE_BOOK
             )
@@ -1142,13 +1179,12 @@ public class Game {
       }
       
       if (
-        LocUtils.inLive(pl)
-          && ev.getHand() == EquipmentSlot.HAND
-          && item != null
-          && item.hasItemMeta()
-          && item.getItemMeta().getPersistentDataContainer().has(
-            Role.skillNamespace
-          )
+        LocUtils.inLive(pl) &&
+          ev.getHand() == EquipmentSlot.HAND &&
+          item != null &&
+          item.hasItemMeta() &&
+          item.getItemMeta().getPersistentDataContainer()
+            .has(Role.skillNamespace)
       ) {
         if (!PlayerUtils.checkHandCooldown(pl, data.extraSkillReload)) return;
         PlayerUtils.setHandCooldown(pl, data.role.skillCooldown);
@@ -1168,6 +1204,33 @@ public class Game {
         }
         
         data.addExtraExp(10);
+      }
+      
+      if (!isPlaying) return;
+      
+      PlayerInventory inv = pl.getInventory();
+      
+      if (
+        ev.getHand() == EquipmentSlot.HAND &&
+          (inv.getItemInMainHand().getType().isBlock() ||
+            inv.getItemInOffHand().getType().isBlock())
+      ) {
+        if (DTC.ticksManager.ticksCount - data.rightClickedAt <= 1) {
+          DTC.antiCheatManager.track(
+            pl,
+            AntiCheatManager.Cheat.AUTO_CLICK,
+            5
+          );
+        }
+        else {
+          DTC.antiCheatManager.track(
+            pl,
+            AntiCheatManager.Cheat.AUTO_CLICK,
+            -50
+          );
+        }
+        
+        data.rightClickedAt = DTC.ticksManager.ticksCount;
       }
     }
   }
@@ -1206,9 +1269,11 @@ public class Game {
     ItemStack item = pl.getInventory().getItemInMainHand();
     
     if (
-      Tag.ITEMS_SWORDS.isTagged(item.getType())
-        || Tag.ITEMS_AXES.isTagged(item.getType())
-        || Tag.ITEMS_PICKAXES.isTagged(item.getType())
+      Tag.ITEMS_SWORDS.isTagged(item.getType()) ||
+        Tag.ITEMS_AXES.isTagged(
+          item.getType()
+        ) ||
+        Tag.ITEMS_PICKAXES.isTagged(item.getType())
     ) return;
     
     Map<Integer, ItemStack> leftovers = sd.enderChest.addItem(item);
@@ -1260,10 +1325,14 @@ public class Game {
     
     if (LocUtils.inLobby(pl)) {
       if (
-        PlayerUtils.isAdmin(pl)
-          && DTC.worldsManager.isReady
-          && lobby.startButton != null
-          && Pos.of(block).isSameBlockAs(lobby.startButton)
+        PlayerUtils.isAdmin(
+          pl
+        ) &&
+          DTC.worldsManager.isReady &&
+          lobby.startButton != null &&
+          Pos.of(
+            block
+          ).isSameBlockAs(lobby.startButton)
       ) {
         if (startingTask == null || startingTask.isCancelled()) {
           scheduleStart();
@@ -1298,9 +1367,10 @@ public class Game {
     }
     
     if (
-      isPlaying
-        && block.getType().equals(Material.ENDER_CHEST)
-        && !pl.isSneaking()
+      isPlaying &&
+        block.getType().equals(Material.ENDER_CHEST) &&
+        !pl
+          .isSneaking()
     ) {
       ev.setCancelled(true);
       
@@ -1332,8 +1402,10 @@ public class Game {
     ItemStack handItem = pl.getInventory().getItemInMainHand();
     
     if (
-      block.getBlockData() instanceof Ageable ageable
-        && (handItem.isEmpty() || Tag.ITEMS_HOES.isTagged(handItem.getType()))
+      block.getBlockData() instanceof Ageable ageable &&
+        (handItem
+          .isEmpty() ||
+          Tag.ITEMS_HOES.isTagged(handItem.getType()))
     ) {
       if (ageable.getAge() != ageable.getMaximumAge()) return;
       
@@ -1349,10 +1421,11 @@ public class Game {
       block.getWorld().dropItemNaturally(
         block.getLocation().add(0.5, 0.1, 0.5),
         new ItemStack(
-          block.getType().isItem() ? block.getType() : cropDrops.getOrDefault(
-            block.getType(),
-            Material.APPLE
-          ),
+          block.getType().isItem() ? block.getType()
+            : cropDrops.getOrDefault(
+              block.getType(),
+              Material.APPLE
+            ),
           count
         )
       );
@@ -1554,9 +1627,7 @@ public class Game {
       sendBreakProgress(11 * age / maxAge - 1);
       
       age++;
-      if (isFast) {
-        age++;
-      }
+      if (isFast) age++;
     }
   }
   
@@ -1675,8 +1746,10 @@ public class Game {
     }
     
     if (
-      Mission.centerLoc != null
-        && InfiniteOresMission.check(block.getLocation())
+      Mission.centerLoc != null &&
+        InfiniteOresMission.check(
+          block.getLocation()
+        )
     ) return;
     
     addRegenOre(
@@ -1703,6 +1776,15 @@ public class Game {
     effector.accept(PotionEffectType.WEAKNESS, 1);
     
     PlayerData data = getPlayerData(pl);
+    
+    if (DTC.ticksManager.ticksCount - data.attackedCoreAt <= 1) {
+      DTC.antiCheatManager.track(pl, AntiCheatManager.Cheat.SPAM_BREAK, 50);
+      return;
+    }
+    else {
+      DTC.antiCheatManager.track(pl, AntiCheatManager.Cheat.SPAM_BREAK, -20);
+    }
+    
     data.addCoreAttack();
     
     Side oppositeSide = data.side.opposite();
@@ -1870,8 +1952,8 @@ public class Game {
         loc -> LocUtils.isSameBlock(
           LocUtils.live(loc),
           block.getLocation()
-        )
-          || LocUtils.isSameBlock(
+        ) ||
+          LocUtils.isSameBlock(
             LocUtils.live(LocUtils.flip(loc)),
             block.getLocation()
           )
@@ -1965,11 +2047,14 @@ public class Game {
     Block block = ev.getBlock();
     
     if (
-      LocUtils.inLive(block.getLocation())
-        && List.of(Material.OBSIDIAN, Material.CRYING_OBSIDIAN).contains(
+      LocUtils.inLive(block.getLocation()) &&
+        List.of(
+          Material.OBSIDIAN,
+          Material.CRYING_OBSIDIAN
+        ).contains(
           block.getType()
-        )
-        && LocUtils.nearAnyCore(
+        ) &&
+        LocUtils.nearAnyCore(
           block.getLocation(),
           3
         )
@@ -1982,9 +2067,11 @@ public class Game {
     Block block = ev.getToBlock();
     
     if (
-      LocUtils.inLive(block.getLocation())
-        &&
-        LocUtils.nearAnyCore(block.getLocation(), 3)
+      LocUtils.inLive(block.getLocation()) &&
+        LocUtils.nearAnyCore(
+          block.getLocation(),
+          3
+        )
     ) {
       ev.setCancelled(true);
     }
@@ -1994,9 +2081,11 @@ public class Game {
     Block block = ev.getBlock();
     
     if (
-      LocUtils.inLive(block.getLocation())
-        &&
-        LocUtils.nearAnyCore(block.getLocation(), 3)
+      LocUtils.inLive(block.getLocation()) &&
+        LocUtils.nearAnyCore(
+          block.getLocation(),
+          3
+        )
     ) {
       ev.getPlayer().sendActionBar(TextUtils.$("game.banned.pour"));
       ev.setCancelled(true);
@@ -2016,16 +2105,20 @@ public class Game {
     
     Pos pos = Pos.of(block);
     
-    Predicate<Pos> checker = p -> p != null
-      && (p.isSameBlockAs(pos) || LocUtils.flip(p).isSameBlockAs(pos));
+    Predicate<Pos> checker = p -> p != null &&
+      (p.isSameBlockAs(pos) ||
+        LocUtils
+          .flip(p).isSameBlockAs(pos));
     
-    Predicate<Set<Pos>> listChecker = set -> set != null
-      && set.stream().anyMatch(checker);
+    Predicate<Set<Pos>> listChecker = set -> set != null &&
+      set.stream()
+        .anyMatch(checker);
     
-    return checker.test(map.core)
-      || listChecker.test(map.woods)
-      || listChecker.test(map.ores)
-      || listChecker.test(map.diamonds);
+    return checker.test(map.core) ||
+      listChecker.test(map.woods) ||
+      listChecker
+        .test(map.ores) ||
+      listChecker.test(map.diamonds);
   }
   
   public boolean anyUnmovable(List<Block> blocks) {
@@ -2034,9 +2127,11 @@ public class Game {
   
   public void handleExplosion(EntityExplodeEvent ev) {
     ev.blockList().removeIf(
-      block -> unmovable(block)
-        || block.getState() instanceof BlockInventoryHolder
-        || block.getState() instanceof DoubleChest
+      block -> unmovable(block) ||
+        block
+          .getState() instanceof BlockInventoryHolder ||
+        block
+          .getState() instanceof DoubleChest
     );
   }
   
@@ -2157,8 +2252,8 @@ public class Game {
     PlayerData data = getPlayerData(pl);
     
     if (
-      item.hasItemMeta()
-        && item.getItemMeta().getPersistentDataContainer()
+      item.hasItemMeta() &&
+        item.getItemMeta().getPersistentDataContainer()
           .has(Role.skillNamespace)
     ) {
       item.editMeta(data.role::editSkillItemMeta);
@@ -2212,9 +2307,10 @@ public class Game {
         InventoryAction.PLACE_ONE,
         InventoryAction.PLACE_SOME,
         InventoryAction.PLACE_ALL
-      ).contains(action)
-        && item.hasItemMeta()
-        && item.getItemMeta().getPersistentDataContainer()
+      ).contains(action) &&
+        item.hasItemMeta() &&
+        item.getItemMeta()
+          .getPersistentDataContainer()
           .has(Role.skillNamespace)
     ) {
       item.editMeta(data.role::editSkillItemMeta);
@@ -2223,8 +2319,11 @@ public class Game {
     if (inv.getType() == InventoryType.PLAYER) return;
     
     if (
-      click != ClickType.DROP
-        && !DTC.rolesManager.canTakeExclusiveItem(pl, item)
+      click != ClickType.DROP &&
+        !DTC.rolesManager.canTakeExclusiveItem(
+          pl,
+          item
+        )
     ) {
       ev.setCancelled(true);
       return;
@@ -2380,12 +2479,10 @@ public class Game {
   }
   
   boolean checkTwoGen(ItemStack first, ItemStack second) {
-    return (first != null
-      &&
-      DTC.itemsManager.isGen(first))
-      || (second != null
-        &&
-        DTC.itemsManager.isGen(second));
+    return (first != null &&
+      DTC.itemsManager.isGen(
+        first
+      )) || (second != null && DTC.itemsManager.isGen(second));
   }
   
   public void handleRepair(PrepareAnvilEvent ev) {
@@ -2491,9 +2588,7 @@ public class Game {
           ),
         }) {
           if (
-            LocUtils.inLive(p)
-              &&
-              LocUtils.near(Pos.of(p), rest, 6)
+            LocUtils.inLive(p) && LocUtils.near(Pos.of(p), rest, 6)
           ) continue playerLoop;
         }
         
@@ -2934,7 +3029,7 @@ public class Game {
     for (Player p : Bukkit.getOnlinePlayers()) {
       PlayerUtils.backToLobby(p);
       
-      if (PlayerUtils.shouldHandle(p)) {
+      if (PlayerUtils.shouldHandle(p) && isPlaying) {
         p.getInventory().clear();
         p.getInventory().setItem(
           4,
@@ -3182,12 +3277,20 @@ public class Game {
   }
   
   public void onTick() {
+    // if (DTC.ticksManager.isUpdateTick()) {
+    //   for (Player p : Bukkit.getOnlinePlayers()) {
+    //     DTC.antiCheatManager.kickIfCheat(p);
+    //   }
+    // }
+    
     for (Player p : Bukkit.getOnlinePlayers()) {
       if (
-        PlayerUtils.wearingLeather(p)
-          && p.getFreezeTicks() > 140
-          && p.getFreezeTicks() % 20 == 1
+        PlayerUtils.wearingLeather(p) &&
+          p.getFreezeTicks() > 140 &&
+          p
+            .getFreezeTicks() % 20 == 1
       ) {
+        CoreUtils.log("Trying to damage freeze through leather!");
         p.setHealth(Math.max(0, p.getHealth() - 1));
         p.damage(1, DamageSource.builder(DamageType.FREEZE).build());
       }
@@ -3196,6 +3299,14 @@ public class Game {
     for (Player p : Bukkit.getOnlinePlayers()) {
       PlayerData d = getPlayerData(p);
       if (d.shoutCooldown > 0) d.shoutCooldown--;
+    }
+
+    Iterator<RegenOre> roit = regenOres.values().iterator();
+    while (roit.hasNext()) {
+      RegenOre ro = roit.next();
+
+      ro.onTick();
+      if (!ro.active) roit.remove();
     }
     
     if (!isPlaying || paused) return;
@@ -3264,14 +3375,6 @@ public class Game {
       }
     }
     
-    Iterator<RegenOre> roit = regenOres.values().iterator();
-    while (roit.hasNext()) {
-      RegenOre ro = roit.next();
-      
-      ro.onTick();
-      if (!ro.active) roit.remove();
-    }
-    
     if (DTC.ticksManager.isUpdateTick()) {
       for (Player p : Bukkit.getOnlinePlayers()) {
         if (LocUtils.inLobby(p)) continue;
@@ -3279,8 +3382,8 @@ public class Game {
         PlayerData data = getPlayerData(p);
         
         if (
-          data.role.type == RolesManager.RoleType.ATTACKING
-            && data.role.id != RolesManager.RoleKey.RANGER
+          data.role.type == RolesManager.RoleType.ATTACKING &&
+            data.role.id != RolesManager.RoleKey.RANGER
         ) {
           if (PlayerUtils.banBothHandItem(p, Material.CROSSBOW)) {
             p.sendActionBar(TextUtils.$("roles.attacker.no-crossbow"));
@@ -3290,8 +3393,8 @@ public class Game {
         if (
           p.getInventory().contains(
             Material.ENCHANTING_TABLE
-          )
-            || p.getInventory().contains(
+          ) ||
+            p.getInventory().contains(
               Material.ENDER_CHEST
             )
         ) {
@@ -3326,8 +3429,10 @@ public class Game {
         }
         
         if (
-          !data.skillReloadedMessage
-            && p.getCooldown(Material.KNOWLEDGE_BOOK) <= 0
+          !data.skillReloadedMessage &&
+            p.getCooldown(
+              Material.KNOWLEDGE_BOOK
+            ) <= 0
         ) {
           p.sendActionBar(TextUtils.$("player.skill-reloaded"));
           data.skillReloadedMessage = true;
@@ -3341,11 +3446,11 @@ public class Game {
     updateVillagers();
     
     if (
-      map.core != null
-        && phase.isAfter(
+      map.core != null &&
+        phase.isAfter(
           Phase.CoreWilting
-        )
-        && DTC.ticksManager.ticksCount % (15 * 20) == 0
+        ) &&
+        DTC.ticksManager.ticksCount % (15 * 20) == 0
     ) {
       getSideData(Side.RED).directAttackCore();
       getSideData(Side.GREEN).directAttackCore();
@@ -3398,8 +3503,8 @@ public class Game {
       if (
         p.getInventory().contains(
           Material.ENCHANTING_TABLE
-        )
-          || p.getInventory().contains(
+        ) ||
+          p.getInventory().contains(
             Material.ENDER_CHEST
           )
       ) {

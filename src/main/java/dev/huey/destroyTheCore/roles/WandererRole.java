@@ -40,10 +40,11 @@ public class WandererRole extends Role {
       return (LocUtils.isSameWorld(
         loc,
         thatLoc
-      )
-        && thatLoc.getY() >= loc.getY()
-        && thatLoc.getY() <= loc.getY() + height
-        && new Vector(
+      ) &&
+        thatLoc.getY() >= loc.getY() &&
+        thatLoc.getY() <= loc
+          .getY() + height &&
+        new Vector(
           thatLoc.getX() - loc.getX(),
           0,
           thatLoc.getZ() - loc.getZ()

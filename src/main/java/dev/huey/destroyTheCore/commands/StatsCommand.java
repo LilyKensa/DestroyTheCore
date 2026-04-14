@@ -74,9 +74,10 @@ public class StatsCommand extends Subcommand {
             Placeholder.component("all", Component.text(stats.games)),
             Placeholder.unparsed(
               "ratio",
-              stats.games == 0 ? "0.0" : CoreUtils.toFixed(
-                100D * stats.wins / stats.games
-              )
+              stats.games == 0 ? "0.0"
+                : CoreUtils.toFixed(
+                  100D * stats.wins / stats.games
+                )
             )
           )
         ),

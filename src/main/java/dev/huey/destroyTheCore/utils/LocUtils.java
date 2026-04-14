@@ -31,11 +31,11 @@ public class LocUtils {
     return (isSameWorld(
       loc1,
       loc2
-    )
-      && loc1.getBlockX() == loc2.getBlockX()
-      && loc1.getBlockY() == loc2
-        .getBlockY()
-      && loc1.getBlockZ() == loc2.getBlockZ());
+    ) &&
+      loc1.getBlockX() == loc2.getBlockX() &&
+      loc1.getBlockY() == loc2
+        .getBlockY() &&
+      loc1.getBlockZ() == loc2.getBlockZ());
   }
   
   static public Location lobby(Pos pos) {
@@ -113,10 +113,14 @@ public class LocUtils {
   }
   
   static public boolean closeEnough(Location target, Location source) {
-    return isSameWorld(target, source)
-      && Math.abs(target.getX() - source.getX()) < 0.6
-      && Math.abs(target.getY() - source.getY()) < 0.6
-      && Math.abs(target.getZ() - source.getZ()) < 0.6;
+    return isSameWorld(target, source) &&
+      Math.abs(
+        target.getX() - source.getX()
+      ) < 0.6 &&
+      Math.abs(target.getY() - source.getY()) < 0.6 &&
+      Math.abs(
+        target.getZ() - source.getZ()
+      ) < 0.6;
   }
   
   static public Location hitboxCenter(Entity e) {
@@ -235,12 +239,12 @@ public class LocUtils {
         int tz = spawn.floorZ();
         
         if (
-          sx >= tx - 1
-            && sx <= tx + 1
-            && sy >= ty
-            && sy <= ty + 2
-            && sz >= tz - 1
-            && sz <= tz + 1
+          sx >= tx - 1 &&
+            sx <= tx + 1 &&
+            sy >= ty &&
+            sy <= ty + 2 &&
+            sz >= tz - 1 &&
+            sz <= tz + 1
         ) {
           return true;
         }

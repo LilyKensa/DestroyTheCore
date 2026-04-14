@@ -45,12 +45,13 @@ public class CollectStarsMission extends ProgressiveMission implements Listener 
   }
   
   static public boolean isStarItem(ItemStack item) {
-    return (item != null
-      && !item.isEmpty()
-      && item.hasItemMeta()
-      && item.getItemMeta().getPersistentDataContainer().has(
-        dataNamespace
-      ));
+    return (item != null &&
+      !item.isEmpty() &&
+      item.hasItemMeta() &&
+      item
+        .getItemMeta().getPersistentDataContainer().has(
+          dataNamespace
+        ));
   }
   
   int currentCount = 0;
@@ -90,8 +91,9 @@ public class CollectStarsMission extends ProgressiveMission implements Listener 
         );
         
         while (
-          starLoc.getBlock().isCollidable()
-            && starLoc.getY() >= starLoc.getWorld().getMinHeight()
+          starLoc.getBlock().isCollidable() &&
+            starLoc.getY() >= starLoc
+              .getWorld().getMinHeight()
         ) {
           starLoc.setY(starLoc.getY() - 1);
         }

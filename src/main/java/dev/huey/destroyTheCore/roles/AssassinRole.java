@@ -67,8 +67,9 @@ public class AssassinRole extends Role {
       itemEntity.setVelocity(ev.getProjectile().getVelocity());
       
       if (
-        ev.getProjectile() instanceof Arrow arrow
-          && arrow.getPickupStatus() != AbstractArrow.PickupStatus.ALLOWED
+        ev.getProjectile() instanceof Arrow arrow &&
+          arrow
+            .getPickupStatus() != AbstractArrow.PickupStatus.ALLOWED
       ) {
         itemEntity.setCanPlayerPickup(false);
         itemEntity.setCanMobPickup(false);
@@ -115,9 +116,9 @@ public class AssassinRole extends Role {
       pl.getHealth() >= AttrUtils.get(
         pl,
         Attribute.MAX_HEALTH
-      )
-        && DTC.game.phase != null
-        && DTC.game.phase.isAfter(
+      ) &&
+        DTC.game.phase != null &&
+        DTC.game.phase.isAfter(
           Game.Phase.DoubleDamage
         )
     ) {
@@ -156,12 +157,12 @@ public class AssassinRole extends Role {
     Player nearest = Bukkit.getOnlinePlayers().stream().filter(
       p -> !p.equals(
         pl
-      )
-        && p.getWorld().equals(pl.getWorld())
-        && PlayerUtils.shouldHandle(
+      ) &&
+        p.getWorld().equals(pl.getWorld()) &&
+        PlayerUtils.shouldHandle(
           p
-        )
-        && DTC.game.getPlayerData(p).isGaming()
+        ) &&
+        DTC.game.getPlayerData(p).isGaming()
     ).min(
       Comparator.comparingDouble(
         p -> p.getLocation().distanceSquared(

@@ -165,8 +165,12 @@ game:
 
 anti-cheat:
   prefix: "[<light_purple>Anti-cheat</light_purple>] "
-  reaction-time: "<red>Illegal reaction time</red>"
-  auto-click: "<red>Auto clicker</red>"
+  admin-notice: "<player> is flagged for <cheat>, Score: <value>/<white>100</white>"
+  reasons:
+    quiz-speed: "<red>Too fast quiz</red>"
+    auto-click: "<red>Auto right click</red>"
+    attack-range: "<red>Reach</red>"
+    spam-break: "<red>Instant break</red>"
 
 item-gen:
   right-click-to-use: "- <yellow>Right click to use</yellow>"

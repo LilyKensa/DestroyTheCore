@@ -33,9 +33,11 @@ public class BridgeHelperGen extends UsableItemGen {
     );
     
     if (
-      !centerBlock.getType().isAir()
-        || centerBlock.getY() < centerBlock.getWorld().getMinHeight()
-        || centerBlock.getY() > centerBlock.getWorld().getMaxHeight()
+      !centerBlock.getType().isAir() ||
+        centerBlock.getY() < centerBlock
+          .getWorld().getMinHeight() ||
+        centerBlock.getY() > centerBlock
+          .getWorld().getMaxHeight()
     ) {
       return false;
     }

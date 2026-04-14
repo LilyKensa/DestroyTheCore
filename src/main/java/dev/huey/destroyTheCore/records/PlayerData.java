@@ -9,7 +9,7 @@ import java.util.Map;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-public class PlayerData {
+public class PlayerData implements HasStats {
   
   /** Constants */
   static public final int minRespawnTime = 5, maxRespawnTime = 180;
@@ -32,6 +32,8 @@ public class PlayerData {
   public int lotteryShift = 0;
   public int killStreak = 0;
   public int respawnAt = -1;
+  public int attackedCoreAt = -1;
+  public int rightClickedAt = -1;
   public boolean clearedInv = false;
   public boolean skillReloadedMessage = true;
   
@@ -80,8 +82,7 @@ public class PlayerData {
   }
   
   public boolean isPostRespawn() {
-    return respawnAt >= 0
-      && DTC.ticksManager.ticksCount - respawnAt < 10 * 20;
+    return respawnAt >= 0 && DTC.ticksManager.ticksCount - respawnAt < 10 * 20;
   }
   
   public void removePostRevive() {
@@ -106,6 +107,7 @@ public class PlayerData {
   
   public void addCoreAttack() {
     coreAttacks++;
+    attackedCoreAt = DTC.ticksManager.ticksCount;
     addRespawnTime(corePunishment);
   }
   

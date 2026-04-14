@@ -71,7 +71,9 @@ public class TranslationsManager {
   public Translator translator = new Translator();
   
   public void init() {
-    for (Locale locale : availableLocales) loadTranslations(locale);
+    for (Locale locale : availableLocales) {
+      loadTranslations(locale);
+    }
   }
   
   void loadTranslations(Locale locale) {

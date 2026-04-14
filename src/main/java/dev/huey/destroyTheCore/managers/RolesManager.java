@@ -96,15 +96,18 @@ public class RolesManager {
       ItemStack item = inv.getItem(slot);
       
       if (
-        item.isEmpty()
-          || (DTC.itemsManager.isGen(item)
-            && DTC.itemsManager.getGen(item).isTrash())
+        item.isEmpty() ||
+          (DTC.itemsManager.isGen(item) &&
+            DTC.itemsManager
+              .getGen(item).isTrash())
       ) {
         inv.setItem(slot, replacement);
       }
       else if (
-        replacement.hasItemMeta()
-          && replacement.getItemMeta().hasEnchant(Enchantment.BINDING_CURSE)
+        replacement.hasItemMeta() &&
+          replacement.getItemMeta().hasEnchant(
+            Enchantment.BINDING_CURSE
+          )
       ) {
         pl.getWorld()
           .dropItemNaturally(LocUtils.hitboxCenter(pl), item)
@@ -125,8 +128,8 @@ public class RolesManager {
       if (item == null) continue;
       
       if (
-        item.hasItemMeta()
-          && item.getItemMeta().getPersistentDataContainer()
+        item.hasItemMeta() &&
+          item.getItemMeta().getPersistentDataContainer()
             .has(Role.skillNamespace)
       ) {
         contents[i].editMeta(role::editSkillItemMeta);
@@ -147,10 +150,11 @@ public class RolesManager {
   }
   
   public boolean isExclusiveItem(ItemStack item) {
-    return (item.hasItemMeta()
-      && item.getItemMeta().getPersistentDataContainer().has(
-        Role.exclusiveItemNamespace
-      ));
+    return (item.hasItemMeta() &&
+      item.getItemMeta()
+        .getPersistentDataContainer().has(
+          Role.exclusiveItemNamespace
+        ));
   }
   
   public boolean checkExclusiveItem(ItemStack item, RoleKey key) {

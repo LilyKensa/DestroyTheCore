@@ -42,13 +42,15 @@ public class ShoutCommand extends Subcommand {
     data.shoutCooldown = PlayerData.shoutCooldownDuration;
     
     TextComponent empty = (TextComponent) TextUtils.$("chat.shout.empty");
-    TextComponent message = args.isEmpty() ? empty : String.join(" ", args)
-      .equals(empty.content()) ? (TextComponent) TextUtils.$(
-        "chat.shout.empty-troll",
-        List.of(
-          Placeholder.component("message", empty)
+    TextComponent message = args.isEmpty() ? empty
+      : String.join(" ", args)
+        .equals(empty.content()) ? (TextComponent) TextUtils.$(
+          "chat.shout.empty-troll",
+          List.of(
+            Placeholder.component("message", empty)
+          )
         )
-      ) : Component.text(String.join(" ", args));
+      : Component.text(String.join(" ", args));
     
     PlayerUtils.broadcast(
       Component.join(

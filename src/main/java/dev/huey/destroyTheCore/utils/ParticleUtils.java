@@ -126,9 +126,14 @@ public class ParticleUtils {
     TriConsumer<Double, Double, Double> emitter = (x, y, z) -> {
       Location loc = new Location(world, x, y, z);
       if (
-        LocUtils.closeEnough(loc, loc1.toBlockLocation().add(0.5, 0.5, 0.5))
-          ||
-          LocUtils.closeEnough(loc, loc2.toBlockLocation().add(0.5, 0.5, 0.5))
+        LocUtils.closeEnough(
+          loc,
+          loc1.toBlockLocation().add(0.5, 0.5, 0.5)
+        ) ||
+          LocUtils.closeEnough(
+            loc,
+            loc2.toBlockLocation().add(0.5, 0.5, 0.5)
+          )
       ) return;
       
       dust(players, loc, color0);

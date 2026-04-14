@@ -153,7 +153,7 @@ game:
   truce:
     warning: "<red>你腦中忽然冒出不該再繼續往前的想法</red>"
     sent-spawn: "<player> 剛才<yellow>迷路了</yellow>結果被半顆心送回家"
-  diamond-broadcast: "我愛鑽石!|是時候來點鑽石了!|好耶! 我得到了鑽石!|鑽石實在太讚了!|鑽石! 鑽石! 鑽石!|我最喜歡挖鑽石了!"
+  diamond-broadcast: "這剔透的鑽石終於進入我的口袋啦!|鑽石這般湛藍, 就是我靈魂的顏色!|鑽石的光芒實在是太耀眼了!|鑽石就是人生! 我愛鑽石!|是時候來點鑽石了!|好耶! 我挖到鑽石啦!|得到鑽石的感覺實在太讚了!|我最喜歡挖鑽石了!"
   height-warning: "<red>你即將得到高山症!</red>"
   start-canceled: "<red>取消</red>"
   missing-locs:
@@ -205,8 +205,12 @@ game:
 
 anti-cheat:
   prefix: "[<red>反作弊</red>] "
-  reaction-time: "<red>不合理的反應時間</red>"
-  auto-click: "<red>自動點擊</red>"
+  admin-notice: "<player> 被偵測到<cheat>, 分數: <value>/<white>100</white>"
+  reasons:
+    quiz-speed: "<red>數學算太快</red>"
+    auto-click: "<red>自動右鍵</red>"
+    attack-range: "<red>攻擊距離過長</red>"
+    spam-break: "<red>瞬間挖掘</red>"
 
 item-gen:
   right-click-to-use: "- <yellow>右鍵以使用</yellow>"

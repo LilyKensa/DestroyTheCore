@@ -141,8 +141,9 @@ public class MoleRole extends Role {
       new ParticleBuilder(Particle.BLOCK)
         .data(
           Bukkit.createBlockData(
-            standingBlock.getType().isAir() ? Material.DIRT : standingBlock
-              .getType()
+            standingBlock.getType().isAir() ? Material.DIRT
+              : standingBlock
+                .getType()
           )
         )
         .allPlayers()

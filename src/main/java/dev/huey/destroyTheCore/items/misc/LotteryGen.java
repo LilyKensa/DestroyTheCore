@@ -133,8 +133,8 @@ public class LotteryGen extends UsableItemGen {
       if (
         !DTC.itemsManager.isGen(
           item
-        )
-          || DTC.itemsManager.gens.get(
+        ) ||
+          DTC.itemsManager.gens.get(
             ItemsManager.ItemKey.PLACEHOLDER
           ).checkItem(item)
       ) return;
@@ -145,11 +145,13 @@ public class LotteryGen extends UsableItemGen {
       }
       
       if (
-        !lore.isEmpty()
-          && (lore.getLast() instanceof TextComponent lastLore)
-          && !lastLore.content().startsWith(
-            "-"
-          )
+        !lore.isEmpty() &&
+          (lore
+            .getLast() instanceof TextComponent lastLore) &&
+          !lastLore.content()
+            .startsWith(
+              "-"
+            )
       ) lore.add(Component.empty());
       lore.add(TextUtils.$("items.lottery.item-lore"));
       

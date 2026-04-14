@@ -75,8 +75,8 @@ public class SetRoleCommand extends Subcommand {
     }
     else {
       if (
-        !PlayerUtils.isAdmin(pl)
-          && LocUtils.inLive(
+        !PlayerUtils.isAdmin(pl) &&
+          LocUtils.inLive(
             pl.getLocation()
           )
       ) {

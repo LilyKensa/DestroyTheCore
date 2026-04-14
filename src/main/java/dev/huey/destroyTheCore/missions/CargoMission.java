@@ -119,8 +119,7 @@ public class CargoMission extends Mission implements Listener {
         );
         
         if (
-          LocUtils.inLive(p)
-            &&
+          LocUtils.inLive(p) &&
             LocUtils.near(
               Pos.of(p),
               DTC.game.map.mission,

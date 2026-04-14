@@ -185,9 +185,10 @@ public class BoardsManager {
               Placeholder.component("all", Component.text(stat.games)),
               Placeholder.unparsed(
                 "ratio",
-                stat.games == 0 ? "0.0" : CoreUtils.toFixed(
-                  100D * stat.wins / stat.games
-                )
+                stat.games == 0 ? "0.0"
+                  : CoreUtils.toFixed(
+                    100D * stat.wins / stat.games
+                  )
               )
             )
           ),

@@ -50,11 +50,6 @@ public class QuizManager {
     public void update(int attempt) {
       if (ended) return;
       
-      if (DTC.ticksManager.ticksCount - startTime < 10) {
-        PlayerUtils.kickAntiCheat(pl, "reaction-time");
-        return;
-      }
-      
       ended = true;
       correct = check(attempt);
       
@@ -73,9 +68,20 @@ public class QuizManager {
         )
       );
       
+      if (DTC.ticksManager.ticksCount - startTime < 10) {
+        DTC.antiCheatManager.track(pl, AntiCheatManager.Cheat.QUIZ_SPEED, 50);
+      }
+      else if (DTC.ticksManager.ticksCount - startTime < 40) {
+        DTC.antiCheatManager.track(pl, AntiCheatManager.Cheat.QUIZ_SPEED, 20);
+      }
+      else {
+        DTC.antiCheatManager.track(pl, AntiCheatManager.Cheat.QUIZ_SPEED, -20);
+      }
+      
       pl.playSound(
         pl.getLocation(),
-        correct ? Sound.ENTITY_EXPERIENCE_ORB_PICKUP : Sound.ENTITY_ZOMBIE_HORSE_HURT,
+        correct ? Sound.ENTITY_EXPERIENCE_ORB_PICKUP
+          : Sound.ENTITY_ZOMBIE_HORSE_HURT,
         1, // Volume
         1 // Pitch
       );

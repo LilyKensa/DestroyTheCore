@@ -36,17 +36,19 @@ public class EarthquakeCowMission extends Mission implements Listener {
     Location loc = LocUtils.toBlockCenter(originalLoc);
     
     while (
-      loc.getY() > loc.getWorld().getMinHeight()
-        && loc.getY() < loc.getWorld().getMaxHeight()
-        && loc.getBlock().isCollidable()
+      loc.getY() > loc.getWorld().getMinHeight() &&
+        loc.getY() < loc.getWorld()
+          .getMaxHeight() &&
+        loc.getBlock().isCollidable()
     ) {
       loc.add(0, 1, 0);
     }
     
     while (
-      loc.getY() > loc.getWorld().getMinHeight()
-        && loc.getY() < loc.getWorld().getMaxHeight()
-        && !loc.getBlock().isCollidable()
+      loc.getY() > loc.getWorld().getMinHeight() &&
+        loc.getY() < loc.getWorld()
+          .getMaxHeight() &&
+        !loc.getBlock().isCollidable()
     ) {
       loc.add(0, -1, 0);
     }

@@ -72,9 +72,9 @@ public class GlowManager {
   }
   
   boolean shouldSeeGlow(Player viewer, Player target) {
-    return (target.isGlowing()
-      || (isWearingHat(viewer)
-        && LocUtils.near(
+    return (target.isGlowing() ||
+      (isWearingHat(viewer) &&
+        LocUtils.near(
           target,
           viewer,
           15
@@ -141,7 +141,8 @@ public class GlowManager {
         
         byte v = (byte) value.getValue();
         value.setValue(
-          (byte) (glow ? v | MetadataBit.GLOWING.bit : v & ~MetadataBit.GLOWING.bit)
+          (byte) (glow ? v | MetadataBit.GLOWING.bit
+            : v & ~MetadataBit.GLOWING.bit)
         );
       }
       packet.getDataValueCollectionModifier().write(0, dataValues);

@@ -82,8 +82,9 @@ public abstract class Mission implements Listener {
     public TagResolver getRandomPlayerPlaceholder(Player pl) {
       return Placeholder.component(
         "player",
-        pl == null ? TextUtils.$("mission.result.random-player") : PlayerUtils
-          .getName(pl)
+        pl == null ? TextUtils.$("mission.result.random-player")
+          : PlayerUtils
+            .getName(pl)
       );
     }
     

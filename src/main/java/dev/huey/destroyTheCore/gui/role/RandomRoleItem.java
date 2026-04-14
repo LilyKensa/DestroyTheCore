@@ -32,10 +32,11 @@ public class RandomRoleItem extends GUIItem {
   public void handleClick(ClickType click, Player pl, InventoryClickEvent ev) {
     Role role = RandomUtils.pick(
       DTC.rolesManager.roles.values().stream().filter(
-        r -> r.id != RolesManager.RoleKey.DEFAULT
-          && r.levelReq <= DTC.game.stats.get(
-            pl.getUniqueId()
-          ).levels
+        r -> r.id != RolesManager.RoleKey.DEFAULT &&
+          r.levelReq <= DTC.game.stats
+            .get(
+              pl.getUniqueId()
+            ).levels
       ).toList()
     );
     

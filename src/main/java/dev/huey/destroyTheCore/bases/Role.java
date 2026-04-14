@@ -403,8 +403,7 @@ public class Role extends GUIItem {
     ClickType clickType, Player pl, InventoryClickEvent ev
   ) {
     if (
-      DTC.game.getStats(pl).levels >= levelReq
-        || PlayerUtils.isAdmin(pl)
+      DTC.game.getStats(pl).levels >= levelReq || PlayerUtils.isAdmin(pl)
     ) {
       announce(pl);
       pl.playSound(

@@ -426,11 +426,11 @@ public class KekkaiMasterRole extends Role {
         if (DTC.game.getPlayerData(pl).side != kekkai.side) continue;
         
         if (
-          kekkai.type != Kekkai.Type.CHAOS
-            && DTC.rolesManager.isExclusiveItem(
+          kekkai.type != Kekkai.Type.CHAOS &&
+            DTC.rolesManager.isExclusiveItem(
               pl.getInventory().getItemInMainHand()
-            )
-            && kekkai.contains(pl.getLocation())
+            ) &&
+            kekkai.contains(pl.getLocation())
         ) {
           kekkai.duration += 10;
         }

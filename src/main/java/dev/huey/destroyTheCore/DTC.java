@@ -32,6 +32,7 @@ public final class DTC extends JavaPlugin {
   static public GUIManager guiManager;
   static public TipsManager tipsManager;
   static public AdvancementsManager advancementsManager;
+  static public AntiCheatManager antiCheatManager;
   static public BoardsManager boardsManager;
   static public TicksManager ticksManager;
   
@@ -60,6 +61,7 @@ public final class DTC extends JavaPlugin {
     guiManager = new GUIManager();
     tipsManager = new TipsManager();
     advancementsManager = new AdvancementsManager();
+    antiCheatManager = new AntiCheatManager();
     boardsManager = new BoardsManager();
     configManager = new ConfigManager();
     ticksManager = new TicksManager();
@@ -90,6 +92,7 @@ public final class DTC extends JavaPlugin {
     rolesManager.init();
     tipsManager.init();
     advancementsManager.init();
+    antiCheatManager.init();
     ticksManager.init();
     
     game.init();

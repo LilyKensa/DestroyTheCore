@@ -159,8 +159,8 @@ public class GUIManager {
   public UUID shopEditor = null;
   
   public boolean isEditingShop() {
-    return (shopEditor != null
-      && Bukkit.getOfflinePlayer(
+    return (shopEditor != null &&
+      Bukkit.getOfflinePlayer(
         shopEditor
       ).isOnline());
   }

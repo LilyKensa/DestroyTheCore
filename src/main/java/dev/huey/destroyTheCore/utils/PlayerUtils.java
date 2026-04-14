@@ -47,13 +47,15 @@ public class PlayerUtils {
     ).findAny().orElse(null);
   }
   
-  static public boolean wearingLeather(Player player) {
-    Predicate<Material> isLeather = (type) -> type == Material.LEATHER_HELMET
-      || type == Material.LEATHER_CHESTPLATE
-      || type == Material.LEATHER_LEGGINGS
-      || type == Material.LEATHER_BOOTS;
+  static public boolean wearingLeather(Player pl) {
+    Predicate<Material> isLeather = (
+      type
+    ) -> type == Material.LEATHER_HELMET ||
+      type == Material.LEATHER_CHESTPLATE ||
+      type == Material.LEATHER_LEGGINGS ||
+      type == Material.LEATHER_BOOTS;
     
-    for (ItemStack item : player.getInventory().getArmorContents()) {
+    for (ItemStack item : pl.getInventory().getArmorContents()) {
       if (item != null && isLeather.test(item.getType())) {
         return true;
       }
@@ -92,6 +94,7 @@ public class PlayerUtils {
   
   /** {@link #send} with {@link DTC#prefix} */
   static public void prefixedSend(Player pl, Component component) {
+    if (DTC.prefix == null) return;
     send(pl, DTC.prefix.append(component));
   }
   
@@ -103,13 +106,18 @@ public class PlayerUtils {
     prefixedSend(pl, text, NamedTextColor.GRAY);
   }
   
-  /** Broadcast to admins */
-  static public void prefixedNotice(Component comp) {
+  static public void notice(Component comp) {
     for (Player p : Bukkit.getOnlinePlayers()) {
       if (isAdmin(p)) {
-        prefixedSend(p, comp);
+        send(p, comp);
       }
     }
+  }
+  
+  /** Broadcast to admins */
+  static public void prefixedNotice(Component comp) {
+    if (DTC.prefix == null) return;
+    notice(DTC.prefix.append(comp));
   }
   
   /** Broadcast to everyone */
@@ -196,9 +204,10 @@ public class PlayerUtils {
    * If that block has right click functionalities, and shouldn't be canceled
    */
   static public boolean checkUsingBlock(Player pl, Block block) {
-    return (block != null
-      && block.getBlockData() instanceof Openable
-      && !pl.isSneaking());
+    return (block != null &&
+      block.getBlockData() instanceof Openable &&
+      !pl
+        .isSneaking());
   }
   
   static public ItemStack getHandItem(Player pl) {
@@ -293,8 +302,8 @@ public class PlayerUtils {
     if (meta != null) {
       if (meta.isUnbreakable()) return;
       if (
-        meta.hasEnchant(Enchantment.UNBREAKING)
-          && RandomUtils.hit(
+        meta.hasEnchant(Enchantment.UNBREAKING) &&
+          RandomUtils.hit(
             1D / (meta.getEnchantLevel(Enchantment.UNBREAKING) + 1)
           )
       ) return;
@@ -314,12 +323,6 @@ public class PlayerUtils {
   
   static public void reportNoPerm(Player pl) {
     prefixedSend(pl, TextUtils.$("player.no-perm"));
-  }
-  
-  static public void kickAntiCheat(Player pl, String path) {
-    pl.kick(
-      TextUtils.$("anti-cheat.prefix").append(TextUtils.$("anti-cheat." + path))
-    );
   }
   
   static public void backToLobby(Player pl) {
@@ -396,9 +399,10 @@ public class PlayerUtils {
   
   static public void refreshSpectatorVisibility(Player target, Player viewer) {
     if (
-      DTC.game.isPlaying
-        &&
-        DTC.game.getPlayerData(target).side == Game.Side.SPECTATOR
+      DTC.game.isPlaying &&
+        DTC.game.getPlayerData(
+          target
+        ).side == Game.Side.SPECTATOR
     ) {
       viewer.hidePlayer(DTC.instance, target);
     }
@@ -423,8 +427,8 @@ public class PlayerUtils {
   static public void refreshSpectatorAbilities(Player pl, boolean state) {
     if (!DTC.game.isPlaying) state = false;
     
-    boolean creativeAbility = state
-      || List.of(
+    boolean creativeAbility = state ||
+      List.of(
         GameMode.CREATIVE,
         GameMode.SPECTATOR
       ).contains(pl.getGameMode());
@@ -516,8 +520,8 @@ public class PlayerUtils {
   static public void rrt(Player pl) {
     PlayerData d = DTC.game.getPlayerData(pl);
     if (
-      pl.isSneaking()
-        && LocUtils.near(
+      pl.isSneaking() &&
+        LocUtils.near(
           Pos.of(pl),
           LocUtils.selfSide(DTC.game.map.core, d.side),
           5
@@ -705,9 +709,10 @@ public class PlayerUtils {
                     secs > 60 ? CoreUtils.formatTimeComp(
                       secs,
                       NamedTextColor.GOLD
-                    ) : Component.text(secs).color(
-                      NamedTextColor.GOLD
                     )
+                      : Component.text(secs).color(
+                        NamedTextColor.GOLD
+                      )
                   )
                 )
               )
@@ -876,8 +881,9 @@ public class PlayerUtils {
     
     if (!hasRoleItem) {
       if (
-        roleItem.getType() == Material.SHIELD
-          && inv.getItemInOffHand().isEmpty()
+        roleItem.getType() == Material.SHIELD &&
+          inv.getItemInOffHand()
+            .isEmpty()
       ) {
         inv.setItemInOffHand(roleItem);
       }
@@ -1010,8 +1016,10 @@ public class PlayerUtils {
         pos.add(offset.multiply(0.2));
         
         if (
-          !to.isInvisible()
-            && !to.hasPotionEffect(PotionEffectType.INVISIBILITY)
+          !to.isInvisible() &&
+            !to.hasPotionEffect(
+              PotionEffectType.INVISIBILITY
+            )
         ) {
           new ParticleBuilder(particle)
             .allPlayers()
@@ -1064,12 +1072,12 @@ public class PlayerUtils {
     
     for (Player other : getEnemies(pl)) {
       if (
-        other.equals(pl)
-          || !LocUtils.isSameWorld(
+        other.equals(pl) ||
+          !LocUtils.isSameWorld(
             other,
             pl
-          )
-          || !pl.hasLineOfSight(other)
+          ) ||
+          !pl.hasLineOfSight(other)
       ) continue;
       
       BoundingBox box = other.getBoundingBox().clone().expand(0.2, 0.2, 0.2);

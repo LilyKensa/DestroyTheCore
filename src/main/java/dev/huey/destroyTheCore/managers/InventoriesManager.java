@@ -112,12 +112,13 @@ public class InventoriesManager {
         contents[i] = placeholder;
       }
       else if (
-        item.getType() == Material.ENCHANTING_TABLE
-          || item.getType() == Material.ENDER_CHEST
-          || Constants.oreItems.contains(
+        item.getType() == Material.ENCHANTING_TABLE ||
+          item
+            .getType() == Material.ENDER_CHEST ||
+          Constants.oreItems.contains(
             item.getType()
-          )
-          || RandomUtils.hit(chance)
+          ) ||
+          RandomUtils.hit(chance)
       ) {
         pl.getWorld().dropItemNaturally(pl.getLocation(), item).setPickupDelay(
           20

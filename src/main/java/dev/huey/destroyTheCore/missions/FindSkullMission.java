@@ -49,12 +49,13 @@ public class FindSkullMission extends TimedMission implements Listener {
   }
   
   static public boolean isSkullItem(ItemStack item) {
-    return (item != null
-      && !item.isEmpty()
-      && item.hasItemMeta()
-      && item.getItemMeta().getPersistentDataContainer().has(
-        dataNamespace
-      ));
+    return (item != null &&
+      !item.isEmpty() &&
+      item.hasItemMeta() &&
+      item
+        .getItemMeta().getPersistentDataContainer().has(
+          dataNamespace
+        ));
   }
   
   static public Location randomLocation(Location center, double radius) {

@@ -32,8 +32,10 @@ public class HackerRole extends Role {
   public void onTick(Player pl) {
     if (DTC.ticksManager.isUpdateTick()) {
       if (
-        PlayerUtils.shouldHandle(pl)
-          && pl.hasPotionEffect(PotionEffectType.INVISIBILITY)
+        PlayerUtils.shouldHandle(pl) &&
+          pl.hasPotionEffect(
+            PotionEffectType.INVISIBILITY
+          )
       ) {
         pl.removePotionEffect(PotionEffectType.INVISIBILITY);
         
