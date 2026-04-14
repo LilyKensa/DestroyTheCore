@@ -6,7 +6,7 @@ import com.fren_gor.ultimateAdvancementAPI.advancement.BaseAdvancement;
 import com.fren_gor.ultimateAdvancementAPI.advancement.RootAdvancement;
 import com.fren_gor.ultimateAdvancementAPI.advancement.display.AdvancementDisplay;
 import com.fren_gor.ultimateAdvancementAPI.advancement.display.AdvancementDisplayBuilder;
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import java.util.*;
@@ -45,7 +45,7 @@ public class AdvancementsManager {
     int index = 1;
     while (true) {
       String key = "advancements.%s.desc-%d".formatted(id, index);
-      if (!DestroyTheCore.translationsManager.has(key)) break;
+      if (!DTC.translationsManager.has(key)) break;
       
       descs.add(TextUtils.$r(key, placeholders));
       
@@ -65,7 +65,7 @@ public class AdvancementsManager {
   }
   
   public void init() {
-    api = UltimateAdvancementAPI.getInstance(DestroyTheCore.instance);
+    api = UltimateAdvancementAPI.getInstance(DTC.instance);
     
     api.disableVanillaAdvancements();
     
@@ -92,7 +92,7 @@ public class AdvancementsManager {
     all.add(chooseRoleAdv);
     
     int y = 0;
-    for (Role role : DestroyTheCore.rolesManager.roles.values()) {
+    for (Role role : DTC.rolesManager.roles.values()) {
       roleAdvMap.put(
         role.id,
         new BaseAdvancement(

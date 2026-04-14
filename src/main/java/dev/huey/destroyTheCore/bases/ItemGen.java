@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.bases;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.managers.InventoriesManager;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.utils.TextUtils;
@@ -19,7 +19,7 @@ public class ItemGen {
   
   /** Used to distinguish item-gens, stored data is the name of {@link #id} */
   static public final NamespacedKey dataNamespace = new NamespacedKey(
-    DestroyTheCore.instance,
+    DTC.instance,
     "custom-item"
   );
   
@@ -42,7 +42,7 @@ public class ItemGen {
     for (int i = 1; true; ++i) {
       key = "items.%s.desc".formatted(translationName) + "-" + i;
       
-      if (DestroyTheCore.translationsManager.has(key)) lore.add(
+      if (DTC.translationsManager.has(key)) lore.add(
         TextUtils.$(key)
       );
       else break;

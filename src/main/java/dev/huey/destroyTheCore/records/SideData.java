@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.records;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import java.util.*;
 import org.bukkit.Bukkit;
@@ -113,7 +113,7 @@ public class SideData {
       
       if (ed.origin == null || !ed.origin.isOnline()) continue;
       
-      PlayerData d = DestroyTheCore.game.getPlayerData(ed.origin);
+      PlayerData d = DTC.game.getPlayerData(ed.origin);
       if (!d.alive) continue;
       
       d.addRespawnTime(5);

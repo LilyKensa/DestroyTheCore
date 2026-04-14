@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.tools;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.editorTools.PosTool;
 import dev.huey.destroyTheCore.records.Pos;
 import dev.huey.destroyTheCore.utils.LocUtils;
@@ -15,11 +15,11 @@ public class RestAreaTool extends PosTool {
   
   @Override
   public Pos getPos() {
-    return DestroyTheCore.game.map.restArea;
+    return DTC.game.map.restArea;
   }
   
   @Override
   public void setPos(Pos loc) {
-    DestroyTheCore.game.map.restArea = LocUtils.toSpawnPoint(loc);
+    DTC.game.map.restArea = LocUtils.toSpawnPoint(loc);
   }
 }

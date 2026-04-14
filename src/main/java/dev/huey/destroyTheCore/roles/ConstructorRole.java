@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.roles;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.managers.RolesManager;
@@ -29,7 +29,7 @@ public class ConstructorRole extends Role {
   
   static public void onBlockBreak(Player pl, Block block) {
     if (
-      DestroyTheCore.game.getPlayerData(
+      DTC.game.getPlayerData(
         pl
       ).role.id != RolesManager.RoleKey.CONSTRUCTOR
     ) return;
@@ -145,10 +145,10 @@ public class ConstructorRole extends Role {
           if (loc.getBlock().isCollidable()) continue;
           if (LocUtils.nearSpawn(loc)) continue;
           
-          if (DestroyTheCore.game.map.restArea != null) {
+          if (DTC.game.map.restArea != null) {
             for (Pos rest : new Pos[]{
-              DestroyTheCore.game.map.restArea, LocUtils.flip(
-                DestroyTheCore.game.map.restArea
+              DTC.game.map.restArea, LocUtils.flip(
+                DTC.game.map.restArea
               )
             }) {
               if (
@@ -167,6 +167,6 @@ public class ConstructorRole extends Role {
           cancel();
         }
       }
-    }.runTaskTimer(DestroyTheCore.instance, 0, 2);
+    }.runTaskTimer(DTC.instance, 0, 2);
   }
 }

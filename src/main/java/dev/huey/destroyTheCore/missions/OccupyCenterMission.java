@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.missions;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.missions.ProgressiveMission;
 import dev.huey.destroyTheCore.records.PlayerData;
@@ -29,11 +29,11 @@ public class OccupyCenterMission extends ProgressiveMission {
   
   @Override
   public void tick() {
-    if (DestroyTheCore.ticksManager.isSeconds()) {
+    if (DTC.ticksManager.isSeconds()) {
       Set<Game.Side> occupied = new HashSet<>();
       
-      for (Player p : DestroyTheCore.worldsManager.live.getPlayers()) {
-        PlayerData d = DestroyTheCore.game.getPlayerData(p);
+      for (Player p : DTC.worldsManager.live.getPlayers()) {
+        PlayerData d = DTC.game.getPlayerData(p);
         if (d.side.equals(Game.Side.SPECTATOR)) continue;
         if (occupied.contains(d.side)) continue;
         

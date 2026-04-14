@@ -8,9 +8,9 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 import xyz.xenondevs.invui.InvUI;
 
-public final class DestroyTheCore extends JavaPlugin {
+public final class DTC extends JavaPlugin {
   
-  static public DestroyTheCore instance;
+  static public DTC instance;
   static public String version;
   
   static public Component prefix;

@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.missions;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.missions.ProgressiveMission;
 import dev.huey.destroyTheCore.records.PlayerData;
@@ -31,7 +31,7 @@ public class OresMission extends ProgressiveMission implements Listener {
   @EventHandler
   public void onBlockBreak(BlockBreakEvent ev) {
     Player pl = ev.getPlayer();
-    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
+    PlayerData data = DTC.game.getPlayerData(pl);
     Block block = ev.getBlock();
     
     if (block.getType() != Material.BEDROCK) return;

@@ -1,7 +1,7 @@
 package dev.huey.destroyTheCore.missions;
 
 import com.destroystokyo.paper.ParticleBuilder;
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.missions.TimedMission;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.utils.CoreUtils;
@@ -28,7 +28,7 @@ import org.bukkit.persistence.PersistentDataType;
 public class FindSkullMission extends TimedMission implements Listener {
   
   static public final NamespacedKey dataNamespace = new NamespacedKey(
-    DestroyTheCore.instance,
+    DTC.instance,
     "find-skull-mission-item"
   );
   
@@ -72,7 +72,7 @@ public class FindSkullMission extends TimedMission implements Listener {
     ItemStack item = RandomUtils.pick(
       new ItemStack(Material.EMERALD, 8),
       new ItemStack(Material.GOLD_INGOT, 64),
-      DestroyTheCore.itemsManager.gens.get(
+      DTC.itemsManager.gens.get(
         ItemsManager.ItemKey.GRENADE
       ).getItem(6),
       new ItemStack(Material.TNT, 1),

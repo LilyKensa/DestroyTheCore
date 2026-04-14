@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.items.gadgets;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.bases.itemGens.UsableItemGen;
 import dev.huey.destroyTheCore.managers.ItemsManager;
@@ -39,7 +39,7 @@ public class RandomRoleGen extends UsableItemGen {
     PlayerUtils.takeOneItemFromHand(pl);
     
     Role role = RandomUtils.pick(
-      DestroyTheCore.rolesManager.roles.values().stream()
+      DTC.rolesManager.roles.values().stream()
         .filter(r -> r.id != RolesManager.RoleKey.DEFAULT
 //            && r.levelReq <= DestroyTheCore.game.stats.get(
 //              pl.getUniqueId()
@@ -59,8 +59,8 @@ public class RandomRoleGen extends UsableItemGen {
       )
     );
     
-    DestroyTheCore.rolesManager.setRole(pl, role);
-    DestroyTheCore.game.enforceTeam(pl);
-    DestroyTheCore.boardsManager.refresh(pl);
+    DTC.rolesManager.setRole(pl, role);
+    DTC.game.enforceTeam(pl);
+    DTC.boardsManager.refresh(pl);
   }
 }

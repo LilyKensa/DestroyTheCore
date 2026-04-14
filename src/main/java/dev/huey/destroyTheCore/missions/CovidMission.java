@@ -1,7 +1,7 @@
 package dev.huey.destroyTheCore.missions;
 
 import com.destroystokyo.paper.ParticleBuilder;
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.missions.TimedMission;
 import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
@@ -25,7 +25,7 @@ public class CovidMission extends TimedMission {
   
   @Override
   public void innerTick() {
-    if (DestroyTheCore.ticksManager.ticksCount % 25 == 0) { // Poison 0 = every 25 ticks
+    if (DTC.ticksManager.ticksCount % 25 == 0) { // Poison 0 = every 25 ticks
       isClose.clear();
       
       for (Player p : PlayerUtils.allGaming()) {

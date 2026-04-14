@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.missions;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.missions.TimedMission;
 import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.RandomUtils;
@@ -53,7 +53,7 @@ public class InfiniteOresMission extends TimedMission implements Listener {
   
   @Override
   public void innerTick() {
-    if (DestroyTheCore.ticksManager.ticksCount % 2 == 0) {
+    if (DTC.ticksManager.ticksCount % 2 == 0) {
       set(getRandomOre());
     }
   }

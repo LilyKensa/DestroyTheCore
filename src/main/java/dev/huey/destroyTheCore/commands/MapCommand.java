@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.commands;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.Subcommand;
 import dev.huey.destroyTheCore.managers.ConfigManager;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
@@ -15,7 +15,7 @@ public class MapCommand extends Subcommand {
   
   public MapCommand() {
     super("map");
-    addArgument("map", () -> DestroyTheCore.configManager.availableTemplates);
+    addArgument("map", () -> DTC.configManager.availableTemplates);
   }
   
   @Override
@@ -31,14 +31,14 @@ public class MapCommand extends Subcommand {
         TextUtils.$(
           "commands.map.info",
           List.of(
-            Placeholder.unparsed("map", DestroyTheCore.worldsManager.mapName)
+            Placeholder.unparsed("map", DTC.worldsManager.mapName)
           )
         )
       );
       return;
     }
     
-    if (DestroyTheCore.game.isPlaying) {
+    if (DTC.game.isPlaying) {
       PlayerUtils.send(pl, TextUtils.$("commands.map.bad-time"));
       return;
     }
@@ -53,10 +53,10 @@ public class MapCommand extends Subcommand {
       return;
     }
     
-    DestroyTheCore.worldsManager.mapName = mapName;
+    DTC.worldsManager.mapName = mapName;
     
-    DestroyTheCore.configManager.save();
-    DestroyTheCore.configManager.load();
+    DTC.configManager.save();
+    DTC.configManager.load();
     
     PlayerUtils.prefixedBroadcast(
       TextUtils.$(

@@ -1,7 +1,7 @@
 package dev.huey.destroyTheCore.missions;
 
 import com.destroystokyo.paper.ParticleBuilder;
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.missions.TimedMission;
 import dev.huey.destroyTheCore.utils.LocUtils;
@@ -35,7 +35,7 @@ public class ExplodeMission extends TimedMission {
   
   @Override
   public void innerTick() {
-    if (DestroyTheCore.ticksManager.isUpdateTick()) {
+    if (DTC.ticksManager.isUpdateTick()) {
       for (Player pl : players) {
         if (pl == null) continue;
         
@@ -45,7 +45,7 @@ public class ExplodeMission extends TimedMission {
       }
     }
     
-    if (DestroyTheCore.ticksManager.isParticleTick()) {
+    if (DTC.ticksManager.isParticleTick()) {
       for (Player pl : players) {
         new ParticleBuilder(Particle.CAMPFIRE_COSY_SMOKE)
           .allPlayers()

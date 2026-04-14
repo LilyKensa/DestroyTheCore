@@ -1,7 +1,7 @@
 package dev.huey.destroyTheCore.roles;
 
 import com.destroystokyo.paper.ParticleBuilder;
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.managers.RolesManager;
@@ -52,7 +52,7 @@ public class AssassinRole extends Role {
     if (!PlayerUtils.shouldHandle(pl)) return;
     
     if (
-      DestroyTheCore.game.getPlayerData(
+      DTC.game.getPlayerData(
         pl
       ).role.id != RolesManager.RoleKey.ASSASSIN
     ) return;
@@ -95,7 +95,7 @@ public class AssassinRole extends Role {
   
   @Override
   public void onTick(Player pl) {
-    if (!DestroyTheCore.game.getPlayerData(pl).alive) return;
+    if (!DTC.game.getPlayerData(pl).alive) return;
     
     addStanding(pl);
     
@@ -116,8 +116,8 @@ public class AssassinRole extends Role {
         pl,
         Attribute.MAX_HEALTH
       )
-        && DestroyTheCore.game.phase != null
-        && DestroyTheCore.game.phase.isAfter(
+        && DTC.game.phase != null
+        && DTC.game.phase.isAfter(
           Game.Phase.DoubleDamage
         )
     ) {
@@ -143,7 +143,7 @@ public class AssassinRole extends Role {
   
   @Override
   public void useSkill(Player pl) {
-    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
+    PlayerData data = DTC.game.getPlayerData(pl);
     
     if (!pl.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
       pl.setCooldown(Material.KNOWLEDGE_BOOK, 10);
@@ -161,7 +161,7 @@ public class AssassinRole extends Role {
         && PlayerUtils.shouldHandle(
           p
         )
-        && DestroyTheCore.game.getPlayerData(p).isGaming()
+        && DTC.game.getPlayerData(p).isGaming()
     ).min(
       Comparator.comparingDouble(
         p -> p.getLocation().distanceSquared(

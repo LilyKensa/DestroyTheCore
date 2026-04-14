@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.missions;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.Mission;
 import dev.huey.destroyTheCore.utils.AttrUtils;
 import dev.huey.destroyTheCore.utils.LocUtils;
@@ -93,13 +93,13 @@ public class AngryBeesMission extends Mission implements Listener {
       AttrUtils.set(bee, Attribute.MAX_HEALTH, 20);
       bee.setHealth(20);
       
-      DestroyTheCore.missionsManager.team.addEntity(bee);
+      DTC.missionsManager.team.addEntity(bee);
       bees.add(bee);
     }
     
     idle();
     
-    DestroyTheCore.missionsManager.team.addEntity(queenBee);
+    DTC.missionsManager.team.addEntity(queenBee);
   }
   
   @EventHandler
@@ -136,7 +136,7 @@ public class AngryBeesMission extends Mission implements Listener {
   
   @Override
   public void tick() {
-    if (DestroyTheCore.ticksManager.isSeconds()) {
+    if (DTC.ticksManager.isSeconds()) {
       if (RandomUtils.hit(0.05)) {
         idle();
       }

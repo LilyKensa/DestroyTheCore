@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.missions;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.Mission;
 import dev.huey.destroyTheCore.records.Pos;
@@ -25,7 +25,7 @@ import org.bukkit.potion.PotionEffectType;
 public class CargoMission extends Mission implements Listener {
   
   static public final NamespacedKey dataNamespace = new NamespacedKey(
-    DestroyTheCore.instance,
+    DTC.instance,
     "cargo-mission-package"
   );
   
@@ -78,7 +78,7 @@ public class CargoMission extends Mission implements Listener {
       else {
         pl.teleport(
           LocUtils.live(
-            LocUtils.selfSide(DestroyTheCore.game.map.core, pl)
+            LocUtils.selfSide(DTC.game.map.core, pl)
           )
         );
         PlayerUtils.give(pl, getItem());
@@ -106,7 +106,7 @@ public class CargoMission extends Mission implements Listener {
   
   @Override
   public void tick() {
-    if (DestroyTheCore.ticksManager.isUpdateTick()) {
+    if (DTC.ticksManager.isUpdateTick()) {
       for (Player p : PlayerUtils.allGaming()) {
         if (!hasItem(p)) continue;
         
@@ -123,7 +123,7 @@ public class CargoMission extends Mission implements Listener {
             &&
             LocUtils.near(
               Pos.of(p),
-              DestroyTheCore.game.map.mission,
+              DTC.game.map.mission,
               5
             )
         ) {

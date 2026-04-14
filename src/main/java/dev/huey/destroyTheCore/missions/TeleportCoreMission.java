@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.missions;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.missions.InstantMission;
 import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.RandomUtils;
@@ -20,7 +20,7 @@ public class TeleportCoreMission extends InstantMission {
         LocUtils.live(
           LocUtils.selfSide(
             LocUtils.toSpawnPoint(
-              RandomUtils.pick(DestroyTheCore.game.map.spawnpoints)
+              RandomUtils.pick(DTC.game.map.spawnpoints)
             ),
             p
           )

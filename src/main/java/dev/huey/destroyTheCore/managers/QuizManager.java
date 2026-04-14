@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.managers;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.records.PlayerData;
 import dev.huey.destroyTheCore.utils.CoreUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
@@ -30,7 +30,7 @@ public class QuizManager {
     
     public Quiz(Player pl) {
       this.pl = pl;
-      this.startTime = DestroyTheCore.ticksManager.ticksCount;
+      this.startTime = DTC.ticksManager.ticksCount;
       send(
         pl,
         TextUtils.$(
@@ -50,7 +50,7 @@ public class QuizManager {
     public void update(int attempt) {
       if (ended) return;
       
-      if (DestroyTheCore.ticksManager.ticksCount - startTime < 10) {
+      if (DTC.ticksManager.ticksCount - startTime < 10) {
         PlayerUtils.kickAntiCheat(pl, "reaction-time");
         return;
       }
@@ -58,7 +58,7 @@ public class QuizManager {
       ended = true;
       correct = check(attempt);
       
-      PlayerData data = DestroyTheCore.game.getPlayerData(pl);
+      PlayerData data = DTC.game.getPlayerData(pl);
       
       if (correct) data.quizQuota--;
       

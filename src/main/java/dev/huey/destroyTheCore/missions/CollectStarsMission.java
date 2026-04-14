@@ -1,7 +1,7 @@
 package dev.huey.destroyTheCore.missions;
 
 import com.destroystokyo.paper.ParticleBuilder;
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.missions.ProgressiveMission;
 import dev.huey.destroyTheCore.records.PlayerData;
@@ -26,7 +26,7 @@ public class CollectStarsMission extends ProgressiveMission implements Listener 
   static public final int totalCount = 120;
   
   static public final NamespacedKey dataNamespace = new NamespacedKey(
-    DestroyTheCore.instance,
+    DTC.instance,
     "collect-stars-mission-item"
   );
   
@@ -82,7 +82,7 @@ public class CollectStarsMission extends ProgressiveMission implements Listener 
   
   @Override
   public void tick() {
-    if (DestroyTheCore.ticksManager.isUpdateTick()) {
+    if (DTC.ticksManager.isUpdateTick()) {
       if (currentCount < totalCount) {
         Location starLoc = randomLocation(
           centerLoc.clone().add(0, RandomUtils.range(20, 30), 0),
@@ -108,7 +108,7 @@ public class CollectStarsMission extends ProgressiveMission implements Listener 
   @EventHandler
   public void onPlayerAttemptPickupItem(PlayerAttemptPickupItemEvent ev) {
     Player pl = ev.getPlayer();
-    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
+    PlayerData data = DTC.game.getPlayerData(pl);
     
     Item itemEntity = ev.getItem();
     ItemStack item = itemEntity.getItemStack();

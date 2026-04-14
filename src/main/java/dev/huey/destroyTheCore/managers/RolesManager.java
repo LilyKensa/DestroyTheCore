@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.managers;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.records.PlayerData;
@@ -74,19 +74,19 @@ public class RolesManager {
   }
   
   public void setRole(Player pl, Role role) {
-    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
+    PlayerData data = DTC.game.getPlayerData(pl);
     
     data.setRole(role);
     
-    DestroyTheCore.game.enforceTeam(pl);
-    DestroyTheCore.boardsManager.refresh(pl);
+    DTC.game.enforceTeam(pl);
+    DTC.boardsManager.refresh(pl);
     
-    if (!DestroyTheCore.game.isPlaying) return;
+    if (!DTC.game.isPlaying) return;
     
     PlayerInventory inv = pl.getInventory();
     
     BiConsumer<EquipmentSlot, ItemsManager.ItemKey> replacer = (slot, key) -> {
-      ItemStack replacement = DestroyTheCore.itemsManager.gens
+      ItemStack replacement = DTC.itemsManager.gens
         .get(key).getItem();
       
       if (key.name().startsWith("STARTER")) {
@@ -97,8 +97,8 @@ public class RolesManager {
       
       if (
         item.isEmpty()
-          || (DestroyTheCore.itemsManager.isGen(item)
-            && DestroyTheCore.itemsManager.getGen(item).isTrash())
+          || (DTC.itemsManager.isGen(item)
+            && DTC.itemsManager.getGen(item).isTrash())
       ) {
         inv.setItem(slot, replacement);
       }
@@ -165,7 +165,7 @@ public class RolesManager {
   }
   
   public boolean canTakeExclusiveItem(Player pl, ItemStack item) {
-    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
+    PlayerData data = DTC.game.getPlayerData(pl);
     return !isExclusiveItem(item) || checkExclusiveItem(item, data.role.id);
   }
   
@@ -173,7 +173,7 @@ public class RolesManager {
     for (Role role : roles.values())
       for (
         Player p : PlayerUtils.all().stream().filter(
-          p -> DestroyTheCore.game.getPlayerData(p).role.id.equals(
+          p -> DTC.game.getPlayerData(p).role.id.equals(
             role.id
           )
         ).toList()

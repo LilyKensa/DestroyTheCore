@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.missions;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.missions.InstantMission;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.utils.RandomUtils;
@@ -63,7 +63,7 @@ public class DiscountTraderMission extends InstantMission {
     
     BiFunction<ItemsManager.ItemKey, Integer, ItemStack> customGen = (
       key, count
-    ) -> DestroyTheCore.itemsManager.gens.get(key).getItem(count);
+    ) -> DTC.itemsManager.gens.get(key).getItem(count);
     
     BiFunction<Enchantment, Integer, ItemStack> bookGen = (enchant, level) -> {
       ItemStack item = new ItemStack(Material.ENCHANTED_BOOK);
@@ -124,6 +124,6 @@ public class DiscountTraderMission extends InstantMission {
     
     trader.setRecipes(trades);
     
-    DestroyTheCore.missionsManager.team.addEntity(trader);
+    DTC.missionsManager.team.addEntity(trader);
   }
 }

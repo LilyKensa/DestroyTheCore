@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.roles;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.managers.RolesManager;
 import dev.huey.destroyTheCore.records.PlayerData;
@@ -29,7 +29,7 @@ public class GluttonRole extends Role {
   
   @Override
   public void onTick(Player pl) {
-    if (DestroyTheCore.ticksManager.isUpdateTick()) {
+    if (DTC.ticksManager.isUpdateTick()) {
       if (pl.hasPotionEffect(PotionEffectType.POISON)) {
         PlayerUtils.addPassiveEffect(
           pl,
@@ -43,7 +43,7 @@ public class GluttonRole extends Role {
   
   @Override
   public void useSkill(Player pl) {
-    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
+    PlayerData data = DTC.game.getPlayerData(pl);
     
     if (pl.getFoodLevel() == 20) {
       pl.sendActionBar(TextUtils.$("roles.glutton.skill.not-hungry"));

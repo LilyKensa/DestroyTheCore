@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.items.gadgets;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.itemGens.UsableItemGen;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.utils.LocUtils;
@@ -89,6 +89,6 @@ public class BridgeHelperGen extends UsableItemGen {
         duration--;
         if (duration <= 0) cancel();
       }
-    }.runTaskTimer(DestroyTheCore.instance, 0, 2);
+    }.runTaskTimer(DTC.instance, 0, 2);
   }
 }

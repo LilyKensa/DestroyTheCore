@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.utils;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attributable;
 import org.bukkit.attribute.Attribute;
@@ -19,7 +19,7 @@ public class AttrUtils {
   ) {
     return new AttributeModifier(
       new NamespacedKey(
-        DestroyTheCore.instance,
+        DTC.instance,
         "add-%s-%g".formatted(name, amount)
       ),
       amount,
@@ -33,7 +33,7 @@ public class AttrUtils {
   ) {
     return new AttributeModifier(
       new NamespacedKey(
-        DestroyTheCore.instance,
+        DTC.instance,
         "multiply-%s-%g".formatted(name, ratio)
       ),
       ratio - 1,

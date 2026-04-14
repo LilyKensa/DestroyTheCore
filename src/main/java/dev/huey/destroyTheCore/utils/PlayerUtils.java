@@ -1,7 +1,7 @@
 package dev.huey.destroyTheCore.utils;
 
 import com.destroystokyo.paper.ParticleBuilder;
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.ItemGen;
 import dev.huey.destroyTheCore.managers.ItemsManager;
@@ -90,9 +90,9 @@ public class PlayerUtils {
     send(pl, text, NamedTextColor.GRAY);
   }
   
-  /** {@link #send} with {@link DestroyTheCore#prefix} */
+  /** {@link #send} with {@link DTC#prefix} */
   static public void prefixedSend(Player pl, Component component) {
-    send(pl, DestroyTheCore.prefix.append(component));
+    send(pl, DTC.prefix.append(component));
   }
   
   static public void prefixedSend(Player pl, String text, TextColor color) {
@@ -130,7 +130,7 @@ public class PlayerUtils {
     }
   }
   
-  /** {@link #broadcast} with {@link DestroyTheCore#prefix} */
+  /** {@link #broadcast} with {@link DTC#prefix} */
   static public void prefixedBroadcast(Component comp) {
     for (Player pl : Bukkit.getOnlinePlayers()) {
       prefixedSend(pl, comp);
@@ -151,7 +151,7 @@ public class PlayerUtils {
   
   static public List<Player> allGaming() {
     return all().stream().filter(
-      p -> DestroyTheCore.game.getPlayerData(p).isGaming()
+      p -> DTC.game.getPlayerData(p).isGaming()
     ).toList();
   }
   
@@ -241,7 +241,7 @@ public class PlayerUtils {
   ) {
     for (ItemsManager.ItemKey key : keys) {
       pl.setCooldown(
-        DestroyTheCore.itemsManager.gens.get(key).getItem().getType(),
+        DTC.itemsManager.gens.get(key).getItem().getType(),
         ticks
       );
     }
@@ -251,7 +251,7 @@ public class PlayerUtils {
     Player pl, List<ItemsManager.ItemKey> keys
   ) {
     return pl.getCooldown(
-      DestroyTheCore.itemsManager.gens.get(keys.getFirst()).getItem().getType()
+      DTC.itemsManager.gens.get(keys.getFirst()).getItem().getType()
     );
   }
   
@@ -323,20 +323,20 @@ public class PlayerUtils {
   }
   
   static public void backToLobby(Player pl) {
-    if (DestroyTheCore.game.lobby.spawn == null) return;
+    if (DTC.game.lobby.spawn == null) return;
     
     pl.setGameMode(GameMode.SURVIVAL);
     fullyHeal(pl);
-    pl.teleport(LocUtils.lobby(DestroyTheCore.game.lobby.spawn));
+    pl.teleport(LocUtils.lobby(DTC.game.lobby.spawn));
   }
   
   static public void teleportToRestArea(Player pl) {
-    if (DestroyTheCore.game.map.restArea == null) return;
+    if (DTC.game.map.restArea == null) return;
     
     if (
-      DestroyTheCore.game.getPlayerData(pl).side.equals(Game.Side.SPECTATOR)
+      DTC.game.getPlayerData(pl).side.equals(Game.Side.SPECTATOR)
     ) {
-      Location centerLoc = LocUtils.live(DestroyTheCore.game.map.restArea);
+      Location centerLoc = LocUtils.live(DTC.game.map.restArea);
       centerLoc.setYaw(0);
       centerLoc.setX(0);
       pl.teleport(centerLoc);
@@ -345,7 +345,7 @@ public class PlayerUtils {
       pl.teleport(
         LocUtils.live(
           LocUtils.selfSide(
-            DestroyTheCore.game.map.restArea,
+            DTC.game.map.restArea,
             pl
           )
         )
@@ -358,7 +358,7 @@ public class PlayerUtils {
       LocUtils.live(
         LocUtils.selfSide(
           LocUtils.toSpawnPoint(
-            RandomUtils.pick(DestroyTheCore.game.map.spawnpoints)
+            RandomUtils.pick(DTC.game.map.spawnpoints)
           ),
           pl
         )
@@ -381,7 +381,7 @@ public class PlayerUtils {
   
   /** Refresh night vision effect based on their preference */
   static public void enforceNightVision(Player pl) {
-    if (DestroyTheCore.game.getStats(pl).nightVision) {
+    if (DTC.game.getStats(pl).nightVision) {
       addPassiveEffect(
         pl,
         PotionEffectType.NIGHT_VISION,
@@ -396,14 +396,14 @@ public class PlayerUtils {
   
   static public void refreshSpectatorVisibility(Player target, Player viewer) {
     if (
-      DestroyTheCore.game.isPlaying
+      DTC.game.isPlaying
         &&
-        DestroyTheCore.game.getPlayerData(target).side == Game.Side.SPECTATOR
+        DTC.game.getPlayerData(target).side == Game.Side.SPECTATOR
     ) {
-      viewer.hidePlayer(DestroyTheCore.instance, target);
+      viewer.hidePlayer(DTC.instance, target);
     }
     else {
-      viewer.showPlayer(DestroyTheCore.instance, target);
+      viewer.showPlayer(DTC.instance, target);
     }
   }
   
@@ -421,7 +421,7 @@ public class PlayerUtils {
   
   /** Set the player as a spectator */
   static public void refreshSpectatorAbilities(Player pl, boolean state) {
-    if (!DestroyTheCore.game.isPlaying) state = false;
+    if (!DTC.game.isPlaying) state = false;
     
     boolean creativeAbility = state
       || List.of(
@@ -433,24 +433,24 @@ public class PlayerUtils {
     pl.setInvulnerable(state);
     pl.setAllowFlight(creativeAbility);
     
-    ItemStack teleporterItem = DestroyTheCore.itemsManager.gens.get(
+    ItemStack teleporterItem = DTC.itemsManager.gens.get(
       ItemsManager.ItemKey.SPECTATOR_TELEPORTER
     ).getItem();
     
     if (state) {
-      DestroyTheCore.inventoriesManager.store(pl);
+      DTC.inventoriesManager.store(pl);
       pl.getInventory().setItem(4, teleporterItem);
     }
     else {
       pl.getInventory().remove(Material.ENDER_EYE);
-      DestroyTheCore.inventoriesManager.restore(pl);
+      DTC.inventoriesManager.restore(pl);
     }
   }
   
   static public void refreshSpectatorAbilities(Player pl) {
     refreshSpectatorAbilities(
       pl,
-      DestroyTheCore.game.getPlayerData(pl).side.equals(Game.Side.SPECTATOR)
+      DTC.game.getPlayerData(pl).side.equals(Game.Side.SPECTATOR)
     );
   }
   
@@ -514,12 +514,12 @@ public class PlayerUtils {
   
   /** Reduce respawn time process */
   static public void rrt(Player pl) {
-    PlayerData d = DestroyTheCore.game.getPlayerData(pl);
+    PlayerData d = DTC.game.getPlayerData(pl);
     if (
       pl.isSneaking()
         && LocUtils.near(
           Pos.of(pl),
-          LocUtils.selfSide(DestroyTheCore.game.map.core, d.side),
+          LocUtils.selfSide(DTC.game.map.core, d.side),
           5
         )
     ) {
@@ -545,7 +545,7 @@ public class PlayerUtils {
         pl.giveExp(xp);
         d.addRespawnTime(-1);
         
-        DestroyTheCore.boardsManager.refresh(pl);
+        DTC.boardsManager.refresh(pl);
         
         pl.sendActionBar(TextUtils.$("game.reduce-respawn-time.done"));
         
@@ -603,7 +603,7 @@ public class PlayerUtils {
   }
   
   static public void respawn(Player pl) {
-    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
+    PlayerData data = DTC.game.getPlayerData(pl);
     data.revive();
     
     refreshSpectatorAbilities(pl);
@@ -619,7 +619,7 @@ public class PlayerUtils {
     );
     data.extraSkillReload = 0;
     
-    DestroyTheCore.inventoriesManager.restore(pl);
+    DTC.inventoriesManager.restore(pl);
     CoreUtils.setTickOut(() -> giveEssentials(pl));
     
     pl.setGameMode(GameMode.SURVIVAL);
@@ -628,9 +628,9 @@ public class PlayerUtils {
   }
   
   static public void scheduleRespawn(Player pl) {
-    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
+    PlayerData data = DTC.game.getPlayerData(pl);
     
-    DestroyTheCore.quizManager.start(pl);
+    DTC.quizManager.start(pl);
     
     new BukkitRunnable() {
       int waitTicks = data.respawnTime * 20;
@@ -643,7 +643,7 @@ public class PlayerUtils {
         }
         
         if (data.alive) {
-          DestroyTheCore.quizManager.discard(pl);
+          DTC.quizManager.discard(pl);
           
           cancel();
           return;
@@ -651,24 +651,24 @@ public class PlayerUtils {
         
         boolean updateTitle = waitTicks % 20 == 0;
         
-        if (DestroyTheCore.quizManager.isEnded(pl)) {
+        if (DTC.quizManager.isEnded(pl)) {
           updateTitle = true;
           
-          if (DestroyTheCore.quizManager.isCorrect(pl)) {
+          if (DTC.quizManager.isCorrect(pl)) {
             waitTicks -= 10 * 20;
           }
           
           if (data.quizQuota <= 0) {
-            DestroyTheCore.quizManager.discard(pl);
+            DTC.quizManager.discard(pl);
           }
           else if (waitTicks > 0) {
-            DestroyTheCore.quizManager.start(pl);
+            DTC.quizManager.start(pl);
           }
         }
         
         if (waitTicks <= 0) {
           respawn(pl);
-          DestroyTheCore.quizManager.discard(pl);
+          DTC.quizManager.discard(pl);
           
           normalTitleTimes(pl);
           pl.sendTitlePart(TitlePart.TITLE, TextUtils.$("player.respawned"));
@@ -682,7 +682,7 @@ public class PlayerUtils {
           int secs = waitTicks / 20;
           
           data.respawnTime = secs;
-          DestroyTheCore.game.enforceRTScore(pl);
+          DTC.game.enforceRTScore(pl);
           
           if (waitTicks <= 60) {
             normalTitleTimes(pl);
@@ -720,21 +720,21 @@ public class PlayerUtils {
           waitTicks--;
         }
       }
-    }.runTaskTimer(DestroyTheCore.instance, 0, 1);
+    }.runTaskTimer(DTC.instance, 0, 1);
   }
   
   static public boolean isTeammate(Player a, Player b) {
-    return DestroyTheCore.game.getPlayerData(a).side == DestroyTheCore.game
+    return DTC.game.getPlayerData(a).side == DTC.game
       .getPlayerData(b).side;
   }
   
   /** Drop an item at spawnpoint */
   static public void dropAtSpawn(Game.Side side, ItemStack item) {
-    DestroyTheCore.worldsManager.live.dropItemNaturally(
+    DTC.worldsManager.live.dropItemNaturally(
       LocUtils.live(
         LocUtils.selfSide(
           LocUtils.toSpawnPoint(
-            RandomUtils.pick(DestroyTheCore.game.map.spawnpoints)
+            RandomUtils.pick(DTC.game.map.spawnpoints)
           ),
           side
         )
@@ -744,16 +744,16 @@ public class PlayerUtils {
   }
   
   static public void dropAtSpawn(Player pl, ItemStack item) {
-    dropAtSpawn(DestroyTheCore.game.getPlayerData(pl).side, item);
+    dropAtSpawn(DTC.game.getPlayerData(pl).side, item);
   }
   
   /** Give a player an item, or send to their spawn if they're dead */
   static public void give(Player pl, ItemStack item) {
     if (item == null || item.isEmpty()) return;
     
-    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
+    PlayerData data = DTC.game.getPlayerData(pl);
     
-    if (!DestroyTheCore.game.isPlaying || data.alive) {
+    if (!DTC.game.isPlaying || data.alive) {
       pl.give(item);
     }
     else {
@@ -783,7 +783,7 @@ public class PlayerUtils {
   }
   
   static public void give(Player pl, ItemsManager.ItemKey key, int count) {
-    ItemGen gen = DestroyTheCore.itemsManager.gens.get(key);
+    ItemGen gen = DTC.itemsManager.gens.get(key);
     
     int maxCount = gen.iconType.getMaxStackSize();
     if (count > maxCount * 9) {
@@ -810,7 +810,7 @@ public class PlayerUtils {
   
   /** Give a player basic armors, weapons & skill books */
   static public void giveEssentials(Player pl) {
-    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
+    PlayerData data = DTC.game.getPlayerData(pl);
     PlayerInventory inv = pl.getInventory();
     
     Consumer<EquipmentSlot> defaultEquipment = slot -> {
@@ -821,7 +821,7 @@ public class PlayerUtils {
         case LEGS -> key = data.role.defLeggings();
         case FEET -> key = data.role.defBoots();
       }
-      ItemStack item = DestroyTheCore.itemsManager.gens.get(key).getItem();
+      ItemStack item = DTC.itemsManager.gens.get(key).getItem();
       
       if (key.name().startsWith("STARTER")) {
         CoreUtils.dyeTeamColor(item, data.side);
@@ -868,7 +868,7 @@ public class PlayerUtils {
     for (ItemStack item : inv.getContents()) {
       if (item == null) continue;
       
-      if (DestroyTheCore.rolesManager.isExclusiveItem(item)) {
+      if (DTC.rolesManager.isExclusiveItem(item)) {
         hasRoleItem = true;
         break;
       }
@@ -1020,18 +1020,18 @@ public class PlayerUtils {
             .spawn();
         }
       }
-    }.runTaskTimer(DestroyTheCore.instance, 0, 1);
+    }.runTaskTimer(DTC.instance, 0, 1);
   }
   
   static public List<Player> getTeammates(Game.Side side) {
     return all().stream().filter(p -> {
-      PlayerData data = DestroyTheCore.game.getPlayerData(p);
+      PlayerData data = DTC.game.getPlayerData(p);
       return data.alive && data.side.equals(side);
     }).toList();
   }
   
   static public List<Player> getTeammates(Player pl) {
-    return getTeammates(DestroyTheCore.game.getPlayerData(pl).side);
+    return getTeammates(DTC.game.getPlayerData(pl).side);
   }
   
   static public List<Player> getEnemies(Game.Side side) {
@@ -1039,19 +1039,19 @@ public class PlayerUtils {
   }
   
   static public List<Player> getEnemies(Player pl) {
-    return getEnemies(DestroyTheCore.game.getPlayerData(pl).side);
+    return getEnemies(DTC.game.getPlayerData(pl).side);
   }
   
   /** Including teammates & spectators */
   static public List<Player> getNonEnemies(Game.Side side) {
     return all().stream().filter(p -> {
-      PlayerData data = DestroyTheCore.game.getPlayerData(p);
+      PlayerData data = DTC.game.getPlayerData(p);
       return (!shouldHandle(p) || (!data.side.equals(side.opposite())));
     }).toList();
   }
   
   static public List<Player> getNonEnemies(Player pl) {
-    return getNonEnemies(DestroyTheCore.game.getPlayerData(pl).side);
+    return getNonEnemies(DTC.game.getPlayerData(pl).side);
   }
   
   static public Player getTargetPlayer(Player pl, double maxDistance) {

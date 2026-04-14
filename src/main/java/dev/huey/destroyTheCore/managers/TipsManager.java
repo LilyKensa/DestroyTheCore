@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.managers;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.RandomUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
@@ -33,7 +33,7 @@ public class TipsManager {
     List<Component> contents = new ArrayList<>();
     while (true) {
       String key = "tips.tip-%d.title".formatted(index);
-      if (!DestroyTheCore.translationsManager.has(key)) break;
+      if (!DTC.translationsManager.has(key)) break;
       
       title = TextUtils.$(key);
       
@@ -46,7 +46,7 @@ public class TipsManager {
           index,
           contentIndex
         );
-        if (!DestroyTheCore.translationsManager.has(contentKey)) break;
+        if (!DTC.translationsManager.has(contentKey)) break;
         
         content = TextUtils.$(contentKey);
         
@@ -82,7 +82,7 @@ public class TipsManager {
   }
   
   public void onTipTick() {
-    if (DestroyTheCore.game.isPlaying) return;
+    if (DTC.game.isPlaying) return;
     
     sendRandomToAll();
   }

@@ -1,7 +1,7 @@
 package dev.huey.destroyTheCore.managers;
 
 import dev.huey.destroyTheCore.Constants;
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.gui.control.NextPageItem;
 import dev.huey.destroyTheCore.gui.control.PrevPageItem;
@@ -74,7 +74,7 @@ public class GUIManager {
       'x',
       Markers.CONTENT_LIST_SLOT_HORIZONTAL
     ).setContent(
-      DestroyTheCore.rolesManager.roles.values().stream()
+      DTC.rolesManager.roles.values().stream()
         .map(role -> (Item) role)
         .toList()
     ).build();
@@ -96,7 +96,7 @@ public class GUIManager {
     
     window.open();
     
-    AdvUtils.grant(pl, DestroyTheCore.advancementsManager.chooseRoleAdv);
+    AdvUtils.grant(pl, DTC.advancementsManager.chooseRoleAdv);
   }
   
   public void openTeleporter(Player pl) {
@@ -117,7 +117,7 @@ public class GUIManager {
       Markers.CONTENT_LIST_SLOT_HORIZONTAL
     ).setContent(
       Bukkit.getOnlinePlayers().stream().filter(
-        p -> DestroyTheCore.game.getPlayerData(
+        p -> DTC.game.getPlayerData(
           p
         ).side != Game.Side.SPECTATOR
       ).map(p -> (Item) new AbstractItem() {
@@ -191,7 +191,7 @@ public class GUIManager {
       '+',
       new NewShopItem()
     ).setContent(
-      DestroyTheCore.game.shops.stream().map(
+      DTC.game.shops.stream().map(
         shop -> (Item) new AbstractItem() {
           @Override
           public ItemProvider getItemProvider() {
@@ -214,7 +214,7 @@ public class GUIManager {
             ClickType click, Player pl, InventoryClickEvent ev
           ) {
             postClick = true;
-            DestroyTheCore.guiManager.openShopTradesEditor(pl, shop);
+            DTC.guiManager.openShopTradesEditor(pl, shop);
           }
         }
       ).toList()

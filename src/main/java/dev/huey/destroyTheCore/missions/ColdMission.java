@@ -1,7 +1,7 @@
 package dev.huey.destroyTheCore.missions;
 
 import com.destroystokyo.paper.ParticleBuilder;
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.missions.TimedMission;
 import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
@@ -24,7 +24,7 @@ public class ColdMission extends TimedMission {
   
   @Override
   public void innerTick() {
-    if (DestroyTheCore.ticksManager.ticksCount % 5 == 0) {
+    if (DTC.ticksManager.ticksCount % 5 == 0) {
       for (Player p : PlayerUtils.allGaming()) {
         if (!PlayerUtils.shouldHandle(p)) continue;
         
@@ -38,7 +38,7 @@ public class ColdMission extends TimedMission {
       }
     }
     
-    if (DestroyTheCore.ticksManager.ticksCount % 25 == 0) {
+    if (DTC.ticksManager.ticksCount % 25 == 0) {
       isClose.clear();
       
       for (Player p : PlayerUtils.allGaming()) {

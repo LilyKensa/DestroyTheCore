@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.bases;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.managers.MissionsManager;
 import dev.huey.destroyTheCore.missions.results.*;
@@ -106,7 +106,7 @@ public abstract class Mission implements Listener {
   
   /** Prefixed broadcast */
   static public void broadcast(Component comp) {
-    DestroyTheCore.missionsManager.broadcast(comp);
+    DTC.missionsManager.broadcast(comp);
   }
   
   public boolean active = false;
@@ -148,7 +148,7 @@ public abstract class Mission implements Listener {
   public void init() {
     Bukkit.getServer().getPluginManager().registerEvents(
       this,
-      DestroyTheCore.instance
+      DTC.instance
     );
     
     start();
@@ -162,7 +162,7 @@ public abstract class Mission implements Listener {
     
     cancelClock();
     clock = Bukkit.getScheduler().runTaskLater(
-      DestroyTheCore.instance,
+      DTC.instance,
       this::end,
       clockDuration
     );
@@ -181,7 +181,7 @@ public abstract class Mission implements Listener {
     
     HandlerList.unregisterAll(this);
     
-    CoreUtils.setTickOut(DestroyTheCore.missionsManager::next);
+    CoreUtils.setTickOut(DTC.missionsManager::next);
   }
   
   /** Call this to announce draw */
@@ -191,17 +191,17 @@ public abstract class Mission implements Listener {
   
   /** Call this to announce the winner */
   public void declareWinner(Game.Side side) {
-    DestroyTheCore.game.getSideData(side).missionsCompleted++;
+    DTC.game.getSideData(side).missionsCompleted++;
     
     for (Player p : PlayerUtils.getTeammates(side)) {
-      DestroyTheCore.game.getPlayerData(p).addExtraExp(25);
+      DTC.game.getPlayerData(p).addExtraExp(25);
     }
     
     if (result != null) result.run(side);
   }
   
   public void declareWinner(Player pl) {
-    declareWinner(DestroyTheCore.game.getPlayerData(pl).side);
+    declareWinner(DTC.game.getPlayerData(pl).side);
   }
   
   /** Call this if you don't want the background clock */

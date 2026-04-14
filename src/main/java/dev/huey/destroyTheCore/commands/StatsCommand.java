@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.commands;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.Subcommand;
 import dev.huey.destroyTheCore.records.Stats;
 import dev.huey.destroyTheCore.utils.CoreUtils;
@@ -41,7 +41,7 @@ public class StatsCommand extends Subcommand {
       target = Bukkit.getOfflinePlayer(args.get(0));
     }
     
-    Stats stats = DestroyTheCore.game.getStats(target);
+    Stats stats = DTC.game.getStats(target);
     
     if (stats == null) {
       PlayerUtils.prefixedSend(

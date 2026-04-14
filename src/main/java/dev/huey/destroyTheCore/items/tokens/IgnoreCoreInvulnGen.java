@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.items.tokens;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.itemGens.UsableItemGen;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.records.PlayerData;
@@ -23,8 +23,8 @@ public class IgnoreCoreInvulnGen extends UsableItemGen {
   
   @Override
   public boolean canUse(Player pl) {
-    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
-    SideData oppositeSideData = DestroyTheCore.game.getSideData(
+    PlayerData data = DTC.game.getPlayerData(pl);
+    SideData oppositeSideData = DTC.game.getSideData(
       data.side.opposite()
     );
     
@@ -38,18 +38,18 @@ public class IgnoreCoreInvulnGen extends UsableItemGen {
   
   @Override
   public void use(Player pl, Block block) {
-    if (DestroyTheCore.game.map.core == null) return;
+    if (DTC.game.map.core == null) return;
     
-    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
-    SideData oppositeSideData = DestroyTheCore.game.getSideData(
+    PlayerData data = DTC.game.getPlayerData(pl);
+    SideData oppositeSideData = DTC.game.getSideData(
       data.side.opposite()
     );
     
     oppositeSideData.invulnTicks = 0;
-    DestroyTheCore.boardsManager.refresh();
+    DTC.boardsManager.refresh();
     
     Location coreLoc = LocUtils.live(
-      LocUtils.selfSide(DestroyTheCore.game.map.core, data.side.opposite())
+      LocUtils.selfSide(DTC.game.map.core, data.side.opposite())
     );
     coreLoc.getBlock().setType(Material.END_STONE);
     
@@ -63,6 +63,6 @@ public class IgnoreCoreInvulnGen extends UsableItemGen {
       )
     );
     
-    DestroyTheCore.game.getPlayerData(pl).addExtraExp(25);
+    DTC.game.getPlayerData(pl).addExtraExp(25);
   }
 }

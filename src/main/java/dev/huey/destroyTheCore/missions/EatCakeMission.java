@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.missions;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.missions.ProgressiveMission;
 import dev.huey.destroyTheCore.records.PlayerData;
@@ -32,7 +32,7 @@ public class EatCakeMission extends ProgressiveMission implements Listener {
   @EventHandler
   public void onPlayerInteract(PlayerInteractEvent ev) {
     Player pl = ev.getPlayer();
-    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
+    PlayerData data = DTC.game.getPlayerData(pl);
     if (data.side.equals(Game.Side.SPECTATOR)) return;
     
     if (ev.getHand() != EquipmentSlot.HAND) return;

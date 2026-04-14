@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.tools;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.editorTools.RegionTool;
 import dev.huey.destroyTheCore.records.Pos;
 import dev.huey.destroyTheCore.records.Region;
@@ -16,7 +16,7 @@ public class WoodsTool extends RegionTool {
   
   @Override
   public Region getRegion() {
-    Set<Pos> set = DestroyTheCore.game.map.woods;
+    Set<Pos> set = DTC.game.map.woods;
     if (set.isEmpty()) return null;
     
     double minX = Integer.MAX_VALUE, minY = Integer.MAX_VALUE,
@@ -45,15 +45,15 @@ public class WoodsTool extends RegionTool {
   @Override
   public void setRegion(Region region) {
     if (region == null) {
-      DestroyTheCore.game.map.woods = new HashSet<>();
+      DTC.game.map.woods = new HashSet<>();
       return;
     }
     
     Set<Pos> set = new HashSet<>();
     
-    region.forEachBlock(DestroyTheCore.worldsManager.template, block -> {
+    region.forEachBlock(DTC.worldsManager.template, block -> {
       if (Tag.LOGS.isTagged(block.getType())) set.add(Pos.of(block));
     });
-    DestroyTheCore.game.map.woods = set;
+    DTC.game.map.woods = set;
   }
 }

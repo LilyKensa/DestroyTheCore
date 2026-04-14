@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.commands;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.Subcommand;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
@@ -20,7 +20,7 @@ public class ReloadCommand extends Subcommand {
       return;
     }
     
-    DestroyTheCore.configManager.load();
+    DTC.configManager.load();
     PlayerUtils.prefixedSend(pl, TextUtils.$("commands.reload.success"));
   }
 }

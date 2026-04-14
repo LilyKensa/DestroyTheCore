@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.bases;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.managers.TicksManager;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import net.kyori.adventure.text.Component;
@@ -21,7 +21,7 @@ public class EditorTool {
   
   /** Used to distinguish tools, stored data is {@link #id} */
   static final NamespacedKey dataNamespace = new NamespacedKey(
-    DestroyTheCore.instance,
+    DTC.instance,
     "editor-tool"
   );
   

@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.commands;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.Subcommand;
 import dev.huey.destroyTheCore.records.PlayerData;
@@ -20,12 +20,12 @@ public class SuicideCommand extends Subcommand {
   
   @Override
   public void execute(Player pl, List<String> args) {
-    if (!DestroyTheCore.game.isPlaying || DestroyTheCore.game.paused) {
+    if (!DTC.game.isPlaying || DTC.game.paused) {
       PlayerUtils.prefixedSend(pl, TextUtils.$("commands.suicide.bad-time"));
       return;
     }
     
-    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
+    PlayerData data = DTC.game.getPlayerData(pl);
     if (!data.alive || data.side == Game.Side.SPECTATOR) {
       PlayerUtils.prefixedSend(
         pl,
@@ -42,7 +42,7 @@ public class SuicideCommand extends Subcommand {
           Placeholder.unparsed(
             "action",
             RandomUtils.pick(
-              DestroyTheCore.translationsManager.unparsed(
+              DTC.translationsManager.unparsed(
                 "commands.suicide.actions"
               )
                 .split("\\|")

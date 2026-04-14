@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.bases.missions;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.Mission;
 import dev.huey.destroyTheCore.records.PlayerData;
@@ -48,7 +48,7 @@ public abstract class ProgressiveMission extends Mission implements Listener {
     }
     
     for (Player p : Bukkit.getOnlinePlayers()) {
-      PlayerData d = DestroyTheCore.game.getPlayerData(p);
+      PlayerData d = DTC.game.getPlayerData(p);
       Game.Side firstSide = d.side.equals(
         Game.Side.SPECTATOR
       ) ? Game.Side.RED : d.side;

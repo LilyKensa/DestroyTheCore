@@ -1,7 +1,7 @@
 package dev.huey.destroyTheCore.missions;
 
 import com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent;
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.Mission;
 import dev.huey.destroyTheCore.utils.*;
@@ -149,7 +149,7 @@ public class EarthquakeCowMission extends Mission implements Listener {
           for (Player p : flyLoc.getNearbyPlayers(1)) {
             if (!PlayerUtils.shouldHandle(p)) continue;
             if (
-              DestroyTheCore.game.getPlayerData(p).side == Game.Side.SPECTATOR
+              DTC.game.getPlayerData(p).side == Game.Side.SPECTATOR
             ) continue;
             
             p.damage(
@@ -170,7 +170,7 @@ public class EarthquakeCowMission extends Mission implements Listener {
           }
         }
       }
-    }.runTaskTimer(DestroyTheCore.instance, 0, 1);
+    }.runTaskTimer(DTC.instance, 0, 1);
   }
   
   BossBar healthBar;
@@ -194,7 +194,7 @@ public class EarthquakeCowMission extends Mission implements Listener {
   }
   
   void addScore(Player pl, double amount) {
-    addScore(DestroyTheCore.game.getPlayerData(pl).side, amount);
+    addScore(DTC.game.getPlayerData(pl).side, amount);
   }
   
   public EarthquakeCowMission() {
@@ -240,7 +240,7 @@ public class EarthquakeCowMission extends Mission implements Listener {
     move();
     addCooldown();
     
-    DestroyTheCore.missionsManager.team.addEntity(cow);
+    DTC.missionsManager.team.addEntity(cow);
   }
   
   @EventHandler
@@ -283,7 +283,7 @@ public class EarthquakeCowMission extends Mission implements Listener {
   
   @Override
   public void tick() {
-    if (DestroyTheCore.ticksManager.isSeconds()) {
+    if (DTC.ticksManager.isSeconds()) {
       if (RandomUtils.hit(0.5)) {
         move();
       }

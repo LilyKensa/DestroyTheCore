@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.records;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.managers.RolesManager;
@@ -19,7 +19,7 @@ public class PlayerData {
   
   public Player owner;
   public Game.Side side = Game.Side.SPECTATOR;
-  public Role role = DestroyTheCore.rolesManager.roles.get(
+  public Role role = DTC.rolesManager.roles.get(
     RolesManager.RoleKey.DEFAULT
   );
   public boolean alive = false;
@@ -61,7 +61,7 @@ public class PlayerData {
   
   public void setRespawnTime(int time) {
     this.respawnTime = Math.min(Math.max(minRespawnTime, time), maxRespawnTime);
-    DestroyTheCore.game.enforceRTScore(owner);
+    DTC.game.enforceRTScore(owner);
   }
   
   public void addRespawnTime(int plus) {
@@ -70,18 +70,18 @@ public class PlayerData {
   
   public void revive() {
     alive = true;
-    respawnAt = DestroyTheCore.ticksManager.ticksCount;
+    respawnAt = DTC.ticksManager.ticksCount;
     
-    if (DestroyTheCore.game.phase != null) {
+    if (DTC.game.phase != null) {
       setRespawnTime(
-        DestroyTheCore.game.phase.minRespawnTime()
+        DTC.game.phase.minRespawnTime()
       );
     }
   }
   
   public boolean isPostRespawn() {
     return respawnAt >= 0
-      && DestroyTheCore.ticksManager.ticksCount - respawnAt < 10 * 20;
+      && DTC.ticksManager.ticksCount - respawnAt < 10 * 20;
   }
   
   public void removePostRevive() {

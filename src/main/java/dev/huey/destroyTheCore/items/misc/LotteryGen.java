@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.items.misc;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.itemGens.UsableItemGen;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.records.PlayerData;
@@ -30,7 +30,7 @@ public class LotteryGen extends UsableItemGen {
   
   @Override
   public void use(Player pl, Block block) {
-    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
+    PlayerData data = DTC.game.getPlayerData(pl);
     
     if (!PlayerUtils.checkHandCooldown(pl)) return;
     PlayerUtils.setHandCooldown(pl, 20);
@@ -39,11 +39,11 @@ public class LotteryGen extends UsableItemGen {
     
     AdvUtils.grant(
       pl,
-      DestroyTheCore.advancementsManager.usedLotteryAdv
+      DTC.advancementsManager.usedLotteryAdv
     );
     AdvUtils.progress(
       pl,
-      DestroyTheCore.advancementsManager.usedManyLotteriesAdv
+      DTC.advancementsManager.usedManyLotteriesAdv
     );
     
     final Location centerLoc = pl.getLocation().add(0, 0.1, 0);
@@ -109,7 +109,7 @@ public class LotteryGen extends UsableItemGen {
         age++;
         centerLoc.addRotation(5, 0);
       }
-    }.runTaskTimer(DestroyTheCore.instance, 0, 1);
+    }.runTaskTimer(DTC.instance, 0, 1);
   }
   
   static final Component prefix = TextUtils.$("items.lottery.prefix");
@@ -131,10 +131,10 @@ public class LotteryGen extends UsableItemGen {
     
     item.editMeta(meta -> {
       if (
-        !DestroyTheCore.itemsManager.isGen(
+        !DTC.itemsManager.isGen(
           item
         )
-          || DestroyTheCore.itemsManager.gens.get(
+          || DTC.itemsManager.gens.get(
             ItemsManager.ItemKey.PLACEHOLDER
           ).checkItem(item)
       ) return;
@@ -198,7 +198,7 @@ public class LotteryGen extends UsableItemGen {
   }
   
   ItemStack getCustomItem(ItemsManager.ItemKey key, int amount) {
-    ItemStack item = DestroyTheCore.itemsManager.gens.get(key).getItem();
+    ItemStack item = DTC.itemsManager.gens.get(key).getItem();
     item.setAmount(amount);
     return item;
   }
@@ -242,7 +242,7 @@ public class LotteryGen extends UsableItemGen {
     
     PlayerUtils.give(
       pl,
-      DestroyTheCore.itemsManager.gens.get(
+      DTC.itemsManager.gens.get(
         ItemsManager.ItemKey.RANDOM_ROLE
       ).getItem()
     );
@@ -300,7 +300,7 @@ public class LotteryGen extends UsableItemGen {
               Placeholder.component("player", PlayerUtils.getName(pl)),
               Placeholder.component(
                 "side",
-                DestroyTheCore.game.getPlayerData(pl).side.titleComp()
+                DTC.game.getPlayerData(pl).side.titleComp()
               )
             )
           )
@@ -358,14 +358,14 @@ public class LotteryGen extends UsableItemGen {
         List<? extends Player> teammates = PlayerUtils.getTeammates(pl);
         
         // Offset the sin value of killing teammates
-        DestroyTheCore.game.getPlayerData(pl).addRespawnTime(
+        DTC.game.getPlayerData(pl).addRespawnTime(
           -PlayerData.killPunishment * teammates.size()
         );
         
         for (Player p : teammates) {
           if (!PlayerUtils.shouldHandle(p)) continue;
           
-          DestroyTheCore.damageManager.addDamage(pl, p, Double.MAX_VALUE);
+          DTC.damageManager.addDamage(pl, p, Double.MAX_VALUE);
           p.damage(
             Double.MAX_VALUE,
             DamageSource.builder(DamageType.MAGIC).build()
@@ -389,7 +389,7 @@ public class LotteryGen extends UsableItemGen {
                   ),
                   Placeholder.component(
                     "side",
-                    DestroyTheCore.game.getPlayerData(pl).side.titleComp()
+                    DTC.game.getPlayerData(pl).side.titleComp()
                   )
                 )
               )
@@ -417,7 +417,7 @@ public class LotteryGen extends UsableItemGen {
                   Placeholder.component("player", PlayerUtils.getName(pl)),
                   Placeholder.component(
                     "side",
-                    DestroyTheCore.game.getPlayerData(pl).side.titleComp()
+                    DTC.game.getPlayerData(pl).side.titleComp()
                   )
                 )
               )

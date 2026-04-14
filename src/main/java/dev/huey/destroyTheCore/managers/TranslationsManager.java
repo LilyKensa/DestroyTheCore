@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.managers;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.utils.CoreUtils;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -78,7 +78,7 @@ public class TranslationsManager {
     String tag = locale.toLanguageTag().toLowerCase();
     String path = "lang/%s.yml".formatted(tag);
     
-    InputStream stream = DestroyTheCore.instance.getResource(path);
+    InputStream stream = DTC.instance.getResource(path);
     if (stream == null) {
       CoreUtils.error("Could not load translation " + tag);
       return;

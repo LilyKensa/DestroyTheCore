@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.commands;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.Subcommand;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
@@ -21,7 +21,7 @@ public class ResetCommand extends Subcommand {
       return;
     }
     
-    DestroyTheCore.game.reset();
+    DTC.game.reset();
     PlayerUtils.prefixedBroadcast(
       TextUtils.$(
         "commands.reset.announce",

@@ -1,7 +1,7 @@
 package dev.huey.destroyTheCore.missions;
 
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.missions.ProgressiveMission;
 import dev.huey.destroyTheCore.records.PlayerData;
@@ -29,7 +29,7 @@ public class JumpMission extends ProgressiveMission implements Listener {
   @EventHandler
   public void onPlayerJump(PlayerJumpEvent ev) {
     Player pl = ev.getPlayer();
-    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
+    PlayerData data = DTC.game.getPlayerData(pl);
     if (data.side.equals(Game.Side.SPECTATOR)) return;
     
     count.put(data.side, count.get(data.side) + 1);

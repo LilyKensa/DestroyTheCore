@@ -1,7 +1,7 @@
 package dev.huey.destroyTheCore.roles;
 
 import com.destroystokyo.paper.ParticleBuilder;
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.managers.RolesManager;
 import dev.huey.destroyTheCore.records.Pos;
@@ -21,7 +21,7 @@ public class GuardRole extends Role {
   static public void onEnchant(Player pl) {
     for (Player e : PlayerUtils.getEnemies(pl)) {
       if (
-        DestroyTheCore.game.getPlayerData(
+        DTC.game.getPlayerData(
           e
         ).role.id == RolesManager.RoleKey.GUARD
       ) {
@@ -48,17 +48,17 @@ public class GuardRole extends Role {
   
   @Override
   public void onTick(Player pl) {
-    if (DestroyTheCore.game.map.core == null) return;
+    if (DTC.game.map.core == null) return;
     if (!LocUtils.inLive(pl)) return;
     
     if (
       LocUtils.near(
         Pos.of(pl),
-        LocUtils.selfSide(DestroyTheCore.game.map.core, pl),
+        LocUtils.selfSide(DTC.game.map.core, pl),
         15
       )
     ) {
-      if (DestroyTheCore.ticksManager.ticksCount % 25 == 0) {
+      if (DTC.ticksManager.ticksCount % 25 == 0) {
         
         PlayerUtils.addPassiveEffect(
           pl,
@@ -72,7 +72,7 @@ public class GuardRole extends Role {
     if (
       LocUtils.near(
         Pos.of(pl),
-        LocUtils.enemySide(DestroyTheCore.game.map.core, pl),
+        LocUtils.enemySide(DTC.game.map.core, pl),
         15
       )
     ) {
@@ -82,7 +82,7 @@ public class GuardRole extends Role {
           List.of(Placeholder.unparsed("role", name))
         )
       );
-      if (DestroyTheCore.ticksManager.isUpdateTick()) {
+      if (DTC.ticksManager.isUpdateTick()) {
         PlayerUtils.addEffect(
           pl,
           PotionEffectType.WITHER,
@@ -115,7 +115,7 @@ public class GuardRole extends Role {
       )
     );
     
-    if (DestroyTheCore.game.map.core == null) return;
+    if (DTC.game.map.core == null) return;
     
     boolean found = false;
     for (Player e : PlayerUtils.getEnemies(pl)) {
@@ -124,7 +124,7 @@ public class GuardRole extends Role {
       if (
         LocUtils.near(
           Pos.of(e),
-          LocUtils.selfSide(DestroyTheCore.game.map.core, pl),
+          LocUtils.selfSide(DTC.game.map.core, pl),
           15
         )
       ) {

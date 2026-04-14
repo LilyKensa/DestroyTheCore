@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.missions;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.Mission;
 import dev.huey.destroyTheCore.utils.AttrUtils;
@@ -36,7 +36,7 @@ public class ChickenMission extends Mission implements Listener {
   }
   
   void addScore(Player pl, double amount) {
-    addScore(DestroyTheCore.game.getPlayerData(pl).side, amount);
+    addScore(DTC.game.getPlayerData(pl).side, amount);
   }
   
   public ChickenMission() {
@@ -81,7 +81,7 @@ public class ChickenMission extends Mission implements Listener {
     
     move();
     
-    DestroyTheCore.missionsManager.team.addEntity(chicken);
+    DTC.missionsManager.team.addEntity(chicken);
   }
   
   @EventHandler
@@ -111,7 +111,7 @@ public class ChickenMission extends Mission implements Listener {
   
   @Override
   public void tick() {
-    if (DestroyTheCore.ticksManager.isSeconds()) {
+    if (DTC.ticksManager.isSeconds()) {
       if (RandomUtils.hit(0.5)) {
         chicken.getPathfinder().moveTo(
           centerLoc.clone().add(

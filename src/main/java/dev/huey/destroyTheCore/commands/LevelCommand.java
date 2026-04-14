@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.commands;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.Subcommand;
 import dev.huey.destroyTheCore.records.Stats;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
@@ -40,7 +40,7 @@ public class LevelCommand extends Subcommand {
       if (p != null) target = p;
     }
     
-    Stats stat = DestroyTheCore.game.getStats(target);
+    Stats stat = DTC.game.getStats(target);
     
     switch (action) {
       case "add" -> stat.addLevels(amount);
@@ -50,9 +50,9 @@ public class LevelCommand extends Subcommand {
       }
     }
     
-    DestroyTheCore.game.enforceLevelScore(target);
+    DTC.game.enforceLevelScore(target);
     
-    DestroyTheCore.boardsManager.refresh(target);
+    DTC.boardsManager.refresh(target);
     
     pl.sendMessage(
       TextUtils.$(

@@ -1,7 +1,7 @@
 package dev.huey.destroyTheCore.missions;
 
 import com.destroystokyo.paper.ParticleBuilder;
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.missions.TimedMission;
 import dev.huey.destroyTheCore.managers.TicksManager;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
@@ -28,14 +28,14 @@ import org.bukkit.potion.PotionEffectType;
 public class CursedItemMission extends TimedMission implements Listener {
   
   static public final NamespacedKey dataNamespace = new NamespacedKey(
-    DestroyTheCore.instance,
+    DTC.instance,
     "cursed-item-mission-item"
   );
   
   static Item itemEntity;
   
   static public void setItemEntity(Item entity) {
-    DestroyTheCore.missionsManager.team.addEntity(entity);
+    DTC.missionsManager.team.addEntity(entity);
     entity.setGlowing(true);
     
     itemEntity = entity;
@@ -106,7 +106,7 @@ public class CursedItemMission extends TimedMission implements Listener {
   
   @Override
   public void innerTick() {
-    if (DestroyTheCore.ticksManager.isUpdateTick()) {
+    if (DTC.ticksManager.isUpdateTick()) {
       for (Player p : PlayerUtils.allGaming()) {
         if (!hasItem(p)) continue;
         

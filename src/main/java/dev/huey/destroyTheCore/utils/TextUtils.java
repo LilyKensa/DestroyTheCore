@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.utils;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -44,7 +44,7 @@ public class TextUtils {
   static public Component translate(
     String key, List<TagResolver> placeholders
   ) {
-    return DestroyTheCore.translationsManager.get(key, placeholders);
+    return DTC.translationsManager.get(key, placeholders);
   }
   
   static public Component $(String key, List<TagResolver> placeholders) {
@@ -56,7 +56,7 @@ public class TextUtils {
   }
   
   static public String translateRaw(String key) {
-    return DestroyTheCore.translationsManager.unparsed(key);
+    return DTC.translationsManager.unparsed(key);
   }
   
   static public String $r(String key, List<TagResolver> placeholders) {

@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.items.tokens;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.itemGens.UsableItemGen;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.records.PlayerData;
@@ -23,9 +23,9 @@ public class LastDitchGen extends UsableItemGen {
   
   @Override
   public boolean canUse(Player pl) {
-    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
-    SideData self = DestroyTheCore.game.getSideData(data.side),
-      enemy = DestroyTheCore.game.getSideData(data.side.opposite());
+    PlayerData data = DTC.game.getPlayerData(pl);
+    SideData self = DTC.game.getSideData(data.side),
+      enemy = DTC.game.getSideData(data.side.opposite());
     
     if (self.coreHealth > enemy.coreHealth - 30) {
       pl.sendActionBar(TextUtils.$("items.last-ditch.health-too-high"));
@@ -37,8 +37,8 @@ public class LastDitchGen extends UsableItemGen {
   
   @Override
   public void use(Player pl, Block block) {
-    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
-    SideData enemy = DestroyTheCore.game.getSideData(data.side.opposite());
+    PlayerData data = DTC.game.getPlayerData(pl);
+    SideData enemy = DTC.game.getSideData(data.side.opposite());
     
     enemy.addExtraDamage(
       SideData.ExtraDamage.Reason.LAST_DITCH,
@@ -73,6 +73,6 @@ public class LastDitchGen extends UsableItemGen {
       )
     );
     
-    DestroyTheCore.game.getPlayerData(pl).addExtraExp(25);
+    DTC.game.getPlayerData(pl).addExtraExp(25);
   }
 }

@@ -1,7 +1,7 @@
 package dev.huey.destroyTheCore.roles;
 
 import com.destroystokyo.paper.ParticleBuilder;
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.managers.ItemsManager;
@@ -38,7 +38,7 @@ public class RangerRole extends Role {
     public Mine(Location loc, Player owner) {
       this.loc = loc;
       this.ownerId = owner.getUniqueId();
-      this.side = DestroyTheCore.game.getPlayerData(owner).side;
+      this.side = DTC.game.getPlayerData(owner).side;
     }
   }
   
@@ -56,7 +56,7 @@ public class RangerRole extends Role {
       
       if (!LocUtils.isSameWorld(mine.loc, pl.getLocation())) continue;
       if (
-        !DestroyTheCore.game.getPlayerData(pl).side
+        !DTC.game.getPlayerData(pl).side
           .equals(mine.side.opposite())
       ) continue;
       if (MoleRole.moleModeTime.containsKey(pl.getUniqueId())) continue;
@@ -121,7 +121,7 @@ public class RangerRole extends Role {
   }
   
   static public void onUpdateTick() {
-    if (DestroyTheCore.game.paused) return;
+    if (DTC.game.paused) return;
     
     for (Mine mine : mines) {
       if (mine.prepareTicks > 0) {
@@ -180,7 +180,7 @@ public class RangerRole extends Role {
   
   @Override
   public void onTick(Player pl) {
-    if (DestroyTheCore.ticksManager.isUpdateTick()) {
+    if (DTC.ticksManager.isUpdateTick()) {
       if (
         pl.getInventory().getItemInMainHand().getType().equals(
           Material.CROSSBOW

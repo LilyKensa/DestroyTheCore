@@ -1,7 +1,7 @@
 package dev.huey.destroyTheCore.missions;
 
 import com.destroystokyo.paper.ParticleBuilder;
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.missions.TimedMission;
 import dev.huey.destroyTheCore.records.PlayerData;
@@ -23,9 +23,9 @@ public class AntiGravityMission extends TimedMission {
   
   @Override
   public void innerTick() {
-    if (DestroyTheCore.ticksManager.isUpdateTick()) {
+    if (DTC.ticksManager.isUpdateTick()) {
       for (Player p : Bukkit.getOnlinePlayers()) {
-        PlayerData d = DestroyTheCore.game.getPlayerData(p);
+        PlayerData d = DTC.game.getPlayerData(p);
         if (!d.alive) continue;
         if (d.side == Game.Side.SPECTATOR) continue;
         

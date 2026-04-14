@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.missions;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.missions.ProgressiveMission;
 import dev.huey.destroyTheCore.records.PlayerData;
@@ -28,19 +28,19 @@ public class RollCallMission extends ProgressiveMission {
   
   @Override
   public void tick() {
-    if (DestroyTheCore.ticksManager.isUpdateTick()) {
+    if (DTC.ticksManager.isUpdateTick()) {
       Map<Game.Side, Integer> all = new HashMap<>();
       Map<Game.Side, Integer> attended = new HashMap<>();
       
-      for (Player p : DestroyTheCore.worldsManager.live.getPlayers()) {
-        PlayerData d = DestroyTheCore.game.getPlayerData(p);
+      for (Player p : DTC.worldsManager.live.getPlayers()) {
+        PlayerData d = DTC.game.getPlayerData(p);
         
         all.put(d.side, all.getOrDefault(d.side, 0) + 1);
         
         if (
           LocUtils.near(
             Pos.of(p),
-            LocUtils.selfSide(DestroyTheCore.game.map.core, p),
+            LocUtils.selfSide(DTC.game.map.core, p),
             6
           )
         ) {

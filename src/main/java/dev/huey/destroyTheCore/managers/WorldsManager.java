@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.managers;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.utils.CoreUtils;
 import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
@@ -112,7 +112,7 @@ public class WorldsManager {
       if (p.getWorld().equals(live)) {
         p.teleport(
           CoreUtils.def(
-            DestroyTheCore.game.lobby.spawn.toLoc(lobby),
+            DTC.game.lobby.spawn.toLoc(lobby),
             new Location(lobby, 0, 100, 0)
           )
         );

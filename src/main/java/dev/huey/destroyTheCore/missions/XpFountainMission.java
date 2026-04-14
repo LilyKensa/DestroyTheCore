@@ -1,7 +1,7 @@
 package dev.huey.destroyTheCore.missions;
 
 import com.destroystokyo.paper.ParticleBuilder;
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.missions.TimedMission;
 import dev.huey.destroyTheCore.utils.RandomUtils;
 import org.bukkit.Particle;
@@ -23,7 +23,7 @@ public class XpFountainMission extends TimedMission {
   
   @Override
   public void innerTick() {
-    if (!DestroyTheCore.ticksManager.isParticleTick()) return;
+    if (!DTC.ticksManager.isParticleTick()) return;
     
     for (int i = 0; i < RandomUtils.range(1, 4); ++i) {
       ExperienceOrb orb = (ExperienceOrb) centerLoc.getWorld().spawnEntity(

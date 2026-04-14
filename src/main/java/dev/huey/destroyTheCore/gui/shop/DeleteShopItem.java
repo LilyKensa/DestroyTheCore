@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.gui.shop;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.GUIItem;
 import dev.huey.destroyTheCore.utils.TextUtils;
@@ -37,9 +37,9 @@ public class DeleteShopItem extends GUIItem {
       return;
     }
     
-    DestroyTheCore.game.shops.remove(shop);
+    DTC.game.shops.remove(shop);
     
-    DestroyTheCore.guiManager.postClick = true;
-    DestroyTheCore.guiManager.openShopListEditor(pl);
+    DTC.guiManager.postClick = true;
+    DTC.guiManager.openShopListEditor(pl);
   }
 }

@@ -544,7 +544,7 @@ public class Game {
     for (Side side : bothSide) {
       Map<RolesManager.RoleKey, Team> sideTeams = new HashMap<>();
       
-      for (Role role : DestroyTheCore.rolesManager.roles.values()) {
+      for (Role role : DTC.rolesManager.roles.values()) {
         Team team = board.registerNewTeam(
           side.id + "-" + role.id.name().toLowerCase()
         );
@@ -650,7 +650,7 @@ public class Game {
   public void handleJoinedPlayer(Player pl) {
     UUID id = pl.getUniqueId();
     
-    AdvUtils.grant(pl, DestroyTheCore.advancementsManager.rootAdv);
+    AdvUtils.grant(pl, DTC.advancementsManager.rootAdv);
     
     if (!stats.containsKey(id)) stats.put(id, new Stats());
     if (getPlayerData(pl) == null) playerData.put(id, new PlayerData(pl));
@@ -681,11 +681,11 @@ public class Game {
     enforceTeam(pl);
     
     if (PlayerUtils.shouldHandle(pl)) {
-      DestroyTheCore.inventoriesManager.store(pl);
+      DTC.inventoriesManager.store(pl);
       
       pl.getInventory().setItem(
         4,
-        DestroyTheCore.itemsManager.gens.get(
+        DTC.itemsManager.gens.get(
           ItemsManager.ItemKey.CHOOSE_ROLE
         ).getItem()
       );
@@ -697,14 +697,14 @@ public class Game {
       PlayerUtils.refreshAllSpectatorVisibilitiesFor(pl);
     }
     
-    DestroyTheCore.worldsManager.onPlayerChangeWorld(pl, pl.getWorld());
+    DTC.worldsManager.onPlayerChangeWorld(pl, pl.getWorld());
   }
   
   public void handleQuitedPlayer(Player pl) {
     if (!isPlaying) return;
     
     if (getPlayerData(pl).alive) {
-      DestroyTheCore.inventoriesManager.store(pl);
+      DTC.inventoriesManager.store(pl);
     }
   }
   
@@ -847,7 +847,7 @@ public class Game {
       }
       
       ev.setDamage(damage);
-      DestroyTheCore.damageManager.addDamage(
+      DTC.damageManager.addDamage(
         attacker,
         victim,
         damage * damageMultiplier
@@ -858,7 +858,7 @@ public class Game {
       PotionEffectType.INVISIBILITY
     );
     
-    DestroyTheCore.itemsManager.onPlayerDamage(attacker, victim, ev.getCause());
+    DTC.itemsManager.onPlayerDamage(attacker, victim, ev.getCause());
   }
   
   static public Component bountyPrefix;
@@ -899,14 +899,14 @@ public class Game {
     });
     pl.getWorld().dropItemNaturally(pl.getLocation(), head);
     
-    DestroyTheCore.inventoriesManager.applyVanishingCurse(pl);
-    DestroyTheCore.inventoriesManager.dropSome(pl, nextPlayerDropAll ? 1 : 0.1);
-    DestroyTheCore.inventoriesManager.dropXp(pl);
-    DestroyTheCore.inventoriesManager.store(pl);
+    DTC.inventoriesManager.applyVanishingCurse(pl);
+    DTC.inventoriesManager.dropSome(pl, nextPlayerDropAll ? 1 : 0.1);
+    DTC.inventoriesManager.dropXp(pl);
+    DTC.inventoriesManager.store(pl);
     
     nextPlayerDropAll = false;
     
-    UUID killerId = DestroyTheCore.damageManager.getMostDamage(pl);
+    UUID killerId = DTC.damageManager.getMostDamage(pl);
     if (killerId == null) {
       Component message = ev.deathMessage();
       if (message == null) message = TextUtils.$(
@@ -1014,7 +1014,7 @@ public class Game {
         );
       }
       
-      DestroyTheCore.boardsManager.refresh(killer);
+      DTC.boardsManager.refresh(killer);
     }
     
     data.kill();
@@ -1022,7 +1022,7 @@ public class Game {
     PlayerUtils.normalTitleTimes(pl);
     pl.sendTitlePart(TitlePart.TITLE, TextUtils.$("game.death.title"));
     
-    DestroyTheCore.boardsManager.refresh(pl);
+    DTC.boardsManager.refresh(pl);
     PlayerUtils.scheduleRespawn(pl);
     
     for (Player p : PlayerUtils.getEnemies(pl)) {
@@ -1159,11 +1159,11 @@ public class Game {
         if (PlayerUtils.getHandCooldown(pl) > 20) {
           AdvUtils.grant(
             pl,
-            DestroyTheCore.advancementsManager.usedSkillAdv
+            DTC.advancementsManager.usedSkillAdv
           );
           AdvUtils.progress(
             pl,
-            DestroyTheCore.advancementsManager.usedManySkillsAdv
+            DTC.advancementsManager.usedManySkillsAdv
           );
         }
         
@@ -1261,7 +1261,7 @@ public class Game {
     if (LocUtils.inLobby(pl)) {
       if (
         PlayerUtils.isAdmin(pl)
-          && DestroyTheCore.worldsManager.isReady
+          && DTC.worldsManager.isReady
           && lobby.startButton != null
           && Pos.of(block).isSameBlockAs(lobby.startButton)
       ) {
@@ -1745,7 +1745,7 @@ public class Game {
     
     ocd.attackCore();
     
-    DestroyTheCore.boardsManager.refresh();
+    DTC.boardsManager.refresh();
     
     for (Player p : Bukkit.getOnlinePlayers()) {
       if (getPlayerData(p).side.equals(oppositeSide)) {
@@ -2084,7 +2084,7 @@ public class Game {
   );
   
   boolean checkAbandonedTool(Player pl, ItemStack item) {
-    if (DestroyTheCore.itemsManager.isGen(item)) return false;
+    if (DTC.itemsManager.isGen(item)) return false;
     
     Matcher matcher = toolPattern.matcher(item.getType().name());
     if (!matcher.find()) return false;
@@ -2144,7 +2144,7 @@ public class Game {
       return;
     }
     
-    if (!DestroyTheCore.rolesManager.canTakeExclusiveItem(pl, item)) {
+    if (!DTC.rolesManager.canTakeExclusiveItem(pl, item)) {
       ev.setCancelled(true);
       return;
     }
@@ -2184,7 +2184,7 @@ public class Game {
     
     if (ev.getSlotType() == InventoryType.SlotType.ARMOR) {
       if (
-        DestroyTheCore.itemsManager.checkGen(
+        DTC.itemsManager.checkGen(
           item,
           ItemsManager.ItemKey.PLACEHOLDER
         )
@@ -2198,7 +2198,7 @@ public class Game {
         }
         if (key == null) return;
         
-        ItemStack armor = DestroyTheCore.itemsManager.gens.get(key).getItem();
+        ItemStack armor = DTC.itemsManager.gens.get(key).getItem();
         
         CoreUtils.setTickOut(() -> {
           CoreUtils.dyeTeamColor(armor, data.side);
@@ -2224,17 +2224,17 @@ public class Game {
     
     if (
       click != ClickType.DROP
-        && !DestroyTheCore.rolesManager.canTakeExclusiveItem(pl, item)
+        && !DTC.rolesManager.canTakeExclusiveItem(pl, item)
     ) {
       ev.setCancelled(true);
       return;
     }
     
     if (inv instanceof MerchantInventory minv && ev.getRawSlot() == 2) {
-      if (DestroyTheCore.itemsManager.isGen(item)) {
+      if (DTC.itemsManager.isGen(item)) {
         MerchantRecipe recipe = minv.getSelectedRecipe();
         
-        ItemGen gen = DestroyTheCore.itemsManager.getGen(item);
+        ItemGen gen = DTC.itemsManager.getGen(item);
         if (gen instanceof UsableItemGen ugen && ugen.isInstantUse()) {
           ev.setCancelled(true);
           
@@ -2372,7 +2372,7 @@ public class Game {
   
   public void handleCrafting(PrepareItemCraftEvent ev) {
     for (ItemStack item : ev.getInventory().getMatrix()) {
-      if (DestroyTheCore.itemsManager.isGen(item)) {
+      if (DTC.itemsManager.isGen(item)) {
         ev.getInventory().setResult(ItemStack.empty());
         return;
       }
@@ -2382,10 +2382,10 @@ public class Game {
   boolean checkTwoGen(ItemStack first, ItemStack second) {
     return (first != null
       &&
-      DestroyTheCore.itemsManager.isGen(first))
+      DTC.itemsManager.isGen(first))
       || (second != null
         &&
-        DestroyTheCore.itemsManager.isGen(second));
+        DTC.itemsManager.isGen(second));
   }
   
   public void handleRepair(PrepareAnvilEvent ev) {
@@ -2472,7 +2472,7 @@ public class Game {
         );
         getPlayerData(pl).join(side);
         enforceTeam(pl);
-        DestroyTheCore.boardsManager.refresh(pl);
+        DTC.boardsManager.refresh(pl);
       };
       
       sideChecker.accept(lobby.joinRed, Side.RED);
@@ -2610,7 +2610,7 @@ public class Game {
   public void banOres(Side side, int ticks) {
     for (Pos pos : map.ores) {
       Block block = LocUtils.selfSide(pos, side).toLoc(
-        DestroyTheCore.worldsManager.live
+        DTC.worldsManager.live
       ).getBlock();
       
       addRegenOre(
@@ -2670,7 +2670,7 @@ public class Game {
       @Override
       public void run() {
         if (countdown <= 0) {
-          DestroyTheCore.inventoriesManager.reset();
+          DTC.inventoriesManager.reset();
           
           for (Player p : Bukkit.getOnlinePlayers()) {
             if (PlayerUtils.shouldHandle(p)) {
@@ -2698,7 +2698,7 @@ public class Game {
           }
           
           Bukkit.getScheduler().runTaskLater(
-            DestroyTheCore.instance,
+            DTC.instance,
             Game.this::start,
             100
           );
@@ -2726,7 +2726,7 @@ public class Game {
         
         countdown--;
       }
-    }.runTaskTimer(DestroyTheCore.instance, 0, 20);
+    }.runTaskTimer(DTC.instance, 0, 20);
   }
   
   public void cancelScheduleStart() {
@@ -2786,7 +2786,7 @@ public class Game {
     
     summonShopVillagers();
     
-    DestroyTheCore.ticksManager.ticksCount = 0;
+    DTC.ticksManager.ticksCount = 0;
     
     sideData.put(Side.RED, new SideData());
     sideData.put(Side.GREEN, new SideData());
@@ -2800,30 +2800,30 @@ public class Game {
         new PlayerData(pl, oldData.side, oldData.role)
       );
       
-      AdvUtils.grant(pl, DestroyTheCore.advancementsManager.playedAdv);
+      AdvUtils.grant(pl, DTC.advancementsManager.playedAdv);
       if (oldData.side == Side.SPECTATOR) {
         AdvUtils.grant(
           pl,
-          DestroyTheCore.advancementsManager.playedSpectatorAdv
+          DTC.advancementsManager.playedSpectatorAdv
         );
       }
       else {
         AdvUtils.grant(
           pl,
-          DestroyTheCore.advancementsManager.roleAdvMap.get(oldData.role.id)
+          DTC.advancementsManager.roleAdvMap.get(oldData.role.id)
         );
       }
       
       PlayerUtils.refreshSpectatorAbilities(pl);
       PlayerUtils.respawn(pl);
     }
-    DestroyTheCore.boardsManager.refresh();
+    DTC.boardsManager.refresh();
     
     PlayerUtils.refreshAllSpectatorVisibilities();
     
     // After 0: respawn, 1: give essential items
     CoreUtils.setTickOut(
-      () -> DestroyTheCore.rolesManager.onPhaseChange(phase),
+      () -> DTC.rolesManager.onPhaseChange(phase),
       2
     );
   }
@@ -2843,10 +2843,10 @@ public class Game {
     
     if (phase.equals(Phase.MissionsStarted)) {
       setDiamonds(Material.DIAMOND_ORE);
-      DestroyTheCore.missionsManager.start();
+      DTC.missionsManager.start();
     }
     if (phase.equals(Phase.MissionsStarted.next)) {
-      DestroyTheCore.missionsManager.stop();
+      DTC.missionsManager.stop();
     }
     
     if (phase.equals(Phase.DoubleDamage)) {
@@ -2859,7 +2859,7 @@ public class Game {
       }
     }
     
-    DestroyTheCore.rolesManager.onPhaseChange(phase);
+    DTC.rolesManager.onPhaseChange(phase);
     
     for (Player p : Bukkit.getOnlinePlayers()) {
       PlayerUtils.longTitleTimes(p);
@@ -2883,7 +2883,7 @@ public class Game {
   public void stop() {
     isPlaying = false;
     
-    DestroyTheCore.missionsManager.stop();
+    DTC.missionsManager.stop();
     
     for (Side side : bothSide) {
       noOresBars.hide(side);
@@ -2910,12 +2910,12 @@ public class Game {
     
     refreshScoreboardSlots();
     
-    DestroyTheCore.boardsManager.refresh();
+    DTC.boardsManager.refresh();
     
     CoreUtils.setTickOut(this::showCredits);
     
     CoreUtils.setTickOut(() -> {
-      DestroyTheCore.configManager.save();
+      DTC.configManager.save();
     }, 2);
   }
   
@@ -2926,8 +2926,8 @@ public class Game {
       return;
     }
     
-    DestroyTheCore.inventoriesManager.reset();
-    DestroyTheCore.missionsManager.forceStop();
+    DTC.inventoriesManager.reset();
+    DTC.missionsManager.forceStop();
     
     villagers.clear();
     
@@ -2938,7 +2938,7 @@ public class Game {
         p.getInventory().clear();
         p.getInventory().setItem(
           4,
-          DestroyTheCore.itemsManager.gens.get(
+          DTC.itemsManager.gens.get(
             ItemsManager.ItemKey.CHOOSE_ROLE
           ).getItem()
         );
@@ -2946,8 +2946,8 @@ public class Game {
     }
     
     CoreUtils.setTickOut(() -> {
-      DestroyTheCore.worldsManager.cloneLive();
-      DestroyTheCore.configManager.map.load();
+      DTC.worldsManager.cloneLive();
+      DTC.configManager.map.load();
     });
   }
   
@@ -3093,7 +3093,7 @@ public class Game {
             Placeholder.component(
               "time",
               CoreUtils.formatTimeComp(
-                Math.ceilDiv(DestroyTheCore.ticksManager.ticksCount, 20),
+                Math.ceilDiv(DTC.ticksManager.ticksCount, 20),
                 NamedTextColor.GREEN
               )
             )
@@ -3231,7 +3231,7 @@ public class Game {
       if (sd.noOresTicks > 0) {
         sd.noOresTicks--;
         
-        if (DestroyTheCore.ticksManager.isSeconds()) {
+        if (DTC.ticksManager.isSeconds()) {
           noOresBars.update(side);
         }
         
@@ -3243,7 +3243,7 @@ public class Game {
       if (sd.noShopTicks > 0) {
         sd.noShopTicks--;
         
-        if (DestroyTheCore.ticksManager.isSeconds()) {
+        if (DTC.ticksManager.isSeconds()) {
           noShopBars.update(side);
         }
         
@@ -3272,7 +3272,7 @@ public class Game {
       if (!ro.active) roit.remove();
     }
     
-    if (DestroyTheCore.ticksManager.isUpdateTick()) {
+    if (DTC.ticksManager.isUpdateTick()) {
       for (Player p : Bukkit.getOnlinePlayers()) {
         if (LocUtils.inLobby(p)) continue;
         
@@ -3310,7 +3310,7 @@ public class Game {
         }
         
         if (
-          DestroyTheCore.itemsManager.checkGen(
+          DTC.itemsManager.checkGen(
             p.getInventory().getItemInOffHand(),
             ItemsManager.ItemKey.SKILL_COOLDOWN_ASSIST
           )
@@ -3345,7 +3345,7 @@ public class Game {
         && phase.isAfter(
           Phase.CoreWilting
         )
-        && DestroyTheCore.ticksManager.ticksCount % (15 * 20) == 0
+        && DTC.ticksManager.ticksCount % (15 * 20) == 0
     ) {
       getSideData(Side.RED).directAttackCore();
       getSideData(Side.GREEN).directAttackCore();
@@ -3374,7 +3374,7 @@ public class Game {
     }
     
     if (map.core != null) {
-      for (Player p : DestroyTheCore.worldsManager.live.getPlayers()) {
+      for (Player p : DTC.worldsManager.live.getPlayers()) {
         PlayerUtils.rrt(p);
       }
     }

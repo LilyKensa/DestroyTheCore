@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.managers;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.Subcommand;
 import dev.huey.destroyTheCore.commands.*;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
@@ -94,7 +94,7 @@ public class CommandsManager implements TabCompleter, CommandExecutor {
             TextUtils.$("general.title").color(NamedTextColor.GOLD),
             Component.text(" "),
             Component.text("v"),
-            Component.text(DestroyTheCore.version).color(NamedTextColor.YELLOW)
+            Component.text(DTC.version).color(NamedTextColor.YELLOW)
           ).colorIfAbsent(NamedTextColor.GRAY)
         );
         PlayerUtils.prefixedSend(pl, TextUtils.$("commands.root.github"));

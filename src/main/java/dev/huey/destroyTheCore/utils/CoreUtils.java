@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.utils;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import java.time.LocalDate;
 import java.time.Month;
@@ -126,7 +126,7 @@ public class CoreUtils {
   }
   
   static public void setTickOut(Runnable task, int ticks) {
-    Bukkit.getScheduler().runTaskLater(DestroyTheCore.instance, task, ticks);
+    Bukkit.getScheduler().runTaskLater(DTC.instance, task, ticks);
   }
   
   static public void setTickOut(Runnable task) {
@@ -134,7 +134,7 @@ public class CoreUtils {
   }
   
   static public void log(String text) {
-    DestroyTheCore.instance.getLogger().info(text);
+    DTC.instance.getLogger().info(text);
   }
   
   static public void log(Object any) {
@@ -142,7 +142,7 @@ public class CoreUtils {
   }
   
   static public void error(String text) {
-    DestroyTheCore.instance.getLogger().severe(text);
+    DTC.instance.getLogger().severe(text);
   }
   
   /** Pure math, by Gemini */
