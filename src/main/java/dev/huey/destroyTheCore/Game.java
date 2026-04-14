@@ -44,8 +44,11 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.damage.DamageSource;
 import org.bukkit.damage.DamageType;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.enchantments.EnchantmentOffer;
 import org.bukkit.entity.*;
 import org.bukkit.event.block.*;
+import org.bukkit.event.enchantment.EnchantItemEvent;
+import org.bukkit.event.enchantment.PrepareItemEnchantEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.*;
@@ -1169,12 +1172,18 @@ public class Game {
     }
   }
   
+  Map<Pos.BlockRec, BlockFace> leftClickFaces = new HashMap<>();
+  
   public void handleLeftClickBlock(PlayerInteractEvent ev) {
     if (ev.getHand() != EquipmentSlot.HAND) return;
     
     Player pl = ev.getPlayer();
     Block block = ev.getClickedBlock();
-    if (block == null || block.getType() != Material.ENDER_CHEST) return;
+    if (block == null) return;
+    
+    leftClickFaces.put(Pos.of(block).toBlockRec(), ev.getBlockFace());
+    
+    if (block.getType() != Material.ENDER_CHEST) return;
     
     if (!LocUtils.canAccess(pl, block)) {
       pl.sendActionBar(
@@ -1423,13 +1432,168 @@ public class Game {
   
   public AtomicInteger fakeBreakerId = new AtomicInteger(1_000_000);
   
+  public class RegenOre {
+    Block block;
+    Constants.OreData data;
+    
+    int maxAge;
+    
+    final ProtocolManager manager;
+    final BlockPosition protocolPos;
+    final int breakerId;
+    
+    ArmorStand armorStand;
+    
+    boolean active = true;
+    boolean isFast = false;
+    int age = 0;
+    int sentStage = -2;
+    
+    public RegenOre(
+      Block block, Constants.OreData data, int maxAge
+    ) {
+      this.block = block;
+      this.data = data;
+      
+      this.maxAge = maxAge;
+      
+      manager = ProtocolLibrary.getProtocolManager();
+      protocolPos = new BlockPosition(
+        block.getX(),
+        block.getY(),
+        block.getZ()
+      );
+      breakerId = fakeBreakerId.getAndIncrement();
+    }
+    
+    BlockFace[] openFacesTryOrder = {
+      BlockFace.UP, BlockFace.DOWN, BlockFace.EAST, BlockFace.NORTH, BlockFace.WEST, BlockFace.SOUTH
+    };
+    
+    BlockFace findOpenFace() {
+      for (BlockFace face : openFacesTryOrder) {
+        if (!block.getRelative(face).getBlockData().isOccluding()) {
+          return face;
+        }
+      }
+      
+      return BlockFace.UP;
+    }
+    
+    void sendBreakProgress(int stage) {
+      if (stage == sentStage) return;
+      sentStage = stage;
+      
+      PacketContainer packet = manager.createPacket(
+        PacketType.Play.Server.BLOCK_BREAK_ANIMATION
+      );
+      packet.getIntegers().write(0, breakerId);
+      packet.getBlockPositionModifier().write(0, protocolPos);
+      packet.getIntegers().write(1, stage);
+      
+      try {
+        for (Player p : Bukkit.getOnlinePlayers()) {
+          if (LocUtils.isSameWorld(p.getWorld(), block.getWorld())) {
+            manager.sendServerPacket(
+              p,
+              packet
+            );
+          }
+        }
+      }
+      catch (Exception ex) {
+        ex.printStackTrace();
+      }
+    }
+    
+    public void init() {
+      block.setType(Material.BEDROCK);
+      
+      armorStand = block.getWorld().spawn(
+        LocUtils.toBlockCenter(block.getLocation()).add(
+          leftClickFaces.getOrDefault(
+            Pos.of(block).toBlockRec(),
+            findOpenFace()
+          )
+            .getDirection().multiply(0.7)
+        ).add(0, -0.3, 0),
+        ArmorStand.class,
+        (stand) -> {
+          stand.setMarker(true);
+          stand.setInvisible(true);
+        }
+      );
+    }
+    
+    public void onTick() {
+      if (age >= maxAge) {
+        block.setType(data.blockType());
+        ParticleUtils.cloud(
+          PlayerUtils.all(),
+          LocUtils.toBlockCenter(block.getLocation())
+        );
+        
+        armorStand.remove();
+        active = false;
+        sendBreakProgress(-1);
+      }
+      
+      if (age % 20 == 0) {
+        isFast = KekkaiMasterRole.checkFastOres(
+          LocUtils.toBlockCenter(block.getLocation())
+        );
+        
+        int countdownSeconds = Math.ceilDiv(maxAge - age, 20);
+        
+        armorStand.setCustomNameVisible(true);
+        armorStand.customName(
+          Component.text(countdownSeconds).color(data.textColor())
+        );
+      }
+      
+      sendBreakProgress(11 * age / maxAge - 1);
+      
+      age++;
+      if (isFast) {
+        age++;
+      }
+    }
+  }
+  
+  public Map<Pos.BlockRec, RegenOre> regenOres = new HashMap<>();
+  
+  public void addRegenOre(Block block, int maxAge) {
+    Pos.BlockRec rec = Pos.of(block).toBlockRec();
+    
+    if (regenOres.containsKey(rec)) {
+      RegenOre ro = regenOres.get(rec);
+      
+      ro.active = true;
+      ro.age = 0;
+      ro.maxAge = maxAge;
+    }
+    else if (Constants.ores.containsKey(block.getType())) {
+      RegenOre ro = new RegenOre(
+        block,
+        Constants.ores.get(block.getType()),
+        maxAge
+      );
+      
+      ro.init();
+      
+      regenOres.put(
+        rec,
+        ro
+      );
+    }
+  }
+  
   public void handleOresBreak(Player pl, Block block) {
     PlayerUtils.damageHandItem(pl);
     
-    Material originalType = block.getType();
-    Constants.OreData ore = Constants.ores.get(originalType);
+    Constants.OreData ore = Constants.ores.get(block.getType());
     
-    getPlayerData(pl).addOre(originalType);
+    getPlayerData(pl).addOre(ore.blockType());
     
     ItemStack tool = pl.getInventory().getItemInMainHand();
     if (block.isPreferredTool(tool)) {
@@ -1515,82 +1679,9 @@ public class Game {
         && InfiniteOresMission.check(block.getLocation())
     ) return;
     
-    oresTypeCache.put(Pos.of(block).toBlockRec(), originalType);
-    block.setType(Material.BEDROCK);
-    
-    ProtocolManager manager = ProtocolLibrary.getProtocolManager();
-    BlockPosition protocolPos = new BlockPosition(
-      block.getX(),
-      block.getY(),
-      block.getZ()
-    );
-    int breakerId = fakeBreakerId.getAndIncrement();
-    
-    int kekkaiBonus = KekkaiMasterRole.checkFastOres(
-      LocUtils.toBlockCenter(block.getLocation())
-    ) ? 2 : 1;
-    
-    new BukkitRunnable() {
-      int stage = 0;
-      
-      @Override
-      public void run() {
-        if (stage > 9) stage = -1;
-        
-        PacketContainer packet = manager.createPacket(
-          PacketType.Play.Server.BLOCK_BREAK_ANIMATION
-        );
-        packet.getIntegers().write(0, breakerId);
-        packet.getBlockPositionModifier().write(0, protocolPos);
-        packet.getIntegers().write(1, stage);
-        
-        try {
-          for (Player p : Bukkit.getOnlinePlayers()) {
-            if (LocUtils.isSameWorld(p.getWorld(), block.getWorld())) {
-              manager.sendServerPacket(
-                p,
-                packet
-              );
-            }
-          }
-        }
-        catch (Exception e) {
-          e.printStackTrace();
-        }
-        
-        if (stage == -1) {
-          boolean shouldRestore = true;
-          sideLoop: for (Side side : bothSide) {
-            if (getSideData(side).noOresTicks <= 0) continue;
-            
-            for (Pos orePos : map.ores) {
-              if (
-                LocUtils.selfSide(orePos, side).isSameBlockAs(Pos.of(block))
-              ) {
-                shouldRestore = false;
-                break sideLoop;
-              }
-            }
-          }
-          
-          if (shouldRestore) {
-            block.setType(originalType);
-            ParticleUtils.cloud(
-              PlayerUtils.all(),
-              LocUtils.toBlockCenter(block.getLocation())
-            );
-          }
-          
-          cancel();
-          return;
-        }
-        
-        stage++;
-      }
-    }.runTaskTimer(
-      DestroyTheCore.instance,
-      0,
-      ore.cooldownSeconds() * 2 / kekkaiBonus
+    addRegenOre(
+      block,
+      ore.cooldownSeconds() * 20
     );
   }
   
@@ -2325,6 +2416,43 @@ public class Game {
     }
   }
   
+  public static final int nerfPowerEnchantment = 1;
+  
+  public void handleEnchantingTableGenerate(PrepareItemEnchantEvent ev) {
+    if (ev.getItem().getType() == Material.BOW) {
+      
+      EnchantmentOffer[] offers = ev.getOffers();
+      
+      for (EnchantmentOffer offer : offers) {
+        if (offer == null) continue;
+        
+        if (offer.getEnchantment() == Enchantment.POWER) {
+          offer.setEnchantmentLevel(
+            Math.max(
+              offer.getEnchantmentLevel() - nerfPowerEnchantment,
+              1
+            )
+          );
+        }
+      }
+    }
+  }
+  
+  public void handleEnchant(EnchantItemEvent ev) {
+    Map<Enchantment, Integer> enchants = ev.getEnchantsToAdd();
+    
+    for (Map.Entry<Enchantment, Integer> entry : enchants.entrySet()) {
+      if (entry.getKey() == Enchantment.POWER) {
+        entry.setValue(
+          Math.max(
+            entry.getValue() - nerfPowerEnchantment,
+            1
+          )
+        );
+      }
+    }
+  }
+  
   public void handlePlayerMove(Player pl) {
     if (!PlayerUtils.shouldHandle(pl)) return;
     
@@ -2479,35 +2607,15 @@ public class Game {
     }
   }
   
-  Map<Pos.BlockRec, Material> oresTypeCache = new HashMap<>();
-  
-  public void banOres(Side side) {
+  public void banOres(Side side, int ticks) {
     for (Pos pos : map.ores) {
-      banOneOre(LocUtils.selfSide(pos, side));
-    }
-  }
-  
-  public void banOneOre(Pos pos) {
-    Block block = LocUtils.live(pos).getBlock();
-    if (block.getType() == Material.BEDROCK) return;
-    
-    oresTypeCache.put(
-      pos.toBlockRec(),
-      block.getType()
-    );
-    LocUtils.setLiveBlock(
-      pos,
-      Material.BEDROCK
-    );
-  }
-  
-  public void unbanOres(Side side) {
-    for (Pos redPos : map.ores) {
-      Pos pos = LocUtils.selfSide(redPos, side);
+      Block block = LocUtils.selfSide(pos, side).toLoc(
+        DestroyTheCore.worldsManager.live
+      ).getBlock();
       
-      LocUtils.setLiveBlock(
-        pos,
-        oresTypeCache.getOrDefault(pos.toBlockRec(), Material.GLASS)
+      addRegenOre(
+        block,
+        ticks
       );
     }
   }
@@ -2776,6 +2884,11 @@ public class Game {
     isPlaying = false;
     
     DestroyTheCore.missionsManager.stop();
+    
+    for (Side side : bothSide) {
+      noOresBars.hide(side);
+      noShopBars.hide(side);
+    }
     
     for (Player p : Bukkit.getOnlinePlayers()) {
       PlayerData d = getPlayerData(p);
@@ -3123,7 +3236,6 @@ public class Game {
         }
         
         if (sd.noOresTicks <= 0) {
-          unbanOres(side);
           noOresBars.hide(side);
         }
       }
@@ -3150,6 +3262,14 @@ public class Game {
           );
         }
       }
+    }
+    
+    Iterator<RegenOre> roit = regenOres.values().iterator();
+    while (roit.hasNext()) {
+      RegenOre ro = roit.next();
+      
+      ro.onTick();
+      if (!ro.active) roit.remove();
     }
     
     if (DestroyTheCore.ticksManager.isUpdateTick()) {

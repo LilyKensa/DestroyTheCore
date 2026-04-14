@@ -21,6 +21,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
 import org.bukkit.event.enchantment.EnchantItemEvent;
+import org.bukkit.event.enchantment.PrepareItemEnchantEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.*;
@@ -242,8 +243,15 @@ public class EventsManager implements Listener {
   }
   
   @EventHandler
-  public void onPrepareItemEnchant(EnchantItemEvent ev) {
+  public void onPrepareItemEnchant(PrepareItemEnchantEvent ev) {
+    DestroyTheCore.game.handleEnchantingTableGenerate(ev);
+  }
+  
+  @EventHandler
+  public void onEnchantItem(EnchantItemEvent ev) {
     GuardRole.onEnchant(ev.getEnchanter());
+    
+    DestroyTheCore.game.handleEnchant(ev);
   }
   
   @EventHandler
@@ -253,6 +261,7 @@ public class EventsManager implements Listener {
       
       RangerRole.onPlayerMove(ev.getPlayer());
       AssassinRole.onPlayerMove(ev.getPlayer());
+      
       DestroyTheCore.game.handlePlayerMove(ev.getPlayer());
     }
   }

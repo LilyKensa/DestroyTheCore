@@ -72,7 +72,7 @@ public abstract class ProgressiveMission extends Mission implements Listener {
   public void progress(Game.Side side, float value) {
     if (!values.containsKey(side)) return;
     
-    while (value * displayRatio >= 1) {
+    while (value * displayRatio > 1) {
       displayRatio /= 2;
     }
     
