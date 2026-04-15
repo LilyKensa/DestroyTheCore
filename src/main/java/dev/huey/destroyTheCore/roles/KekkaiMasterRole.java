@@ -186,8 +186,7 @@ public class KekkaiMasterRole extends Role {
       center.setAI(false);
       center.setSize(0);
       
-      DTC.game.getTeam(side, RolesManager.RoleKey.KEKKAI_MASTER)
-        .addEntity(center);
+      DTC.game.teams.get(side).addEntity(center);
       center.setGlowing(true);
       
       center.customName(

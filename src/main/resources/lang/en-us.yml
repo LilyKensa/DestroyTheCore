@@ -64,6 +64,7 @@ game:
     red: "<red>Red</red>"
     green: "<green>Green</green>"
     spectator: "<gray>Spectator</gray>"
+    items: "<aqua>Items</aqua>"
   prompt-rejoin: "Use <aqua>/rejoin</aqua> to go back to the game"
   banned:
     attack:

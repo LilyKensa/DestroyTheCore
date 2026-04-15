@@ -98,7 +98,7 @@ public class SetTeamCommand extends Subcommand {
     }
     
     DTC.game.getPlayerData(target).join(side);
-    DTC.game.enforceTeam(target);
+    DTC.game.enforceDisplay(target);
     
     DTC.boardsManager.refresh(target);
     

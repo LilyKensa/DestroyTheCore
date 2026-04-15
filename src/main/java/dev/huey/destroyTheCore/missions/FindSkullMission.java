@@ -115,6 +115,8 @@ public class FindSkullMission extends TimedMission implements Listener {
       );
       
       Item itemEntity = skullLoc.getWorld().dropItem(skullLoc, getSkullItem(p));
+      itemEntity.setGlowing(true);
+      itemEntity.setInvulnerable(true);
       itemEntity.setOwner(p.getUniqueId());
       
       skullEntities.add(itemEntity.getUniqueId());

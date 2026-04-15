@@ -14,9 +14,9 @@ public class AntiCheatManager {
   
   public enum Cheat {
     QUIZ_SPEED("reaction-time", 40),
-    SPAM_BREAK("spam-break"),
+    SPAM_BREAK("spam-break", 0),
     AUTO_CLICK("auto-click", 25),
-    ATTACK_RANGE("attack-range");
+    ATTACK_RANGE("attack-range", 40);
     
     final String translateKey;
     final int reportThreshold;
@@ -24,10 +24,6 @@ public class AntiCheatManager {
     Cheat(String translateKey, int reportThreshold) {
       this.translateKey = translateKey;
       this.reportThreshold = reportThreshold;
-    }
-    
-    Cheat(String translateKey) {
-      this(translateKey, 0);
     }
     
     public Component getMessage() {

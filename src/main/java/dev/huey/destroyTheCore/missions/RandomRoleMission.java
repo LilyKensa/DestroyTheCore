@@ -31,7 +31,7 @@ public class RandomRoleMission extends InstantMission {
     );
     
     DTC.rolesManager.setRole(pl, role);
-    DTC.game.enforceTeam(pl);
+    DTC.game.enforceDisplay(pl);
     DTC.boardsManager.refresh(pl);
   }
 }

@@ -104,6 +104,7 @@ game:
     red: "<red>紅隊</red>"
     green: "<green>綠隊</green>"
     spectator: "<gray>旁觀者</gray>"
+    items: "<aqua>物品</aqua>"
   prompt-rejoin: "用 <aqua>/rejoin</aqua> 以重新加入遊戲"
   banned:
     attack:

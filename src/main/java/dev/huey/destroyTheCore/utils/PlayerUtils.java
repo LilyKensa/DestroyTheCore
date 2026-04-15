@@ -15,7 +15,6 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -36,7 +35,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scoreboard.Team;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
@@ -164,16 +162,16 @@ public class PlayerUtils {
   }
   
   static public Component getName(Player pl) {
-    Team team = Bukkit.getScoreboardManager().getMainScoreboard()
-      .getPlayerTeam(pl);
+    PlayerData data = DTC.game.getPlayerData(pl);
     
-    TextComponent.Builder builder = Component.text();
-    if (team != null) builder.append(team.prefix());
-    builder.append(pl.displayName());
-    if (team != null) builder.append(team.suffix());
-    if (team != null) builder.color(team.color());
-    
-    return builder.build();
+    return Component.text(
+      "[%s] %s".formatted(
+        data.side == Game.Side.SPECTATOR
+          ? data.side.pureTitle()
+          : data.role.name,
+        pl.getName()
+      )
+    ).color(data.side.color);
   }
   
   /** Send 1.5 + 0.25 title duration */
@@ -1002,18 +1000,25 @@ public class PlayerUtils {
           return;
         }
         
-        Vector offset = LocUtils.hitboxCenter(to).subtract(pos).toVector();
-        double dist = offset.length();
+        Vector vel = LocUtils.hitboxCenter(to).subtract(pos).toVector();
+        double dist = vel.length();
         
         if (dist < 0.25) {
           apply();
           return;
         }
         
-        if (dist < 5) offset = offset.multiply(5 / dist);
-        if (dist > 100) offset = offset.multiply(100 / dist);
+        if (dist < 3) vel.multiply(3 / dist);
+        if (dist > 120) vel.multiply(120 / dist);
         
-        pos.add(offset.multiply(0.2));
+        vel.multiply(0.2);
+        
+        if (vel.length() >= dist) {
+          apply();
+          return;
+        }
+        
+        pos.add(vel);
         
         if (
           !to.isInvisible() &&

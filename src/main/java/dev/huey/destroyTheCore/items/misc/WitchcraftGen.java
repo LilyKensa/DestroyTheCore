@@ -138,10 +138,6 @@ public class WitchcraftGen extends UsableItemGen {
           e,
           Particle.WITCH,
           () -> {
-            DTC.rolesManager.setRole(e, role);
-            DTC.game.enforceTeam(e);
-            DTC.boardsManager.refresh(e);
-            
             announce(
               TextUtils.$(
                 "items.witchcraft.announce.random-role",
@@ -152,6 +148,10 @@ public class WitchcraftGen extends UsableItemGen {
                 )
               )
             );
+            
+            DTC.rolesManager.setRole(e, role);
+            DTC.game.enforceDisplay(e);
+            DTC.boardsManager.refresh(e);
           }
         );
       }

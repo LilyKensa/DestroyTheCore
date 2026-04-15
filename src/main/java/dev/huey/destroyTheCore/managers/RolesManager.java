@@ -78,7 +78,7 @@ public class RolesManager {
     
     data.setRole(role);
     
-    DTC.game.enforceTeam(pl);
+    DTC.game.enforceDisplay(pl);
     DTC.boardsManager.refresh(pl);
     
     if (!DTC.game.isPlaying) return;

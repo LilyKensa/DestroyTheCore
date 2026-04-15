@@ -57,7 +57,7 @@ public class RandomRoleItem extends GUIItem {
     );
     
     DTC.rolesManager.setRole(pl, role);
-    DTC.game.enforceTeam(pl);
+    DTC.game.enforceDisplay(pl);
     DTC.boardsManager.refresh(pl);
     
     closeWindow(pl);

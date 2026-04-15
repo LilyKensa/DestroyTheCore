@@ -45,7 +45,7 @@ public class ShuffleTeamCommand extends Subcommand {
     int i = 0;
     for (Player p : players) {
       DTC.game.getPlayerData(p).join(randomSides.get(i));
-      DTC.game.enforceTeam(p);
+      DTC.game.enforceDisplay(p);
       i++;
     }
     DTC.boardsManager.refresh();

@@ -504,23 +504,12 @@ public class Game {
     sd -> sd.maxNoShopTicks
   );
   
-  Team itemsTeam;
-  Team spectatorTeam;
-  Map<Side, Map<RolesManager.RoleKey, Team>> teams = new HashMap<>();
+  public Team itemsTeam;
+  public Map<Side, Team> teams = new HashMap<>();
   
-  public Team getTeam(Side side, RolesManager.RoleKey roleId) {
-    if (side == Side.SPECTATOR) return spectatorTeam;
-    
-    return teams.get(side).get(roleId);
-  }
-  
-  public Team getTeam(Player pl) {
-    PlayerData data = getPlayerData(pl);
-    return getTeam(data.side, data.role.id);
-  }
-  
-  public void enforceTeam(Player pl) {
-    getTeam(pl).addPlayer(pl);
+  public void enforceDisplay(Player pl) {
+    teams.get(getPlayerData(pl).side).addPlayer(pl);
+    pl.playerListName(PlayerUtils.getName(pl));
   }
   
   public void recreateTeams() {
@@ -535,42 +524,24 @@ public class Game {
     
     itemsTeam = board.registerNewTeam("items");
     itemsTeam.color(NamedTextColor.AQUA);
+    itemsTeam.displayName(TextUtils.$("game.sides.items"));
     
-    spectatorTeam = board.registerNewTeam("spectator");
-    spectatorTeam.color(Side.SPECTATOR.color);
-    spectatorTeam.displayName(Side.SPECTATOR.titleComp());
-    spectatorTeam.prefix(
-      Component.text("[%s] ".formatted(Side.SPECTATOR.pureTitle()))
-    );
+    for (Side side : Side.values()) {
+      Team team = board.registerNewTeam(side.id);
+      
+      team.color(side.color);
+      team.displayName(side.titleComp());
+      
+      team.setCanSeeFriendlyInvisibles(true);
+      
+      teams.put(side, team);
+    }
+    
+    Team spectatorTeam = teams.get(Side.SPECTATOR);
     spectatorTeam.setOption(
       Team.Option.COLLISION_RULE,
       Team.OptionStatus.NEVER
     );
-    
-    for (Side side : bothSide) {
-      Map<RolesManager.RoleKey, Team> sideTeams = new HashMap<>();
-      
-      for (Role role : DTC.rolesManager.roles.values()) {
-        Team team = board.registerNewTeam(
-          side.id + "-" + role.id.name().toLowerCase()
-        );
-        
-        team.color(side.color);
-        team.displayName(
-          Component.join(
-            JoinConfiguration.spaces(),
-            side.titleComp(),
-            Component.text("-"),
-            Component.text(role.name)
-          )
-        );
-        team.prefix(Component.text("[%s] ".formatted(role.name)));
-        
-        sideTeams.put(role.id, team);
-      }
-      
-      teams.put(side, sideTeams);
-    }
   }
   
   Objective respawnTimeBoard, healthBoard, levelBoard;
@@ -684,7 +655,7 @@ public class Game {
     else {
       getPlayerData(pl).side = Side.SPECTATOR;
     }
-    enforceTeam(pl);
+    enforceDisplay(pl);
     
     if (PlayerUtils.shouldHandle(pl)) {
       DTC.inventoriesManager.store(pl);
@@ -761,10 +732,10 @@ public class Game {
       }
       
       if (ev.getEntity() instanceof Player victim) {
-        if (!ev.getDamageSource().isIndirect()) {
+        if (ev.getDamageSource().getDamageType() == DamageType.PLAYER_ATTACK) {
           checkAttackRange(attacker, victim);
         }
-
+        
         handlePlayerDamage(attacker, victim, null, ev);
       }
     }
@@ -785,13 +756,13 @@ public class Game {
       ev.getDrops().clear();
     }
   }
-
+  
   public void checkAttackRange(Player attacker, Player victim) {
     if (
       !LocUtils.near(
         victim,
         attacker,
-        AttrUtils.get(attacker, Attribute.ENTITY_INTERACTION_RANGE) + 0.5
+        AttrUtils.get(attacker, Attribute.ENTITY_INTERACTION_RANGE) + 1
       )
     ) {
       DTC.antiCheatManager.track(
@@ -891,9 +862,11 @@ public class Game {
       );
     }
     
-    if (ev.getFinalDamage() >= 2) victim.removePotionEffect(
-      PotionEffectType.INVISIBILITY
-    );
+    if (ev.getFinalDamage() >= 2) {
+      victim.removePotionEffect(
+        PotionEffectType.INVISIBILITY
+      );
+    }
     
     DTC.itemsManager.onPlayerDamage(attacker, victim, ev.getCause());
   }
@@ -993,28 +966,22 @@ public class Game {
       
       killer.sendActionBar(TextUtils.$("game.death.killer-sin"));
       
-      PlayerUtils.glow(killer, 5 * 20);
-      PlayerUtils.addEffect(
-        killer,
-        PotionEffectType.SLOWNESS,
-        5 * 20,
-        1
-      );
-      PlayerUtils.addEffect(
-        killer,
-        PotionEffectType.BLINDNESS,
-        5 * 20,
-        1
-      );
-      PlayerUtils.addEffect(
-        killer,
-        PotionEffectType.WEAKNESS,
-        5 * 20,
-        3
-      );
-      
       PlayerData killerData = getPlayerData(killer);
       killerData.addKill();
+      
+      BiConsumer<PotionEffectType, Integer> effector = (type, level) -> {
+        PlayerUtils.addEffect(
+          pl,
+          type,
+          Math.min(5 + (killerData.respawnTime / 10), 11) * 20,
+          level
+        );
+      };
+      
+      effector.accept(PotionEffectType.GLOWING, 1);
+      effector.accept(PotionEffectType.SLOWNESS, 1);
+      effector.accept(PotionEffectType.BLINDNESS, 1);
+      effector.accept(PotionEffectType.WEAKNESS, 2);
       
       PlayerUtils.give(killer, ItemsManager.ItemKey.SOUL);
       
@@ -2568,7 +2535,7 @@ public class Game {
           )
         );
         getPlayerData(pl).join(side);
-        enforceTeam(pl);
+        enforceDisplay(pl);
         DTC.boardsManager.refresh(pl);
       };
       
@@ -3300,11 +3267,11 @@ public class Game {
       PlayerData d = getPlayerData(p);
       if (d.shoutCooldown > 0) d.shoutCooldown--;
     }
-
+    
     Iterator<RegenOre> roit = regenOres.values().iterator();
     while (roit.hasNext()) {
       RegenOre ro = roit.next();
-
+      
       ro.onTick();
       if (!ro.active) roit.remove();
     }
