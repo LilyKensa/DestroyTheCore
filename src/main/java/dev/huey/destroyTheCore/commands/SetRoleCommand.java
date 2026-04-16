@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.commands;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.bases.Subcommand;
 import dev.huey.destroyTheCore.managers.RolesManager;
@@ -18,7 +18,7 @@ public class SetRoleCommand extends Subcommand {
     super("role");
     addArgument(
       "role",
-      () -> DestroyTheCore.rolesManager.roles.values().stream().map(
+      () -> DTC.rolesManager.roles.values().stream().map(
         s -> s.id.name().toLowerCase()
       ).toList()
     );
@@ -44,7 +44,7 @@ public class SetRoleCommand extends Subcommand {
       return;
     }
     
-    Role role = DestroyTheCore.rolesManager.roles.get(key);
+    Role role = DTC.rolesManager.roles.get(key);
     
     Player target;
     
@@ -75,8 +75,8 @@ public class SetRoleCommand extends Subcommand {
     }
     else {
       if (
-        !PlayerUtils.isAdmin(pl)
-          && LocUtils.inLive(
+        !PlayerUtils.isAdmin(pl) &&
+          LocUtils.inLive(
             pl.getLocation()
           )
       ) {
@@ -96,8 +96,8 @@ public class SetRoleCommand extends Subcommand {
       );
     }
     
-    DestroyTheCore.rolesManager.setRole(target, role);
-    DestroyTheCore.game.enforceTeam(target);
-    DestroyTheCore.boardsManager.refresh(target);
+    DTC.rolesManager.setRole(target, role);
+    DTC.game.enforceDisplay(target);
+    DTC.boardsManager.refresh(target);
   }
 }

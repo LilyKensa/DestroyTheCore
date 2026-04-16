@@ -1,13 +1,13 @@
 package dev.huey.destroyTheCore.roles;
 
 import com.destroystokyo.paper.ParticleBuilder;
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.managers.RolesManager;
 import dev.huey.destroyTheCore.managers.TicksManager;
 import dev.huey.destroyTheCore.records.PlayerData;
-import dev.huey.destroyTheCore.utils.AttributeUtils;
+import dev.huey.destroyTheCore.utils.AttrUtils;
 import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
@@ -34,23 +34,23 @@ public class MoleRole extends Role {
   static public void setMoleMode(Player pl) {
     pl.setInvisible(true);
     pl.setInvulnerable(true);
-    AttributeUtils.set(pl, Attribute.SCALE, 0.5);
-    AttributeUtils.set(pl, Attribute.MOVEMENT_SPEED, 0.15);
-    AttributeUtils.set(pl, Attribute.STEP_HEIGHT, 1.5);
+    AttrUtils.set(pl, Attribute.SCALE, 0.5);
+    AttrUtils.set(pl, Attribute.MOVEMENT_SPEED, 0.15);
+    AttrUtils.set(pl, Attribute.STEP_HEIGHT, 1.5);
     
-    DestroyTheCore.inventoriesManager.store(pl);
+    DTC.inventoriesManager.store(pl);
   }
   
   static public void resetMoleMode(Player pl) {
     pl.setInvisible(false);
     pl.setInvulnerable(false);
-    AttributeUtils.set(pl, Attribute.SCALE, 1);
-    AttributeUtils.set(pl, Attribute.MOVEMENT_SPEED, 0.1);
-    AttributeUtils.set(pl, Attribute.STEP_HEIGHT, 0.6);
+    AttrUtils.set(pl, Attribute.SCALE, 1);
+    AttrUtils.set(pl, Attribute.MOVEMENT_SPEED, 0.1);
+    AttrUtils.set(pl, Attribute.STEP_HEIGHT, 0.6);
     
-    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
+    PlayerData data = DTC.game.getPlayerData(pl);
     if (data.alive) {
-      DestroyTheCore.inventoriesManager.restore(pl);
+      DTC.inventoriesManager.restore(pl);
     }
   }
   
@@ -108,7 +108,7 @@ public class MoleRole extends Role {
   static Map<UUID, Integer> moleModeTime = new HashMap<>();
   
   static public void onUpdateTick() {
-    if (DestroyTheCore.game.paused) return;
+    if (DTC.game.paused) return;
     
     Iterator<Map.Entry<UUID, Integer>> it = moleModeTime.entrySet().iterator();
     while (it.hasNext()) {
@@ -141,8 +141,9 @@ public class MoleRole extends Role {
       new ParticleBuilder(Particle.BLOCK)
         .data(
           Bukkit.createBlockData(
-            standingBlock.getType().isAir() ? Material.DIRT : standingBlock
-              .getType()
+            standingBlock.getType().isAir() ? Material.DIRT
+              : standingBlock
+                .getType()
           )
         )
         .allPlayers()
@@ -187,7 +188,7 @@ public class MoleRole extends Role {
   static public void onBlockBreak(Player pl, Block block, BlockBreakEvent ev) {
     ItemStack item = pl.getInventory().getItemInMainHand();
     if (
-      !DestroyTheCore.rolesManager.checkExclusiveItem(
+      !DTC.rolesManager.checkExclusiveItem(
         item,
         RolesManager.RoleKey.MOLE
       )
@@ -253,7 +254,7 @@ public class MoleRole extends Role {
   public void onTick(Player pl) {
     if (!PlayerUtils.shouldHandle(pl)) return;
     
-    if (DestroyTheCore.ticksManager.isUpdateTick()) {
+    if (DTC.ticksManager.isUpdateTick()) {
       if (PlayerUtils.isUnderSky(pl)) {
         PlayerUtils.addPassiveEffect(
           pl,

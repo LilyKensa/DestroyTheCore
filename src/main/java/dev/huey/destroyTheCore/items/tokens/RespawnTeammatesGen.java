@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.items.tokens;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.itemGens.UsableItemGen;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.records.PlayerData;
@@ -22,10 +22,10 @@ public class RespawnTeammatesGen extends UsableItemGen {
   
   @Override
   public void use(Player pl, Block block) {
-    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
+    PlayerData data = DTC.game.getPlayerData(pl);
     
     for (Player p : Bukkit.getOnlinePlayers()) {
-      PlayerData d = DestroyTheCore.game.getPlayerData(p);
+      PlayerData d = DTC.game.getPlayerData(p);
       if (!d.side.equals(data.side)) continue;
       
       if (!d.alive) PlayerUtils.respawn(p);
@@ -49,6 +49,6 @@ public class RespawnTeammatesGen extends UsableItemGen {
       )
     );
     
-    DestroyTheCore.game.getPlayerData(pl).addExtraExp(25);
+    DTC.game.getPlayerData(pl).addExtraExp(25);
   }
 }

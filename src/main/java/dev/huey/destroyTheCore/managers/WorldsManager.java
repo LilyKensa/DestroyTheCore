@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.managers;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.utils.CoreUtils;
 import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
@@ -81,7 +81,9 @@ public class WorldsManager {
   }
   
   public World createTemplateWorld() {
-    return Bukkit.createWorld(getCreator("template-" + mapName));
+    return Bukkit.createWorld(
+      getCreator(ConfigManager.templateWorldPrefix + mapName)
+    );
   }
   
   public World createLiveWorld() {
@@ -110,7 +112,7 @@ public class WorldsManager {
       if (p.getWorld().equals(live)) {
         p.teleport(
           CoreUtils.def(
-            DestroyTheCore.game.lobby.spawn.toLoc(lobby),
+            DTC.game.lobby.spawn.toLoc(lobby),
             new Location(lobby, 0, 100, 0)
           )
         );
@@ -141,14 +143,14 @@ public class WorldsManager {
   public void cloneLive() {
     isReady = false;
     
-    Bukkit.unloadWorld("template-" + mapName, true);
+    Bukkit.unloadWorld(ConfigManager.templateWorldPrefix + mapName, true);
     
     PlayerUtils.prefixedNotice(TextUtils.$("world.deleting-live"));
     deleteLive();
     
     File sourceFolder = new File(
       Bukkit.getWorldContainer(),
-      "template-" + mapName
+      ConfigManager.templateWorldPrefix + mapName
     );
     File targetFolder = new File(Bukkit.getWorldContainer(), "live");
     PlayerUtils.prefixedNotice(TextUtils.$("world.copying-template"));

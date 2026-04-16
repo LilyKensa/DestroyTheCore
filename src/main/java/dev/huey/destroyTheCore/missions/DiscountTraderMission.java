@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.missions;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.missions.InstantMission;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.utils.RandomUtils;
@@ -16,6 +16,8 @@ import org.bukkit.entity.WanderingTrader;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantRecipe;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public class DiscountTraderMission extends InstantMission {
   
@@ -33,11 +35,20 @@ public class DiscountTraderMission extends InstantMission {
       TextUtils.$("missions.discount-trader.trader").color(null)
     );
     trader.setCustomNameVisible(true);
-    trader.setInvulnerable(true);
     
     trader.setCanDrinkPotion(false);
     trader.setCanDrinkMilk(false);
     trader.setCanPickupItems(false);
+    
+    trader.addPotionEffect(
+      new PotionEffect(
+        PotionEffectType.RESISTANCE,
+        PotionEffect.INFINITE_DURATION,
+        255,
+        false,
+        false
+      )
+    );
     
     List<MerchantRecipe> trades = new ArrayList<>();
     
@@ -52,7 +63,7 @@ public class DiscountTraderMission extends InstantMission {
     
     BiFunction<ItemsManager.ItemKey, Integer, ItemStack> customGen = (
       key, count
-    ) -> DestroyTheCore.itemsManager.gens.get(key).getItem(count);
+    ) -> DTC.itemsManager.gens.get(key).getItem(count);
     
     BiFunction<Enchantment, Integer, ItemStack> bookGen = (enchant, level) -> {
       ItemStack item = new ItemStack(Material.ENCHANTED_BOOK);
@@ -113,6 +124,6 @@ public class DiscountTraderMission extends InstantMission {
     
     trader.setRecipes(trades);
     
-    DestroyTheCore.missionsManager.team.addEntity(trader);
+    DTC.missionsManager.team.addEntity(trader);
   }
 }

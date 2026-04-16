@@ -1,11 +1,13 @@
 package dev.huey.destroyTheCore.items.misc;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
+import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.bases.itemGens.UsableItemGen;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.managers.RolesManager;
 import dev.huey.destroyTheCore.records.PlayerData;
+import dev.huey.destroyTheCore.records.SideData;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.RandomUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
@@ -37,7 +39,8 @@ public class WitchcraftGen extends UsableItemGen {
   
   @Override
   public void use(Player pl, Block block) {
-    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
+    PlayerData data = DTC.game.getPlayerData(pl);
+    Game.Side oppSide = data.side.opposite();
     
     if (!PlayerUtils.checkHandCooldown(pl)) return;
     PlayerUtils.setHandCooldown(pl, 60);
@@ -52,7 +55,7 @@ public class WitchcraftGen extends UsableItemGen {
             e,
             Particle.WITCH,
             () -> {
-              DestroyTheCore.inventoriesManager.dropOres(e);
+              DTC.inventoriesManager.dropOres(e);
             }
           );
         }
@@ -62,7 +65,7 @@ public class WitchcraftGen extends UsableItemGen {
             "items.witchcraft.announce.drop-ores",
             List.of(
               Placeholder.component("player", PlayerUtils.getName(pl)),
-              Placeholder.component("enemy", data.side.opposite().titleComp())
+              Placeholder.component("enemy", oppSide.titleComp())
             )
           )
         );
@@ -89,7 +92,7 @@ public class WitchcraftGen extends UsableItemGen {
             "items.witchcraft.announce.poison",
             List.of(
               Placeholder.component("player", PlayerUtils.getName(pl)),
-              Placeholder.component("enemy", data.side.opposite().titleComp())
+              Placeholder.component("enemy", oppSide.titleComp())
             )
           )
         );
@@ -114,7 +117,7 @@ public class WitchcraftGen extends UsableItemGen {
             "items.witchcraft.announce.add-skill-cooldown",
             List.of(
               Placeholder.component("player", PlayerUtils.getName(pl)),
-              Placeholder.component("enemy", data.side.opposite().titleComp())
+              Placeholder.component("enemy", oppSide.titleComp())
             )
           )
         );
@@ -125,7 +128,7 @@ public class WitchcraftGen extends UsableItemGen {
         
         Player e = RandomUtils.pick(enemies);
         Role role = RandomUtils.pick(
-          DestroyTheCore.rolesManager.roles.values().stream()
+          DTC.rolesManager.roles.values().stream()
             .filter(r -> r.id != RolesManager.RoleKey.DEFAULT)
             .toList()
         );
@@ -135,10 +138,6 @@ public class WitchcraftGen extends UsableItemGen {
           e,
           Particle.WITCH,
           () -> {
-            DestroyTheCore.rolesManager.setRole(e, role);
-            DestroyTheCore.game.enforceTeam(e);
-            DestroyTheCore.boardsManager.refresh(e);
-            
             announce(
               TextUtils.$(
                 "items.witchcraft.announce.random-role",
@@ -149,6 +148,10 @@ public class WitchcraftGen extends UsableItemGen {
                 )
               )
             );
+            
+            DTC.rolesManager.setRole(e, role);
+            DTC.game.enforceDisplay(e);
+            DTC.boardsManager.refresh(e);
           }
         );
       }
@@ -174,7 +177,7 @@ public class WitchcraftGen extends UsableItemGen {
             "items.witchcraft.announce.unluck",
             List.of(
               Placeholder.component("player", PlayerUtils.getName(pl)),
-              Placeholder.component("enemy", data.side.opposite().titleComp())
+              Placeholder.component("enemy", oppSide.titleComp())
             )
           )
         );
@@ -186,7 +189,7 @@ public class WitchcraftGen extends UsableItemGen {
             e,
             Particle.WITCH,
             () -> {
-              DestroyTheCore.game.getPlayerData(e).addRespawnTime(15);
+              DTC.game.getPlayerData(e).addRespawnTime(15);
             }
           );
         }
@@ -196,22 +199,24 @@ public class WitchcraftGen extends UsableItemGen {
             "items.witchcraft.announce.add-respawn-time",
             List.of(
               Placeholder.component("player", PlayerUtils.getName(pl)),
-              Placeholder.component("enemy", data.side.opposite().titleComp())
+              Placeholder.component("enemy", oppSide.titleComp())
             )
           )
         );
       }
       case 6 -> {
-        DestroyTheCore.game.getSideData(data.side.opposite()).banOres(60 * 20);
-        DestroyTheCore.game.noOresBars.show(data.side.opposite());
-        DestroyTheCore.game.banOres(data.side.opposite());
+        SideData sd = DTC.game.getSideData(oppSide);
+        sd.banOres(60 * 20);
+        
+        DTC.game.noOresBars.show(oppSide);
+        DTC.game.banOres(oppSide, sd.noOresTicks);
         
         announce(
           TextUtils.$(
             "items.witchcraft.announce.ban-ores",
             List.of(
               Placeholder.component("player", PlayerUtils.getName(pl)),
-              Placeholder.component("enemy", data.side.opposite().titleComp())
+              Placeholder.component("enemy", oppSide.titleComp())
             )
           )
         );
@@ -238,30 +243,30 @@ public class WitchcraftGen extends UsableItemGen {
             "items.witchcraft.announce.glow",
             List.of(
               Placeholder.component("player", PlayerUtils.getName(pl)),
-              Placeholder.component("enemy", data.side.opposite().titleComp())
+              Placeholder.component("enemy", oppSide.titleComp())
             )
           )
         );
       }
       case 8 -> {
-        DestroyTheCore.game.getSideData(
-          data.side.opposite()
+        DTC.game.getSideData(
+          oppSide
         ).directAttackCore();
-        DestroyTheCore.game.checkWinner();
+        DTC.game.checkWinner();
         
         announce(
           TextUtils.$(
             "items.witchcraft.announce.attack-core",
             List.of(
               Placeholder.component("player", PlayerUtils.getName(pl)),
-              Placeholder.component("enemy", data.side.opposite().titleComp())
+              Placeholder.component("enemy", oppSide.titleComp())
             )
           )
         );
       }
       case 9 -> {
-        for (int i = 0; i < 3; ++i) DestroyTheCore.game.getSideData(
-          data.side.opposite()
+        for (int i = 0; i < 3; ++i) DTC.game.getSideData(
+          oppSide
         ).directAttackCore();
         
         announce(
@@ -269,7 +274,7 @@ public class WitchcraftGen extends UsableItemGen {
             "items.witchcraft.announce.attack-core-3",
             List.of(
               Placeholder.component("player", PlayerUtils.getName(pl)),
-              Placeholder.component("enemy", data.side.opposite().titleComp())
+              Placeholder.component("enemy", oppSide.titleComp())
             )
           )
         );
@@ -296,7 +301,7 @@ public class WitchcraftGen extends UsableItemGen {
             "items.witchcraft.announce.slowness",
             List.of(
               Placeholder.component("player", PlayerUtils.getName(pl)),
-              Placeholder.component("enemy", data.side.opposite().titleComp())
+              Placeholder.component("enemy", oppSide.titleComp())
             )
           )
         );
@@ -323,7 +328,7 @@ public class WitchcraftGen extends UsableItemGen {
             "items.witchcraft.announce.mining-fatigue",
             List.of(
               Placeholder.component("player", PlayerUtils.getName(pl)),
-              Placeholder.component("enemy", data.side.opposite().titleComp())
+              Placeholder.component("enemy", oppSide.titleComp())
             )
           )
         );

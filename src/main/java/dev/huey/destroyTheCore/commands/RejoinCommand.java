@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.commands;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.Subcommand;
 import dev.huey.destroyTheCore.records.PlayerData;
 import dev.huey.destroyTheCore.utils.LocUtils;
@@ -23,7 +23,7 @@ public class RejoinCommand extends Subcommand {
       return;
     }
     
-    if (!DestroyTheCore.game.isPlaying) {
+    if (!DTC.game.isPlaying) {
       PlayerUtils.prefixedSend(pl, TextUtils.$("commands.rejoin.no-game"));
       return;
     }
@@ -35,7 +35,7 @@ public class RejoinCommand extends Subcommand {
       )
     );
     
-    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
+    PlayerData data = DTC.game.getPlayerData(pl);
     data.kill();
     
     if (PlayerUtils.shouldHandle(pl)) pl.getInventory().clear();

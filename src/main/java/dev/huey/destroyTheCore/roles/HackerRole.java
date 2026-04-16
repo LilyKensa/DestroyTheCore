@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.roles;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.managers.RolesManager;
 import dev.huey.destroyTheCore.records.PlayerData;
@@ -30,10 +30,12 @@ public class HackerRole extends Role {
   
   @Override
   public void onTick(Player pl) {
-    if (DestroyTheCore.ticksManager.isUpdateTick()) {
+    if (DTC.ticksManager.isUpdateTick()) {
       if (
-        PlayerUtils.shouldHandle(pl)
-          && pl.hasPotionEffect(PotionEffectType.INVISIBILITY)
+        PlayerUtils.shouldHandle(pl) &&
+          pl.hasPotionEffect(
+            PotionEffectType.INVISIBILITY
+          )
       ) {
         pl.removePotionEffect(PotionEffectType.INVISIBILITY);
         
@@ -46,11 +48,11 @@ public class HackerRole extends Role {
   public void useSkill(Player pl) {
     skillFeedback(pl);
     
-    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
+    PlayerData data = DTC.game.getPlayerData(pl);
     
     boolean self = LocUtils.canAccess(data.side, pl.getLocation());
     
-    SideData sd = DestroyTheCore.game.getSideData(
+    SideData sd = DTC.game.getSideData(
       self ? data.side : data.side.opposite()
     );
     

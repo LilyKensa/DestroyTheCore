@@ -5,31 +5,35 @@ import dev.huey.destroyTheCore.bases.Mission;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.RandomUtils;
 import java.util.List;
-import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
 
 public class TNTResult extends Mission.Result {
   
+  Player pl;
+  
   public TNTResult() {
-    super("tnt");
+    super("tnt", false);
+  }
+  
+  @Override
+  public List<TagResolver> getExtraPlaceholers() {
+    return List.of(getRandomPlayerPlaceholder(pl));
   }
   
   @Override
   public void forLoser(Game.Side side) {
-    Player p = RandomUtils.pick(PlayerUtils.getTeammates(side));
-    if (p == null) return;
+    pl = RandomUtils.pick(PlayerUtils.getTeammates(side));
+    if (pl == null) return;
     
-    TNTPrimed tnt = (TNTPrimed) p.getWorld().spawnEntity(
-      p.getLocation(),
+    TNTPrimed tnt = (TNTPrimed) pl.getWorld().spawnEntity(
+      pl.getLocation(),
       EntityType.TNT
     );
     tnt.setFuseTicks(30);
     
-    announce(
-      side,
-      List.of(Placeholder.component("player", PlayerUtils.getName(p)))
-    );
+    outro(side);
   }
 }

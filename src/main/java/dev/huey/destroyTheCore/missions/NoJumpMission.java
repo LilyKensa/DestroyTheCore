@@ -1,7 +1,7 @@
 package dev.huey.destroyTheCore.missions;
 
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.missions.ProgressiveMission;
 import dev.huey.destroyTheCore.records.PlayerData;
@@ -15,15 +15,14 @@ public class NoJumpMission extends ProgressiveMission implements Listener {
   
   public NoJumpMission() {
     super("no-jump");
+    addResult();
   }
   
   Map<Game.Side, Integer> quota = new HashMap<>();
   
   @Override
   public void innerStart() {
-    for (Game.Side side : new Game.Side[]{
-      Game.Side.RED, Game.Side.GREEN
-    }) {
+    for (Game.Side side : Game.bothSide) {
       quota.put(side, 100);
       progress(side, 1F);
     }
@@ -32,11 +31,11 @@ public class NoJumpMission extends ProgressiveMission implements Listener {
   @EventHandler
   public void onPlayerJump(PlayerJumpEvent ev) {
     Player pl = ev.getPlayer();
-    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
+    PlayerData data = DTC.game.getPlayerData(pl);
     if (data.side.equals(Game.Side.SPECTATOR)) return;
     
     quota.put(data.side, Math.max(quota.get(data.side) - 1, 0));
-    progress(data.side, (float) Math.max(quota.get(data.side) / 100D, 0));
+    progress(data.side, quota.get(data.side) / 100F);
   }
   
   @Override
@@ -45,9 +44,7 @@ public class NoJumpMission extends ProgressiveMission implements Listener {
   
   @Override
   public void innerFinish() {
-    for (Game.Side side : new Game.Side[]{
-      Game.Side.RED, Game.Side.GREEN
-    }) {
+    for (Game.Side side : Game.bothSide) {
       if (quota.get(side) > quota.get(side.opposite())) {
         declareWinner(side);
         return;

@@ -1,7 +1,7 @@
 package dev.huey.destroyTheCore.managers;
 
 import dev.huey.destroyTheCore.Constants;
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.gui.control.NextPageItem;
 import dev.huey.destroyTheCore.gui.control.PrevPageItem;
@@ -13,6 +13,7 @@ import dev.huey.destroyTheCore.gui.shop.DetailShopItem;
 import dev.huey.destroyTheCore.gui.shop.NewShopItem;
 import dev.huey.destroyTheCore.gui.shop.RenameShopItem;
 import dev.huey.destroyTheCore.records.MaybeGen;
+import dev.huey.destroyTheCore.utils.AdvUtils;
 import dev.huey.destroyTheCore.utils.CoreUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
@@ -73,7 +74,7 @@ public class GUIManager {
       'x',
       Markers.CONTENT_LIST_SLOT_HORIZONTAL
     ).setContent(
-      DestroyTheCore.rolesManager.roles.values().stream()
+      DTC.rolesManager.roles.values().stream()
         .map(role -> (Item) role)
         .toList()
     ).build();
@@ -94,6 +95,8 @@ public class GUIManager {
     });
     
     window.open();
+    
+    AdvUtils.grant(pl, DTC.advancementsManager.chooseRoleAdv);
   }
   
   public void openTeleporter(Player pl) {
@@ -114,7 +117,7 @@ public class GUIManager {
       Markers.CONTENT_LIST_SLOT_HORIZONTAL
     ).setContent(
       Bukkit.getOnlinePlayers().stream().filter(
-        p -> DestroyTheCore.game.getPlayerData(
+        p -> DTC.game.getPlayerData(
           p
         ).side != Game.Side.SPECTATOR
       ).map(p -> (Item) new AbstractItem() {
@@ -156,8 +159,8 @@ public class GUIManager {
   public UUID shopEditor = null;
   
   public boolean isEditingShop() {
-    return (shopEditor != null
-      && Bukkit.getOfflinePlayer(
+    return (shopEditor != null &&
+      Bukkit.getOfflinePlayer(
         shopEditor
       ).isOnline());
   }
@@ -188,7 +191,7 @@ public class GUIManager {
       '+',
       new NewShopItem()
     ).setContent(
-      DestroyTheCore.game.shops.stream().map(
+      DTC.game.shops.stream().map(
         shop -> (Item) new AbstractItem() {
           @Override
           public ItemProvider getItemProvider() {
@@ -211,7 +214,7 @@ public class GUIManager {
             ClickType click, Player pl, InventoryClickEvent ev
           ) {
             postClick = true;
-            DestroyTheCore.guiManager.openShopTradesEditor(pl, shop);
+            DTC.guiManager.openShopTradesEditor(pl, shop);
           }
         }
       ).toList()

@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.items.gui;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.itemGens.UsableItemGen;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import org.bukkit.Material;
@@ -22,6 +22,6 @@ public class SpectatorTeleporterGen extends UsableItemGen {
   
   @Override
   public void use(Player pl, Block block) {
-    DestroyTheCore.guiManager.openTeleporter(pl);
+    DTC.guiManager.openTeleporter(pl);
   }
 }

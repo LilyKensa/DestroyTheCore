@@ -1,8 +1,8 @@
 package dev.huey.destroyTheCore.commands;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.Subcommand;
-import dev.huey.destroyTheCore.utils.AttributeUtils;
+import dev.huey.destroyTheCore.utils.AttrUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import java.util.List;
@@ -18,24 +18,24 @@ public class PauseCommand extends Subcommand {
   
   @Override
   public void execute(Player pl, List<String> args) {
-    if (!DestroyTheCore.game.isPlaying) return;
+    if (!DTC.game.isPlaying) return;
     
-    DestroyTheCore.game.paused = !DestroyTheCore.game.paused;
+    DTC.game.paused = !DTC.game.paused;
     
     Bukkit.getServer().getServerTickManager()
-      .setFrozen(DestroyTheCore.game.paused);
+      .setFrozen(DTC.game.paused);
     
     for (Player p : Bukkit.getOnlinePlayers()) {
-      AttributeUtils.set(
+      AttrUtils.set(
         p,
         Attribute.GRAVITY,
-        DestroyTheCore.game.paused ? 0 : 0.08
+        DTC.game.paused ? 0 : 0.08
       );
     }
     
     PlayerUtils.prefixedBroadcast(
       TextUtils.$(
-        "commands.pause." + DestroyTheCore.game.paused,
+        "commands.pause." + DTC.game.paused,
         List.of(
           Placeholder.component("player", PlayerUtils.getName(pl))
         )

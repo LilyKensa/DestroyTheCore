@@ -1,7 +1,7 @@
 package dev.huey.destroyTheCore.missions;
 
 import com.destroystokyo.paper.ParticleBuilder;
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.missions.ProgressiveMission;
 import dev.huey.destroyTheCore.records.PlayerData;
@@ -26,7 +26,7 @@ public class CollectStarsMission extends ProgressiveMission implements Listener 
   static public final int totalCount = 120;
   
   static public final NamespacedKey dataNamespace = new NamespacedKey(
-    DestroyTheCore.instance,
+    DTC.instance,
     "collect-stars-mission-item"
   );
   
@@ -45,18 +45,20 @@ public class CollectStarsMission extends ProgressiveMission implements Listener 
   }
   
   static public boolean isStarItem(ItemStack item) {
-    return (item != null
-      && !item.isEmpty()
-      && item.hasItemMeta()
-      && item.getItemMeta().getPersistentDataContainer().has(
-        dataNamespace
-      ));
+    return (item != null &&
+      !item.isEmpty() &&
+      item.hasItemMeta() &&
+      item
+        .getItemMeta().getPersistentDataContainer().has(
+          dataNamespace
+        ));
   }
   
   int currentCount = 0;
   
   public CollectStarsMission() {
     super("collect-stars");
+    addResult();
   }
   
   static public Location randomLocation(Location center, double radius) {
@@ -81,7 +83,7 @@ public class CollectStarsMission extends ProgressiveMission implements Listener 
   
   @Override
   public void tick() {
-    if (DestroyTheCore.ticksManager.isUpdateTick()) {
+    if (DTC.ticksManager.isUpdateTick()) {
       if (currentCount < totalCount) {
         Location starLoc = randomLocation(
           centerLoc.clone().add(0, RandomUtils.range(20, 30), 0),
@@ -89,8 +91,9 @@ public class CollectStarsMission extends ProgressiveMission implements Listener 
         );
         
         while (
-          starLoc.getBlock().isCollidable()
-            && starLoc.getY() >= starLoc.getWorld().getMinHeight()
+          starLoc.getBlock().isCollidable() &&
+            starLoc.getY() >= starLoc
+              .getWorld().getMinHeight()
         ) {
           starLoc.setY(starLoc.getY() - 1);
         }
@@ -107,7 +110,7 @@ public class CollectStarsMission extends ProgressiveMission implements Listener 
   @EventHandler
   public void onPlayerAttemptPickupItem(PlayerAttemptPickupItemEvent ev) {
     Player pl = ev.getPlayer();
-    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
+    PlayerData data = DTC.game.getPlayerData(pl);
     
     Item itemEntity = ev.getItem();
     ItemStack item = itemEntity.getItemStack();
@@ -146,9 +149,7 @@ public class CollectStarsMission extends ProgressiveMission implements Listener 
       }
     }
     
-    for (Game.Side side : new Game.Side[]{
-      Game.Side.RED, Game.Side.GREEN
-    }) {
+    for (Game.Side side : Game.bothSide) {
       if (
         counts.getOrDefault(side, 0) > counts.getOrDefault(side.opposite(), 0)
       ) {

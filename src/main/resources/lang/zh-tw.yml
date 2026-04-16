@@ -104,6 +104,7 @@ game:
     red: "<red>紅隊</red>"
     green: "<green>綠隊</green>"
     spectator: "<gray>旁觀者</gray>"
+    items: "<aqua>物品</aqua>"
   prompt-rejoin: "用 <aqua>/rejoin</aqua> 以重新加入遊戲"
   banned:
     attack:
@@ -153,7 +154,7 @@ game:
   truce:
     warning: "<red>你腦中忽然冒出不該再繼續往前的想法</red>"
     sent-spawn: "<player> 剛才<yellow>迷路了</yellow>結果被半顆心送回家"
-  diamond-broadcast: "我愛鑽石!|是時候來點鑽石了!|好耶! 我得到了鑽石!|鑽石實在太讚了!|鑽石! 鑽石! 鑽石!|我最喜歡挖鑽石了!"
+  diamond-broadcast: "這剔透的鑽石終於進入我的口袋啦!|鑽石這般湛藍, 就是我靈魂的顏色!|鑽石的光芒實在是太耀眼了!|鑽石就是人生! 我愛鑽石!|是時候來點鑽石了!|好耶! 我挖到鑽石啦!|得到鑽石的感覺實在太讚了!|我最喜歡挖鑽石了!"
   height-warning: "<red>你即將得到高山症!</red>"
   start-canceled: "<red>取消</red>"
   missing-locs:
@@ -205,8 +206,12 @@ game:
 
 anti-cheat:
   prefix: "[<red>反作弊</red>] "
-  reaction-time: "<red>不合理的反應時間</red>"
-  auto-click: "<red>自動點擊</red>"
+  admin-notice: "<player> 被偵測到<cheat>, 分數: <value>/<white>100</white>"
+  reasons:
+    quiz-speed: "<red>數學算太快</red>"
+    auto-click: "<red>自動右鍵</red>"
+    attack-range: "<red>攻擊距離過長</red>"
+    spam-break: "<red>瞬間挖掘</red>"
 
 item-gen:
   right-click-to-use: "- <yellow>右鍵以使用</yellow>"
@@ -244,23 +249,29 @@ mission:
     red-bar: "<red>紅隊進度</red>"
     green-bar: "<green>綠隊進度</green>"
   draw: "任務結果為<yellow>平手</yellow>!"
+  result:
+    intro: "任務<action>的小隊, "
+    outro: "<side>因任務<action>, "
+    win: "<yellow>成功</yellow>"
+    lose: "<yellow>失敗</yellow>"
+    random-player: "隨機一位隊員"
   results:
-    clear-xp: "<side>因為任務失敗, 全員經驗值被<light_purple>歸零</light_purple>了!"
-    give-xp: "<side>因為任務成功, 每人獲得 <yellow>500 點經驗值</yellow>!"
-    bad-effect: "<side>因為任務失敗, 全員獲得<light_purple><effect></light_purple>效果!"
-    good-effect: "<side>因為任務成功, 全員獲得<yellow><effect></yellow>效果!"
-    add-respawn-time: "<side>因為任務失敗, 每人<light_purple>增加 20 點罪惡</light_purple>!"
-    remove-respawn-time: "<side>因為任務成功, 每人<yellow>減少 20 點罪惡</yellow>!"
-    ban-ores: "<side>因為任務失敗, 礦區<light_purple>封鎖 2 分鐘</light_purple>!"
-    ban-shop: "<side>因為任務失敗, 商店<light_purple>封鎖 2 分鐘</light_purple>!"
-    attack-core: "<side>因為任務失敗, 核心生命<light_purple>減少 10</light_purple>!"
-    summon-pig: "<side>因為任務失敗, 獲得 <light_purple><name></light_purple>!"
+    clear-xp: "全員經驗值被<light_purple>歸零</light_purple>!"
+    give-xp: "每人獲得 <yellow>500 點經驗值</yellow>!"
+    bad-effect: "全員獲得<light_purple><effect></light_purple>效果!"
+    good-effect: "全員獲得<yellow><effect></yellow>效果!"
+    add-respawn-time: "每人<light_purple>增加 20 點罪惡</light_purple>!"
+    remove-respawn-time: "每人<yellow>減少 20 點罪惡</yellow>!"
+    ban-ores: "礦區<light_purple>封鎖 2 分鐘</light_purple>!"
+    ban-shop: "商店<light_purple>封鎖 2 分鐘</light_purple>!"
+    attack-core: "核心生命<light_purple>減少 10</light_purple>!"
+    summon-pig: "獲得 <light_purple><name></light_purple>!"
     pig-name: "87 豬隊友"
-    void: "<side>因為任務失敗, <player> 被<light_purple>傳送到異世界</light_purple>!"
-    give-emerald: "<side>因為任務成功, 每人獲得 <yellow>1 個綠寶石</yellow>!"
-    lightning: "<side>因為任務失敗, 全員<light_purple>被閃電劈</light_purple>!"
-    tnt: "<side>因為任務失敗, <player> 得到<light_purple>點燃的 TNT</light_purple>!"
-    skill-cooldown: "<side>因為任務失敗, 全員技能冷卻<light_purple>增加 120 秒</light_purple>!"
+    void: "<player> 被<light_purple>傳送到異世界</light_purple>!"
+    give-emerald: "每人獲得 <yellow>5 個綠寶石</yellow>!"
+    lightning: "全員<light_purple>被閃電劈</light_purple>!"
+    tnt: "<player> 得到<light_purple><lang:entity.minecraft.tnt></light_purple>!"
+    skill-cooldown: "全員技能冷卻<light_purple>增加 120 秒</light_purple>!"
 
 gui:
   in-use: "<red>該視窗目前已被其他人占用!</red>"
@@ -338,6 +349,8 @@ world:
   template-warning: "<red>你在模板世界中!</red>"
 
 commands:
+  root:
+    github: "訪問 <click:open_url:'https://github.com/LilyKensa/DestroyTheCore'><u>https://github.com/LilyKensa/DestroyTheCore</u></click> 已獲得更多訊息"
   suicide:
     bad-time: "<red>你現在不能自殺!</red>"
     already-dead: "<red>你已經死了!</red>"
@@ -720,6 +733,7 @@ missions:
   xp-fountain:
     title: "<yellow>經驗噴泉</yellow>"
     desc: "中央任務點出現大量的經驗值!"
+    bar: "<yellow>經驗噴泉: <time></yellow>"
   angry-bees:
     title: "<yellow>女王蜂來襲</yellow>"
     desc: "中央出現了突變的女王蜂! 擊殺會掉落綠寶石!"
@@ -809,7 +823,7 @@ roles:
       name: "閃電戰開始"
       desc-1: "<dark_purple>獲得加速 I (5s), 抗性 I (10s)</dark_purple>"
       announce: "<player> 使用了<yellow><role></yellow>技能, 跑速抗性增加!"
-    no-bow: "<red>This role doesn't allow the use of bows!</red>"
+    no-crossbow: "<red>此職業不允許使用十字弩!</red>"
   guard:
     name: "守衛"
     desc-1: "<gold>守護核心的重要防禦角色!</gold>"
@@ -930,7 +944,7 @@ roles:
       desc-3: "<dark_purple>得到額外 4 秒隱形及力量 III</dark_purple>"
       not-invis: "<red>你必須隱形才能使用技能!</red>"
       no-target: "<red>找不到傳送目標!</red>"
-    no-bow: "<red>你不能使用弓箭!</red>"
+    no-bow: "<red>此職業不允許使用弓箭!</red>"
   constructor:
     name: "建築師"
     desc-1: "<gold>工人隨身攜帶一把榔頭也是正常的吧!</gold>"
@@ -1059,3 +1073,35 @@ roles:
         enemy: "入侵"
     potion-warning: "<red>你不能喝藥水!</red>"
     invis-warning: "<red>你不能隱形!</red>"
+
+advancement:
+  tab: "殲滅攻城戰"
+
+advancements:
+  root:
+    title: "<white>殲滅攻城戰</white>"
+    desc-1: "<green>加入殲滅攻城戰的大家庭</green>"
+  chose-role:
+    title: "<white>琳瑯滿目</white>"
+    desc-1: "<green>打開職業選單</green>"
+  played-role:
+    title: "<white>天命<role></white>"
+    desc-1: "<green>在遊戲開始時選擇<role></green>"
+  played:
+    title: "<white>初出茅廬</white>"
+    desc-1: "<green>參與遊戲</green>"
+  played-spectator:
+    title: "<white>觀棋不語</white>"
+    desc-1: "<green>成為旁觀者</green>"
+  used-skill:
+    title: "<white>小試牛刀</white>"
+    desc-1: "<green>使用技能</green>"
+  used-many-skills:
+    title: "<white>一技之長</white>"
+    desc-1: "<green>精熟技能</green>"
+  used-lottery:
+    title: "<white>孤注一擲</white>"
+    desc-1: "<green>使用抽獎</green>"
+  used-many-lotteries:
+    title: "<white>賭徒上身</white>"
+    desc-1: "<green>瘋狂抽獎</green>"

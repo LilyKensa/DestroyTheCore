@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.gui.role;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.GUIItem;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.managers.RolesManager;
@@ -31,11 +31,12 @@ public class RandomRoleItem extends GUIItem {
   @Override
   public void handleClick(ClickType click, Player pl, InventoryClickEvent ev) {
     Role role = RandomUtils.pick(
-      DestroyTheCore.rolesManager.roles.values().stream().filter(
-        r -> r.id != RolesManager.RoleKey.DEFAULT
-          && r.levelReq <= DestroyTheCore.game.stats.get(
-            pl.getUniqueId()
-          ).levels
+      DTC.rolesManager.roles.values().stream().filter(
+        r -> r.id != RolesManager.RoleKey.DEFAULT &&
+          r.levelReq <= DTC.game.stats
+            .get(
+              pl.getUniqueId()
+            ).levels
       ).toList()
     );
     
@@ -55,9 +56,9 @@ public class RandomRoleItem extends GUIItem {
       1 // Pitch
     );
     
-    DestroyTheCore.rolesManager.setRole(pl, role);
-    DestroyTheCore.game.enforceTeam(pl);
-    DestroyTheCore.boardsManager.refresh(pl);
+    DTC.rolesManager.setRole(pl, role);
+    DTC.game.enforceDisplay(pl);
+    DTC.boardsManager.refresh(pl);
     
     closeWindow(pl);
   }

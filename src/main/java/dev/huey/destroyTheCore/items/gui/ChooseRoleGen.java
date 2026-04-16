@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.items.gui;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.itemGens.UsableItemGen;
 import dev.huey.destroyTheCore.managers.ItemsManager;
@@ -25,12 +25,12 @@ public class ChooseRoleGen extends UsableItemGen {
   @Override
   public void use(Player pl, Block block) {
     if (
-      DestroyTheCore.game.getPlayerData(pl).side.equals(Game.Side.SPECTATOR)
+      DTC.game.getPlayerData(pl).side.equals(Game.Side.SPECTATOR)
     ) {
       pl.sendActionBar(TextUtils.$("items.choose-role.no-team"));
       return;
     }
     
-    DestroyTheCore.guiManager.openRoleSelection(pl);
+    DTC.guiManager.openRoleSelection(pl);
   }
 }

@@ -1,11 +1,10 @@
 package dev.huey.destroyTheCore.roles;
 
 import com.destroystokyo.paper.ParticleBuilder;
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.managers.RolesManager;
 import dev.huey.destroyTheCore.records.Pos;
-import dev.huey.destroyTheCore.utils.AttributeUtils;
 import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
@@ -14,9 +13,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.potion.PotionEffectType;
 
 public class GuardRole extends Role {
@@ -24,10 +21,12 @@ public class GuardRole extends Role {
   static public void onEnchant(Player pl) {
     for (Player e : PlayerUtils.getEnemies(pl)) {
       if (
-        DestroyTheCore.game.getPlayerData(
+        DTC.game.getPlayerData(
           e
         ).role.id == RolesManager.RoleKey.GUARD
-      ) send(e, TextUtils.$("roles.guard.enchanting-alarm"));
+      ) {
+        send(e, TextUtils.$("roles.guard.enchanting-alarm"));
+      }
     }
   }
   
@@ -38,10 +37,10 @@ public class GuardRole extends Role {
     addExclusiveItem(
       Material.SHIELD,
       meta -> {
-        meta.addAttributeModifier(
-          Attribute.MAX_HEALTH,
-          AttributeUtils.addition("max-health", EquipmentSlotGroup.OFFHAND, 10)
-        );
+        // meta.addAttributeModifier(
+        //   Attribute.MAX_HEALTH,
+        //   AttributeUtils.addition("max-health", EquipmentSlotGroup.OFFHAND, 10)
+        // );
       }
     );
     addSkill(300 * 20);
@@ -49,17 +48,17 @@ public class GuardRole extends Role {
   
   @Override
   public void onTick(Player pl) {
-    if (DestroyTheCore.game.map.core == null) return;
+    if (DTC.game.map.core == null) return;
     if (!LocUtils.inLive(pl)) return;
     
     if (
       LocUtils.near(
         Pos.of(pl),
-        LocUtils.selfSide(DestroyTheCore.game.map.core, pl),
+        LocUtils.selfSide(DTC.game.map.core, pl),
         15
       )
     ) {
-      if (DestroyTheCore.ticksManager.ticksCount % 25 == 0) {
+      if (DTC.ticksManager.ticksCount % 25 == 0) {
         
         PlayerUtils.addPassiveEffect(
           pl,
@@ -73,7 +72,7 @@ public class GuardRole extends Role {
     if (
       LocUtils.near(
         Pos.of(pl),
-        LocUtils.enemySide(DestroyTheCore.game.map.core, pl),
+        LocUtils.enemySide(DTC.game.map.core, pl),
         15
       )
     ) {
@@ -83,7 +82,7 @@ public class GuardRole extends Role {
           List.of(Placeholder.unparsed("role", name))
         )
       );
-      if (DestroyTheCore.ticksManager.isUpdateTick()) {
+      if (DTC.ticksManager.isUpdateTick()) {
         PlayerUtils.addEffect(
           pl,
           PotionEffectType.WITHER,
@@ -116,7 +115,7 @@ public class GuardRole extends Role {
       )
     );
     
-    if (DestroyTheCore.game.map.core == null) return;
+    if (DTC.game.map.core == null) return;
     
     boolean found = false;
     for (Player e : PlayerUtils.getEnemies(pl)) {
@@ -125,7 +124,7 @@ public class GuardRole extends Role {
       if (
         LocUtils.near(
           Pos.of(e),
-          LocUtils.selfSide(DestroyTheCore.game.map.core, pl),
+          LocUtils.selfSide(DTC.game.map.core, pl),
           15
         )
       ) {
@@ -180,6 +179,9 @@ public class GuardRole extends Role {
       }
     }
     
-    if (!found) send(pl, TextUtils.$("roles.guard.skill.found-enemy.none"));
+    if (!found) {
+      PlayerUtils.setHandCooldown(pl, skillCooldown / 2);
+      send(pl, TextUtils.$("roles.guard.skill.found-enemy.none"));
+    }
   }
 }

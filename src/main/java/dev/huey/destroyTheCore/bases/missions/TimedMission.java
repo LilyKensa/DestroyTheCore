@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.bases.missions;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.Mission;
 import dev.huey.destroyTheCore.utils.CoreUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
@@ -57,7 +57,7 @@ public abstract class TimedMission extends Mission implements Listener {
   
   @Override
   public void tick() {
-    if (DestroyTheCore.ticksManager.isSeconds()) {
+    if (DTC.ticksManager.isSeconds()) {
       timeBar.name(getTitle());
       timeBar.progress(((float) ticks) / maxTicks);
     }

@@ -8,9 +8,9 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
 import xyz.xenondevs.invui.InvUI;
 
-public final class DestroyTheCore extends JavaPlugin {
+public final class DTC extends JavaPlugin {
   
-  static public DestroyTheCore instance;
+  static public DTC instance;
   static public String version;
   
   static public Component prefix;
@@ -31,6 +31,8 @@ public final class DestroyTheCore extends JavaPlugin {
   static public MissionsManager missionsManager;
   static public GUIManager guiManager;
   static public TipsManager tipsManager;
+  static public AdvancementsManager advancementsManager;
+  static public AntiCheatManager antiCheatManager;
   static public BoardsManager boardsManager;
   static public TicksManager ticksManager;
   
@@ -58,6 +60,8 @@ public final class DestroyTheCore extends JavaPlugin {
     missionsManager = new MissionsManager();
     guiManager = new GUIManager();
     tipsManager = new TipsManager();
+    advancementsManager = new AdvancementsManager();
+    antiCheatManager = new AntiCheatManager();
     boardsManager = new BoardsManager();
     configManager = new ConfigManager();
     ticksManager = new TicksManager();
@@ -87,6 +91,8 @@ public final class DestroyTheCore extends JavaPlugin {
     recipesManager.init();
     rolesManager.init();
     tipsManager.init();
+    advancementsManager.init();
+    antiCheatManager.init();
     ticksManager.init();
     
     game.init();

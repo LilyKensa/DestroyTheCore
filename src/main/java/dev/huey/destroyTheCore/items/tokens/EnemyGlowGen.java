@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.items.tokens;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.itemGens.UsableItemGen;
 import dev.huey.destroyTheCore.managers.ItemsManager;
@@ -21,7 +21,7 @@ public class EnemyGlowGen extends UsableItemGen {
   
   @Override
   public void use(Player pl, Block block) {
-    Game.Side side = DestroyTheCore.game.getPlayerData(pl).side;
+    Game.Side side = DTC.game.getPlayerData(pl).side;
     if (side.equals(Game.Side.SPECTATOR)) return;
     
     for (Player p : PlayerUtils.getEnemies(side)) {
@@ -45,6 +45,6 @@ public class EnemyGlowGen extends UsableItemGen {
       )
     );
     
-    DestroyTheCore.game.getPlayerData(pl).addExtraExp(25);
+    DTC.game.getPlayerData(pl).addExtraExp(25);
   }
 }

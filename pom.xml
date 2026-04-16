@@ -6,7 +6,7 @@
 
   <groupId>dev.huey</groupId>
   <artifactId>DestroyTheCore</artifactId>
-  <version>0.28.1</version>
+  <version>0.29.4</version>
   <packaging>jar</packaging>
 
   <name>DestroyTheCore</name>
@@ -101,6 +101,10 @@
       <id>codemc</id>
       <url>https://repo.codemc.org/repository/maven-public/</url>
     </repository>
+    <repository>
+      <id>fren_gor</id>
+      <url>https://nexus.frengor.com/repository/public/</url>
+    </repository>
   </repositories>
 
   <dependencies>
@@ -131,6 +135,12 @@
       <artifactId>invui</artifactId>
       <version>1.47</version>
       <type>pom</type>
+    </dependency>
+    <dependency>
+      <groupId>com.frengor</groupId>
+      <artifactId>ultimateadvancementapi</artifactId>
+      <version>2.7.2</version>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
 </project>

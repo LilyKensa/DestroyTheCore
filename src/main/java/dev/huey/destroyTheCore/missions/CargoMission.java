@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.missions;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.Mission;
 import dev.huey.destroyTheCore.records.Pos;
@@ -8,12 +8,16 @@ import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.RandomUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
+import java.util.ArrayList;
+import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffectType;
@@ -21,7 +25,7 @@ import org.bukkit.potion.PotionEffectType;
 public class CargoMission extends Mission implements Listener {
   
   static public final NamespacedKey dataNamespace = new NamespacedKey(
-    DestroyTheCore.instance,
+    DTC.instance,
     "cargo-mission-package"
   );
   
@@ -54,45 +58,55 @@ public class CargoMission extends Mission implements Listener {
     return false;
   }
   
-  public CargoMission() {
-    super("cargo");
-  }
-  
   boolean draw = true;
   
-  public Player randomPlayer(Game.Side side) {
-    return RandomUtils.pick(PlayerUtils.getTeammates(side));
+  List<Item> itemEntities = new ArrayList<>();
+  
+  public CargoMission() {
+    super("cargo");
+    addResult();
   }
   
   @Override
   public void start() {
-    Player a = randomPlayer(Game.Side.RED), b = randomPlayer(Game.Side.GREEN);
-    
-    for (Player pl : new Player[]{
-      a, b
-    }) {
-      if (pl == null) continue;
+    for (Game.Side side : Game.bothSide) {
+      Player pl = RandomUtils.pick(PlayerUtils.getTeammates(side));
       
-      pl.teleport(
-        LocUtils.live(
-          LocUtils.selfSide(DestroyTheCore.game.map.core, pl)
-        )
-      );
-      PlayerUtils.give(pl, getItem());
+      if (pl == null) {
+        PlayerUtils.dropAtSpawn(side, getItem());
+      }
+      else {
+        pl.teleport(
+          LocUtils.live(
+            LocUtils.selfSide(DTC.game.map.core, pl)
+          )
+        );
+        PlayerUtils.give(pl, getItem());
+      }
     }
   }
   
   @EventHandler
   public void onBlockPlace(BlockPlaceEvent ev) {
-    if (!ev.getItemInHand().getPersistentDataContainer().has(dataNamespace))
-      return;
-    
-    ev.setCancelled(true);
+    if (ev.getItemInHand().getPersistentDataContainer().has(dataNamespace)) {
+      ev.setCancelled(true);
+    }
+  }
+  
+  @EventHandler
+  public void onPlayerDropItem(PlayerDropItemEvent ev) {
+    if (
+      ev.getItemDrop().getItemStack().getPersistentDataContainer().has(
+        dataNamespace
+      )
+    ) {
+      itemEntities.add(ev.getItemDrop());
+    }
   }
   
   @Override
   public void tick() {
-    if (DestroyTheCore.ticksManager.isUpdateTick()) {
+    if (DTC.ticksManager.isUpdateTick()) {
       for (Player p : PlayerUtils.allGaming()) {
         if (!hasItem(p)) continue;
         
@@ -105,11 +119,10 @@ public class CargoMission extends Mission implements Listener {
         );
         
         if (
-          LocUtils.inLive(p)
-            &&
+          LocUtils.inLive(p) &&
             LocUtils.near(
               Pos.of(p),
-              DestroyTheCore.game.map.mission,
+              DTC.game.map.mission,
               5
             )
         ) {
@@ -128,6 +141,12 @@ public class CargoMission extends Mission implements Listener {
     
     for (Player p : PlayerUtils.allGaming()) {
       p.getInventory().remove(Material.VAULT);
+    }
+    
+    for (Item entity : itemEntities) {
+      if (entity.isValid() && !entity.isDead()) {
+        entity.remove();
+      }
     }
   }
 }

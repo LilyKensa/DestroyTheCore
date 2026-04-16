@@ -104,7 +104,8 @@ public class ParticleUtils {
   
   /** Region with 2 corners */
   static public void region(
-    List<Player> players, Location loc1, Location loc2, Color color0, Color color1, Color color2
+    List<Player> players, Location loc1, Location loc2, Color color0,
+    Color color1, Color color2
   ) {
     if (!LocUtils.isSameWorld(loc1, loc2)) return;
     World world = loc1.getWorld();
@@ -125,9 +126,14 @@ public class ParticleUtils {
     TriConsumer<Double, Double, Double> emitter = (x, y, z) -> {
       Location loc = new Location(world, x, y, z);
       if (
-        LocUtils.closeEnough(loc, loc1.toBlockLocation().add(0.5, 0.5, 0.5))
-          ||
-          LocUtils.closeEnough(loc, loc2.toBlockLocation().add(0.5, 0.5, 0.5))
+        LocUtils.closeEnough(
+          loc,
+          loc1.toBlockLocation().add(0.5, 0.5, 0.5)
+        ) ||
+          LocUtils.closeEnough(
+            loc,
+            loc2.toBlockLocation().add(0.5, 0.5, 0.5)
+          )
       ) return;
       
       dust(players, loc, color0);
@@ -177,7 +183,8 @@ public class ParticleUtils {
   }
   
   static public void ring(
-    List<Player> players, Location centerLoc, double radius, int count, Color color
+    List<Player> players, Location centerLoc, double radius, int count,
+    Color color
   ) {
     LocUtils.ring(
       centerLoc,
@@ -197,7 +204,8 @@ public class ParticleUtils {
   
   /** By Gemini */
   static public void spiralSphere(
-    Location center, double radius, Particle particleType, int turns, int pointsPerTurn
+    Location center, double radius, Particle particleType, int turns,
+    int pointsPerTurn
   ) {
     final int totalPoints = turns * pointsPerTurn;
     

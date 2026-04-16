@@ -1,13 +1,15 @@
 package dev.huey.destroyTheCore.missions;
 
 import com.destroystokyo.paper.ParticleBuilder;
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.missions.TimedMission;
 import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.RandomUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
+import java.util.ArrayList;
+import java.util.List;
 import org.bukkit.Particle;
 import org.bukkit.damage.DamageSource;
 import org.bukkit.damage.DamageType;
@@ -19,32 +21,32 @@ public class ExplodeMission extends TimedMission {
     super("explode", 60 * 20);
   }
   
-  public Player randomPlayer(Game.Side side) {
-    return RandomUtils.pick(PlayerUtils.getTeammates(side));
-  }
-  
-  Player a, b;
+  List<Player> players = new ArrayList<>();
   
   @Override
   public void innerStart() {
-    a = randomPlayer(Game.Side.RED);
-    b = randomPlayer(Game.Side.GREEN);
+    for (Game.Side side : Game.bothSide) {
+      Player pl = RandomUtils.pick(PlayerUtils.getTeammates(side));
+      if (pl == null) continue;
+      
+      players.add(pl);
+    }
   }
   
   @Override
   public void innerTick() {
-    if (DestroyTheCore.ticksManager.isUpdateTick()) {
-      for (Player pl : new Player[]{
-        a, b
-      }) pl.sendActionBar(
-        TextUtils.$("missions.explode.warning")
-      );
+    if (DTC.ticksManager.isUpdateTick()) {
+      for (Player pl : players) {
+        if (pl == null) continue;
+        
+        pl.sendActionBar(
+          TextUtils.$("missions.explode.warning")
+        );
+      }
     }
     
-    if (DestroyTheCore.ticksManager.isParticleTick()) {
-      for (Player pl : new Player[]{
-        a, b
-      }) {
+    if (DTC.ticksManager.isParticleTick()) {
+      for (Player pl : players) {
         new ParticleBuilder(Particle.CAMPFIRE_COSY_SMOKE)
           .allPlayers()
           .location(LocUtils.hitboxCenter(pl))
@@ -57,11 +59,7 @@ public class ExplodeMission extends TimedMission {
   
   @Override
   public void innerFinish() {
-    if (a == null || b == null) return;
-    
-    for (Player pl : new Player[]{
-      a, b
-    }) {
+    for (Player pl : players) {
       pl.getWorld().createExplosion(
         pl,
         pl.getLocation(),

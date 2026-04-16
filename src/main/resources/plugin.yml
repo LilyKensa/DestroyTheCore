@@ -1,9 +1,9 @@
 name: DestroyTheCore
 version: '${project.version}'
-main: dev.huey.destroyTheCore.DestroyTheCore
+main: dev.huey.destroyTheCore.DTC
 api-version: '1.21'
 authors: [ _hueeey_ ]
-depend: [ ProtocolLib ]
+depend: [ ProtocolLib, UltimateAdvancementAPI ]
 commands:
   dtc:
     description: Main command of Destroy the Core 3

@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.tools;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.editorTools.PosTool;
 import dev.huey.destroyTheCore.records.Pos;
 import org.bukkit.Color;
@@ -14,11 +14,11 @@ public class CoreBlockTool extends PosTool {
   
   @Override
   public Pos getPos() {
-    return DestroyTheCore.game.map.core;
+    return DTC.game.map.core;
   }
   
   @Override
   public void setPos(Pos pos) {
-    DestroyTheCore.game.map.core = pos;
+    DTC.game.map.core = pos;
   }
 }

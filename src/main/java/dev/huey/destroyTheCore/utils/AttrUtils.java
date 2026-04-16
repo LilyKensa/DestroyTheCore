@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.utils;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import org.bukkit.NamespacedKey;
 import org.bukkit.attribute.Attributable;
 import org.bukkit.attribute.Attribute;
@@ -12,14 +12,14 @@ import org.bukkit.inventory.EquipmentSlotGroup;
  * Specifically made for {@link AttributeModifier}
  * Probably should move this to other places though
  */
-public class AttributeUtils {
+public class AttrUtils {
   
   static public AttributeModifier addition(
     String name, EquipmentSlotGroup slot, double amount
   ) {
     return new AttributeModifier(
       new NamespacedKey(
-        DestroyTheCore.instance,
+        DTC.instance,
         "add-%s-%g".formatted(name, amount)
       ),
       amount,
@@ -33,7 +33,7 @@ public class AttributeUtils {
   ) {
     return new AttributeModifier(
       new NamespacedKey(
-        DestroyTheCore.instance,
+        DTC.instance,
         "multiply-%s-%g".formatted(name, ratio)
       ),
       ratio - 1,

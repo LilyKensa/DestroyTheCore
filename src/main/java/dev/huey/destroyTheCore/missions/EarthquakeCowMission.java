@@ -1,7 +1,7 @@
 package dev.huey.destroyTheCore.missions;
 
 import com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent;
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.Mission;
 import dev.huey.destroyTheCore.utils.*;
@@ -36,17 +36,19 @@ public class EarthquakeCowMission extends Mission implements Listener {
     Location loc = LocUtils.toBlockCenter(originalLoc);
     
     while (
-      loc.getY() > loc.getWorld().getMinHeight()
-        && loc.getY() < loc.getWorld().getMaxHeight()
-        && loc.getBlock().isCollidable()
+      loc.getY() > loc.getWorld().getMinHeight() &&
+        loc.getY() < loc.getWorld()
+          .getMaxHeight() &&
+        loc.getBlock().isCollidable()
     ) {
       loc.add(0, 1, 0);
     }
     
     while (
-      loc.getY() > loc.getWorld().getMinHeight()
-        && loc.getY() < loc.getWorld().getMaxHeight()
-        && !loc.getBlock().isCollidable()
+      loc.getY() > loc.getWorld().getMinHeight() &&
+        loc.getY() < loc.getWorld()
+          .getMaxHeight() &&
+        !loc.getBlock().isCollidable()
     ) {
       loc.add(0, -1, 0);
     }
@@ -55,8 +57,8 @@ public class EarthquakeCowMission extends Mission implements Listener {
   }
   
   record BlockRecord(
-                     Block block, Material type, BlockData data,
-                     BlockState state
+    Block block, Material type, BlockData data,
+    BlockState state
   ) {
   }
   
@@ -149,7 +151,7 @@ public class EarthquakeCowMission extends Mission implements Listener {
           for (Player p : flyLoc.getNearbyPlayers(1)) {
             if (!PlayerUtils.shouldHandle(p)) continue;
             if (
-              DestroyTheCore.game.getPlayerData(p).side == Game.Side.SPECTATOR
+              DTC.game.getPlayerData(p).side == Game.Side.SPECTATOR
             ) continue;
             
             p.damage(
@@ -170,7 +172,7 @@ public class EarthquakeCowMission extends Mission implements Listener {
           }
         }
       }
-    }.runTaskTimer(DestroyTheCore.instance, 0, 1);
+    }.runTaskTimer(DTC.instance, 0, 1);
   }
   
   BossBar healthBar;
@@ -194,11 +196,12 @@ public class EarthquakeCowMission extends Mission implements Listener {
   }
   
   void addScore(Player pl, double amount) {
-    addScore(DestroyTheCore.game.getPlayerData(pl).side, amount);
+    addScore(DTC.game.getPlayerData(pl).side, amount);
   }
   
   public EarthquakeCowMission() {
     super("earthquake-cow");
+    addResult();
   }
   
   public void move() {
@@ -227,11 +230,11 @@ public class EarthquakeCowMission extends Mission implements Listener {
     cow.setCustomNameVisible(true);
     
     cow.setGlowing(true);
-    AttributeUtils.set(cow, Attribute.SCALE, 2);
-    AttributeUtils.set(cow, Attribute.MOVEMENT_SPEED, 0.2);
-    AttributeUtils.set(cow, Attribute.WATER_MOVEMENT_EFFICIENCY, 1);
-    AttributeUtils.set(cow, Attribute.KNOCKBACK_RESISTANCE, 1);
-    AttributeUtils.set(cow, Attribute.MAX_HEALTH, 150);
+    AttrUtils.set(cow, Attribute.SCALE, 2);
+    AttrUtils.set(cow, Attribute.MOVEMENT_SPEED, 0.2);
+    AttrUtils.set(cow, Attribute.WATER_MOVEMENT_EFFICIENCY, 1);
+    AttrUtils.set(cow, Attribute.KNOCKBACK_RESISTANCE, 1);
+    AttrUtils.set(cow, Attribute.MAX_HEALTH, 150);
     cow.setHealth(150);
     
     cow.getPathfinder().setCanFloat(true);
@@ -239,7 +242,7 @@ public class EarthquakeCowMission extends Mission implements Listener {
     move();
     addCooldown();
     
-    DestroyTheCore.missionsManager.team.addEntity(cow);
+    DTC.missionsManager.team.addEntity(cow);
   }
   
   @EventHandler
@@ -248,7 +251,7 @@ public class EarthquakeCowMission extends Mission implements Listener {
     if (ev.getEntity().getUniqueId() != cow.getUniqueId()) return;
     
     healthBar.progress(
-      (float) (cow.getHealth() / AttributeUtils.get(
+      (float) (cow.getHealth() / AttrUtils.get(
         cow,
         Attribute.MAX_HEALTH
       ))
@@ -282,7 +285,7 @@ public class EarthquakeCowMission extends Mission implements Listener {
   
   @Override
   public void tick() {
-    if (DestroyTheCore.ticksManager.isSeconds()) {
+    if (DTC.ticksManager.isSeconds()) {
       if (RandomUtils.hit(0.5)) {
         move();
       }

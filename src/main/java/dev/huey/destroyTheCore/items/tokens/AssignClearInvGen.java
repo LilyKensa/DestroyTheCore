@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.items.tokens;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.itemGens.UsableItemGen;
 import dev.huey.destroyTheCore.managers.ItemsManager;
@@ -33,8 +33,8 @@ public class AssignClearInvGen extends UsableItemGen {
     
     allay.customName(TextUtils.$("items.assign-clear-inv.allay"));
     
-    AttributeUtils.set(allay, Attribute.SCALE, 1.2);
-    AttributeUtils.set(allay, Attribute.MAX_HEALTH, 1);
+    AttrUtils.set(allay, Attribute.SCALE, 1.2);
+    AttrUtils.set(allay, Attribute.MAX_HEALTH, 1);
     allay.setHealth(1);
     
     allay.getEquipment().setItemInMainHand(item);
@@ -45,8 +45,8 @@ public class AssignClearInvGen extends UsableItemGen {
   
   @Override
   public boolean canUse(Player pl) {
-    Game.Side side = DestroyTheCore.game.getPlayerData(pl).side;
-    SideData sideData = DestroyTheCore.game.getSideData(side);
+    Game.Side side = DTC.game.getPlayerData(pl).side;
+    SideData sideData = DTC.game.getSideData(side);
     
     if (sideData.clearInvCooldown > 0) {
       pl.sendActionBar(
@@ -66,7 +66,7 @@ public class AssignClearInvGen extends UsableItemGen {
     if (
       PlayerUtils.getEnemies(side).stream()
         .noneMatch(p -> {
-          PlayerData d = DestroyTheCore.game.getPlayerData(p);
+          PlayerData d = DTC.game.getPlayerData(p);
           return d.alive && !d.clearedInv;
         })
     ) {
@@ -79,8 +79,8 @@ public class AssignClearInvGen extends UsableItemGen {
   
   @Override
   public void use(Player pl, Block block) {
-    Game.Side side = DestroyTheCore.game.getPlayerData(pl).side;
-    SideData sideData = DestroyTheCore.game.getSideData(side);
+    Game.Side side = DTC.game.getPlayerData(pl).side;
+    SideData sideData = DTC.game.getSideData(side);
     if (side.equals(Game.Side.SPECTATOR)) return;
     
     sideData.clearInvCooldown = 10 * 60 * 20;
@@ -88,14 +88,14 @@ public class AssignClearInvGen extends UsableItemGen {
     Player target = RandomUtils.pick(
       PlayerUtils.getEnemies(side).stream()
         .filter(p -> {
-          PlayerData d = DestroyTheCore.game.getPlayerData(p);
+          PlayerData d = DTC.game.getPlayerData(p);
           return d.alive && !d.clearedInv;
         })
         .toList()
     );
     if (target == null) return;
     
-    DestroyTheCore.game.getPlayerData(target).clearedInv = true;
+    DTC.game.getPlayerData(target).clearedInv = true;
     
     PlayerUtils.delayAssign(
       pl,
@@ -122,10 +122,12 @@ public class AssignClearInvGen extends UsableItemGen {
               ItemStack item = items[index];
               
               if (
-                item == null
-                  || item.isEmpty()
-                  || item.getType() == Material.KNOWLEDGE_BOOK
-                  || DestroyTheCore.rolesManager.isExclusiveItem(item)
+                item == null ||
+                  item.isEmpty() ||
+                  item
+                    .getType() == Material.KNOWLEDGE_BOOK ||
+                  DTC.rolesManager
+                    .isExclusiveItem(item)
               ) continue;
               
               inv.setItem(index, ItemStack.empty());
@@ -133,7 +135,7 @@ public class AssignClearInvGen extends UsableItemGen {
               summonAllayWithItem(LocUtils.hitboxCenter(target), item);
             }
           }
-        }.runTaskTimer(DestroyTheCore.instance, 0, 2);
+        }.runTaskTimer(DTC.instance, 0, 2);
         
         for (Player p : Bukkit.getOnlinePlayers()) p.playSound(
           p.getLocation(),
@@ -173,6 +175,6 @@ public class AssignClearInvGen extends UsableItemGen {
       }
     );
     
-    DestroyTheCore.game.getPlayerData(pl).addExtraExp(25);
+    DTC.game.getPlayerData(pl).addExtraExp(25);
   }
 }

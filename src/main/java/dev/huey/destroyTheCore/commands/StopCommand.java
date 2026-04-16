@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.commands;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.Subcommand;
 import dev.huey.destroyTheCore.records.PlayerData;
 import dev.huey.destroyTheCore.records.Stats;
@@ -25,13 +25,13 @@ public class StopCommand extends Subcommand {
     }
     
     for (Player p : Bukkit.getOnlinePlayers()) {
-      PlayerData data = DestroyTheCore.game.getPlayerData(p);
-      Stats stat = DestroyTheCore.game.getStats(p);
+      PlayerData data = DTC.game.getPlayerData(p);
+      Stats stat = DTC.game.getStats(p);
       
       stat.addFromPlayerData(data);
     }
     
-    DestroyTheCore.game.stop();
+    DTC.game.stop();
     PlayerUtils.prefixedBroadcast(
       TextUtils.$(
         "commands.stop.announce",

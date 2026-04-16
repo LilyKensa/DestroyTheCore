@@ -64,6 +64,7 @@ game:
     red: "<red>Red</red>"
     green: "<green>Green</green>"
     spectator: "<gray>Spectator</gray>"
+    items: "<aqua>Items</aqua>"
   prompt-rejoin: "Use <aqua>/rejoin</aqua> to go back to the game"
   banned:
     attack:
@@ -165,8 +166,12 @@ game:
 
 anti-cheat:
   prefix: "[<light_purple>Anti-cheat</light_purple>] "
-  reaction-time: "<red>Illegal reaction time</red>"
-  auto-click: "<red>Auto clicker</red>"
+  admin-notice: "<player> is flagged for <cheat>, Score: <value>/<white>100</white>"
+  reasons:
+    quiz-speed: "<red>Too fast quiz</red>"
+    auto-click: "<red>Auto right click</red>"
+    attack-range: "<red>Reach</red>"
+    spam-break: "<red>Instant break</red>"
 
 item-gen:
   right-click-to-use: "- <yellow>Right click to use</yellow>"
@@ -204,23 +209,29 @@ mission:
     red-bar: "<red>Red Progress</red>"
     green-bar: "<green>Green Progress</green>"
   draw: "The result was <yellow>tied</yellow>!"
+  result:
+    intro: "Whoever <action> the mission, "
+    outro: "As <side> team <action> the mission, "
+    win: "<yellow>completed</yellow>"
+    lose: "<yellow>failed</yellow>"
+    random-player: "random player"
   results:
-    clear-xp: "As <side> team failed the mission, their experience was <light_purple>reset to zero</light_purple>!"
-    give-xp: "As <side> team completed the mission, each person got <yellow>500 experience points</yellow>!"
-    bad-effect: "As <side> team failed the mission, they got <light_purple><effect></light_purple> effect!"
-    good-effect: "As <side> team completed the mission, they got <yellow><effect></yellow> effect!"
-    add-respawn-time: "As <side> team failed the mission, each person <light_purple>increased 20 sin</light_purple>!"
-    remove-respawn-time: "As <side> team completed the mission, each person <yellow>reduced 20 sin</yellow>!"
-    ban-ores: "As <side> team failed the mission, their ores are <light_purple>banned for 2 minutes</light_purple>!"
-    ban-shop: "As <side> team failed the mission, their shop are <light_purple>banned for 2 minutes</light_purple>!"
-    attack-core: "As <side> team failed the mission, their core health is <light_purple>reduced by 10</light_purple>!"
-    summon-pig: "As <side> team failed the mission, they got <light_purple><name></light_purple>!"
+    clear-xp: "their experience was <light_purple>reset to zero</light_purple>!"
+    give-xp: "each person got <yellow>500 experience points</yellow>!"
+    bad-effect: "they got <light_purple><effect></light_purple> effect!"
+    good-effect: "they got <yellow><effect></yellow> effect!"
+    add-respawn-time: "each person <light_purple>increased 20 sin</light_purple>!"
+    remove-respawn-time: "each person <yellow>reduced 20 sin</yellow>!"
+    ban-ores: "their ores are <light_purple>banned for 2 minutes</light_purple>!"
+    ban-shop: "their shop are <light_purple>banned for 2 minutes</light_purple>!"
+    attack-core: "their core health is <light_purple>reduced by 10</light_purple>!"
+    summon-pig: "they got <light_purple><name></light_purple>!"
     pig-name: "Stupid Piggy Mates"
-    void: "As <side> team failed the mission, <player> is <light_purple>teleported to the backroom</light_purple>!"
-    give-emerald: "As <side> team completed the mission, each person got <yellow>1 emerald</yellow>!"
-    lightning: "As <side> team failed the mission, they got <light_purple>striked by lightning</light_purple>"
-    tnt: "As <side> team failed the mission, <player> got <light_purple>a primed TNT</light_purple>!"
-    skill-cooldown: "As <side> team failed the mission, their skill cooldown was <light_purple>increased by 120 seconds</light_purple>"
+    void: "<player> is <light_purple>teleported to the backroom</light_purple>!"
+    give-emerald: "each person got <yellow>5 emerald</yellow>!"
+    lightning: "they got <light_purple>striked by lightning</light_purple>"
+    tnt: "<player> got a <light_purple><lang:entity.minecraft.tnt></light_purple>!"
+    skill-cooldown: "their skill cooldown was <light_purple>increased by 120 seconds</light_purple>"
 
 gui:
   in-use: "<red>The window is currently used by someone else!</red>"
@@ -298,6 +309,8 @@ world:
   template-warning: "<red>You're in the template world!</red>"
 
 commands:
+  root:
+    github: "Go to <click:open_url:'https://github.com/LilyKensa/DestroyTheCore'><u>https://github.com/LilyKensa/DestroyTheCore</u></click> for help"
   suicide:
     bad-time: "<red>You can't suicide right now!</red>"
     already-dead: "<red>You're already dead!</red>"
@@ -680,6 +693,7 @@ missions:
   xp-fountain:
     title: "<yellow>Experience Fountain</yellow>"
     desc: "Large amount of experience appeared at the center!"
+    bar: "<yellow>Experience Fountain: <time></yellow>"
   angry-bees:
     title: "<yellow>Angry Bees</yellow>"
     desc: "A mutant queen bee appeared in the center!"
@@ -764,7 +778,7 @@ roles:
       name: "Blitz Launch"
       desc-1: "<dark_purple>Gets Speed I (5s), Resistance I (10s)</dark_purple>"
       announce: "<player> used <yellow><role></yellow>'s skill, increased speed and resistance!"
-    no-bow: "<red>This role doesn't allow the use of bows!</red>"
+    no-crossbow: "<red>This role doesn't allow the use of crossbows!</red>"
   guard:
     name: "Guard"
     desc-1: "<gold>An important defensive role guarding the core!</gold>"
@@ -885,7 +899,7 @@ roles:
       desc-3: "<dark_purple>Gain invisible for another 4 seconds & Strength III</dark_purple>"
       not-invis: "<red>You need to be invisible to use this skill!</red>"
       no-target: "<red>No target to teleport to!</red>"
-    no-bow: "<red>You can't use bow!</red>"
+    no-bow: "<red>This role doesn't allow the use of bows!</red>"
   constructor:
     name: "Constructor"
     desc-1: "<gold>It's normal for a worker to carry a hammer with them, right?</gold>"

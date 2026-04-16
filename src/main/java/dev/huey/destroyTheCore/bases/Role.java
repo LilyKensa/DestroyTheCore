@@ -1,7 +1,7 @@
 package dev.huey.destroyTheCore.bases;
 
 import com.destroystokyo.paper.ParticleBuilder;
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.items.starter.StarterBootsGen;
 import dev.huey.destroyTheCore.items.starter.StarterChestplateGen;
@@ -39,7 +39,7 @@ public class Role extends GUIItem {
   
   /** Used to distinguish skill items, stored data is {@code true} */
   static public final NamespacedKey skillNamespace = new NamespacedKey(
-    DestroyTheCore.instance,
+    DTC.instance,
     "skill"
   );
   /**
@@ -47,7 +47,7 @@ public class Role extends GUIItem {
    * {@link #id}
    */
   static public final NamespacedKey exclusiveItemNamespace = new NamespacedKey(
-    DestroyTheCore.instance,
+    DTC.instance,
     "exclusive-item"
   );
   
@@ -87,8 +87,10 @@ public class Role extends GUIItem {
     for (int i = 1; true; ++i) {
       key = translateRoot.formatted(translationName) + "-" + i;
       
-      if (DestroyTheCore.translationsManager.has(key)) list.add(
-        TextUtils.miniToRawCodes(DestroyTheCore.translationsManager.getRaw(key))
+      if (DTC.translationsManager.has(key)) list.add(
+        TextUtils.miniToRawCodes(
+          DTC.translationsManager.unparsed(key)
+        )
       );
       else break;
     }
@@ -269,7 +271,7 @@ public class Role extends GUIItem {
   
   /** Call this if the skill is successfully used */
   public void skillFeedback(Player pl) {
-    DestroyTheCore.game.getPlayerData(pl).skills++;
+    DTC.game.getPlayerData(pl).skills++;
     
     pl.playSound(
       pl.getLocation(),
@@ -316,7 +318,7 @@ public class Role extends GUIItem {
         List.of(
           Placeholder.unparsed(
             "type",
-            DestroyTheCore.translationsManager.getRaw(
+            DTC.translationsManager.unparsed(
               "role.desc.types." + type.name().toLowerCase()
             )
           )
@@ -374,7 +376,7 @@ public class Role extends GUIItem {
       );
     }
     
-    Stats stat = DestroyTheCore.game.getStats(pl);
+    Stats stat = DTC.game.getStats(pl);
     
     return new ItemBuilder(iconType)
       .setDisplayName(
@@ -400,7 +402,9 @@ public class Role extends GUIItem {
   public void handleClick(
     ClickType clickType, Player pl, InventoryClickEvent ev
   ) {
-    if (DestroyTheCore.game.getStats(pl).levels >= levelReq) {
+    if (
+      DTC.game.getStats(pl).levels >= levelReq || PlayerUtils.isAdmin(pl)
+    ) {
       announce(pl);
       pl.playSound(
         pl.getLocation(),
@@ -409,14 +413,14 @@ public class Role extends GUIItem {
         1 // Pitch
       );
       
-      DestroyTheCore.rolesManager.setRole(pl, this);
+      DTC.rolesManager.setRole(pl, this);
     }
     else {
       pl.playSound(
         pl.getLocation(),
         Sound.ENTITY_ENDERMAN_TELEPORT,
-        1, //
-        1
+        1, // Volume
+        1 // Pitch
       );
       pl.sendActionBar(TextUtils.$("items.choose-role.locked"));
     }

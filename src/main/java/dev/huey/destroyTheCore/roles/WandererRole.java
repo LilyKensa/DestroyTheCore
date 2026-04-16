@@ -1,7 +1,7 @@
 package dev.huey.destroyTheCore.roles;
 
 import com.destroystokyo.paper.ParticleBuilder;
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.managers.RolesManager;
 import dev.huey.destroyTheCore.utils.LocUtils;
@@ -40,10 +40,11 @@ public class WandererRole extends Role {
       return (LocUtils.isSameWorld(
         loc,
         thatLoc
-      )
-        && thatLoc.getY() >= loc.getY()
-        && thatLoc.getY() <= loc.getY() + height
-        && new Vector(
+      ) &&
+        thatLoc.getY() >= loc.getY() &&
+        thatLoc.getY() <= loc
+          .getY() + height &&
+        new Vector(
           thatLoc.getX() - loc.getX(),
           0,
           thatLoc.getZ() - loc.getZ()
@@ -54,10 +55,10 @@ public class WandererRole extends Role {
   static public List<Elevator> elevators = new ArrayList<>();
   
   static public void onTick() {
-    if (DestroyTheCore.game.paused) return;
+    if (DTC.game.paused) return;
     
     for (Elevator elevator : elevators) {
-      if (DestroyTheCore.ticksManager.isUpdateTick()) {
+      if (DTC.ticksManager.isUpdateTick()) {
         for (Player p : Bukkit.getOnlinePlayers()) {
           if (!elevator.contains(p.getLocation())) continue;
           if (MoleRole.moleModeTime.containsKey(p.getUniqueId())) continue;
@@ -129,9 +130,9 @@ public class WandererRole extends Role {
   
   @Override
   public void onTick(Player pl) {
-    if (DestroyTheCore.game.map.core == null) return;
+    if (DTC.game.map.core == null) return;
     
-    if (DestroyTheCore.ticksManager.isUpdateTick()) {
+    if (DTC.ticksManager.isUpdateTick()) {
       ItemStack offItem = pl.getInventory().getItemInOffHand();
       
       if (offItem.getType().name().endsWith("SWORD")) {

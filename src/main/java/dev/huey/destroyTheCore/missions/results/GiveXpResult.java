@@ -8,12 +8,12 @@ import org.bukkit.entity.Player;
 public class GiveXpResult extends Mission.Result {
   
   public GiveXpResult() {
-    super("give-xp");
+    super("give-xp", true);
   }
   
   @Override
   public void forWinner(Game.Side side) {
-    announce(side);
+    outro(side);
     
     for (Player p : PlayerUtils.getTeammates(side)) {
       p.giveExp(500);

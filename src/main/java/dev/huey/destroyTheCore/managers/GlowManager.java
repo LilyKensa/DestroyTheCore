@@ -10,7 +10,7 @@ import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.WrappedDataValue;
 import com.comphenix.protocol.wrappers.WrappedDataWatcher;
 import com.google.common.reflect.TypeToken;
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.utils.CoreUtils;
 import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
@@ -65,16 +65,16 @@ public class GlowManager {
   }
   
   boolean isWearingHat(Player pl) {
-    return DestroyTheCore.itemsManager.checkGen(
+    return DTC.itemsManager.checkGen(
       pl.getInventory().getHelmet(),
       ItemsManager.ItemKey.GOD_HELMET
     );
   }
   
   boolean shouldSeeGlow(Player viewer, Player target) {
-    return (target.isGlowing()
-      || (isWearingHat(viewer)
-        && LocUtils.near(
+    return (target.isGlowing() ||
+      (isWearingHat(viewer) &&
+        LocUtils.near(
           target,
           viewer,
           15
@@ -115,7 +115,7 @@ public class GlowManager {
     
     public CustomAdapter() {
       super(
-        DestroyTheCore.instance,
+        DTC.instance,
         ListenerPriority.NORMAL,
         PacketType.Play.Server.ENTITY_METADATA
       );
@@ -141,7 +141,8 @@ public class GlowManager {
         
         byte v = (byte) value.getValue();
         value.setValue(
-          (byte) (glow ? v | MetadataBit.GLOWING.bit : v & ~MetadataBit.GLOWING.bit)
+          (byte) (glow ? v | MetadataBit.GLOWING.bit
+            : v & ~MetadataBit.GLOWING.bit)
         );
       }
       packet.getDataValueCollectionModifier().write(0, dataValues);

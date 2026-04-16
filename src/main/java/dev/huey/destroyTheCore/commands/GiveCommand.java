@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.commands;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.Subcommand;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
@@ -13,7 +13,7 @@ public class GiveCommand extends Subcommand {
     super("give");
     addArgument(
       "item",
-      () -> DestroyTheCore.itemsManager.gens.keySet().stream().map(
+      () -> DTC.itemsManager.gens.keySet().stream().map(
         key -> key.name().toLowerCase()
       ).toList()
     );

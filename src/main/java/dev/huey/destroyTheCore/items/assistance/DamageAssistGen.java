@@ -2,7 +2,7 @@ package dev.huey.destroyTheCore.items.assistance;
 
 import dev.huey.destroyTheCore.bases.ItemGen;
 import dev.huey.destroyTheCore.managers.ItemsManager;
-import dev.huey.destroyTheCore.utils.AttributeUtils;
+import dev.huey.destroyTheCore.utils.AttrUtils;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.inventory.EquipmentSlotGroup;
@@ -18,7 +18,7 @@ public class DamageAssistGen extends ItemGen {
   public void computeMeta(ItemMeta meta) {
     meta.addAttributeModifier(
       Attribute.ATTACK_DAMAGE,
-      AttributeUtils.multiply("attack", EquipmentSlotGroup.OFFHAND, 1.25)
+      AttrUtils.multiply("attack", EquipmentSlotGroup.OFFHAND, 1.25)
     );
   }
 }

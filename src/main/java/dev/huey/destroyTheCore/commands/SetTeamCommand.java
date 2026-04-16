@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.commands;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.ItemGen;
 import dev.huey.destroyTheCore.bases.Subcommand;
@@ -76,8 +76,8 @@ public class SetTeamCommand extends Subcommand {
     }
     else {
       if (
-        !PlayerUtils.isAdmin(pl)
-          && LocUtils.inLive(
+        !PlayerUtils.isAdmin(pl) &&
+          LocUtils.inLive(
             pl.getLocation()
           )
       ) {
@@ -97,10 +97,10 @@ public class SetTeamCommand extends Subcommand {
       );
     }
     
-    DestroyTheCore.game.getPlayerData(target).join(side);
-    DestroyTheCore.game.enforceTeam(target);
+    DTC.game.getPlayerData(target).join(side);
+    DTC.game.enforceDisplay(target);
     
-    DestroyTheCore.boardsManager.refresh(target);
+    DTC.boardsManager.refresh(target);
     
     if (LocUtils.inLive(target)) {
       PlayerUtils.refreshSpectatorAbilities(target);
@@ -110,7 +110,7 @@ public class SetTeamCommand extends Subcommand {
     for (ItemStack item : target.getInventory().getContents()) {
       if (item == null || item.getType().isAir()) continue;
       if (!(item.getItemMeta() instanceof LeatherArmorMeta meta)) continue;
-      if (!DestroyTheCore.itemsManager.isGen(item)) continue;
+      if (!DTC.itemsManager.isGen(item)) continue;
       if (
         !item.getPersistentDataContainer().get(
           ItemGen.dataNamespace,

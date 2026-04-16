@@ -4,7 +4,7 @@ import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.BlockPosition;
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.records.Pos;
 import java.util.function.BiFunction;
@@ -31,27 +31,27 @@ public class LocUtils {
     return (isSameWorld(
       loc1,
       loc2
-    )
-      && loc1.getBlockX() == loc2.getBlockX()
-      && loc1.getBlockY() == loc2
-        .getBlockY()
-      && loc1.getBlockZ() == loc2.getBlockZ());
+    ) &&
+      loc1.getBlockX() == loc2.getBlockX() &&
+      loc1.getBlockY() == loc2
+        .getBlockY() &&
+      loc1.getBlockZ() == loc2.getBlockZ());
   }
   
   static public Location lobby(Pos pos) {
-    return pos.toLoc(DestroyTheCore.worldsManager.lobby);
+    return pos.toLoc(DTC.worldsManager.lobby);
   }
   
   static public Location template(Pos pos) {
-    return pos.toLoc(DestroyTheCore.worldsManager.template);
+    return pos.toLoc(DTC.worldsManager.template);
   }
   
   static public Location live(Pos pos) {
-    return pos.toLoc(DestroyTheCore.worldsManager.live);
+    return pos.toLoc(DTC.worldsManager.live);
   }
   
   static public boolean inLobby(Location loc) {
-    return isSameWorld(loc.getWorld(), DestroyTheCore.worldsManager.lobby);
+    return isSameWorld(loc.getWorld(), DTC.worldsManager.lobby);
   }
   
   static public boolean inLobby(Entity e) {
@@ -59,7 +59,7 @@ public class LocUtils {
   }
   
   static public boolean inTemplate(Location loc) {
-    return isSameWorld(loc.getWorld(), DestroyTheCore.worldsManager.template);
+    return isSameWorld(loc.getWorld(), DTC.worldsManager.template);
   }
   
   static public boolean inTemplate(Entity e) {
@@ -67,7 +67,7 @@ public class LocUtils {
   }
   
   static public boolean inLive(Location loc) {
-    return isSameWorld(loc.getWorld(), DestroyTheCore.worldsManager.live);
+    return isSameWorld(loc.getWorld(), DTC.worldsManager.live);
   }
   
   static public boolean inLive(Entity e) {
@@ -113,10 +113,14 @@ public class LocUtils {
   }
   
   static public boolean closeEnough(Location target, Location source) {
-    return isSameWorld(target, source)
-      && Math.abs(target.getX() - source.getX()) < 0.6
-      && Math.abs(target.getY() - source.getY()) < 0.6
-      && Math.abs(target.getZ() - source.getZ()) < 0.6;
+    return isSameWorld(target, source) &&
+      Math.abs(
+        target.getX() - source.getX()
+      ) < 0.6 &&
+      Math.abs(target.getY() - source.getY()) < 0.6 &&
+      Math.abs(
+        target.getZ() - source.getZ()
+      ) < 0.6;
   }
   
   static public Location hitboxCenter(Entity e) {
@@ -205,10 +209,10 @@ public class LocUtils {
   }
   
   static public boolean nearAnyCore(Location loc, int dist) {
-    if (!isSameWorld(loc.getWorld(), DestroyTheCore.worldsManager.live))
+    if (!isSameWorld(loc.getWorld(), DTC.worldsManager.live))
       return false;
     
-    Pos posRed = DestroyTheCore.game.map.core;
+    Pos posRed = DTC.game.map.core;
     if (posRed == null) return false;
     
     for (Pos pos : new Pos[]{
@@ -223,7 +227,7 @@ public class LocUtils {
   static public boolean nearSpawn(Location loc) {
     Pos pos = Pos.of(loc);
     
-    for (Pos spawnRed : DestroyTheCore.game.map.spawnpoints) {
+    for (Pos spawnRed : DTC.game.map.spawnpoints) {
       for (Pos spawn : new Pos[]{
         spawnRed, LocUtils.flip(spawnRed)
       }) {
@@ -235,12 +239,12 @@ public class LocUtils {
         int tz = spawn.floorZ();
         
         if (
-          sx >= tx - 1
-            && sx <= tx + 1
-            && sy >= ty
-            && sy <= ty + 2
-            && sz >= tz - 1
-            && sz <= tz + 1
+          sx >= tx - 1 &&
+            sx <= tx + 1 &&
+            sy >= ty &&
+            sy <= ty + 2 &&
+            sz >= tz - 1 &&
+            sz <= tz + 1
         ) {
           return true;
         }
@@ -273,7 +277,7 @@ public class LocUtils {
   }
   
   static public Pos selfSide(Pos pos, Player pl) {
-    return selfSide(pos, DestroyTheCore.game.getPlayerData(pl).side);
+    return selfSide(pos, DTC.game.getPlayerData(pl).side);
   }
   
   /** Flip if {@code side} is red */
@@ -282,21 +286,21 @@ public class LocUtils {
   }
   
   static public Pos enemySide(Pos pos, Player pl) {
-    return enemySide(pos, DestroyTheCore.game.getPlayerData(pl).side);
+    return enemySide(pos, DTC.game.getPlayerData(pl).side);
   }
   
   static public boolean canAccess(Game.Side side, Location loc) {
-    if (DestroyTheCore.game.map.core == null) return true;
+    if (DTC.game.map.core == null) return true;
     if (!LocUtils.inLive(loc)) return true;
     
     double selfDistSq = loc.distanceSquared(
       LocUtils.live(
-        LocUtils.selfSide(DestroyTheCore.game.map.core, side).center()
+        LocUtils.selfSide(DTC.game.map.core, side).center()
       )
     );
     double enemyDistSq = loc.distanceSquared(
       LocUtils.live(
-        LocUtils.enemySide(DestroyTheCore.game.map.core, side).center()
+        LocUtils.enemySide(DTC.game.map.core, side).center()
       )
     );
     
@@ -306,7 +310,7 @@ public class LocUtils {
   /** If a block is in their own half of the map */
   static public boolean canAccess(Player pl, Block block) {
     return canAccess(
-      DestroyTheCore.game.getPlayerData(pl).side,
+      DTC.game.getPlayerData(pl).side,
       LocUtils.toBlockCenter(
         block.getLocation()
       )

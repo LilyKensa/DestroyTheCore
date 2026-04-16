@@ -1,7 +1,7 @@
 package dev.huey.destroyTheCore.managers;
 
 import dev.huey.destroyTheCore.Constants;
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.utils.RandomUtils;
 import java.util.*;
 import org.bukkit.Material;
@@ -83,7 +83,7 @@ public class InventoriesManager {
   public void dropSome(Player pl, double chance) {
     PlayerInventory inv = pl.getInventory();
     
-    ItemStack placeholder = DestroyTheCore.itemsManager.gens.get(
+    ItemStack placeholder = DTC.itemsManager.gens.get(
       ItemsManager.ItemKey.PLACEHOLDER
     ).getItem();
     
@@ -97,27 +97,28 @@ public class InventoriesManager {
           item.getType()
         )
       ) continue;
-      if (DestroyTheCore.rolesManager.isExclusiveItem(item)) continue;
+      if (DTC.rolesManager.isExclusiveItem(item)) continue;
       if (
-        DestroyTheCore.itemsManager.isGen(
+        DTC.itemsManager.isGen(
           item
-        ) && DestroyTheCore.itemsManager.getGen(item).willNeverDrop()
+        ) && DTC.itemsManager.getGen(item).willNeverDrop()
       ) continue;
       
       if (
-        DestroyTheCore.itemsManager.isGen(
+        DTC.itemsManager.isGen(
           item
-        ) && DestroyTheCore.itemsManager.getGen(item).willVanish()
+        ) && DTC.itemsManager.getGen(item).willVanish()
       ) {
         contents[i] = placeholder;
       }
       else if (
-        item.getType() == Material.ENCHANTING_TABLE
-          || item.getType() == Material.ENDER_CHEST
-          || Constants.oreItems.contains(
+        item.getType() == Material.ENCHANTING_TABLE ||
+          item
+            .getType() == Material.ENDER_CHEST ||
+          Constants.oreItems.contains(
             item.getType()
-          )
-          || RandomUtils.hit(chance)
+          ) ||
+          RandomUtils.hit(chance)
       ) {
         pl.getWorld().dropItemNaturally(pl.getLocation(), item).setPickupDelay(
           20

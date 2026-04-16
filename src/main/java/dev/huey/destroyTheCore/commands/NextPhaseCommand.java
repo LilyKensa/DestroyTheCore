@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.commands;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.Subcommand;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
@@ -21,15 +21,15 @@ public class NextPhaseCommand extends Subcommand {
       return;
     }
     
-    if (!DestroyTheCore.game.isPlaying) return;
+    if (!DTC.game.isPlaying) return;
     
-    DestroyTheCore.game.nextPhase();
+    DTC.game.nextPhase();
     PlayerUtils.prefixedBroadcast(
       TextUtils.$(
         "commands.skip.announce",
         List.of(Placeholder.component("player", PlayerUtils.getName(pl)))
       )
     );
-    DestroyTheCore.boardsManager.refresh();
+    DTC.boardsManager.refresh();
   }
 }

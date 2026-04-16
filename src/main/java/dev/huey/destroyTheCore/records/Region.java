@@ -31,12 +31,14 @@ public class Region implements ConfigurationSerializable {
   }
   
   public boolean contains(Pos loc) {
-    return (loc.getX() >= min.getX()
-      && loc.getY() >= min.getY()
-      && loc.getZ() >= min.getZ()
-      && loc.getX() < max.getX()
-      && loc.getY() < max.getY()
-      && loc.getZ() < max.getZ());
+    return (loc.getX() >= min.getX() &&
+      loc.getY() >= min.getY() &&
+      loc
+        .getZ() >= min.getZ() &&
+      loc.getX() < max.getX() &&
+      loc.getY() < max
+        .getY() &&
+      loc.getZ() < max.getZ());
   }
   
   public void forEachBlock(World world, Consumer<Block> consumer) {

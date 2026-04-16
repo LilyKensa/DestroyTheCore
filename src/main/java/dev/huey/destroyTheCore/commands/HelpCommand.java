@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.commands;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.Subcommand;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import java.util.List;
@@ -12,7 +12,7 @@ public class HelpCommand extends Subcommand {
     super("help");
     addArgument(
       "command",
-      () -> DestroyTheCore.commandsManager.subcommands.stream().map(
+      () -> DTC.commandsManager.subcommands.stream().map(
         c -> c.name
       ).toList()
     );

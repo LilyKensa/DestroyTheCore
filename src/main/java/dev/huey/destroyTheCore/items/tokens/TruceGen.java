@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.items.tokens;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.itemGens.UsableItemGen;
 import dev.huey.destroyTheCore.managers.ItemsManager;
@@ -21,14 +21,14 @@ public class TruceGen extends UsableItemGen {
   
   @Override
   public boolean canUse(Player pl) {
-    SideData sideData = DestroyTheCore.game.getSideData(pl);
+    SideData sideData = DTC.game.getSideData(pl);
     
     if (sideData.usedTruce) {
       pl.sendActionBar(TextUtils.$("items.truce.duped-usage"));
       return false;
     }
     
-    if (DestroyTheCore.game.phase.isAfter(Game.Phase.DoubleDamage)) {
+    if (DTC.game.phase.isAfter(Game.Phase.DoubleDamage)) {
       pl.sendActionBar(TextUtils.$("items.truce.too-late"));
       return false;
     }
@@ -38,11 +38,11 @@ public class TruceGen extends UsableItemGen {
   
   @Override
   public void use(Player pl, Block block) {
-    SideData sideData = DestroyTheCore.game.getSideData(pl);
+    SideData sideData = DTC.game.getSideData(pl);
     
     sideData.usedTruce = true;
     
-    DestroyTheCore.game.truceTimer += 5 * 60 * 20;
+    DTC.game.truceTimer += 5 * 60 * 20;
     
     PlayerUtils.broadcast(
       TextUtils.$(
@@ -54,6 +54,6 @@ public class TruceGen extends UsableItemGen {
       )
     );
     
-    DestroyTheCore.game.getPlayerData(pl).addExtraExp(25);
+    DTC.game.getPlayerData(pl).addExtraExp(25);
   }
 }

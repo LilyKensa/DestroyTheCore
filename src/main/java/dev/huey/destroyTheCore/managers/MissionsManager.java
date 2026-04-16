@@ -1,8 +1,9 @@
 package dev.huey.destroyTheCore.managers;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.Mission;
 import dev.huey.destroyTheCore.missions.*;
+import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.RandomUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
@@ -80,6 +81,8 @@ public class MissionsManager {
   public void start() {
     prefix = TextUtils.$("mission.prefix");
     
+    Mission.centerLoc = LocUtils.live(DTC.game.map.mission);
+    
     Scoreboard board = Bukkit.getServer().getScoreboardManager()
       .getMainScoreboard();
     team = board.getTeam("mission");
@@ -111,8 +114,8 @@ public class MissionsManager {
   /** Check if missions should continue, then restart */
   public void next() {
     if (!active) return;
-    if (!DestroyTheCore.game.isPlaying) return;
-    if (DestroyTheCore.game.phaseTimer <= waitingTicks) return;
+    if (!DTC.game.isPlaying) return;
+    if (DTC.game.phaseTimer <= waitingTicks) return;
     
     waitingBar = BossBar.bossBar(
       TextUtils.$("mission.waiting-title"),
@@ -139,7 +142,7 @@ public class MissionsManager {
           return;
         }
       }
-    }.runTaskTimer(DestroyTheCore.instance, 0, step);
+    }.runTaskTimer(DTC.instance, 0, step);
   }
   
   public void forceStop() {
@@ -154,7 +157,7 @@ public class MissionsManager {
   }
   
   public void onTick() {
-    if (DestroyTheCore.game.paused) return;
+    if (DTC.game.paused) return;
     
     if (mission != null && mission.active) {
       mission.onTick();

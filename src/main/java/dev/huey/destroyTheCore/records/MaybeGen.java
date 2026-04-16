@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.records;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,8 +16,8 @@ public class MaybeGen implements ConfigurationSerializable {
   static public MaybeGen fromItem(ItemStack item) {
     MaybeGen mg = new MaybeGen();
     
-    if (DestroyTheCore.itemsManager.isGen(item)) {
-      mg.key = DestroyTheCore.itemsManager.getGen(item).id;
+    if (DTC.itemsManager.isGen(item)) {
+      mg.key = DTC.itemsManager.getGen(item).id;
       mg.amount = item.getAmount();
     }
     else {
@@ -29,7 +29,7 @@ public class MaybeGen implements ConfigurationSerializable {
   
   public ItemStack get() {
     if (key != null) {
-      return DestroyTheCore.itemsManager.gens
+      return DTC.itemsManager.gens
         .get(key).getItem(amount);
     }
     

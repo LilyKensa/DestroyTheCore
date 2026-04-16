@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.managers;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.roles.KekkaiMasterRole;
 import dev.huey.destroyTheCore.roles.MoleRole;
 import dev.huey.destroyTheCore.roles.RangerRole;
@@ -41,37 +41,37 @@ public class TicksManager {
     public void run() {
       ticksCount++;
       
-      DestroyTheCore.game.onTick();
+      DTC.game.onTick();
       
-      DestroyTheCore.missionsManager.onTick();
+      DTC.missionsManager.onTick();
       KekkaiMasterRole.onTick();
       WandererRole.onTick();
       
       if (isParticleTick()) {
-        DestroyTheCore.toolsManager.onParticleTick();
-        DestroyTheCore.glowManager.onParticleTick();
+        DTC.toolsManager.onParticleTick();
+        DTC.glowManager.onParticleTick();
         
         KekkaiMasterRole.onParticleTick();
         RangerRole.onParticleTick();
         WandererRole.onParticleTick();
         MoleRole.onParticleTick();
         
-        DestroyTheCore.game.onParticleTick();
+        DTC.game.onParticleTick();
       }
       
       if (isUpdateTick()) {
-        DestroyTheCore.itemsManager.onUpdateTick();
+        DTC.itemsManager.onUpdateTick();
         
         RangerRole.onUpdateTick();
         MoleRole.onUpdateTick();
       }
       
       if (isTipTick()) {
-        DestroyTheCore.tipsManager.onTipTick();
+        DTC.tipsManager.onTipTick();
       }
       
       if (isSeconds()) {
-        DestroyTheCore.boardsManager.onUITick();
+        DTC.boardsManager.onUITick();
       }
     }
   }
@@ -81,6 +81,6 @@ public class TicksManager {
   
   public void init() {
     task = new TicksRunnable();
-    task.runTaskTimer(DestroyTheCore.instance, 0, 1);
+    task.runTaskTimer(DTC.instance, 0, 1);
   }
 }

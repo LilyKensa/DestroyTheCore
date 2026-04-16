@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.commands;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.Subcommand;
 import dev.huey.destroyTheCore.records.PlayerData;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
@@ -21,7 +21,7 @@ public class ShoutCommand extends Subcommand {
   
   @Override
   public void execute(Player pl, List<String> args) {
-    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
+    PlayerData data = DTC.game.getPlayerData(pl);
     
     if (data.shoutCooldown > 0 && !PlayerUtils.isAdmin(pl)) {
       PlayerUtils.send(
@@ -42,13 +42,15 @@ public class ShoutCommand extends Subcommand {
     data.shoutCooldown = PlayerData.shoutCooldownDuration;
     
     TextComponent empty = (TextComponent) TextUtils.$("chat.shout.empty");
-    TextComponent message = args.isEmpty() ? empty : String.join(" ", args)
-      .equals(empty.content()) ? (TextComponent) TextUtils.$(
-        "chat.shout.empty-troll",
-        List.of(
-          Placeholder.component("message", empty)
+    TextComponent message = args.isEmpty() ? empty
+      : String.join(" ", args)
+        .equals(empty.content()) ? (TextComponent) TextUtils.$(
+          "chat.shout.empty-troll",
+          List.of(
+            Placeholder.component("message", empty)
+          )
         )
-      ) : Component.text(String.join(" ", args));
+      : Component.text(String.join(" ", args));
     
     PlayerUtils.broadcast(
       Component.join(

@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.tools;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.editorTools.PosTool;
 import dev.huey.destroyTheCore.records.Pos;
 import dev.huey.destroyTheCore.utils.LocUtils;
@@ -15,11 +15,11 @@ public class LobbyTool extends PosTool {
   
   @Override
   public Pos getPos() {
-    return DestroyTheCore.game.lobby.spawn;
+    return DTC.game.lobby.spawn;
   }
   
   @Override
   public void setPos(Pos pos) {
-    DestroyTheCore.game.lobby.spawn = LocUtils.toSpawnPoint(pos);
+    DTC.game.lobby.spawn = LocUtils.toSpawnPoint(pos);
   }
 }

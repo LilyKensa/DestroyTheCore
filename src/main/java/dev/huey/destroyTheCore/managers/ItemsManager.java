@@ -203,17 +203,18 @@ public class ItemsManager {
   }
   
   public boolean isGen(ItemStack item) {
-    return (item != null
-      && item.hasItemMeta()
-      && item.getItemMeta().getPersistentDataContainer().has(
-        ItemGen.dataNamespace
-      ));
+    return (item != null &&
+      item.hasItemMeta() &&
+      item.getItemMeta()
+        .getPersistentDataContainer().has(
+          ItemGen.dataNamespace
+        ));
   }
   
   /** Check if the item stack is an instance of the specific item-gen */
   public boolean checkGen(ItemStack item, ItemKey key) {
-    return (isGen(item)
-      && key.name().equals(
+    return (isGen(item) &&
+      key.name().equals(
         item.getItemMeta().getPersistentDataContainer().get(
           ItemGen.dataNamespace,
           PersistentDataType.STRING
@@ -265,9 +266,11 @@ public class ItemsManager {
   
   public void onPlayerInteract(PlayerInteractEvent ev) {
     if (
-      ev.getHand() != EquipmentSlot.HAND
-        || !(ev.getAction() == Action.RIGHT_CLICK_AIR
-          || ev.getAction() == Action.RIGHT_CLICK_BLOCK)
+      ev.getHand() != EquipmentSlot.HAND ||
+        !(ev
+          .getAction() == Action.RIGHT_CLICK_AIR ||
+          ev
+            .getAction() == Action.RIGHT_CLICK_BLOCK)
     ) return;
     
     Player pl = ev.getPlayer();

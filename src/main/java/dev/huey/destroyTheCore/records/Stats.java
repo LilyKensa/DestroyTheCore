@@ -6,8 +6,8 @@ import java.util.function.BiConsumer;
 import org.bukkit.Material;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
-public class Stats implements ConfigurationSerializable {
-  static public final int levelOneMaxExp = 500, maxExpIncrement = 100;
+public class Stats implements HasStats, ConfigurationSerializable {
+  static public final int levelOneMaxExp = 500, maxExpIncrement = 25;
   static public final int maxLevels = 100;
   
   public boolean nightVision = false;

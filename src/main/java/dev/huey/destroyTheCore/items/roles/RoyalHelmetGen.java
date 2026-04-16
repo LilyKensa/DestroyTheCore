@@ -2,7 +2,7 @@ package dev.huey.destroyTheCore.items.roles;
 
 import dev.huey.destroyTheCore.bases.ItemGen;
 import dev.huey.destroyTheCore.managers.ItemsManager;
-import dev.huey.destroyTheCore.utils.AttributeUtils;
+import dev.huey.destroyTheCore.utils.AttrUtils;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
@@ -22,7 +22,7 @@ public class RoyalHelmetGen extends ItemGen {
     meta.addEnchant(Enchantment.BINDING_CURSE, 1, true);
     meta.addAttributeModifier(
       Attribute.MAX_HEALTH,
-      AttributeUtils.addition("max-health", EquipmentSlotGroup.HEAD, -4)
+      AttrUtils.addition("max-health", EquipmentSlotGroup.HEAD, -4)
     );
   }
 }

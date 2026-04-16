@@ -1,7 +1,7 @@
 package dev.huey.destroyTheCore.utils;
 
 import com.destroystokyo.paper.ParticleBuilder;
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.ItemGen;
 import dev.huey.destroyTheCore.managers.ItemsManager;
@@ -15,7 +15,6 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -36,7 +35,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scoreboard.Team;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
@@ -47,13 +45,15 @@ public class PlayerUtils {
     ).findAny().orElse(null);
   }
   
-  static public boolean wearingLeather(Player player) {
-    Predicate<Material> isLeather = (type) -> type == Material.LEATHER_HELMET
-      || type == Material.LEATHER_CHESTPLATE
-      || type == Material.LEATHER_LEGGINGS
-      || type == Material.LEATHER_BOOTS;
+  static public boolean wearingLeather(Player pl) {
+    Predicate<Material> isLeather = (
+      type
+    ) -> type == Material.LEATHER_HELMET ||
+      type == Material.LEATHER_CHESTPLATE ||
+      type == Material.LEATHER_LEGGINGS ||
+      type == Material.LEATHER_BOOTS;
     
-    for (ItemStack item : player.getInventory().getArmorContents()) {
+    for (ItemStack item : pl.getInventory().getArmorContents()) {
       if (item != null && isLeather.test(item.getType())) {
         return true;
       }
@@ -90,9 +90,10 @@ public class PlayerUtils {
     send(pl, text, NamedTextColor.GRAY);
   }
   
-  /** {@link #send} with {@link DestroyTheCore#prefix} */
+  /** {@link #send} with {@link DTC#prefix} */
   static public void prefixedSend(Player pl, Component component) {
-    send(pl, DestroyTheCore.prefix.append(component));
+    if (DTC.prefix == null) return;
+    send(pl, DTC.prefix.append(component));
   }
   
   static public void prefixedSend(Player pl, String text, TextColor color) {
@@ -103,13 +104,18 @@ public class PlayerUtils {
     prefixedSend(pl, text, NamedTextColor.GRAY);
   }
   
-  /** Broadcast to admins */
-  static public void prefixedNotice(Component comp) {
+  static public void notice(Component comp) {
     for (Player p : Bukkit.getOnlinePlayers()) {
       if (isAdmin(p)) {
-        prefixedSend(p, comp);
+        send(p, comp);
       }
     }
+  }
+  
+  /** Broadcast to admins */
+  static public void prefixedNotice(Component comp) {
+    if (DTC.prefix == null) return;
+    notice(DTC.prefix.append(comp));
   }
   
   /** Broadcast to everyone */
@@ -130,7 +136,7 @@ public class PlayerUtils {
     }
   }
   
-  /** {@link #broadcast} with {@link DestroyTheCore#prefix} */
+  /** {@link #broadcast} with {@link DTC#prefix} */
   static public void prefixedBroadcast(Component comp) {
     for (Player pl : Bukkit.getOnlinePlayers()) {
       prefixedSend(pl, comp);
@@ -151,21 +157,21 @@ public class PlayerUtils {
   
   static public List<Player> allGaming() {
     return all().stream().filter(
-      p -> DestroyTheCore.game.getPlayerData(p).isGaming()
+      p -> DTC.game.getPlayerData(p).isGaming()
     ).toList();
   }
   
   static public Component getName(Player pl) {
-    Team team = Bukkit.getScoreboardManager().getMainScoreboard()
-      .getPlayerTeam(pl);
+    PlayerData data = DTC.game.getPlayerData(pl);
     
-    TextComponent.Builder builder = Component.text();
-    if (team != null) builder.append(team.prefix());
-    builder.append(pl.displayName());
-    if (team != null) builder.append(team.suffix());
-    if (team != null) builder.color(team.color());
-    
-    return builder.build();
+    return Component.text(
+      "[%s] %s".formatted(
+        data.side == Game.Side.SPECTATOR
+          ? data.side.pureTitle()
+          : data.role.name,
+        pl.getName()
+      )
+    ).color(data.side.color);
   }
   
   /** Send 1.5 + 0.25 title duration */
@@ -196,9 +202,10 @@ public class PlayerUtils {
    * If that block has right click functionalities, and shouldn't be canceled
    */
   static public boolean checkUsingBlock(Player pl, Block block) {
-    return (block != null
-      && block.getBlockData() instanceof Openable
-      && !pl.isSneaking());
+    return (block != null &&
+      block.getBlockData() instanceof Openable &&
+      !pl
+        .isSneaking());
   }
   
   static public ItemStack getHandItem(Player pl) {
@@ -241,7 +248,7 @@ public class PlayerUtils {
   ) {
     for (ItemsManager.ItemKey key : keys) {
       pl.setCooldown(
-        DestroyTheCore.itemsManager.gens.get(key).getItem().getType(),
+        DTC.itemsManager.gens.get(key).getItem().getType(),
         ticks
       );
     }
@@ -251,7 +258,7 @@ public class PlayerUtils {
     Player pl, List<ItemsManager.ItemKey> keys
   ) {
     return pl.getCooldown(
-      DestroyTheCore.itemsManager.gens.get(keys.getFirst()).getItem().getType()
+      DTC.itemsManager.gens.get(keys.getFirst()).getItem().getType()
     );
   }
   
@@ -293,8 +300,8 @@ public class PlayerUtils {
     if (meta != null) {
       if (meta.isUnbreakable()) return;
       if (
-        meta.hasEnchant(Enchantment.UNBREAKING)
-          && RandomUtils.hit(
+        meta.hasEnchant(Enchantment.UNBREAKING) &&
+          RandomUtils.hit(
             1D / (meta.getEnchantLevel(Enchantment.UNBREAKING) + 1)
           )
       ) return;
@@ -316,27 +323,21 @@ public class PlayerUtils {
     prefixedSend(pl, TextUtils.$("player.no-perm"));
   }
   
-  static public void kickAntiCheat(Player pl, String path) {
-    pl.kick(
-      TextUtils.$("anti-cheat.prefix").append(TextUtils.$("anti-cheat." + path))
-    );
-  }
-  
   static public void backToLobby(Player pl) {
-    if (DestroyTheCore.game.lobby.spawn == null) return;
+    if (DTC.game.lobby.spawn == null) return;
     
     pl.setGameMode(GameMode.SURVIVAL);
     fullyHeal(pl);
-    pl.teleport(LocUtils.lobby(DestroyTheCore.game.lobby.spawn));
+    pl.teleport(LocUtils.lobby(DTC.game.lobby.spawn));
   }
   
   static public void teleportToRestArea(Player pl) {
-    if (DestroyTheCore.game.map.restArea == null) return;
+    if (DTC.game.map.restArea == null) return;
     
     if (
-      DestroyTheCore.game.getPlayerData(pl).side.equals(Game.Side.SPECTATOR)
+      DTC.game.getPlayerData(pl).side.equals(Game.Side.SPECTATOR)
     ) {
-      Location centerLoc = LocUtils.live(DestroyTheCore.game.map.restArea);
+      Location centerLoc = LocUtils.live(DTC.game.map.restArea);
       centerLoc.setYaw(0);
       centerLoc.setX(0);
       pl.teleport(centerLoc);
@@ -345,7 +346,7 @@ public class PlayerUtils {
       pl.teleport(
         LocUtils.live(
           LocUtils.selfSide(
-            DestroyTheCore.game.map.restArea,
+            DTC.game.map.restArea,
             pl
           )
         )
@@ -358,7 +359,7 @@ public class PlayerUtils {
       LocUtils.live(
         LocUtils.selfSide(
           LocUtils.toSpawnPoint(
-            RandomUtils.pick(DestroyTheCore.game.map.spawnpoints)
+            RandomUtils.pick(DTC.game.map.spawnpoints)
           ),
           pl
         )
@@ -373,7 +374,7 @@ public class PlayerUtils {
   
   static public void fullyHeal(Player pl) {
     resetHunger(pl);
-    pl.setHealth(AttributeUtils.get(pl, Attribute.MAX_HEALTH));
+    pl.setHealth(AttrUtils.get(pl, Attribute.MAX_HEALTH));
     pl.setFireTicks(0);
     pl.setFreezeTicks(0);
     pl.setFallDistance(0);
@@ -381,7 +382,7 @@ public class PlayerUtils {
   
   /** Refresh night vision effect based on their preference */
   static public void enforceNightVision(Player pl) {
-    if (DestroyTheCore.game.getStats(pl).nightVision) {
+    if (DTC.game.getStats(pl).nightVision) {
       addPassiveEffect(
         pl,
         PotionEffectType.NIGHT_VISION,
@@ -396,14 +397,15 @@ public class PlayerUtils {
   
   static public void refreshSpectatorVisibility(Player target, Player viewer) {
     if (
-      DestroyTheCore.game.isPlaying
-        &&
-        DestroyTheCore.game.getPlayerData(target).side == Game.Side.SPECTATOR
+      DTC.game.isPlaying &&
+        DTC.game.getPlayerData(
+          target
+        ).side == Game.Side.SPECTATOR
     ) {
-      viewer.hidePlayer(DestroyTheCore.instance, target);
+      viewer.hidePlayer(DTC.instance, target);
     }
     else {
-      viewer.showPlayer(DestroyTheCore.instance, target);
+      viewer.showPlayer(DTC.instance, target);
     }
   }
   
@@ -421,10 +423,10 @@ public class PlayerUtils {
   
   /** Set the player as a spectator */
   static public void refreshSpectatorAbilities(Player pl, boolean state) {
-    if (!DestroyTheCore.game.isPlaying) state = false;
+    if (!DTC.game.isPlaying) state = false;
     
-    boolean creativeAbility = state
-      || List.of(
+    boolean creativeAbility = state ||
+      List.of(
         GameMode.CREATIVE,
         GameMode.SPECTATOR
       ).contains(pl.getGameMode());
@@ -433,30 +435,31 @@ public class PlayerUtils {
     pl.setInvulnerable(state);
     pl.setAllowFlight(creativeAbility);
     
-    ItemStack teleporterItem = DestroyTheCore.itemsManager.gens.get(
+    ItemStack teleporterItem = DTC.itemsManager.gens.get(
       ItemsManager.ItemKey.SPECTATOR_TELEPORTER
     ).getItem();
     
     if (state) {
-      DestroyTheCore.inventoriesManager.store(pl);
+      DTC.inventoriesManager.store(pl);
       pl.getInventory().setItem(4, teleporterItem);
     }
     else {
       pl.getInventory().remove(Material.ENDER_EYE);
-      DestroyTheCore.inventoriesManager.restore(pl);
+      DTC.inventoriesManager.restore(pl);
     }
   }
   
   static public void refreshSpectatorAbilities(Player pl) {
     refreshSpectatorAbilities(
       pl,
-      DestroyTheCore.game.getPlayerData(pl).side.equals(Game.Side.SPECTATOR)
+      DTC.game.getPlayerData(pl).side.equals(Game.Side.SPECTATOR)
     );
   }
   
   /** Apply potion effect, level is 1-based */
   static public void addEffect(
-    LivingEntity pl, PotionEffectType type, int ticks, int level, boolean beacon, boolean particles
+    LivingEntity pl, PotionEffectType type, int ticks, int level,
+    boolean beacon, boolean particles
   ) {
     if (level <= 0) return;
     
@@ -478,7 +481,8 @@ public class PlayerUtils {
   }
   
   static public void setEffect(
-    LivingEntity pl, PotionEffectType type, int ticks, int level, boolean beacon, boolean particles
+    LivingEntity pl, PotionEffectType type, int ticks, int level,
+    boolean beacon, boolean particles
   ) {
     pl.removePotionEffect(type);
     addEffect(pl, type, ticks, level - 1, beacon, particles);
@@ -491,7 +495,8 @@ public class PlayerUtils {
   }
   
   static public void extendEffect(
-    LivingEntity pl, PotionEffectType type, int ticks, int level, boolean beacon, boolean particles
+    LivingEntity pl, PotionEffectType type, int ticks, int level,
+    boolean beacon, boolean particles
   ) {
     int duration = ticks;
     if (pl.hasPotionEffect(type))
@@ -511,12 +516,12 @@ public class PlayerUtils {
   
   /** Reduce respawn time process */
   static public void rrt(Player pl) {
-    PlayerData d = DestroyTheCore.game.getPlayerData(pl);
+    PlayerData d = DTC.game.getPlayerData(pl);
     if (
-      pl.isSneaking()
-        && LocUtils.near(
+      pl.isSneaking() &&
+        LocUtils.near(
           Pos.of(pl),
-          LocUtils.selfSide(DestroyTheCore.game.map.core, d.side),
+          LocUtils.selfSide(DTC.game.map.core, d.side),
           5
         )
     ) {
@@ -542,12 +547,12 @@ public class PlayerUtils {
         pl.giveExp(xp);
         d.addRespawnTime(-1);
         
-        DestroyTheCore.boardsManager.refresh(pl);
+        DTC.boardsManager.refresh(pl);
         
         pl.sendActionBar(TextUtils.$("game.reduce-respawn-time.done"));
         
         if (d.role.id == RolesManager.RoleKey.HACKER) {
-          PlayerUtils.give(pl, Material.IRON_INGOT);
+          give(pl, Material.IRON_INGOT);
         }
         
         pl.playSound(
@@ -600,7 +605,7 @@ public class PlayerUtils {
   }
   
   static public void respawn(Player pl) {
-    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
+    PlayerData data = DTC.game.getPlayerData(pl);
     data.revive();
     
     refreshSpectatorAbilities(pl);
@@ -616,7 +621,7 @@ public class PlayerUtils {
     );
     data.extraSkillReload = 0;
     
-    DestroyTheCore.inventoriesManager.restore(pl);
+    DTC.inventoriesManager.restore(pl);
     CoreUtils.setTickOut(() -> giveEssentials(pl));
     
     pl.setGameMode(GameMode.SURVIVAL);
@@ -625,9 +630,9 @@ public class PlayerUtils {
   }
   
   static public void scheduleRespawn(Player pl) {
-    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
+    PlayerData data = DTC.game.getPlayerData(pl);
     
-    DestroyTheCore.quizManager.start(pl);
+    DTC.quizManager.start(pl);
     
     new BukkitRunnable() {
       int waitTicks = data.respawnTime * 20;
@@ -640,7 +645,7 @@ public class PlayerUtils {
         }
         
         if (data.alive) {
-          DestroyTheCore.quizManager.discard(pl);
+          DTC.quizManager.discard(pl);
           
           cancel();
           return;
@@ -648,17 +653,24 @@ public class PlayerUtils {
         
         boolean updateTitle = waitTicks % 20 == 0;
         
-        if (DestroyTheCore.quizManager.isEnded(pl)) {
+        if (DTC.quizManager.isEnded(pl)) {
           updateTitle = true;
           
-          if (DestroyTheCore.quizManager.isCorrect(pl)) waitTicks -= 10 * 20;
+          if (DTC.quizManager.isCorrect(pl)) {
+            waitTicks -= 10 * 20;
+          }
           
-          if (waitTicks > 0) DestroyTheCore.quizManager.start(pl);
+          if (data.quizQuota <= 0) {
+            DTC.quizManager.discard(pl);
+          }
+          else if (waitTicks > 0) {
+            DTC.quizManager.start(pl);
+          }
         }
         
         if (waitTicks <= 0) {
           respawn(pl);
-          DestroyTheCore.quizManager.discard(pl);
+          DTC.quizManager.discard(pl);
           
           normalTitleTimes(pl);
           pl.sendTitlePart(TitlePart.TITLE, TextUtils.$("player.respawned"));
@@ -672,7 +684,7 @@ public class PlayerUtils {
           int secs = waitTicks / 20;
           
           data.respawnTime = secs;
-          DestroyTheCore.game.enforceRTScore(pl);
+          DTC.game.enforceRTScore(pl);
           
           if (waitTicks <= 60) {
             normalTitleTimes(pl);
@@ -695,9 +707,10 @@ public class PlayerUtils {
                     secs > 60 ? CoreUtils.formatTimeComp(
                       secs,
                       NamedTextColor.GOLD
-                    ) : Component.text(secs).color(
-                      NamedTextColor.GOLD
                     )
+                      : Component.text(secs).color(
+                        NamedTextColor.GOLD
+                      )
                   )
                 )
               )
@@ -710,35 +723,44 @@ public class PlayerUtils {
           waitTicks--;
         }
       }
-    }.runTaskTimer(DestroyTheCore.instance, 0, 1);
+    }.runTaskTimer(DTC.instance, 0, 1);
   }
   
   static public boolean isTeammate(Player a, Player b) {
-    return DestroyTheCore.game.getPlayerData(a).side == DestroyTheCore.game
+    return DTC.game.getPlayerData(a).side == DTC.game
       .getPlayerData(b).side;
+  }
+  
+  /** Drop an item at spawnpoint */
+  static public void dropAtSpawn(Game.Side side, ItemStack item) {
+    DTC.worldsManager.live.dropItemNaturally(
+      LocUtils.live(
+        LocUtils.selfSide(
+          LocUtils.toSpawnPoint(
+            RandomUtils.pick(DTC.game.map.spawnpoints)
+          ),
+          side
+        )
+      ),
+      item
+    ).setPickupDelay(20);
+  }
+  
+  static public void dropAtSpawn(Player pl, ItemStack item) {
+    dropAtSpawn(DTC.game.getPlayerData(pl).side, item);
   }
   
   /** Give a player an item, or send to their spawn if they're dead */
   static public void give(Player pl, ItemStack item) {
     if (item == null || item.isEmpty()) return;
     
-    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
+    PlayerData data = DTC.game.getPlayerData(pl);
     
-    if (!DestroyTheCore.game.isPlaying || data.alive) {
+    if (!DTC.game.isPlaying || data.alive) {
       pl.give(item);
     }
     else {
-      pl.getWorld().dropItemNaturally(
-        LocUtils.live(
-          LocUtils.selfSide(
-            LocUtils.toSpawnPoint(
-              RandomUtils.pick(DestroyTheCore.game.map.spawnpoints)
-            ),
-            data.side
-          )
-        ),
-        item
-      ).setPickupDelay(20);
+      dropAtSpawn(data.side, item);
       
       pl.sendActionBar(TextUtils.$("player.item-sent-to-spawn"));
     }
@@ -764,7 +786,7 @@ public class PlayerUtils {
   }
   
   static public void give(Player pl, ItemsManager.ItemKey key, int count) {
-    ItemGen gen = DestroyTheCore.itemsManager.gens.get(key);
+    ItemGen gen = DTC.itemsManager.gens.get(key);
     
     int maxCount = gen.iconType.getMaxStackSize();
     if (count > maxCount * 9) {
@@ -791,7 +813,7 @@ public class PlayerUtils {
   
   /** Give a player basic armors, weapons & skill books */
   static public void giveEssentials(Player pl) {
-    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
+    PlayerData data = DTC.game.getPlayerData(pl);
     PlayerInventory inv = pl.getInventory();
     
     Consumer<EquipmentSlot> defaultEquipment = slot -> {
@@ -802,7 +824,7 @@ public class PlayerUtils {
         case LEGS -> key = data.role.defLeggings();
         case FEET -> key = data.role.defBoots();
       }
-      ItemStack item = DestroyTheCore.itemsManager.gens.get(key).getItem();
+      ItemStack item = DTC.itemsManager.gens.get(key).getItem();
       
       if (key.name().startsWith("STARTER")) {
         CoreUtils.dyeTeamColor(item, data.side);
@@ -849,7 +871,7 @@ public class PlayerUtils {
     for (ItemStack item : inv.getContents()) {
       if (item == null) continue;
       
-      if (DestroyTheCore.rolesManager.isExclusiveItem(item)) {
+      if (DTC.rolesManager.isExclusiveItem(item)) {
         hasRoleItem = true;
         break;
       }
@@ -857,8 +879,9 @@ public class PlayerUtils {
     
     if (!hasRoleItem) {
       if (
-        roleItem.getType() == Material.SHIELD
-          && inv.getItemInOffHand().isEmpty()
+        roleItem.getType() == Material.SHIELD &&
+          inv.getItemInOffHand()
+            .isEmpty()
       ) {
         inv.setItemInOffHand(roleItem);
       }
@@ -939,6 +962,8 @@ public class PlayerUtils {
               .extra(0)
               .count(5)
               .spawn();
+            
+            pl.giveExp(RandomUtils.range(1, 4));
           }
         }
       }
@@ -975,22 +1000,31 @@ public class PlayerUtils {
           return;
         }
         
-        Vector offset = LocUtils.hitboxCenter(to).subtract(pos).toVector();
-        double dist = offset.length();
+        Vector vel = LocUtils.hitboxCenter(to).subtract(pos).toVector();
+        double dist = vel.length();
         
         if (dist < 0.25) {
           apply();
           return;
         }
         
-        if (dist < 5) offset = offset.multiply(5 / dist);
-        if (dist > 100) offset = offset.multiply(100 / dist);
+        if (dist < 3) vel.multiply(3 / dist);
+        if (dist > 120) vel.multiply(120 / dist);
         
-        pos.add(offset.multiply(0.2));
+        vel.multiply(0.2);
+        
+        if (vel.length() >= dist) {
+          apply();
+          return;
+        }
+        
+        pos.add(vel);
         
         if (
-          !to.isInvisible()
-            && !to.hasPotionEffect(PotionEffectType.INVISIBILITY)
+          !to.isInvisible() &&
+            !to.hasPotionEffect(
+              PotionEffectType.INVISIBILITY
+            )
         ) {
           new ParticleBuilder(particle)
             .allPlayers()
@@ -999,18 +1033,18 @@ public class PlayerUtils {
             .spawn();
         }
       }
-    }.runTaskTimer(DestroyTheCore.instance, 0, 1);
+    }.runTaskTimer(DTC.instance, 0, 1);
   }
   
   static public List<Player> getTeammates(Game.Side side) {
     return all().stream().filter(p -> {
-      PlayerData data = DestroyTheCore.game.getPlayerData(p);
+      PlayerData data = DTC.game.getPlayerData(p);
       return data.alive && data.side.equals(side);
     }).toList();
   }
   
   static public List<Player> getTeammates(Player pl) {
-    return getTeammates(DestroyTheCore.game.getPlayerData(pl).side);
+    return getTeammates(DTC.game.getPlayerData(pl).side);
   }
   
   static public List<Player> getEnemies(Game.Side side) {
@@ -1018,19 +1052,19 @@ public class PlayerUtils {
   }
   
   static public List<Player> getEnemies(Player pl) {
-    return getEnemies(DestroyTheCore.game.getPlayerData(pl).side);
+    return getEnemies(DTC.game.getPlayerData(pl).side);
   }
   
   /** Including teammates & spectators */
   static public List<Player> getNonEnemies(Game.Side side) {
     return all().stream().filter(p -> {
-      PlayerData data = DestroyTheCore.game.getPlayerData(p);
+      PlayerData data = DTC.game.getPlayerData(p);
       return (!shouldHandle(p) || (!data.side.equals(side.opposite())));
     }).toList();
   }
   
   static public List<Player> getNonEnemies(Player pl) {
-    return getNonEnemies(DestroyTheCore.game.getPlayerData(pl).side);
+    return getNonEnemies(DTC.game.getPlayerData(pl).side);
   }
   
   static public Player getTargetPlayer(Player pl, double maxDistance) {
@@ -1043,12 +1077,12 @@ public class PlayerUtils {
     
     for (Player other : getEnemies(pl)) {
       if (
-        other.equals(pl)
-          || !LocUtils.isSameWorld(
+        other.equals(pl) ||
+          !LocUtils.isSameWorld(
             other,
             pl
-          )
-          || !pl.hasLineOfSight(other)
+          ) ||
+          !pl.hasLineOfSight(other)
       ) continue;
       
       BoundingBox box = other.getBoundingBox().clone().expand(0.2, 0.2, 0.2);

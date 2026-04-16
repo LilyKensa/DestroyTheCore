@@ -1,7 +1,7 @@
 package dev.huey.destroyTheCore.missions;
 
 import com.destroystokyo.paper.ParticleBuilder;
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.missions.TimedMission;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.RandomUtils;
@@ -23,13 +23,13 @@ public class RocketMission extends TimedMission {
   
   @Override
   public void innerTick() {
-    if (DestroyTheCore.ticksManager.isUpdateTick()) {
+    if (DTC.ticksManager.isUpdateTick()) {
       for (Player pl : PlayerUtils.allGaming()) pl.sendActionBar(
         TextUtils.$("missions.rocket.warning")
       );
     }
     
-    if (DestroyTheCore.ticksManager.isParticleTick()) {
+    if (DTC.ticksManager.isParticleTick()) {
       for (Player pl : PlayerUtils.allGaming()) {
         new ParticleBuilder(Particle.CLOUD)
           .allPlayers()

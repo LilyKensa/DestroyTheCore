@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.gui.shop;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.GUIItem;
 import dev.huey.destroyTheCore.utils.TextUtils;
@@ -37,7 +37,7 @@ public class RenameShopItem extends GUIItem {
   
   @Override
   public void handleClick(ClickType click, Player pl, InventoryClickEvent ev) {
-    DestroyTheCore.guiManager.postClick = true;
-    DestroyTheCore.guiManager.openShopRenameEditor(pl, shop);
+    DTC.guiManager.postClick = true;
+    DTC.guiManager.openShopRenameEditor(pl, shop);
   }
 }

@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.managers;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.records.PlayerData;
@@ -74,19 +74,19 @@ public class RolesManager {
   }
   
   public void setRole(Player pl, Role role) {
-    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
+    PlayerData data = DTC.game.getPlayerData(pl);
     
     data.setRole(role);
     
-    DestroyTheCore.game.enforceTeam(pl);
-    DestroyTheCore.boardsManager.refresh(pl);
+    DTC.game.enforceDisplay(pl);
+    DTC.boardsManager.refresh(pl);
     
-    if (!DestroyTheCore.game.isPlaying) return;
+    if (!DTC.game.isPlaying) return;
     
     PlayerInventory inv = pl.getInventory();
     
     BiConsumer<EquipmentSlot, ItemsManager.ItemKey> replacer = (slot, key) -> {
-      ItemStack replacement = DestroyTheCore.itemsManager.gens
+      ItemStack replacement = DTC.itemsManager.gens
         .get(key).getItem();
       
       if (key.name().startsWith("STARTER")) {
@@ -96,15 +96,18 @@ public class RolesManager {
       ItemStack item = inv.getItem(slot);
       
       if (
-        item.isEmpty()
-          || (DestroyTheCore.itemsManager.isGen(item)
-            && DestroyTheCore.itemsManager.getGen(item).isTrash())
+        item.isEmpty() ||
+          (DTC.itemsManager.isGen(item) &&
+            DTC.itemsManager
+              .getGen(item).isTrash())
       ) {
         inv.setItem(slot, replacement);
       }
       else if (
-        replacement.hasItemMeta()
-          && replacement.getItemMeta().hasEnchant(Enchantment.BINDING_CURSE)
+        replacement.hasItemMeta() &&
+          replacement.getItemMeta().hasEnchant(
+            Enchantment.BINDING_CURSE
+          )
       ) {
         pl.getWorld()
           .dropItemNaturally(LocUtils.hitboxCenter(pl), item)
@@ -125,8 +128,8 @@ public class RolesManager {
       if (item == null) continue;
       
       if (
-        item.hasItemMeta()
-          && item.getItemMeta().getPersistentDataContainer()
+        item.hasItemMeta() &&
+          item.getItemMeta().getPersistentDataContainer()
             .has(Role.skillNamespace)
       ) {
         contents[i].editMeta(role::editSkillItemMeta);
@@ -147,10 +150,11 @@ public class RolesManager {
   }
   
   public boolean isExclusiveItem(ItemStack item) {
-    return (item.hasItemMeta()
-      && item.getItemMeta().getPersistentDataContainer().has(
-        Role.exclusiveItemNamespace
-      ));
+    return (item.hasItemMeta() &&
+      item.getItemMeta()
+        .getPersistentDataContainer().has(
+          Role.exclusiveItemNamespace
+        ));
   }
   
   public boolean checkExclusiveItem(ItemStack item, RoleKey key) {
@@ -165,7 +169,7 @@ public class RolesManager {
   }
   
   public boolean canTakeExclusiveItem(Player pl, ItemStack item) {
-    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
+    PlayerData data = DTC.game.getPlayerData(pl);
     return !isExclusiveItem(item) || checkExclusiveItem(item, data.role.id);
   }
   
@@ -173,7 +177,7 @@ public class RolesManager {
     for (Role role : roles.values())
       for (
         Player p : PlayerUtils.all().stream().filter(
-          p -> DestroyTheCore.game.getPlayerData(p).role.id.equals(
+          p -> DTC.game.getPlayerData(p).role.id.equals(
             role.id
           )
         ).toList()

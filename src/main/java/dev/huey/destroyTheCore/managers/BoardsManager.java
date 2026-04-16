@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.managers;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.records.PlayerData;
 import dev.huey.destroyTheCore.records.SideData;
@@ -27,7 +27,7 @@ public class BoardsManager {
   public void refresh(Player pl) {
     FastBoard board = boards.get(pl.getUniqueId());
     
-    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
+    PlayerData data = DTC.game.getPlayerData(pl);
     boolean inGame = data.side != Game.Side.SPECTATOR;
     
     List<String> lines = new ArrayList<>();
@@ -51,10 +51,10 @@ public class BoardsManager {
       );
     }
     
-    if (DestroyTheCore.game.isPlaying) {
+    if (DTC.game.isPlaying) {
       Game.Side firstSide = inGame ? data.side : Game.Side.RED;
-      SideData side1 = DestroyTheCore.game.getSideData(firstSide),
-        side2 = DestroyTheCore.game.getSideData(firstSide.opposite());
+      SideData side1 = DTC.game.getSideData(firstSide),
+        side2 = DTC.game.getSideData(firstSide.opposite());
       String col1 = firstSide == Game.Side.RED ? "§c" : "§a",
         col2 = firstSide == Game.Side.RED ? "§a" : "§c";
       
@@ -73,11 +73,11 @@ public class BoardsManager {
             List.of(
               Placeholder.component(
                 "index",
-                Component.text(DestroyTheCore.game.phase.index + 1)
+                Component.text(DTC.game.phase.index + 1)
               ),
               Placeholder.component(
                 "title",
-                DestroyTheCore.game.phase.displayName().color(null)
+                DTC.game.phase.displayName().color(null)
               )
             )
           ),
@@ -87,7 +87,7 @@ public class BoardsManager {
               Placeholder.unparsed(
                 "time",
                 CoreUtils.formatTime(
-                  Math.ceilDiv(DestroyTheCore.game.phaseTimer, 20),
+                  Math.ceilDiv(DTC.game.phaseTimer, 20),
                   "§e"
                 )
               )
@@ -110,7 +110,7 @@ public class BoardsManager {
         )
       );
       
-      if (DestroyTheCore.game.isInTruce()) {
+      if (DTC.game.isInTruce()) {
         lines.add(
           TextUtils.$r(
             "board.truce",
@@ -118,7 +118,7 @@ public class BoardsManager {
               Placeholder.unparsed(
                 "time",
                 CoreUtils.formatTime(
-                  Math.ceilDiv(DestroyTheCore.game.truceTimer, 20),
+                  Math.ceilDiv(DTC.game.truceTimer, 20),
                   "§e"
                 )
               )
@@ -168,7 +168,7 @@ public class BoardsManager {
       }
     }
     else { // Not playing
-      Stats stat = DestroyTheCore.game.getStats(pl);
+      Stats stat = DTC.game.getStats(pl);
       
       double levelRatio = Math.min(
         Math.max(0, (double) stat.exp / stat.maxExp),
@@ -185,9 +185,10 @@ public class BoardsManager {
               Placeholder.component("all", Component.text(stat.games)),
               Placeholder.unparsed(
                 "ratio",
-                stat.games == 0 ? "0.0" : CoreUtils.toFixed(
-                  100D * stat.wins / stat.games
-                )
+                stat.games == 0 ? "0.0"
+                  : CoreUtils.toFixed(
+                    100D * stat.wins / stat.games
+                  )
               )
             )
           ),

@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.tools;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.editorTools.PosListTool;
 import dev.huey.destroyTheCore.records.Pos;
 import java.util.Set;
@@ -15,11 +15,11 @@ public class OresTool extends PosListTool {
   
   @Override
   public Set<Pos> getList() {
-    return DestroyTheCore.game.map.ores;
+    return DTC.game.map.ores;
   }
   
   @Override
   public void setList(Set<Pos> list) {
-    DestroyTheCore.game.map.ores = list;
+    DTC.game.map.ores = list;
   }
 }

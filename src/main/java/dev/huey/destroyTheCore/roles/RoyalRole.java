@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.roles;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.managers.RolesManager;
@@ -34,9 +34,9 @@ public class RoyalRole extends Role {
   
   @Override
   public void onTick(Player pl) {
-    if (DestroyTheCore.ticksManager.isUpdateTick()) {
+    if (DTC.ticksManager.isUpdateTick()) {
       for (Player p : PlayerUtils.getTeammates(pl)) {
-        if (DestroyTheCore.game.getPlayerData(p).role.id == this.id) continue;
+        if (DTC.game.getPlayerData(p).role.id == this.id) continue;
         
         if (LocUtils.near(p, pl, 10)) {
           PlayerUtils.addPassiveEffect(
@@ -67,7 +67,7 @@ public class RoyalRole extends Role {
     );
     
     for (Player p : PlayerUtils.getTeammates(pl)) {
-      if (DestroyTheCore.game.getPlayerData(p).role.id == this.id) continue;
+      if (DTC.game.getPlayerData(p).role.id == this.id) continue;
       
       PlayerUtils.delayAssign(
         pl,

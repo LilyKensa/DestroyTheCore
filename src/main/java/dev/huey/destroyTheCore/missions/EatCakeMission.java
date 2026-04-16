@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.missions;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.missions.ProgressiveMission;
 import dev.huey.destroyTheCore.records.PlayerData;
@@ -18,6 +18,7 @@ public class EatCakeMission extends ProgressiveMission implements Listener {
   
   public EatCakeMission() {
     super("eat-cake");
+    addResult();
   }
   
   Map<Game.Side, Integer> count = new HashMap<>();
@@ -31,7 +32,7 @@ public class EatCakeMission extends ProgressiveMission implements Listener {
   @EventHandler
   public void onPlayerInteract(PlayerInteractEvent ev) {
     Player pl = ev.getPlayer();
-    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
+    PlayerData data = DTC.game.getPlayerData(pl);
     if (data.side.equals(Game.Side.SPECTATOR)) return;
     
     if (ev.getHand() != EquipmentSlot.HAND) return;
@@ -40,7 +41,7 @@ public class EatCakeMission extends ProgressiveMission implements Listener {
     if (pl.getFoodLevel() >= 20) return;
     
     count.put(data.side, count.get(data.side) + 1);
-    progress(data.side, (float) Math.min(count.get(data.side) / 30D, 1));
+    progress(data.side, count.get(data.side) / 30F);
   }
   
   @Override
@@ -49,9 +50,7 @@ public class EatCakeMission extends ProgressiveMission implements Listener {
   
   @Override
   public void innerFinish() {
-    for (Game.Side side : new Game.Side[]{
-      Game.Side.RED, Game.Side.GREEN
-    }) {
+    for (Game.Side side : Game.bothSide) {
       if (count.get(side) > count.get(side.opposite())) {
         declareWinner(side);
         return;

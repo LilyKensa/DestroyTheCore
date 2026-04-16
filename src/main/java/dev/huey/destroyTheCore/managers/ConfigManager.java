@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.managers;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.records.MaybeGen;
 import dev.huey.destroyTheCore.records.Pos;
@@ -9,17 +9,47 @@ import dev.huey.destroyTheCore.records.Stats;
 import dev.huey.destroyTheCore.utils.CoreUtils;
 import java.io.File;
 import java.io.IOException;
-import java.util.Locale;
-import java.util.Map;
-import java.util.UUID;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.*;
 import java.util.stream.Collectors;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 
 public class ConfigManager {
-  static public File getFile(String path) {
-    return new File(DestroyTheCore.instance.getDataFolder(), path);
+  
+  static public String templateWorldPrefix = "template-";
+  
+  public List<String> availableTemplates = new ArrayList<>();;
+  
+  void refreshTemplateWorlds() {
+    availableTemplates.clear();
+    
+    try (
+         DirectoryStream<Path> stream = Files.newDirectoryStream(
+           Bukkit.getWorldContainer().toPath(),
+           templateWorldPrefix + "*"
+         )
+    ) {
+      for (Path entry : stream) {
+        File file = entry.toFile();
+        if (!file.isDirectory()) continue;
+        
+        availableTemplates.add(
+          file.getName().substring(templateWorldPrefix.length())
+        );
+      }
+    }
+    catch (IOException ex) {
+      ex.printStackTrace();
+    }
+  }
+  
+  static public File getConfigFile(String path) {
+    return new File(DTC.instance.getDataFolder(), path);
   }
   
   public abstract static class Config {
@@ -32,7 +62,7 @@ public class ConfigManager {
     }
     
     public void load() {
-      file = getFile(path);
+      file = getConfigFile(path);
       
       if (file.exists()) {
         config = YamlConfiguration.loadConfiguration(file);
@@ -77,23 +107,23 @@ public class ConfigManager {
     config = new Config("config.yml") {
       @Override
       public void read() {
-        DestroyTheCore.translationsManager.currentLocale = Locale
+        DTC.translationsManager.currentLocale = Locale
           .forLanguageTag(
             CoreUtils.def(config.getString("lang"), "en-us")
           );
         
-        DestroyTheCore.worldsManager.mapName = config.getString("map");
-        DestroyTheCore.worldsManager.cloneLive();
+        DTC.worldsManager.mapName = config.getString("map");
+        DTC.worldsManager.cloneLive();
       }
       
       @Override
       public void write() {
         config.set(
           "lang",
-          DestroyTheCore.translationsManager.currentLocale.toLanguageTag()
+          DTC.translationsManager.currentLocale.toLanguageTag()
             .toLowerCase()
         );
-        config.set("map", DestroyTheCore.worldsManager.mapName);
+        config.set("map", DTC.worldsManager.mapName);
       }
     };
     stats = new Config("stats.yml") {
@@ -106,7 +136,7 @@ public class ConfigManager {
         
         Map<String, Object> values = statsSection.getValues(true);
         for (String key : values.keySet()) {
-          DestroyTheCore.game.stats.put(
+          DTC.game.stats.put(
             UUID.fromString(key),
             (Stats) values.get(key)
           );
@@ -117,7 +147,7 @@ public class ConfigManager {
       public void write() {
         config.set(
           "stats",
-          DestroyTheCore.game.stats.entrySet().stream().collect(
+          DTC.game.stats.entrySet().stream().collect(
             Collectors.toMap(
               entry -> entry.getKey().toString(),
               Map.Entry::getValue
@@ -129,25 +159,25 @@ public class ConfigManager {
     shops = new Config("shops.yml") {
       @Override
       public void read() {
-        DestroyTheCore.game.shops = CoreUtils.listLoader(Game.Shop.class).apply(
+        DTC.game.shops = CoreUtils.listLoader(Game.Shop.class).apply(
           config.get("shops")
         );
       }
       
       @Override
       public void write() {
-        config.set("shops", DestroyTheCore.game.shops);
+        config.set("shops", DTC.game.shops);
       }
     };
     lobby = new Config("lobby.yml") {
       @Override
       public void read() {
-        DestroyTheCore.game.lobby = (Game.LobbyPos) config.get("locations");
+        DTC.game.lobby = (Game.LobbyPos) config.get("locations");
       }
       
       @Override
       public void write() {
-        config.set("locations", DestroyTheCore.game.lobby);
+        config.set("locations", DTC.game.lobby);
       }
     };
     
@@ -155,20 +185,22 @@ public class ConfigManager {
   }
   
   public void load() {
+    refreshTemplateWorlds();
+    
     config.load();
     
     // Recreate as map changes
     map = new Config(
-      "maps/%s.yml".formatted(DestroyTheCore.worldsManager.mapName)
+      "maps/%s.yml".formatted(DTC.worldsManager.mapName)
     ) {
       @Override
       public void read() {
-        DestroyTheCore.game.map = (Game.MapPos) config.get("locations");
+        DTC.game.map = (Game.MapPos) config.get("locations");
       }
       
       @Override
       public void write() {
-        config.set("locations", DestroyTheCore.game.map);
+        config.set("locations", DTC.game.map);
       }
     };
     
@@ -177,7 +209,7 @@ public class ConfigManager {
     lobby.load();
     map.load();
     
-    DestroyTheCore.toolsManager.refresh();
+    DTC.toolsManager.refresh();
   }
   
   public void save() {

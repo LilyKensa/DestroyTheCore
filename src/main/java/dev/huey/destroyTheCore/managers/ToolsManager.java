@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.managers;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.EditorTool;
 import dev.huey.destroyTheCore.tools.*;
 import java.util.List;
@@ -55,7 +55,7 @@ public class ToolsManager {
     List<EditorTool> tools = kits.get(name);
     if (tools == null) return;
     
-    DestroyTheCore.inventoriesManager.saveHotbar(pl);
+    DTC.inventoriesManager.saveHotbar(pl);
     
     for (int i = 0; i < tools.size(); ++i) {
       pl.getInventory().setItem(i, tools.get(i).getItem());
@@ -64,7 +64,7 @@ public class ToolsManager {
   
   /** On config file reload */
   public void refresh() {
-    if (DestroyTheCore.toolsManager.kits == null) return;
+    if (DTC.toolsManager.kits == null) return;
     
     for (String key : kits.keySet()) {
       for (EditorTool tool : kits.get(key)) {
@@ -88,8 +88,9 @@ public class ToolsManager {
     ItemStack item = ev.getItem();
     
     if (
-      ev.getAction() != Action.RIGHT_CLICK_AIR
-        && ev.getAction() != Action.RIGHT_CLICK_BLOCK
+      ev.getAction() != Action.RIGHT_CLICK_AIR &&
+        ev
+          .getAction() != Action.RIGHT_CLICK_BLOCK
     ) return;
     if (item == null || item.getType().isAir()) return;
     
