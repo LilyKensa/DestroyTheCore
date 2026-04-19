@@ -1,0 +1,1107 @@
+general:
+  title: "<white>Asedio de Aniquilación III</white>"
+  subtitle: "Original: <gold>Hageeshow</gold> / 3ra Edición: <gold>_hueeey_</gold>"
+  plugin-prefix: "[<red>Asedio</red><white>Aniquilación</white><yellow>III</yellow>] "
+
+chat:
+  format: "<player>: <white><message></white>"
+  broadcast:
+    prefix: "[<gold>Anuncio</gold>] "
+    name: "<aqua>Servidor</aqua>"
+  shout:
+    prefix: "[<gold>Grito</gold>] "
+    empty: "¡Soy idiota, grité pero no escribí ningún mensaje!"
+    empty-troll: "Soy idiota, grité y escribí '<message>'"
+    cooldown: "<red>¡Debes esperar <value> segundos para volver a gritar!</red>"
+
+tips:
+  prefix: "[<dark_aqua>Consejo</dark_aqua>] "
+  tip-1:
+    title: "<aqua>¡Únete a nuestro Discord!</aqua>"
+    content-1: "<click:open_url:'https://discord.gg/JygVAym6by'><u>https://discord.gg/JygVAym6by</u></click>"
+  tip-2:
+    title: "<aqua>Sobre el Nivel de Culpa...</aqua>"
+    content-1: "Matar jugadores o minar el núcleo aumentará tu nivel de culpa."
+    content-2: "A mayor nivel de culpa, más tardarás en reaparecer."
+  tip-3:
+    title: "<aqua>Sobre el Sistema de Niveles...</aqua>"
+    content-1: "Avanzar de fase, minar, matar y atacar el núcleo otorga EXP."
+    content-2: "Al subir de nivel, desbloquearás más clases."
+  tip-4:
+    title: "<aqua>Sobre el Robo...</aqua>"
+    content-1: "No puedes abrir los cofres que están demasiado cerca de la base enemiga."
+    content-2: "Llevar una mesa de encantamientos o un cofre de Ender te dará Lentitud X."
+  tip-5:
+    title: "<aqua>Sobre los Asesinatos...</aqua>"
+    content-1: "Al matar, recibirás debilidad, ceguera y lentitud por poco tiempo."
+    content-2: "Matar a 10 personas seguidas te convierte en el Capitán Asesino; quien te mate ganará 10 esmeraldas."
+  tip-6:
+    title: "<aqua>Sobre el Núcleo...</aqua>"
+    content-1: "La energía del núcleo absorbe agua/lava cercana y destruye la obsidiana."
+    content-2: "Minar el núcleo te dará fatiga al minar y el efecto de brillo brevemente."
+  tip-7:
+    title: "<aqua>Sobre los Minerales...</aqua>"
+    content-1: "El equilibrio de recursos es vital para ganar."
+    content-2: "El oro y las esmeraldas son moneda. ¡No olvides el lapislázuli para encantar!"
+  tip-8:
+    title: "<aqua>Sobre Perder Objetos...</aqua>"
+    content-1: "Al morir, hay un 10% de probabilidad de soltar cada objeto."
+    content-2: "Las mesas de encantamientos y cofres de Ender siempre caen al morir."
+  tip-9:
+    title: "<aqua>Sobre la Invisibilidad...</aqua>"
+    content-1: "La invisibilidad se cancela si recibes más de 1 corazón de daño."
+  tip-10:
+    title: "<aqua>Sobre la Lotería...</aqua>"
+    content-1: "La tienda vende núcleos de lotería para obtener equipo especial."
+    content-2: "También puede dar efectos negativos, ¡así que ten cuidado!"
+    content-3: "Tras ganar el premio mayor (oro), tu probabilidad de ganarlo de nuevo disminuye."
+  tip-11:
+    title: "<aqua>Sobre los Hornos...</aqua>"
+    content-1: "Los hornos son 5 veces más rápidos y dan más experiencia."
+    content-2: "Además de oro/hierro, la tienda vende comida cruda para cocinar."
+  tip-12:
+    title: "<aqua>Sobre los Cultivos...</aqua>"
+    content-1: "Los cultivos no crecen solos; alguien debe agacharse cerca de ellos."
+    content-2: "Haz clic derecho con la mano vacía o una azada para cosechar minerales."
+
+player:
+  no-perm: "<red>¡No tienes permiso para hacer esto!</red>"
+  in-cooldown: "<red>Este objeto está en enfriamiento por <value> s</red>"
+  group-in-cooldown: "<red>Este grupo de objetos está en enfriamiento por <value> s</red>"
+  skill-reloaded: "<green>¡Habilidad recargada!</green>"
+  respawning: "Reapareciendo en <seconds> s"
+  respawned: "<yellow>Has reaparecido</yellow>"
+  item-sent-to-spawn: "<green>Recibiste un objeto, pero como estabas muerto, ¡se envió a tu punto de aparición!</green>"
+
+quiz:
+  prefix: "[<light_purple>Pregunta</light_purple>] "
+  question: "<aqua>Responde para reducir tu tiempo de reaparición: <a> + <b> = ?</aqua>"
+  correct: "<green>¡Correcto! ¡-10s de tiempo! (<try> intentos restantes)</green>"
+  wrong: "<red>¡Error! La respuesta era <answer>. (<try> intentos restantes)</red>"
+
+game:
+  phases:
+    core-protected:
+      name: "Núcleo Protegido"
+      desc: "Inicia la partida"
+    shop-opened:
+      name: "Tiendas Abiertas"
+      desc: "Protección del núcleo finalizada / Tiendas disponibles"
+    missions-started:
+      name: "Misiones Activas"
+      desc: "Comienzan las misiones / Zona de diamantes abierta"
+    death-penalty:
+      name: "Penalización por Muerte"
+      desc: "Cada muerte quita 1 punto de salud al núcleo"
+    double-core-damage:
+      name: "Daño de Núcleo Doble"
+      desc: "El núcleo recibe el doble de daño"
+    core-wilting:
+      name: "Marchitamiento"
+      desc: "El núcleo pierde 1 de salud cada 15 segundos"
+  phase-title: "<gold>Fase <index></gold>"
+  sides:
+    red: "<red>Equipo Rojo</red>"
+    green: "<green>Equipo Verde</green>"
+    spectator: "<gray>Espectadores</gray>"
+    items: "<aqua>Objetos</aqua>"
+  prompt-rejoin: "Usa <aqua>/rejoin</aqua> para volver a la partida"
+  banned:
+    attack:
+      teammate: "<red>¡No ataques a tu equipo!</red>"
+      spectator: "<red>¡Los espectadores no pueden atacar!</red>"
+      post-respawn: "<red>¡El jugador tiene protección de reaparición!</red>"
+    use:
+      time: "<red>¡No puedes hacer nada ahora mismo!</red>"
+      lobby: "<red>¡No puedes usar bloques en el lobby!</red>"
+      rest-area: "<red>¡No puedes usar bloques en la zona de descanso!</red>"
+      spectator: "<red>¡Los espectadores no pueden usar bloques!</red>"
+    shop: "<red>¡Las tiendas están cerradas!</red>"
+    place:
+      lobby: "<red>¡No puedes colocar bloques aquí!</red>"
+      obsidian: "<red>¡No puedes poner obsidiana cerca del núcleo!</red>"
+      spawn: "<red>¡No puedes poner bloques en la zona de aparición!</red>"
+    break:
+      netherite: "<red>¡No puedes romper bloques de Netherita!</red>"
+      time: "<red>¡No puedes romper bloques ahora mismo!</red>"
+      lobby: "<red>¡No puedes romper bloques en el lobby!</red>"
+      rest-area: "<red>¡No puedes romper bloques en la zona de descanso!</red>"
+      enemy-container: "<red>¡Recibiste +10 de Culpa por intentar robar!</red>"
+      own-core: "<red>¡No puedes minar tu propio núcleo!</red>"
+      spectator: "<red>¡Los espectadores no pueden romper bloques!</red>"
+    pour: "<red>¡No puedes colocar líquidos cerca del núcleo!</red>"
+    open-enemy-container: "<red>¡No puedes abrir el <type> enemigo!</red>"
+  bounty:
+    prefix: "[<light_purple>Recompensa</light_purple>] "
+    reward: "<player> obtuvo <white>Esmeraldas</white> × <dark_aqua><amount></dark_aqua>"
+    appear: "¡<player> se convirtió en el <aqua>Capitán Asesino</aqua>! ¡Mátalo por esmeraldas!"
+  death:
+    title: "<red>ESTÁS MUERTO</red>"
+    messages:
+      unknown: "<player> murió"
+      kill: "<player> fue <yellow><action></yellow> por <killer>"
+      kill-actions: "masacrado|aplastado|destruido|enviado al cielo|humillado|borrado|aniquilado|destrozado|desconectado|evaporado|purificado físicamente|convertido en polvo|despellejado|enviado con sus ancestros|desintegrado|jubilado a la fuerza|decapitado"
+    killer-sin: "<red>¡Tu Nivel de Culpa aumentó en 2 por matar!</red>"
+  core-attack:
+    title: "¡Núcleo Atacado!"
+    subtitle: "Por <player>"
+    message: "<player> está atacando el núcleo <side>. Salud restante: <yellow><health></yellow>"
+  side:
+    join:
+      bad-time: "<red>¡No puedes cambiar de equipo ahora!</red>"
+      success: "Te uniste al <side>"
+    ender-chest: "Cofre del Equipo"
+  truce:
+    warning: "<red>Una fuerza te impide avanzar más.</red>"
+    sent-spawn: "<player> <yellow>se perdió</yellow> y fue enviado de vuelta a la base con medio corazón."
+  diamond-broadcast: "¡Por fin, diamantes!|¡Tan azules como mi alma!|¡Este brillo me ciega!|¡Diamantes son vida!|¡Hora de los diamantes!|¡Sí! ¡Encontré diamantes!|¡Qué buena sensación!|¡Amo minar diamantes!"
+  height-warning: "<red>¡Estás a punto de sufrir mal de altura!</red>"
+  start-canceled: "<red>Cancelado</red>"
+  missing-locs:
+    message: "<red>Falta ubicación: <location>!</red>"
+    locs:
+      rest-area: "Zona de descanso"
+      core: "Núcleo"
+      mission: "Misión central"
+      spawnpoints: "Puntos de aparición"
+      woods: "Madera"
+      ores: "Minerales"
+      diamonds: "Diamantes"
+      shops: "Tiendas"
+  result:
+    titles:
+      draw: "¡Empate!"
+      spectator: "Fin del Juego"
+      win: "¡Victoria!"
+      lose: "¡Derrota!"
+    subtitles:
+      more-health: "El <side> tenía más salud"
+      destroyed: "El <side> destruyó el núcleo enemigo"
+  reduce-respawn-time:
+    progress: "<aqua>Expiando culpas: <progress>/5</aqua>"
+    done: "<green>¡Expiación exitosa! Culpa -1</green>"
+    no-more: "<red>¡Tu Nivel de Culpa ya es demasiado bajo!</red>"
+  ores:
+    luck: "<aqua>¡Suerte! Mineral ×<amount></aqua>"
+    bad-luck: "<red>¡Mala suerte! No cayó nada.</red>"
+  credits:
+    title: "<white>Asedio de Aniquilación III</white> - <yellow>Fin del Juego</yellow>"
+    time: "Tiempo de juego: <time>"
+    list:
+      empty: "|"
+      first: "| <yellow>1er Lugar</yellow> - <players> - <aqua><count></aqua>"
+      second: "| <gold>2do Lugar</gold> - <players> - <aqua><count></aqua>"
+      third: "| <red>3er Lugar</red> - <players> - <aqua><count></aqua>"
+      side: "| <side> - <aqua><count></aqua>"
+      foot: "+---------------------------------------+"
+    top-attackers: "+--------------- <light_purple>Top Atacantes de Núcleo</light_purple> ---------------+"
+    top-killers: "+--------------- <light_purple>Top Asesinos</light_purple> ---------------+"
+    top-dyers: "+--------------- <light_purple>Más Muertes Sufridas</light_purple> ---------------+"
+    top-miners: "+--------------- <light_purple>Mejores Mineros</light_purple> ---------------+"
+    thanks: "<gold>¡Gracias por jugar!</gold>"
+    sign: "- Creado por <yellow>_hueeey_</yellow>"
+  bars:
+    no-ores: "<white>Minas bloqueadas: <time></white>"
+    no-shop: "<white>Tiendas bloqueadas: <time></white>"
+
+anti-cheat:
+  prefix: "[<red>AntiCheat</red>] "
+  admin-notice: "<player> fue detectado por <cheat>, Nivel: <value>/<white>100</white>"
+  reasons:
+    quiz-speed: "<red>Matemáticas demasiado rápidas</red>"
+    auto-click: "<red>Auto-Click</red>"
+    attack-range: "<red>Alcance de ataque excesivo</red>"
+    spam-break: "<red>Minería instantánea</red>"
+
+item-gen:
+  right-click-to-use: "- <yellow>Clic derecho para usar</yellow>"
+  instant-use: "- <aqua>Efecto instantáneo al comprar</aqua>"
+
+tool:
+  prefix: "[<yellow>Editor</yellow>] "
+
+role:
+  prefix: "[<light_purple>Clase</light_purple>] "
+  name: "<yellow><name></yellow>"
+  name-locked: "<red>🔒 <name></red> (<white>Se desbloquea al Nvl <aqua><levels></aqua></white>)"
+  change: "<player> cambió a la clase <yellow><role></yellow>"
+  skill:
+    title: "[<white>Habilidad</white>] <light_purple><name></light_purple>"
+    cooldown: "- <light_purple>Enfriamiento: <cooldown> s</light_purple>"
+  desc:
+    type: "<white>Tipo</white>: <dark_green><type></dark_green>"
+    types:
+      useless: "Inútil"
+      attacking: "Ataque"
+      defense: "Defensa"
+      working: "Trabajo"
+      assistance: "Soporte"
+    feature:
+      first: "<white>Característica</white>: <aqua><desc></aqua>"
+      others: "<black>Característica:</black> <aqua><desc></aqua>"
+    item: "<white>Objeto</white>: <green><name> (<detail>)</green>"
+  item-lore: "- <red>Objeto exclusivo de <role></red>"
+
+mission:
+  prefix: "[<light_purple>Misión</light_purple>] "
+  waiting-title: "<gray>Enfriamiento de Misión</gray>"
+  progressive:
+    red-bar: "<red>Progreso Rojo</red>"
+    green-bar: "<green>Progreso Verde</green>"
+  draw: "¡La misión resultó en <yellow>Empate</yellow>!"
+  result:
+    intro: "El equipo que <action>, "
+    outro: "Debido a <action>, el <side> "
+    win: "<yellow>tuvo éxito</yellow>"
+    lose: "<yellow>fracasó</yellow>"
+    random-player: "Un jugador aleatorio"
+  results:
+    clear-xp: "¡Toda la EXP se redujo a <light_purple>cero</light_purple>!"
+    give-xp: "¡Todos obtienen <yellow>500 EXP</yellow>!"
+    bad-effect: "¡Todos reciben el efecto <light_purple><effect></light_purple>!"
+    good-effect: "¡Todos reciben el efecto <yellow><effect></yellow>!"
+    add-respawn-time: "¡+20 de <light_purple>Culpa para todos</light_purple>!"
+    remove-respawn-time: "¡-20 de <yellow>Culpa para todos</yellow>!"
+    ban-ores: "¡Minas <light_purple>bloqueadas por 2 min</light_purple>!"
+    ban-shop: "¡Tiendas <light_purple>bloqueadas por 2 min</light_purple>!"
+    attack-core: "¡Salud del núcleo <light_purple>-10</light_purple>!"
+    summon-pig: "¡Recibiste un <light_purple><name></light_purple>!"
+    pig-name: "Cerdo Inútil"
+    void: "¡<player> fue <light_purple>teletransportado a otra dimensión</light_purple>!"
+    give-emerald: "¡Todos reciben <yellow>5 esmeraldas</yellow>!"
+    lightning: "¡Todos <light_purple>fueron golpeados por un rayo</light_purple>!"
+    tnt: "¡<player> recibió <light_purple><lang:entity.minecraft.tnt></light_purple>!"
+    skill-cooldown: "¡El enfriamiento de habilidades aumentó en <light_purple>120s para todos</light_purple>!"
+
+gui:
+  in-use: "<red>¡Alguien más está usando este menú!</red>"
+  buttons:
+    next-page:
+      title: "<yellow>Página Siguiente</yellow>"
+      desc: "Ir a la página <gold><next></gold>/<max>"
+      desc-end: "<dark_purple>No hay más páginas</dark_purple>"
+    prev-page:
+      title: "<yellow>Página Anterior</yellow>"
+      desc: "Ir a la página <gold><prev></gold>/<max>"
+      desc-end: "<dark_purple>Estás en la primera página</dark_purple>"
+    scroll-down:
+      title: "<yellow>Desplazar Abajo</yellow>"
+      desc-end: "<dark_purple>Límite inferior alcanzado</dark_purple>"
+    scroll-up:
+      title: "<yellow>Desplazar Arriba</yellow>"
+      desc-end: "<dark_purple>Límite superior alcanzado</dark_purple>"
+    pick-random:
+      title: "<yellow>Aleatorio</yellow>"
+      announce: "<player> cambió aleatoriamente a <yellow><role></yellow>"
+    new-shop:
+      title: "<yellow>Nueva Tienda</yellow>"
+    delete-shop:
+      title: "<yellow>Eliminar Tienda</yellow>"
+      title-confirm: "<red>Confirmar eliminación</red>"
+    rename-shop:
+      title: "<yellow>Renombrar Tienda</yellow>"
+      desc: "Nombre actual: <name>"
+    detail-shop:
+      title: "<yellow>Editar Aldeano</yellow>"
+      desc: "Actual: <type> <profession>"
+      selected: "Seleccionado"
+  titles:
+    choose-role: "Elegir Clase"
+    teleporter: "Teletransportarse a Jugador"
+    shop:
+      list: "Editar Tienda"
+      trades: "Editar Ofertas"
+      rename: "Renombrar Tienda"
+      villager: "Opciones del Aldeano"
+  villagers:
+    snow: "Nieve"
+    plains: "Llanuras"
+    jungle: "Jungla"
+    taiga: "Taiga"
+    desert: "Desierto"
+    savanna: "Sabana"
+    swamp: "Pantano"
+
+board:
+  title: "<red>Asedio</red><white>Aniquilación</white><yellow>III</yellow>"
+  team: "<white>Equipo</white>: <side>"
+  role: "<white>Clase</white>: <yellow><role></yellow>"
+  phase: "<white>Fase</white> <green><index></green> - <aqua><title></aqua>"
+  countdown: "<white>Tiempo</white>: <time>"
+  health: "<white>❤</white>: <gold><a></gold> <gray>/</gray> <gold><b></gold>"
+  truce: "<white>Tregua</white>: <time>"
+  sin: "<white>Culpa</white>: <red><value></red>"
+  kd: "<white>Asesinatos</white>: <yellow><kills></yellow> - <white>Muertes</white>: <yellow><deaths></yellow>"
+  attacks: "<white>Golpes al Núcleo</white>: <light_purple><value></light_purple>"
+  skills: "<white>Habilidades Usadas</white>: <light_purple><value></light_purple>"
+  ores: "<white>Minerales Extraídos</white>: <light_purple><value></light_purple>"
+  ore-type: "  <type>: <dark_purple><value></dark_purple>"
+  wins: "<white>Victorias</white>: <aqua><wins></aqua>/<dark_aqua><all></dark_aqua> <gold><ratio>%</gold>"
+  exp: "<white>Nivel</white> <green><levels></green> [<bar>] <aqua><exp></aqua>/<dark_aqua><max></dark_aqua>"
+
+command:
+  not-found: "¡Comando desconocido!"
+
+world:
+  deleting-live: "<aqua>Borrando mundo...</aqua>"
+  copying-template: "<aqua>Copiando plantilla...</aqua>"
+  copied: "<green>¡Mundo copiado con éxito!</green>"
+  template-warning: "<red>¡Estás en el mundo plantilla!</red>"
+
+commands:
+  root:
+    github: "Visita <click:open_url:'https://github.com/LilyKensa/DestroyTheCore'><u>https://github.com/LilyKensa/DestroyTheCore</u></click> para más info."
+  suicide:
+    bad-time: "<red>¡No puedes suicidarte ahora!</red>"
+    already-dead: "<red>¡Ya estás muerto!</red>"
+    announce: "¡<player> <action>!"
+    actions: "decidió saltarse todas las etapas de la vida e ir directo al final|se dio cuenta de que llevaba 10 días sin beber agua|se olvidó de cómo respirar|usó su cuello para jugar al tira y afloja con una viga|se dio cuenta de que estar pegado al móvil 8 horas al día no tiene sentido|vio que la IA nos reemplazará y perdió la esperanza|miró su cuenta bancaria y decidió salir de la partida|suspendió todo y recordó que es asiático|se dio cuenta de que no estudió nada antes del examen final"
+  pause:
+    true: "<green>Juego pausado por <player></green>"
+    false: "<green>Juego reanudado por <player></green>"
+  level:
+    changed: "<aqua>El nivel de <player> ahora es <value></aqua>"
+  night-vision:
+    true: "<green>Visión Nocturna activada</green>"
+    false: "<green>Visión Nocturna desactivada</green>"
+  edit:
+    unclear: "<red>¡Especifica un kit de herramientas!</red>"
+    loaded: "<green>¡Kit cargado!</green>"
+  map:
+    info: "<aqua>El mapa actual es <map></aqua>"
+    bad-time: "<red>¡Detén el juego primero!</red>"
+    not-found: "<red>¡Mapa no encontrado!</red>"
+    announce: "<green>El mapa fue cambiado a <map> por <player></green>"
+  give:
+    unclear: "<red>¡Especifica un objeto!</red>"
+    not-found: "<red>¡Objeto no encontrado!</red>"
+  join:
+    unclear: "<red>¡Especifica un equipo!</red>"
+    side-not-found: "<red>¡Ese equipo no existe!</red>"
+    only-self: "<red>¡Solo puedes cambiarte a ti mismo de equipo!</red>"
+    only-lobby: "<red>¡Solo puedes cambiar de equipo en el lobby!</red>"
+    player-not-found: "<red>¡Jugador no encontrado!</red>"
+    made-other: "<player> movió a <target> al <side>"
+    made-self: "<player> se unió al <side>"
+  role:
+    unclear: "<red>¡Especifica una clase!</red>"
+    role-not-found: "<red>¡Clase no encontrada!</red>"
+    only-self: "<red>¡Solo puedes cambiar tu propia clase!</red>"
+    only-lobby: "<red>¡Solo puedes elegir clase en el lobby!</red>"
+    player-not-found: "<red>¡Jugador no encontrado!</red>"
+    made-other: "<player> hizo que <target> se convierta en <yellow><role></yellow>"
+    made-self: "<player> cambió a <yellow><role></yellow>"
+  revive:
+    no-game: "<red>¡No hay juego en curso!</red>"
+    made-other: "<player> revivió a <target>"
+    made-self: "<player> ha revivido"
+  skip:
+    announce: "<green>Fase saltada por <player></green>"
+  rejoin:
+    wrong-world: "<red>¡No estás en el lobby!</red>"
+    no-game: "<red>¡No hay juego en curso!</red>"
+    announce: "<player> se volvió a unir al juego"
+  reload:
+    success: "<green>¡Recargado con éxito!</green>"
+  reset:
+    announce: "<green>Juego reiniciado por <player></green>"
+  save:
+    success: "<green>¡Configuración guardada en archivo!</green>"
+  shuffle-team:
+    announce: "¡<player> ha mezclado los equipos aleatoriamente!"
+  stop:
+    announce: "<green>Juego detenido por <player></green>"
+  warp:
+    unclear: "<red>¡Especifica el destino!</red>"
+    not-found: "<red>¡Destino no encontrado!</red>"
+  world:
+    query: "Estás en <yellow><world></yellow>"
+    not-found: "<red>¡Ese mundo no existe!</red>"
+  stats:
+    title: "<yellow>Estadísticas de <player>:</yellow>"
+    line-prefix: "| "
+    player-not-found: "<red>¡No se puede encontrar a ese jugador!</red>"
+
+items:
+  absorption-helmet:
+    name: "<aqua>Casco de Seguridad</aqua>"
+    desc-1: "Un caparazón de tortuga que encontraste por ahí. ¡Parece fuerte!"
+    desc-2: "¡Te dará tiempo de sobra para minar el núcleo!"
+  god-helmet:
+    name: "<aqua>Yelmo del Fénix</aqua>"
+    desc-1: "Forjado con plumas de fénix. ¡Hace brillar a los enemigos a 15 bloques!"
+    desc-2: "¡Protege igual que el hierro!"
+  god-chestplate:
+    name: "<aqua>Coraza de la Tortuga Negra</aqua>"
+    desc-1: "Forjado con el caparazón de la tortuga negra. ¡Aumenta tu salud!"
+    desc-2: "¡Protege igual que el hierro!"
+  god-leggings:
+    name: "<aqua>Grebas del Dragón Azul</aqua>"
+    desc-1: "Forjado con colmillos de dragón. ¡Aumenta tu daño de ataque!"
+    desc-2: "¡Protege igual que el hierro!"
+  god-boots:
+    name: "<aqua>Botas del Tigre Blanco</aqua>"
+    desc-1: "Forjadas con garras de tigre. ¡Aumentan tu velocidad!"
+    desc-2: "¡Protege igual que el hierro!"
+  starter-helmet:
+    name: "<yellow>Gorro Barato</yellow>"
+    desc-1: "<dark_aqua>¿No tienes nada mejor que ponerte?</dark_aqua>"
+  starter-chestplate:
+    name: "<yellow>Camiseta Barata</yellow>"
+    desc-1: "<dark_aqua>¿No tienes nada mejor que ponerte?</dark_aqua>"
+  starter-leggings:
+    name: "<yellow>Pantalones Baratos</yellow>"
+    desc-1: "<dark_aqua>¿No tienes nada mejor que ponerte?</dark_aqua>"
+  starter-boots:
+    name: "<yellow>Botas Baratas</yellow>"
+    desc-1: "<dark_aqua>¿No tienes nada mejor que ponerte?</dark_aqua>"
+  elytra:
+    name: "<aqua>Alas de Hada</aqua>"
+    desc-1: "Alas arrancadas de un hada muerta, permiten volar a los mortales."
+  shame-chestplate:
+    name: "<aqua>Camiseta de la Vergüenza del Perdedor</aqua>"
+    desc-1: "¡Qué mala suerte tienes!"
+  damage-assist:
+    name: "<aqua>Desatador Oscuro</aqua>"
+    desc-1: "¡Potencia desatada!"
+  skill-cooldown-assist:
+    name: "<light_purple>Potenciador de Habilidad</light_purple>"
+    desc-1: "¡Ponlo en la mano secundaria para reducir el enfriamiento a la mitad!"
+  ink-assist:
+    name: "<aqua>Amuleto de Calamar</aqua>"
+    desc-1: "Saco de tinta de un calamar gigante de las profundidades."
+    desc-2: "¡Ponlo en tu mano secundaria para cegar a quien te ataque!"
+  placeholder:
+    name: "<yellow>Entidad del Caos</yellow>"
+    desc-1: "Aquí solía haber algo..."
+  soul:
+    name: "<yellow>Fragmento de Alma</yellow>"
+    desc-1: "Obtenido al matar a alguien."
+  add-core-health:
+    name: "<light_purple>Poción de Restauración del Núcleo</light_purple>"
+    desc-1: "¡Restaura 1 PV al núcleo!"
+    core-full: "<red>¡Tu núcleo ya tiene la salud máxima!</red>"
+    announce: "<player> usó <item>"
+  assign-respawn-time:
+    name: "<aqua>Ojo de la Culpa</aqua>"
+    desc-1: "¡Aumenta en 30 la culpa de un enemigo aleatorio!"
+    not-found: "<red>No se encontró ningún objetivo</red>"
+    announce: "<player> usó <item> y aumentó en 30 la culpa de <target>"
+  bridge-helper:
+    name: "<yellow>Ayudante de Puente</yellow>"
+    desc-1: "Genera un pilar de ladrillos de 15 bloques de altura."
+    no-block: "<red>¡Debes mirar un bloque para usar esto!</red>"
+  give-jump-boost:
+    name: "<yellow>Pelota Saltarina</yellow>"
+    desc-1: "Otorga Impulso en Salto X por 6s."
+    announce: "<player> usó <item>"
+  give-speed:
+    name: "<yellow>Pluma de Aceleración</yellow>"
+    desc-1: "Otorga Velocidad X por 6s."
+    announce: "<player> usó <item>"
+  give-strength:
+    name: "<yellow>Piedra de Fuerza</yellow>"
+    desc-1: "Otorga Fuerza III por 6s."
+    announce: "<player> usó <item>"
+  grenade:
+    name: "<aqua>Granada</aqua>"
+    desc-1: "¡Boom!"
+  random-role:
+    name: "<light_purple>Libro de Cambio de Clase</light_purple>"
+    desc-1: "¡Bendecido por los dioses!"
+    desc-2: "Úsalo para cambiar aleatoriamente de clase."
+    confirm: "<yellow>¡Agáchate para confirmar!</yellow>"
+    announce: "<player> usó <item> y cambió a <yellow><role></yellow>"
+  choose-role:
+    name: "<aqua>Seleccionar Clase</aqua>"
+    no-team: "<red>¡Únete a un equipo primero!</red>"
+    locked: "<red>¡Aún no has desbloqueado esta clase!</red>"
+  spectator-teleporter:
+    name: "<aqua>Teletransportador de Espectador</aqua>"
+  absorption-potion:
+    name: "<aqua>Agua Protectora Fuerte</aqua>"
+    desc-1: "Agua bendita por el Dios Guardián."
+  invis-potion:
+    name: "<aqua>Jugo de Espía</aqua>"
+    desc-1: "Extracto de camaleón. Te hace invisible."
+  ice-arrow:
+    name: "<yellow>Flecha de Escarcha</yellow>"
+    desc-1: "<red>Congelación<red>"
+    desc-2: "<red>Lentitud I (5s)</red>"
+  weakness-arrow:
+    name: "<yellow>Flecha de la Noche Oscura</yellow>"
+    desc-1: "<red>Debilidad I (8s)</red>"
+  poison-arrow:
+    name: "<yellow>Flecha de Hueso Envenenado</yellow>"
+    desc-1: "<red>Veneno I (8s)</red>"
+  lottery:
+    name: "<light_purple>Billete de Lotería</light_purple>"
+    desc-1: "15% Premio Mayor"
+    desc-2: "35% Objeto Normal"
+    desc-3: "50% Basura"
+    prefix: "[<light_purple>Lotería</light_purple>] "
+    item-lore: "- <gold>Premio de Lotería</gold>"
+    announce:
+      item: "<player> ganó <item> × <dark_aqua><amount></dark_aqua>"
+      poison: "<player> envenenó al <side>"
+      wear: "<player> se equipó <item>"
+      nothing: "<player> ganó <yellow>absolutamente nada</yellow>"
+      replace-hotbar: "<player> llenó su barra de acceso rápido con <yellow>carne podrida</yellow>"
+      kill: "<player> acaba de <yellow><action></yellow> al <side>"
+      kill-actions: "masacrar|asesinar|exterminar|borrar|bañar en sangre|aniquilar"
+      send-spawn: "<player> envió a todo el <side> de vuelta a casa"
+      chaos: "<player> experimentó el <light_purple>Caos</light_purple>"
+  witchcraft:
+    name: "<light_purple>Brujería</light_purple>"
+    desc-1: "Podrían pasar cosas aleatorias..."
+    prefix: "[<light_purple>Brujería</light_purple>] "
+    announce:
+      drop-ores: "¡<player> hizo que el <enemy> tirara todos sus minerales!"
+      poison: "¡<player> dio Veneno II (10s) a todo el <enemy>!"
+      add-skill-cooldown: "¡<player> añadió 60s al enfriamiento de habilidades del <enemy>!"
+      random-role: "¡<player> cambió la clase de <target> a <yellow><role></yellow>!"
+      unluck: "¡<player> dio Mala Suerte I (60s) a todo el <enemy>!"
+      add-respawn-time: "¡<player> aumentó la Culpa de todo el <enemy> en 15!"
+      ban-ores: "¡<player> bloqueó las minas del <enemy> por 60s!"
+      glow: "¡<player> hizo que todo el <enemy> brille por 60s!"
+      attack-core: "¡<player> le quitó 1 PV al núcleo del <enemy>!"
+      attack-core-3: "¡<player> le quitó 3 PV al núcleo del <enemy>!"
+      slowness: "¡<player> dio Lentitud II (30s) a todo el <enemy>!"
+      mining-fatigue: "¡<player> dio Fatiga al Minar I (30s) a todo el <enemy>!"
+  gold-digger-chestplate:
+    name: "<aqua>Chaleco Reflectante</aqua>"
+    desc-1: "- <red>Objeto Exclusivo del Buscador de Oro</red>"
+  provocateur-helmet:
+    name: "<aqua>Caja de Cartón Grueso</aqua>"
+    desc-1: "- <red>Objeto Exclusivo del Payaso</red>"
+  ranger-helmet:
+    name: "<aqua>Gorro de Guardabosques</aqua>"
+    desc-1: "- <red>Objeto Exclusivo del Guardabosques</red>"
+  constructor-helmet:
+    name: "<aqua>Casco de Construcción</aqua>"
+    desc-1: "- <red>Objeto Exclusivo del Constructor</red>"
+  kekkai-master-leggings:
+    name: "<aqua>Pantalones Rúnicos</aqua>"
+    desc-1: "- <red>Objeto Exclusivo del Maestro de Barreras</red>"
+  mole-boots:
+    name: "<aqua>Garras Selladas</aqua>"
+    desc-1: "- <red>Objeto Exclusivo del Topo</red>"
+  royal-helmet:
+    name: "<aqua>Corona Real</aqua>"
+    desc-1: "- <red>Objeto Exclusivo de la Princesa</red>"
+  assign-clear-inv:
+    name: "[<white>Edicto</white>] <light_purple>Reunión de Ladrones</light_purple>"
+    desc-1: "Limpia el inventario de un enemigo aleatorio."
+    cooldown: "<red>¡Debes esperar <cooldown>s para usar este Edicto de nuevo!</red>"
+    not-found: "<red>Enemigo no encontrado</red>"
+    announce: "<player> usó <item> y robó el inventario de <target>"
+    post-announce: "¡Muajajajajajaja!"
+    allay: "<aqua>Ladrón</aqua>"
+  assign-more-respawn-time:
+    name: "[<white>Edicto</white>] <light_purple>Pecado Capital</light_purple>"
+    desc-1: "¡Aumenta la Culpa de un enemigo aleatorio en 60!"
+    not-found: "<red>Enemigo no encontrado</red>"
+    announce: "<player> usó <item> y aumentó la Culpa de <target> en 60"
+  core-invuln:
+    name: "[<white>Edicto</white>] <light_purple>Bloqueo del Núcleo</light_purple>"
+    desc-1: "Protege el núcleo durante 60 segundos."
+    desc-2: "Los enemigos pueden usar Destrucción Forzada para anular esto."
+    announce: "<player> usó <item>"
+  enemy-glow:
+    name: "[<white>Edicto</white>] <light_purple>Brillo Enemigo</light_purple>"
+    desc-1: "Hace que todos los enemigos brillen durante 10 minutos."
+    announce: "<player> usó <item>"
+  ignore-core-invuln:
+    name: "[<white>Edicto</white>] <light_purple>Destrucción Forzada</light_purple>"
+    desc-1: "Anula el Bloqueo del Núcleo del enemigo."
+    no-effect: "<red>¡El núcleo enemigo no está bloqueado!</red>"
+    announce: "<player> usó <item>"
+  last-ditch:
+    name: "[<white>Edicto</white>] <light_purple>Última Batalla</light_purple>"
+    desc-1: "<gold>Condición</gold>: <yellow>Tu núcleo debe tener 30 PV menos que el enemigo.</yellow>"
+    desc-2: "Otorga Velocidad II, Fuerza I, Regeneración I y daño extra al núcleo a los aliados por 120s."
+    health-too-high: "<red>La salud de tu núcleo no es 30 PV menor que la del enemigo.</red>"
+    announce: "<player> usó <item>"
+  respawn-teammates:
+    name: "[<white>Edicto</white>] <light_purple>Resurrección Masiva</light_purple>"
+    desc-1: "¡Revive a todos tus compañeros de equipo al instante!"
+    desc-2: "Y todos obtienen 10 corazones extra por 60s."
+    announce: "<player> usó <item>"
+  truce:
+    name: "[<white>Edicto</white>] <light_purple>Tratado de Paz</light_purple>"
+    desc-1: "<gold>Condición</gold>: <yellow>Debe usarse entre las fases 1 y 4.</yellow>"
+    desc-2: "<gold>Condición</gold>: <yellow>Solo se puede usar una vez por partida.</yellow>"
+    desc-3: "Impide que ambos equipos se acerquen a la base rival por 5 minutos."
+    too-late: "<red>¡Ya es demasiado tarde para usar esto!</red>"
+    duped-usage: "<red>¡Ya usaste el Tratado de Paz!</red>"
+    announce: "<player> usó <item>"
+  levi-stick:
+    name: "<aqua>Varita Levitadora</aqua>"
+    desc-1: "¡Haz que tus enemigos floten!"
+    not-found: "<red>Objetivo no encontrado</red>"
+    success: "<aqua>Haciendo levitar a <target></aqua>"
+  netherite-sword:
+    name: "<aqua>Espada del Cielo</aqua>"
+    desc-1: "Arma suprema que puedes encantar a tu gusto."
+  netherite-axe:
+    name: "<aqua>Hacha de Bombero</aqua>"
+    desc-1: "Arma suprema que puedes encantar a tu gusto."
+    desc-2: "¡Solo imagina que es roja!"
+  starter-sword:
+    name: "<yellow>Espada Barata</yellow>"
+    desc-1: "<dark_aqua>¿No tienes un arma mejor?</dark_aqua>"
+  trident:
+    name: "<aqua>Tridente de Poseidón</aqua>"
+    desc-1: "Una de las 7 reliquias de Atlantis."
+  kb-stick:
+    name: "<aqua>Palo de Empuje</aqua>"
+    desc-1: "¡Un palo muy elástico!"
+
+tools:
+  cancel: "Salir del modo de edición"
+  core: "Núcleo"
+  join-green: "Unirse a la Zona Verde"
+  join-red: "Unirse a la Zona Roja"
+  join-spectator: "Unirse a los Espectadores"
+  lobby: "Punto de aparición del Lobby"
+  rest-area: "Zona de Descanso"
+  spawnpoints: "Puntos de aparición"
+  start-button: "Botón de Inicio"
+  woods: "Madera"
+  ores: "Minerales Generales"
+  diamonds: "Mina de Diamantes"
+  shops: "Aldeanos de la Tienda"
+  mission: "Punto de Misión Central"
+
+missions:
+  chicken:
+    title: "<yellow>Captura el Pollo</yellow>"
+    desc: "Un pollo muy rápido y con 25 corazones ha aparecido en el centro. ¡El equipo que lo mate gana!"
+    chicken: "<yellow>Pollito</yellow>"
+    boss-bar: "<yellow>Salud del Pollo</yellow>"
+  roll-call:
+    title: "<yellow>Pase de Lista</yellow>"
+    desc: "¡Todos deben volver cerca de su núcleo para pasar lista!"
+  collect-stars:
+    title: "<yellow>Estrellas Fugaces</yellow>"
+    desc: "Caen estrellas cerca del centro. ¡El equipo que recoja más estrellas gana!"
+    item: "<light_purple>Estrella</light_purple>"
+    score: "¡<player> recogió 1 estrella!"
+  occupy-center:
+    title: "<yellow>Ocupa el Centro</yellow>"
+    desc: "¡Ocupa la zona central por 30 segundos para que tu equipo gane!"
+  ores:
+    title: "<yellow>Concurso de Minería</yellow>"
+    desc: "¡El equipo que mine más minerales gana!"
+  no-jump:
+    title: "<yellow>No Saltes</yellow>"
+    desc: "¡El equipo que salte menos veces gana!"
+  teleport-core:
+    title: "<yellow>Asistencia Obligatoria</yellow>"
+    desc: "El núcleo se sentía solo, así que teletransportó a todos de vuelta..."
+  hungry:
+    title: "<yellow>Agujero en el Estómago</yellow>"
+    desc: "¡Sientes un vacío en el estómago y tienes mucha hambre!"
+  earthquake-cow:
+    title: "<yellow>Vaca Terremoto</yellow>"
+    desc: "¡Una vaca emergió de la tierra! ¡Quien la mate, hace ganar a su equipo!"
+    cow: "<yellow>Vaca Terremoto</yellow>"
+    boss-bar: "<yellow>Salud de la Vaca</yellow>"
+  drop-all:
+    title: "<yellow>Castigo de Botín</yellow>"
+    desc: "¡La próxima persona que muera soltará todo su inventario!"
+  jump:
+    title: "<yellow>Concurso de Saltos</yellow>"
+    desc: "¡El equipo que salte más veces gana!"
+  eat-cake:
+    title: "<yellow>Concurso de Pasteles</yellow>"
+    desc: "¡El equipo que coma más pasteles gana!"
+  discount-trader:
+    title: "<yellow>Comerciante en Oferta</yellow>"
+    desc: "¡Un comerciante del futuro ha llegado! ¡Cantidad limitada, compra mientras haya stock!"
+    trader: "Comerciante en Oferta"
+  free-money:
+    title: "<yellow>Dinero Inesperado</yellow>"
+    desc: "¡De repente, encuentras algo de dinero de bolsillo en tu inventario!"
+  drop-ores:
+    title: "<yellow>Agujeros en los Bolsillos</yellow>"
+    desc: "¡Tus bolsillos están rotos y se te cayeron los minerales al suelo!"
+  anti-gravity:
+    title: "<yellow>Gravedad Invertida</yellow>"
+    desc: "La gravedad se ha invertido, ¡si te agachas flotarás!"
+    bar: "<yellow>Gravedad Invertida: <time></yellow>"
+  xp-fountain:
+    title: "<yellow>Fuente de Experiencia</yellow>"
+    desc: "¡Apareció mucha EXP en el punto de misión central!"
+    bar: "<yellow>Fuente de EXP: <time></yellow>"
+  angry-bees:
+    title: "<yellow>Ataque de la Abeja Reina</yellow>"
+    desc: "¡Una abeja reina mutante apareció en el centro! ¡Mátala para conseguir esmeraldas!"
+    queen-bee: "<yellow>Abeja Reina</yellow>"
+    normal-bee: "<yellow>Abeja Obrera</yellow>"
+    boss-bar: "<yellow>Salud de la Abeja Reina</yellow>"
+  swap-pos:
+    title: "<yellow>Intercambio de Almas</yellow>"
+    desc: "¡Un jugador aleatorio de cada equipo intercambiará posiciones en 10 segundos!"
+    bar: "<yellow>Teletransporte en: <time></yellow>"
+  swap-all-pos:
+    title: "<yellow>Sillas Musicales</yellow>"
+    desc: "¡En 10 segundos las posiciones de todos los jugadores se mezclarán!"
+    bar: "<yellow>Teletransporte en: <time></yellow>"
+  covid:
+    title: "<yellow>Pandemia</yellow>"
+    desc: "Por favor, mantén una distancia social de 5 bloques."
+    bar: "<yellow>Pandemia: <time></yellow>"
+  random-role:
+    title: "<yellow>Clase Elegida</yellow>"
+    desc: "¡La clase de alguien fue cambiada en secreto!"
+  free-soup:
+    title: "<yellow>Sopa Sospechosa</yellow>"
+    desc: "Efecto aleatorio... ¿Te atreves a beberla?"
+  hero:
+    title: "<yellow>Súper Dios de la Guerra</yellow>"
+    desc: "Un jugador aleatorio de cada equipo obtiene Fuerza I, Resistencia III, Velocidad II y Brillo."
+  sneak-walk:
+    title: "<yellow>Carrera Agachados</yellow>"
+    desc: "¡El jugador que camine más distancia agachado gana!"
+  invis:
+    title: "<yellow>Espíritu Ninja</yellow>"
+    desc: "¡Todos se vuelven invisibles hasta morir!"
+  cargo:
+    title: "<yellow>Carrera de Carga</yellow>"
+    desc: "¡Lleva la carga al punto de misión central para ganar!"
+    item: "<light_purple>Carga Pesada</light_purple>"
+  explode:
+    title: "<yellow>Posesión de Creeper</yellow>"
+    desc: "¡Un jugador de cada equipo explotará en 60 segundos!"
+    bar: "<yellow>Explotarás en: <time></yellow>"
+    warning: "<red>¡Estás a punto de explotar!</red>"
+  infinite-ores:
+    title: "<yellow>Minerales Infinitos</yellow>"
+    desc: "¡Minerales aleatorios infinitos en el centro!"
+    bar: "<yellow>Minerales Infinitos: <time></yellow>"
+  rocket:
+    title: "<yellow>Despegue</yellow>"
+    desc: "¡Busquen refugio! ¡Despegamos en 5 segundos!"
+    bar: "<yellow>Despegue en: <time></yellow>"
+    warning: "<red>¡Estás a punto de volar!</red>"
+  cold:
+    title: "<yellow>Ola de Frío</yellow>"
+    desc: "Por favor, mantente a menos de 5 bloques de otras personas para entrar en calor."
+    bar: "<yellow>Ola de Frío: <time></yellow>"
+  cursed-item:
+    title: "<yellow>Objeto Maldito</yellow>"
+    desc: "¡Quien lo tenga recibe Velocidad III y Fuerza I, pero si lo sostienes más de 10s morirás!"
+    item: "<yellow>Objeto Maldito</yellow>"
+    bar: "<yellow>Objeto Maldito: <time></yellow>"
+  go-outside:
+    title: "<yellow>Tomar el Sol</yellow>"
+    desc: "En este hermoso y soleado día, ¡no deberías quedarte adentro!"
+    bar: "<yellow>Tomar el Sol: <time></yellow>"
+  find-skull:
+    title: "<yellow>Busca tu Cabeza</yellow>"
+    desc: "¡Encuentra tu propia cabeza para obtener un tesoro aleatorio!"
+    complete: "<player> encontró su cabeza y obtuvo <item> × <dark_aqua><amount></dark_aqua>"
+    bar: "<yellow>Busca tu Cabeza: <time></yellow>"
+
+roles:
+  default:
+    name: "Aldeano"
+    desc-1: "<gold>¡No tienes trabajo!</gold>"
+    skill:
+      name: "Llorar"
+      desc-1: "<dark_purple>Te arrepientes de no haber conseguido un buen trabajo.</dark_purple>"
+      announce: "<player> se arrepiente de no haber conseguido un buen trabajo..."
+  attacker:
+    name: "Atacante"
+    desc-1: "<gold>¡Tu objetivo principal es cargar y atacar el núcleo!</gold>"
+    feature-1: "Tiempo de reaparición reducido a la mitad."
+    item:
+      name: "<aqua>Espada de Asalto</aqua>"
+      detail: "Espada de Madera con Filo III"
+    skill:
+      name: "Guerra Relámpago"
+      desc-1: "<dark_purple>Otorga Velocidad I (5s) y Resistencia I (10s).</dark_purple>"
+      announce: "¡<player> usó la habilidad <yellow><role></yellow>, su velocidad y resistencia aumentaron!"
+    no-crossbow: "<red>¡Esta clase no permite usar ballestas!</red>"
+  guard:
+    name: "Guardia"
+    desc-1: "<gold>¡Rol defensivo crucial para proteger el núcleo!</gold>"
+    feature-1: "Regeneración II al estar a 15 bloques de tu núcleo."
+    feature-2: "La EXP obtenida por expiar culpa se multiplica por 3."
+    feature-3: "Notificaciones cuando el enemigo encanta objetos."
+    item:
+      name: "<yellow>Escudo Sagrado</yellow>"
+      detail: "Escudo"
+    skill:
+      name: "Limpieza del Núcleo"
+      desc-1: "<dark_purple>Los enemigos a 15 bloques del núcleo recibirán:</dark_purple>"
+      desc-2: "<dark_purple>- Brillo (60s)</dark_purple>"
+      desc-3: "<dark_purple>- Lentitud V y Fatiga V (5s)</dark_purple>"
+      desc-4: "<dark_purple>Otorga Fuerza II para ti mismo (15s).</dark_purple>"
+      announce: "¡<player> usó la habilidad <yellow><role></yellow> para detectar enemigos cerca del núcleo!"
+      found-enemy:
+        none: "¡El área alrededor del núcleo está despejada!"
+        self: "Detectado a <enemy>"
+        enemy: "¡Has sido detectado por <player>!"
+    near-enemy-core-warning: "<red>¡Un <role> no debería estar tan cerca del núcleo enemigo!</red>"
+    enchanting-alarm: "<aqua>¡El enemigo está encantando objetos!</aqua>"
+  gold-digger:
+    name: "Buscador de Oro"
+    desc-1: "<gold>La codicia le permite enriquecerse rápido.</gold>"
+    desc-2: "<gold>¡Pero también se convierte a menudo en un objetivo a cazar!</gold>"
+    feature-1: "A los aliados a menos de 10 bloques:"
+    feature-2: "- Les da Prisa I."
+    feature-3: "- Al minar, 25% de probabilidad de duplicar minerales."
+    feature-4: "Brillo permanente."
+    feature-5: "Lentitud I permanente."
+    item:
+      name: "<aqua>Taladro del Buscador de Oro</aqua>"
+      detail: "Pico de Hierro con Eficiencia III"
+    skill:
+      name: "Corazón Codicioso"
+      desc-1: "<dark_purple>Otorga Fortuna III (15s).</dark_purple>"
+      announce: "¡<player> usó la habilidad <yellow><role></yellow>, su suerte aumentó!"
+    ores-bonus: "<aqua>Bonus de <player>: <ore></aqua>"
+  ranger:
+    name: "Guardabosques"
+    desc-1: "<gold>Arquero capaz de colocar trampas.</gold>"
+    desc-2: "<gold>¡Clase importante para acosar al enemigo y defender!</gold>"
+    feature-1: "Resistencia I al sostener una ballesta."
+    feature-2: "Recibe 20 flechas al inicio de cada fase."
+    item:
+      name: "<aqua>Ballesta de Tormenta</aqua>"
+      detail: "Ballesta con Carga Rápida III"
+    skill:
+      name: "Trampa de Cazador"
+      desc-1: "<dark_purple>Coloca una trampa (máximo 3 activas).</dark_purple>"
+      desc-2: "<dark_purple>Los enemigos que la pisen recibirán Veneno X (5s).</dark_purple>"
+      announce: "¡<player> usó la habilidad <yellow><role></yellow> y colocó una trampa!"
+      too-many: "<red>Solo puedes poner <amount> trampas. ¡La primera trampa fue eliminada!</red>"
+      trap-hit:
+        owner: "¡<enemy> pisó tu trampa!"
+        enemy: "¡Pisaste la trampa de <owner>!"
+        enemy-unknown: "¡Pisaste una trampa!"
+  kekkai-master:
+    name: "Maestro de Barreras"
+    desc-1: "Rol de soporte. Puede crear diferentes campos de barrera."
+    feature-1: "Resistencia al fuego permanente."
+    feature-2: "Sostener el báculo dentro de una barrera la mantiene activa."
+    item:
+      name: "<aqua>Báculo de Barreras</aqua>"
+      detail: "Caña de pescar con Empuje I"
+    skill:
+      name: "Abrir Barrera"
+      desc-1: "<dark_purple>Coloca una barrera según el objeto de la mano secundaria (Radio 15 bloques).</dark_purple>"
+      desc-2: "<dark_purple>Lingote de Hierro - Velocidad V (30s)</dark_purple>"
+      desc-3: "<dark_purple>Lingote de Oro - Regeneración II (30s)</dark_purple>"
+      desc-4: "<dark_purple>Redstone - Antibalas (30s)</dark_purple>"
+      desc-5: "<dark_purple>Esmeralda - Resistencia II (30s)</dark_purple>"
+      desc-6: "<dark_purple>Lapislázuli - Reduce a la mitad el enfriamiento de minería (30s)</dark_purple>"
+      desc-7: "<dark_purple>Diamante - Fuerza I (30s)</dark_purple>"
+      desc-8: "<dark_purple>Bloque de Hierro - Velocidad V (30s)</dark_purple>"
+      desc-9: "<dark_purple>Bloque de Oro - Restaura Hambre (10s)</dark_purple>"
+      desc-10: "<dark_purple>Bloque de Redstone - Antibalas (180s)</dark_purple>"
+      desc-11: "<dark_purple>Bloque de Esmeralda - Resistencia III (30s)</dark_purple>"
+      desc-12: "<dark_purple>Bloque de Lapislázuli - Reduce a la mitad el enfriamiento de minería (180s)</dark_purple>"
+      desc-13: "<dark_purple>Bloque de Diamante - Fuerza III (180s)</dark_purple>"
+      desc-14: "<dark_purple>Entidad del Caos - Efectos Aleatorios III (10s)</dark_purple>"
+      desc-15: "<dark_purple>Fragmento de Alma - Velocidad II, Regeneración II, Fuerza II, aumenta Culpa (30s)</dark_purple>"
+      desc-16: "<dark_purple>Las barreras mejoradas tienen un enfriamiento 6 veces mayor.</dark_purple>"
+      announce: "¡<player> usó la habilidad <yellow><role></yellow> y colocó una barrera de <aqua><type></aqua>!"
+      inside-kekkai: "<red>¡Se sobrescribirán <amount> barreras! Agáchate para confirmar.</red>"
+      no-material: "<red>¡El objeto en la mano secundaria no sirve para ninguna barrera!</red>"
+      duration: "<aqua>Tiempo restante de barrera: <value> s</aqua>"
+    kekkais:
+      speed: "Velocidad"
+      healing: "Regeneración"
+      bullet-proof: "Antibalas"
+      resistance: "Resistencia"
+      fast-ores: "Minerales"
+      strength: "Fuerza"
+      speed-plus: "Velocidad Mejorada"
+      saturation: "Saturación"
+      bullet-proof-plus: "Antibalas Mejorada"
+      resistance-plus: "Resistencia Mejorada"
+      fast-ores-plus: "Minerales Mejorada"
+      strength-plus: "Fuerza Mejorada"
+      chaos: "Caos"
+      soul: "Alma"
+    center-name: "Núcleo de la Barrera"
+  assassin:
+    name: "Asesino"
+    desc-1: "<gold>¡Una clase letal que se vuelve invisible en la oscuridad, experta en ataques furtivos!</gold>"
+    feature-1: "Se vuelve invisible al no moverse por 2 segundos."
+    feature-2: "Obtiene Fuerza I al ser invisible."
+    feature-3: "No puede usar arcos ni ballestas."
+    item:
+      name: "<aqua>Hoja Ninja</aqua>"
+      detail: "Espada de Piedra con Castigo V"
+    skill:
+      name: "Puñalada Nocturna"
+      desc-1: "<dark_purple>Solo se puede usar siendo invisible.</dark_purple>"
+      desc-2: "<dark_purple>Te teletransporta al jugador más cercano (¡sea aliado o enemigo!).</dark_purple>"
+      desc-3: "<dark_purple>Otorga 4s extra de invisibilidad y Fuerza III.</dark_purple>"
+      not-invis: "<red>¡Debes ser invisible para usar esta habilidad!</red>"
+      no-target: "<red>¡No se encontró a nadie para teletransportarse!</red>"
+    no-bow: "<red>¡Esta clase no permite usar arcos!</red>"
+  constructor:
+    name: "Constructor"
+    desc-1: "<gold>¡Es normal que un obrero siempre lleve un martillo!</gold>"
+    feature-1: "Al romper madera:"
+    feature-2: "- Recibes Prisa I por 2 segundos."
+    feature-3: "- 5% de probabilidad de restaurar hambre."
+    item:
+      name: "<aqua>Martillo</aqua>"
+      detail: "Hacha de Piedra con Eficiencia VII"
+    skill:
+      name: "Expansión de Dominio"
+      desc-1: "<dark_purple>Construye una cabaña de madera de roble de 9×5×9.</dark_purple>"
+      announce: "¡<player> usó la habilidad <yellow><role></yellow> y construyó una cabaña!"
+    eat-wood: "<aqua>Te tragaste algo de aserrín al minar madera. ¡Hambre restaurada!</aqua>"
+  wanderer:
+    name: "Vagabundo"
+    desc-1: "<gold>Camina libre por el mundo, con espadas gemelas de gran poder.</gold>"
+    desc-2: "<gold>Empuña una espada en la mano secundaria para ser más ágil y enviar a los enemigos a volar.</gold>"
+    feature-1: "Sostener una espada en la mano secundaria da Velocidad I y Regeneración I."
+    feature-2: "De lo contrario, te da Lentitud I."
+    feature-3: "No puedes usar escudos."
+    item:
+      name: "<aqua>Espada del Vagabundo</aqua>"
+      detail: "Espada de Hierro con Empuje I"
+    skill:
+      name: "Ascensor Gravitacional"
+      desc-1: "<dark_purple>Lanza a los enemigos por los aires y les da Debilidad I.</dark_purple>"
+      announce: "¡<player> usó la habilidad <yellow><role></yellow> y creó un ascensor gravitacional!"
+    no-shield: "<red>¡Esta clase no permite usar escudos!</red>"
+  provocateur:
+    name: "Payaso"
+    desc-1: "<gold>¡Es tan molesto que todos quieren golpearlo!</gold>"
+    feature-1: "Absorbe el 60% del daño recibido por los aliados en 10 bloques."
+    feature-2: "Si tienes el efecto de Absorción activo, absorbes el 90% del daño."
+    feature-3: "Tu daño saliente se reduce un 10% permanentemente."
+    item:
+      name: "<aqua>Cachiporra</aqua>"
+      detail: "Tarta de Calabaza con Filo Arrasador III"
+    skill:
+      name: "Ponerse la Máscara"
+      desc-1: "<dark_purple>Otorga Absorción X, Resistencia III, Debilidad y Brillo (10s).</dark_purple>"
+      announce: "¡<player> usó la habilidad <yellow><role></yellow> y aumentó su salud!"
+  mole:
+    name: "Topo"
+    desc-1: "<gold>¡Los topos cavan agujeros!</gold>"
+    feature-1: "Cava bloques extremadamente rápido, pero no puede romper bloques demasiado duros."
+    feature-2: "Estar bajo la luz del sol te da Oscuridad I."
+    item:
+      name: "<aqua>Garras de Topo</aqua>"
+      detail: "Cava bloques súper rápido, inútil para bloques duros."
+    skill:
+      name: "Excavar"
+      desc-1: "<dark_purple>Escóndete en el suelo para moverte más rápido (5s).</dark_purple>"
+      desc-2: "<dark_purple>Al salir de la tierra causas una explosión que daña a los enemigos cercanos.</dark_purple>"
+      announce: "¡<player> usó la habilidad <yellow><role></yellow> y se sumergió bajo tierra!"
+    block-too-hard: "<red>Este bloque es demasiado duro, ¡tus garras se lastimarán!</red>"
+  jockey:
+    name: "Jinete"
+    desc-1: "<gold>¡Fuerte sobre un caballo, muerto en la carretera!</gold>"
+    feature-1: "Al montar tu corcel, obtienes Fuerza I y Resistencia II."
+    feature-2: "De lo contrario, te da Lentitud I."
+    item:
+      name: "<aqua>Fusta</aqua>"
+      detail: "Riendas con Empuje I"
+    skill:
+      name: "Potenciar Caballo"
+      desc-1: "<dark_purple>Mientras montas, mejora a tu caballo:</dark_purple>"
+      desc-2: "<dark_purple>- Aumenta la salud máxima del caballo a 15 corazones.</dark_purple>"
+      desc-3: "<dark_purple>- Mejora su armadura (Nada → Hierro → Diamante).</dark_purple>"
+      desc-4: "<dark_purple>- Cura su salud al máximo.</dark_purple>"
+      desc-5: "<dark_purple>Si no estás montado, invoca un caballo.</dark_purple>"
+      announce: "¡<player> usó la habilidad <yellow><role></yellow> y <action> su caballo!"
+      actions:
+        summon: "invocó"
+        enhance: "mejoró"
+  royal:
+    name: "Princesa"
+    desc-1: "<gold>¡La presencia más noble! ¡Es un honor estar cerca de ella!</gold>"
+    feature-1: "Otorga Resistencia I a los aliados en 10 bloques."
+    feature-2: "Recibe lingotes de oro cuando un enemigo muere a 15 bloques."
+    item:
+      name: "<aqua>Espada Real</aqua>"
+      detail: "Espada de Oro con Aspecto Ígneo I"
+    skill:
+      name: "Protección Real"
+      desc-1: "<dark_purple>Otorga a todos los aliados 6 corazones extra de salud (60s).</dark_purple>"
+      announce: "¡<player> usó la habilidad <yellow><role></yellow> y aumentó la salud de sus aliados!"
+  glutton:
+    name: "Glotón"
+    desc-1: "<gold>¡Absorbe el hambre de los enemigos para ganar resistencia o velocidad!</gold>"
+    feature-1: "No puede comer por su cuenta, depende de sus habilidades."
+    feature-2: "Recibe Lentitud III al estar envenenado."
+    item:
+      name: "<aqua>Pescado Afilado</aqua>"
+      detail: "Salmón Cocinado con Filo II"
+    skill:
+      name: "Comer en Exceso"
+      desc-1: "<dark_purple>Roba hambre a los jugadores en un radio de 5 bloques.</dark_purple>"
+      desc-2: "<dark_purple>Otorga Regeneración IV (2s) y Debilidad II (10s).</dark_purple>"
+      desc-3: "<dark_purple>Según la cantidad de jugadores cerca, obtiene:</dark_purple>"
+      desc-4: "<dark_purple>- Por cada aliado: 5s de Resistencia (Max: IV).</dark_purple>"
+      desc-5: "<dark_purple>- Por cada enemigo: 5s de Velocidad (Max: IV).</dark_purple>"
+      announce: "¡<player> usó la habilidad <yellow><role></yellow> y robó el hambre de <aqua><amount></aqua> jugadores!"
+      not-hungry: "<red>¡Aún no tienes hambre!</red>"
+      no-target: "<red>¡No se encontró a nadie para robarle hambre!</red>"
+      stolen: "<red>¡Tu hambre fue robada por <player>!</red>"
+    eat-warning: "<red>¡No puedes comer por ti mismo!</red>"
+  hacker:
+    name: "Hacker"
+    desc-1: "<gold>Todo buen ingeniero de redes sabe un poco de hackeo.</gold>"
+    feature-1: "Recibe lingotes de hierro al expiar culpa en la base."
+    feature-2: "No puede beber pociones ni recibir invisibilidad."
+    feature-3: "Mientras su habilidad está activa, cada ataque al núcleo da +5 de Culpa."
+    item:
+      name: "<aqua>Cámara Réflex</aqua>"
+      detail: "Catalejo con Pesadilla de los Artrópodos V"
+    skill:
+      name: "Plantar Virus"
+      desc-1: "<dark_purple>Si estás cerca de tu propio núcleo, lo protege por 30s:</dark_purple>"
+      desc-2: "<dark_purple>- Cada ataque enemigo tiene 1/3 de probabilidad de fallar.</dark_purple>"
+      desc-3: "<dark_purple>Si estás cerca del núcleo enemigo, lo debilita por 30s:</dark_purple>"
+      desc-4: "<dark_purple>- Cada ataque le causa daño extra.</dark_purple>"
+      announce: "¡<player> usó la habilidad <yellow><role></yellow> e instaló un virus de <aqua><type></aqua> en el núcleo <side>!"
+      types:
+        self: "Protección"
+        enemy: "Hackeo"
+    potion-warning: "<red>¡No puedes beber pociones!</red>"
+    invis-warning: "<red>¡No puedes hacerte invisible!</red>"
+
+advancement:
+  tab: "Asedio de Aniquilación"
+
+advancements:
+  root:
+    title: "<white>Asedio de Aniquilación</white>"
+    desc-1: "<green>Únete a la familia del Asedio de Aniquilación</green>"
+  chose-role:
+    title: "<white>Gran Variedad</white>"
+    desc-1: "<green>Abre el menú de clases</green>"
+  played-role:
+    title: "<white>Destino: <role></white>"
+    desc-1: "<green>Elige <role> al inicio de la partida</green>"
+  played:
+    title: "<white>Principiante</white>"
+    desc-1: "<green>Juega una partida</green>"
+  played-spectator:
+    title: "<white>El Observador</white>"
+    desc-1: "<green>Conviértete en espectador</green>"
+  used-skill:
+    title: "<white>Una Pequeña Prueba</white>"
+    desc-1: "<green>Usa una habilidad</green>"
+  used-many-skills:
+    title: "<white>Maestro de Habilidades</white>"
+    desc-1: "<green>Domina tus habilidades</green>"
+  used-lottery:
+    title: "<white>Apuesta Arriesgada</white>"
+    desc-1: "<green>Usa la lotería</green>"
+  used-many-lotteries:
+    title: "<white>Adicto al Juego</white>"
+    desc-1: "<green>Usa la lotería sin parar</green>"

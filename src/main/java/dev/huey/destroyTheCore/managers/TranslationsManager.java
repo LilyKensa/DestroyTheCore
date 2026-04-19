@@ -20,10 +20,12 @@ import org.bukkit.configuration.file.YamlConfiguration;
 public class TranslationsManager {
   
   static public final Key key = Key.key("destroy-the-core:translations");
+  Locale spanish = new Locale("es");
   
   static public final List<Locale> availableLocales = List.of(
     Locale.US,
-    Locale.TAIWAN
+    Locale.TAIWAN,
+    Locale.forLanguageTag("es-es")
   );
   static public final List<String> availableLocaleTags = availableLocales
     .stream().map(
