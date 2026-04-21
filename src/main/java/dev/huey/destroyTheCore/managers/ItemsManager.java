@@ -11,7 +11,7 @@ import dev.huey.destroyTheCore.items.assistance.SkillCooldownAssistGen;
 import dev.huey.destroyTheCore.items.fragments.PlaceholderGen;
 import dev.huey.destroyTheCore.items.fragments.SoulGen;
 import dev.huey.destroyTheCore.items.gadgets.*;
-import dev.huey.destroyTheCore.items.gui.ChooseRoleGen;
+import dev.huey.destroyTheCore.items.gui.RoleSelectorGen;
 import dev.huey.destroyTheCore.items.gui.SpectatorTeleporterGen;
 import dev.huey.destroyTheCore.items.misc.AbsorptionPotionGen;
 import dev.huey.destroyTheCore.items.misc.InvisPotionGen;
@@ -76,6 +76,7 @@ public class ItemsManager {
     GIVE_STRENGTH,
     GRENADE,
     RANDOM_ROLE,
+    CHOOSE_ROLE,
     // Wands
     LEVI_STICK,
     // Tokens
@@ -100,7 +101,7 @@ public class ItemsManager {
     PLACEHOLDER,
     SOUL,
     // GUI
-    CHOOSE_ROLE,
+    ROLE_SELECTOR,
     SPECTATOR_TELEPORTER,
     // Roles
     GOLD_DIGGER_CHESTPLATE,
@@ -161,6 +162,7 @@ public class ItemsManager {
       new GiveStrengthGen(),
       new GrenadeGen(),
       new RandomRoleGen(),
+      new ChooseRoleGen(),
       // Wands
       new LeviStickGen(),
       // Tokens
@@ -185,7 +187,7 @@ public class ItemsManager {
       new PlaceholderGen(),
       new SoulGen(),
       // GUI
-      new ChooseRoleGen(),
+      new RoleSelectorGen(),
       new SpectatorTeleporterGen(),
       // Roles
       new GoldDiggerChestplateGen(),
@@ -220,6 +222,10 @@ public class ItemsManager {
           PersistentDataType.STRING
         )
       ));
+  }
+  
+  public boolean isTrash(ItemStack item) {
+    return isGen(item) && getGen(item).isTrash();
   }
   
   /** Get an instance of a item-gen */

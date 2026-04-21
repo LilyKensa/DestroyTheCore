@@ -310,6 +310,22 @@ public class PlayerUtils {
     pl.damageItemStack(EquipmentSlot.HAND, 1);
   }
   
+  /** Replaces an item, but drop the old one on the ground */
+  static public void softReplaceItem(
+    Player pl, EquipmentSlot slot, ItemStack item
+  ) {
+    PlayerInventory inv = pl.getInventory();
+    ItemStack oldItem = inv.getItem(slot);
+    
+    if (!oldItem.isEmpty() && !DTC.itemsManager.isTrash(oldItem)) {
+      pl.getWorld()
+        .dropItemNaturally(LocUtils.hitboxCenter(pl), oldItem)
+        .setPickupDelay(20);
+    }
+    
+    inv.setItem(slot, item);
+  }
+  
   /** Skip players in creative mode */
   static public boolean shouldHandle(Player pl) {
     return !pl.getGameMode().equals(GameMode.CREATIVE);
@@ -626,7 +642,9 @@ public class PlayerUtils {
     
     pl.setGameMode(GameMode.SURVIVAL);
     fullyHeal(pl);
+    
     teleportToSpawnPoint(pl);
+    LocUtils.breakNearbyBlocks(pl.getLocation(), 1, 3);
   }
   
   static public void scheduleRespawn(Player pl) {
@@ -883,7 +901,7 @@ public class PlayerUtils {
           inv.getItemInOffHand()
             .isEmpty()
       ) {
-        inv.setItemInOffHand(roleItem);
+        softReplaceItem(pl, EquipmentSlot.OFF_HAND, roleItem);
       }
       else {
         give(pl, roleItem);
@@ -922,12 +940,7 @@ public class PlayerUtils {
       ItemStack item = pl.getInventory().getItem(slot);
       
       if (item.getType().equals(type)) {
-        pl.getInventory().setItem(slot, ItemStack.empty());
-        pl.getWorld().dropItemNaturally(
-          LocUtils.hitboxCenter(pl),
-          item
-        ).setPickupDelay(20);
-        
+        softReplaceItem(pl, slot, ItemStack.empty());
         found = true;
       }
     }

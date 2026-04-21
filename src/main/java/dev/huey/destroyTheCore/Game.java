@@ -663,7 +663,7 @@ public class Game {
       pl.getInventory().setItem(
         4,
         DTC.itemsManager.gens.get(
-          ItemsManager.ItemKey.CHOOSE_ROLE
+          ItemsManager.ItemKey.ROLE_SELECTOR
         ).getItem()
       );
       
@@ -1113,6 +1113,11 @@ public class Game {
   BukkitTask startingTask = null;
   
   public void handleInteract(PlayerInteractEvent ev) {
+    if (ev.getAction() == Action.PHYSICAL) {
+      ev.setCancelled(true);
+      return;
+    }
+    
     Player pl = ev.getPlayer();
     PlayerData data = getPlayerData(pl);
     ItemStack item = ev.getItem();
@@ -1120,10 +1125,16 @@ public class Game {
     if (ev.getAction() == Action.LEFT_CLICK_BLOCK) handleLeftClickBlock(ev);
     if (ev.getAction() == Action.RIGHT_CLICK_BLOCK) handleRightClickBlock(ev);
     
-    if (
-      List.of(Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK)
-        .contains(ev.getAction())
-    ) {
+    if (ev.getAction().isRightClick()) {
+      if (
+        ev.getHand() == EquipmentSlot.OFF_HAND &&
+          pl.getInventory().getItemInMainHand()
+            .getType() == Material.KNOWLEDGE_BOOK
+      ) {
+        ev.setCancelled(true);
+        return;
+      }
+      
       if (
         !PlayerUtils.checkUsingBlock(
           pl,
@@ -1131,10 +1142,8 @@ public class Game {
         ) &&
           item != null &&
           !item.isEmpty() &&
-          item
-            .getType().equals(
-              Material.KNOWLEDGE_BOOK
-            )
+          item.getType()
+            .equals(Material.KNOWLEDGE_BOOK)
       ) ev.setCancelled(true);
       
       if (!data.alive && !LocUtils.inLobby(pl)) {
@@ -1463,11 +1472,11 @@ public class Game {
       return;
     }
     
-    if (LocUtils.nearSpawn(blockLoc)) {
-      ev.getPlayer().sendActionBar(TextUtils.$("game.banned.place.spawn"));
-      ev.setCancelled(true);
-      return;
-    }
+    // if (LocUtils.nearSpawn(blockLoc)) {
+    //   ev.getPlayer().sendActionBar(TextUtils.$("game.banned.place.spawn"));
+    //   ev.setCancelled(true);
+    //   return;
+    // }
   }
   
   public AtomicInteger fakeBreakerId = new AtomicInteger(1_000_000);
@@ -1997,17 +2006,17 @@ public class Game {
   public void handleFallenBlock(
     FallingBlock entity, Block block, EntityChangeBlockEvent ev
   ) {
-    if (LocUtils.nearSpawn(block.getLocation())) {
-      ev.setCancelled(true);
-      entity.remove();
-      
-      for (ItemStack item : entity.getBlockState().getDrops()) {
-        block.getWorld().dropItemNaturally(
-          LocUtils.toBlockCenter(block.getLocation()),
-          item
-        );
-      }
-    }
+    // if (LocUtils.nearSpawn(block.getLocation())) {
+    //   ev.setCancelled(true);
+    //   entity.remove();
+    //
+    //   for (ItemStack item : entity.getBlockState().getDrops()) {
+    //     block.getWorld().dropItemNaturally(
+    //       LocUtils.toBlockCenter(block.getLocation()),
+    //       item
+    //     );
+    //   }
+    // }
   }
   
   public void handleBlockForm(BlockFormEvent ev) {
@@ -2197,9 +2206,10 @@ public class Game {
     }
   }
   
-  public void handlePickupItem(PlayerAttemptPickupItemEvent ev) {
-    Player pl = ev.getPlayer();
-    ItemStack item = ev.getItem().getItemStack();
+  public void handlePickupItem(
+    Player pl, Item entity, ItemStack item, PlayerAttemptPickupItemEvent ev
+  ) {
+    if (!PlayerUtils.shouldHandle(pl)) return;
     
     if (getPlayerData(pl).side.equals(Side.SPECTATOR)) {
       ev.setCancelled(true);
@@ -2233,6 +2243,57 @@ public class Game {
     if (getPlayerData(pl).side.equals(Side.SPECTATOR)) {
       ev.setCancelled(true);
       return;
+    }
+  }
+  
+  public void takeTradeCosts(MerchantInventory minv, MerchantRecipe recipe) {
+    Map<Material, Integer> costs = new HashMap<>();
+    Map<Material, Integer> given = new HashMap<>();
+    
+    for (ItemStack ingredient : recipe.getIngredients()) {
+      if (ingredient.isEmpty()) continue;
+      
+      costs.put(
+        ingredient.getType(),
+        costs.getOrDefault(
+          ingredient.getType(),
+          0
+        ) + ingredient.getAmount()
+      );
+    }
+    
+    for (int i = 0; i < 2; ++i) {
+      ItemStack slotItem = minv.getItem(i);
+      if (slotItem == null || slotItem.isEmpty()) continue;
+      
+      given.put(
+        slotItem.getType(),
+        given.getOrDefault(slotItem.getType(), 0) + slotItem.getAmount()
+      );
+    }
+    
+    for (Material type : costs.keySet()) {
+      int count = given.getOrDefault(type, 0) - costs.get(type);
+      if (count < 0) return;
+    }
+    
+    for (int i = 0; i < 2; ++i) {
+      ItemStack slotItem = minv.getItem(i);
+      if (slotItem == null || slotItem.isEmpty()) continue;
+      
+      Material type = slotItem.getType();
+      int count = costs.getOrDefault(type, 0) - slotItem.getAmount();
+      
+      if (count >= 0) {
+        slotItem = null;
+        costs.put(type, count);
+      }
+      else {
+        slotItem.setAmount(-count);
+        costs.put(type, 0);
+      }
+      
+      minv.setItem(i, slotItem);
     }
   }
   
@@ -2285,6 +2346,36 @@ public class Game {
     
     if (inv.getType() == InventoryType.PLAYER) return;
     
+    if (inv instanceof MerchantInventory minv && ev.getRawSlot() == 2) {
+      MerchantRecipe recipe = minv.getSelectedRecipe();
+      if (recipe == null) return;
+      
+      if (DTC.itemsManager.isGen(item)) {
+        ItemGen gen = DTC.itemsManager.getGen(item);
+        
+        if (gen instanceof UsableItemGen ugen && ugen.isInstantUse()) {
+          ev.setCancelled(true);
+          
+          if (!ugen.canUse(pl)) {
+            inv.close();
+            return;
+          }
+          
+          takeTradeCosts(minv, recipe);
+          ugen.use(pl, null);
+        }
+      }
+      
+      if (DTC.rolesManager.isExclusiveItem(item)) {
+        ev.setCancelled(true);
+        
+        takeTradeCosts(minv, recipe);
+        pl.setItemOnCursor(data.role.getExclusiveItem());
+      }
+      
+      return;
+    }
+    
     if (
       click != ClickType.DROP &&
         !DTC.rolesManager.canTakeExclusiveItem(
@@ -2294,73 +2385,6 @@ public class Game {
     ) {
       ev.setCancelled(true);
       return;
-    }
-    
-    if (inv instanceof MerchantInventory minv && ev.getRawSlot() == 2) {
-      if (DTC.itemsManager.isGen(item)) {
-        MerchantRecipe recipe = minv.getSelectedRecipe();
-        
-        ItemGen gen = DTC.itemsManager.getGen(item);
-        if (gen instanceof UsableItemGen ugen && ugen.isInstantUse()) {
-          ev.setCancelled(true);
-          
-          if (!ugen.canUse(pl)) {
-            inv.close();
-            return;
-          }
-          
-          Map<Material, Integer> costs = new HashMap<>();
-          Map<Material, Integer> given = new HashMap<>();
-          
-          for (ItemStack ingredient : recipe.getIngredients()) {
-            if (ingredient.isEmpty()) continue;
-            
-            costs.put(
-              ingredient.getType(),
-              costs.getOrDefault(
-                ingredient.getType(),
-                0
-              ) + ingredient.getAmount()
-            );
-          }
-          
-          for (int i = 0; i < 2; ++i) {
-            ItemStack slotItem = minv.getItem(i);
-            if (slotItem == null || slotItem.isEmpty()) continue;
-            
-            given.put(
-              slotItem.getType(),
-              given.getOrDefault(slotItem.getType(), 0) + slotItem.getAmount()
-            );
-          }
-          
-          for (Material type : costs.keySet()) {
-            int count = given.getOrDefault(type, 0) - costs.get(type);
-            if (count < 0) return;
-          }
-          
-          for (int i = 0; i < 2; ++i) {
-            ItemStack slotItem = minv.getItem(i);
-            if (slotItem == null || slotItem.isEmpty()) continue;
-            
-            Material type = slotItem.getType();
-            int count = costs.getOrDefault(type, 0) - slotItem.getAmount();
-            
-            if (count >= 0) {
-              slotItem = null;
-              costs.put(type, count);
-            }
-            else {
-              slotItem.setAmount(-count);
-              costs.put(type, 0);
-            }
-            
-            minv.setItem(i, slotItem);
-          }
-          
-          ugen.use(pl, null);
-        }
-      }
     }
   }
   
@@ -2445,11 +2469,16 @@ public class Game {
     }
   }
   
+  boolean isUnmodifiableItem(ItemStack item) {
+    return DTC.itemsManager.isGen(item) ||
+      DTC.rolesManager.isExclusiveItem(item);
+  }
+  
   boolean checkTwoGen(ItemStack first, ItemStack second) {
     return (first != null &&
-      DTC.itemsManager.isGen(
-        first
-      )) || (second != null && DTC.itemsManager.isGen(second));
+      isUnmodifiableItem(first)) ||
+      (second != null &&
+        isUnmodifiableItem(second));
   }
   
   public void handleRepair(PrepareAnvilEvent ev) {
@@ -3001,7 +3030,7 @@ public class Game {
         p.getInventory().setItem(
           4,
           DTC.itemsManager.gens.get(
-            ItemsManager.ItemKey.CHOOSE_ROLE
+            ItemsManager.ItemKey.ROLE_SELECTOR
           ).getItem()
         );
       }

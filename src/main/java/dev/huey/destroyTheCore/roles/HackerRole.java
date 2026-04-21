@@ -24,7 +24,7 @@ public class HackerRole extends Role {
       meta.addEnchant(Enchantment.BANE_OF_ARTHROPODS, 5, true);
     });
     addSkill(200 * 20);
-    addLevelReq(11);
+    addLevelReq(7);
   }
   
   

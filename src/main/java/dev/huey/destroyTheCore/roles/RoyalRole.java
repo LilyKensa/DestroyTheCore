@@ -24,7 +24,7 @@ public class RoyalRole extends Role {
       meta.addEnchant(Enchantment.FIRE_ASPECT, 1, true);
     });
     addSkill(180 * 20);
-    addLevelReq(6);
+    addLevelReq(5);
   }
   
   @Override

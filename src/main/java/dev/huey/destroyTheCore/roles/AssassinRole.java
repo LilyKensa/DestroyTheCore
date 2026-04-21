@@ -91,7 +91,7 @@ public class AssassinRole extends Role {
       }
     );
     addSkill(180 * 20);
-    addLevelReq(7);
+    addLevelReq(5);
   }
   
   @Override
