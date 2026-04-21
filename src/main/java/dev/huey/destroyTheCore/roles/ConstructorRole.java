@@ -69,7 +69,7 @@ public class ConstructorRole extends Role {
       }
     );
     addSkill(2 * 60 * 20);
-    addLevelReq(5);
+    addLevelReq(2);
     
     for (int i = 0; i < 11; ++i) skillPlacePos.add(new HashSet<>());
     
@@ -143,7 +143,7 @@ public class ConstructorRole extends Role {
         for (Vector vec : skillPlacePos.get(step)) {
           Location loc = startLoc.clone().add(vec);
           if (loc.getBlock().isCollidable()) continue;
-          if (LocUtils.nearSpawn(loc)) continue;
+          // if (LocUtils.nearSpawn(loc)) continue;
           
           if (DTC.game.map.restArea != null) {
             for (Pos rest : new Pos[]{

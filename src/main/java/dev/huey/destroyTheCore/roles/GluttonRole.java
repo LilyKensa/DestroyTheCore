@@ -24,7 +24,7 @@ public class GluttonRole extends Role {
       meta.addEnchant(Enchantment.SHARPNESS, 2, true);
     });
     addSkill(60 * 20);
-    addLevelReq(8);
+    addLevelReq(6);
   }
   
   @Override
@@ -45,13 +45,13 @@ public class GluttonRole extends Role {
   public void useSkill(Player pl) {
     PlayerData data = DTC.game.getPlayerData(pl);
     
-    if (pl.getFoodLevel() == 20) {
-      pl.sendActionBar(TextUtils.$("roles.glutton.skill.not-hungry"));
-      data.skillReloadedMessage = true;
-      
-      pl.setCooldown(Material.KNOWLEDGE_BOOK, 10);
-      return;
-    }
+    // if (pl.getFoodLevel() == 20) {
+    //   pl.setCooldown(Material.KNOWLEDGE_BOOK, 10);
+    //
+    //   data.skillReloadedMessage = true;
+    //   pl.sendActionBar(TextUtils.$("roles.glutton.skill.not-hungry"));
+    //   return;
+    // }
     
     skillFeedback(pl);
     
@@ -93,10 +93,10 @@ public class GluttonRole extends Role {
     }
     
     if (amount <= 0) {
-      pl.sendActionBar(TextUtils.$("roles.glutton.skill.no-target"));
-      data.skillReloadedMessage = true;
-      
       pl.setCooldown(Material.KNOWLEDGE_BOOK, 10);
+      
+      data.skillReloadedMessage = true;
+      pl.sendActionBar(TextUtils.$("roles.glutton.skill.no-target"));
       return;
     }
     

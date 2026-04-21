@@ -254,6 +254,23 @@ public class LocUtils {
     return false;
   }
   
+  static public void breakNearbyBlocks(
+    Location feet, int horizontalRadius, int height
+  ) {
+    for (int dx = -horizontalRadius; dx <= horizontalRadius; ++dx) {
+      for (int dz = -horizontalRadius; dz <= horizontalRadius; ++dz) {
+        for (int dy = 0; dy < height; ++dy) {
+          Location loc = feet.clone().add(dx, dy, dz);
+          Block block = loc.getBlock();
+          
+          if (block.isCollidable()) {
+            block.breakNaturally();
+          }
+        }
+      }
+    }
+  }
+  
   /** Flip X & Z, useful for red / green locations conversion */
   static public Pos flip(Pos oldPos, boolean flip) {
     Pos pos = oldPos.clone();
