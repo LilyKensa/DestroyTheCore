@@ -159,7 +159,7 @@ public class ConstructorRole extends Role {
           
           loc.getBlock().setType(Material.OAK_PLANKS);
           
-          ParticleUtils.cloud(PlayerUtils.all(), loc);
+          ParticleUtils.cloud(loc);
         }
         
         step++;

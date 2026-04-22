@@ -21,6 +21,10 @@ public class ParticleUtils {
       .spawn();
   }
   
+  static public void dust(Location loc, Color color) {
+    dust(PlayerUtils.all(), loc, color);
+  }
+  
   static public void cloud(List<Player> players, Location loc) {
     new ParticleBuilder(Particle.CLOUD)
       .receivers(players)
@@ -29,6 +33,10 @@ public class ParticleUtils {
       .count(15)
       .extra(0.05)
       .spawn();
+  }
+  
+  static public void cloud(Location loc) {
+    cloud(PlayerUtils.all(), loc);
   }
   
   static public void simpleRegion(

@@ -48,7 +48,8 @@ public class RolesManager {
     HACKER,
     GAMBLER,
     SORCERER,
-    SUMMONER
+    SUMMONER,
+    FAIRY
   }
   
   public Map<RoleKey, Role> roles;
@@ -62,6 +63,7 @@ public class RolesManager {
       new ConstructorRole(), // Lv 2
       new JockeyRole(), // Lv 2
       new ProvocateurRole(), // Lv 3
+      new FairyRole(), // Lv 3
       new KekkaiMasterRole(), // Lv 4
       new SorcererRole(), // Lv 4
       new RoyalRole(), // Lv 5
@@ -101,9 +103,9 @@ public class RolesManager {
       
       if (
         item.isEmpty() ||
-        DTC.itemsManager.isTrash(item) ||
-        replacement.getItemMeta()
-          .hasEnchant(Enchantment.BINDING_CURSE)
+          DTC.itemsManager.isTrash(item) ||
+          replacement.getItemMeta()
+            .hasEnchant(Enchantment.BINDING_CURSE)
       ) {
         PlayerUtils.softReplaceItem(pl, slot, replacement);
       }

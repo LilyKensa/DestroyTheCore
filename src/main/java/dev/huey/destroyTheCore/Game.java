@@ -660,12 +660,15 @@ public class Game {
     if (PlayerUtils.shouldHandle(pl)) {
       DTC.inventoriesManager.store(pl);
       
-      pl.getInventory().setItem(
+      PlayerInventory inv = pl.getInventory();
+      
+      inv.setItem(
         4,
         DTC.itemsManager.gens.get(
           ItemsManager.ItemKey.ROLE_SELECTOR
         ).getItem()
       );
+      inv.setHeldItemSlot(4);
       
       PlayerUtils.backToLobby(pl);
     }
@@ -1163,12 +1166,12 @@ public class Game {
             .has(Role.skillNamespace)
       ) {
         if (!PlayerUtils.checkHandCooldown(pl, data.extraSkillReload)) return;
-        PlayerUtils.setHandCooldown(pl, data.role.skillCooldown);
+        PlayerUtils.setSkillCooldown(pl, data.role.skillCooldown);
         data.skillReloadedMessage = false;
         
         data.role.useSkill(pl);
         
-        if (PlayerUtils.getHandCooldown(pl) > 20) {
+        if (PlayerUtils.getHandCooldown(pl) >= 20) {
           AdvUtils.grant(
             pl,
             DTC.advancementsManager.usedSkillAdv
@@ -1578,7 +1581,6 @@ public class Game {
       if (age >= maxAge) {
         block.setType(data.blockType());
         ParticleUtils.cloud(
-          PlayerUtils.all(),
           LocUtils.toBlockCenter(block.getLocation())
         );
         
@@ -2692,6 +2694,20 @@ public class Game {
     }
   }
   
+  public void destroyCore(Side side) {
+    Block block = LocUtils.live(LocUtils.selfSide(map.core, side)).getBlock();
+    Location center = LocUtils.toBlockCenter(block.getLocation());
+    
+    new ParticleBuilder(Particle.EXPLOSION_EMITTER)
+      .allPlayers()
+      .location(center)
+      .count(1)
+      .extra(0)
+      .spawn();
+    
+    block.setType(Material.SOUL_SAND);
+  }
+  
   public void setDiamonds(Material type) {
     for (Pos pos : map.diamonds) {
       LocUtils.setLiveBlock(pos, type);
@@ -2713,14 +2729,10 @@ public class Game {
   
   public void summonShopVillagers() {
     for (Pos pos : map.shops) {
-      Location loc = LocUtils.live(
-        LocUtils.toSpawnPoint(pos)
+      Location redLoc = LocUtils.live(
+        pos.spawnPoint()
       );
-      loc.setY(loc.getBlockY());
-      
-      for (Villager e : loc.getNearbyEntitiesByType(Villager.class, 2)) {
-        if (LocUtils.near(Pos.of(e), pos, 1)) e.remove();
-      }
+      redLoc.setY(redLoc.getBlockY());
       
       offsetLoop: for (Vector offset : new Vector[]{
         new Vector(0, -2, 0), new Vector(1, 0, 0), new Vector(
@@ -2730,23 +2742,21 @@ public class Game {
         ), new Vector(0, 0, 1), new Vector(0, 0, -1)
       }) {
         for (Shop shop : shops) {
-          if (shop.blockType != loc.clone().add(offset).getBlock().getType())
+          if (shop.blockType != redLoc.clone().add(offset).getBlock().getType())
             continue;
           
-          Location flipped = LocUtils.live(LocUtils.flip(Pos.of(loc)));
-          
-          villagers.add(
-            new VillagerData(
-              loc,
-              shop.summonVillager(loc)
-            )
-          );
-          villagers.add(
-            new VillagerData(
-              flipped,
-              shop.summonVillager(flipped)
-            )
-          );
+          for (Side side : Game.bothSide) {
+            Location loc = LocUtils.live(LocUtils.selfSide(pos, side));
+            
+            ParticleUtils.cloud(LocUtils.toSpawnPoint(loc));
+            
+            villagers.add(
+              new VillagerData(
+                loc,
+                shop.summonVillager(loc)
+              )
+            );
+          }
           
           break offsetLoop;
         }
@@ -2875,8 +2885,6 @@ public class Game {
     setBothCoreMaterial(Material.BEDROCK);
     setDiamonds(Material.BEDROCK);
     
-    summonShopVillagers();
-    
     DTC.ticksManager.ticksCount = 0;
     
     sideData.put(Side.RED, new SideData());
@@ -2930,6 +2938,7 @@ public class Game {
     
     if (phase.equals(Phase.CoreProtected.next)) {
       setBothCoreMaterial(Material.END_STONE);
+      summonShopVillagers();
     }
     
     if (phase.equals(Phase.MissionsStarted)) {
@@ -3062,9 +3071,11 @@ public class Game {
     }
     else {
       if (greenHealth <= 0) {
+        destroyCore(Side.GREEN);
         reflectResult(Side.RED, "destroyed");
       }
       else if (redHealth <= 0) {
+        destroyCore(Side.RED);
         reflectResult(Side.GREEN, "destroyed");
       }
       else {

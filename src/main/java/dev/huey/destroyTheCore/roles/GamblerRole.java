@@ -31,7 +31,7 @@ public class GamblerRole extends Role {
     addExclusiveItem(Material.NAME_TAG, meta -> {
       meta.addEnchant(Enchantment.LURE, 3, true);
     });
-    addSkill(20 * 20);
+    addSkill(10 * 20);
     addLevelReq(8);
   }
   
@@ -78,7 +78,7 @@ public class GamblerRole extends Role {
     PlayerData data = DTC.game.getPlayerData(pl);
     
     if (!acceptableTypes.contains(type)) {
-      pl.setCooldown(Material.KNOWLEDGE_BOOK, 10);
+      PlayerUtils.setSkillCooldown(pl, 10);
       
       data.skillReloadedMessage = true;
       pl.sendActionBar(TextUtils.$("roles.gambler.skill.no-material"));
@@ -86,7 +86,7 @@ public class GamblerRole extends Role {
     }
     
     if (amount < 10) {
-      pl.setCooldown(Material.KNOWLEDGE_BOOK, 10);
+      PlayerUtils.setSkillCooldown(pl, 10);
       
       data.skillReloadedMessage = true;
       pl.sendActionBar(TextUtils.$("roles.gambler.skill.too-few"));
@@ -151,7 +151,7 @@ public class GamblerRole extends Role {
     double rewardRatio;
     
     if (count.getOrDefault(Symbol.SEVEN, 0) >= 3) {
-      rewardRatio = 25;
+      rewardRatio = 20;
     }
     else if (count.getOrDefault(Symbol.BAR, 0) >= 3) {
       rewardRatio = 3;
@@ -193,6 +193,10 @@ public class GamblerRole extends Role {
             1, // Volume
             1 // Pitch
           );
+          
+          if (rewardRatio > 0) {
+            PlayerUtils.setSkillCooldown(pl, 3 * skillCooldown);
+          }
           
           cancel();
           return;

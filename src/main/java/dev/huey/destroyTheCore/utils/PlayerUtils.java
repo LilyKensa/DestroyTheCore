@@ -283,6 +283,11 @@ public class PlayerUtils {
     return true;
   }
   
+  static public void setSkillCooldown(Player pl, int ticks) {
+    pl.setCooldown(Material.KNOWLEDGE_BOOK, ticks);
+    DTC.game.getPlayerData(pl).extraSkillReload = 0;
+  }
+  
   static public void takeOneItemFromHand(Player pl) {
     if (pl.getGameMode().equals(GameMode.CREATIVE)) return;
     
@@ -374,9 +379,8 @@ public class PlayerUtils {
     pl.teleport(
       LocUtils.live(
         LocUtils.selfSide(
-          LocUtils.toSpawnPoint(
-            RandomUtils.pick(DTC.game.map.spawnpoints)
-          ),
+          RandomUtils.pick(DTC.game.map.spawnpoints)
+            .spawnPoint(),
           pl
         )
       )
@@ -754,9 +758,8 @@ public class PlayerUtils {
     DTC.worldsManager.live.dropItemNaturally(
       LocUtils.live(
         LocUtils.selfSide(
-          LocUtils.toSpawnPoint(
-            RandomUtils.pick(DTC.game.map.spawnpoints)
-          ),
+          RandomUtils.pick(DTC.game.map.spawnpoints)
+            .spawnPoint(),
           side
         )
       ),

@@ -3,7 +3,6 @@ package dev.huey.destroyTheCore.tools;
 import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.editorTools.PosTool;
 import dev.huey.destroyTheCore.records.Pos;
-import dev.huey.destroyTheCore.utils.LocUtils;
 import org.bukkit.Color;
 import org.bukkit.Material;
 
@@ -19,7 +18,7 @@ public class RestAreaTool extends PosTool {
   }
   
   @Override
-  public void setPos(Pos loc) {
-    DTC.game.map.restArea = LocUtils.toSpawnPoint(loc);
+  public void setPos(Pos pos) {
+    DTC.game.map.restArea = pos.spawnPoint();
   }
 }

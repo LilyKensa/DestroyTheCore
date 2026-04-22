@@ -84,7 +84,6 @@ public class BridgeHelperGen extends UsableItemGen {
         }
         
         ParticleUtils.cloud(
-          PlayerUtils.all(),
           LocUtils.toBlockCenter(loc).add(0, -0.5, 0)
         );
         

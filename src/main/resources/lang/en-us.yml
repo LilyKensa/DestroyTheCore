@@ -536,6 +536,9 @@ items:
   gold-digger-chestplate:
     name: "<aqua>Luminous Warning Shirt</aqua>"
     desc-1: "- <red>Bound item for Gold Diggers</red>"
+  fairy-elytra:
+    name: "<aqua>Broken Wings</aqua>"
+    desc-1: "- <red>Bound item for Fairies</red>"
   provocateur-helmet:
     name: "<aqua>Cardboard Box</aqua>"
     desc-1: "- <red>Bound item for Provocateurs</red>"
@@ -1093,3 +1096,18 @@ roles:
       turn-plus: "Turn +"
       chaos: "Chaos"
       soul: "Soul"
+  fairy:
+    name: "Fairy"
+    desc-1: "<gold>Fly up and sprinkle magic powders on teammates or enemies!</gold>"
+    feature-1: "Lose 80% max health when using skill"
+    feature-2: "Get Slowness II (5s) when landing"
+    item:
+      name: "<aqua>Wind Bow</aqua>"
+      detail: "Punch I bow"
+    skill:
+      name: "Sprinkle Flowers"
+      desc-1: "<dark_purple>The elytra repair briefly and bounce up to toss flowers</dark_purple>"
+      desc-2: "<dark_purple>- Teammates receive Instant Heal and Speed II (10s)</dark_purple>"
+      desc-3: "<dark_purple>- Enemies receive Wither II and Slow II (10s)</dark_purple>"
+      desc-4: "<dark_purple>The elytra are destroyed again upon landing</dark_purple>"
+      announce: "<player> used <yellow><role></yellow>'s skill, started flying!"

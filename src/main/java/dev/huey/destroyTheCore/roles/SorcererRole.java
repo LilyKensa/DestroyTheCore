@@ -241,7 +241,7 @@ public class SorcererRole extends Role {
       .orElse(null);
     
     if (target == null) {
-      pl.setCooldown(Material.KNOWLEDGE_BOOK, 10);
+      PlayerUtils.setSkillCooldown(pl, 10);
       
       data.skillReloadedMessage = true;
       pl.sendActionBar(TextUtils.$("roles.sorcerer.skill.no-target"));
@@ -271,7 +271,7 @@ public class SorcererRole extends Role {
     ) spell = Spell.SOUL;
     
     if (spell == null) {
-      pl.setCooldown(Material.KNOWLEDGE_BOOK, 10);
+      PlayerUtils.setSkillCooldown(pl, 10);
       
       data.skillReloadedMessage = true;
       pl.sendActionBar(TextUtils.$("roles.sorcerer.skill.no-material"));

@@ -196,7 +196,7 @@ game:
       foot: "+---------------------------------------+"
     top-attackers: "+--------------- <light_purple>核心攻擊數</light_purple> ---------------+"
     top-killers: "+--------------- <light_purple>殺人如麻者</light_purple> ---------------+"
-    top-dyers: "+--------------- <light_purple>死到脫褲者</light_purple> ---------------+"
+    top-dyers: "+--------------- <light_purple>死神的常客</light_purple> ---------------+"
     top-miners: "+--------------- <light_purple>最優質礦工</light_purple> ---------------+"
     thanks: "<gold>感謝您的遊玩!</gold>"
     sign: "- 插件製作人, <yellow>_hueeey_</yellow>"
@@ -576,6 +576,9 @@ items:
   gold-digger-chestplate:
     name: "<aqua>反光警示衣</aqua>"
     desc-1: "- <red>淘金者綁定物品</red>"
+  fairy-elytra:
+    name: "<aqua>折損的羽翼</aqua>"
+    desc-1: "- <red>精靈綁定物品</red>"
   provocateur-helmet:
     name: "<aqua>厚紙板箱子</aqua>"
     desc-1: "- <red>小丑綁定物品</red>"
@@ -1138,6 +1141,21 @@ roles:
       turn-plus: "強轉咒"
       chaos: "濁咒"
       soul: "靈咒"
+  fairy:
+    name: "精靈"
+    desc-1: "<gold>飛上天給隊友或敵人撒花!</gold>"
+    feature-1: "技能期間最大血量減少 80%"
+    feature-2: "落地時得到緩速 II (5s)"
+    item:
+      name: "<aqua>風之弓</aqua>"
+      detail: "擊退 I 弓"
+    skill:
+      name: "撒花"
+      desc-1: "<dark_purple>鞘翅暫時修復並飛升上天撒花</dark_purple>"
+      desc-2: "<dark_purple>- 隊友碰到獲得立即治療 & 速度 II (10s)</dark_purple>"
+      desc-3: "<dark_purple>- 敵人碰到獲得凋零 II & 緩速 II (10s)</dark_purple>"
+      desc-4: "<dark_purple>落地後鞘翅再度損毀</dark_purple>"
+      announce: "<player> 使用了<yellow><role></yellow>技能, 飛上了天!"
 
 advancement:
   tab: "殲滅攻城戰"
