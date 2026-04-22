@@ -102,7 +102,7 @@ public class AssassinRole extends Role {
     
     if (isStanding(pl)) {
       if (!pl.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
-        ParticleUtils.cloud(PlayerUtils.all(), LocUtils.hitboxCenter(pl));
+        ParticleUtils.cloud(LocUtils.hitboxCenter(pl));
       }
       
       PlayerUtils.addPassiveEffect(
@@ -147,7 +147,7 @@ public class AssassinRole extends Role {
     PlayerData data = DTC.game.getPlayerData(pl);
     
     if (!pl.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
-      pl.setCooldown(Material.KNOWLEDGE_BOOK, 10);
+      PlayerUtils.setSkillCooldown(pl, 10);
       data.skillReloadedMessage = true;
       
       pl.sendActionBar(TextUtils.$("roles.assassin.skill.not-invis"));
@@ -172,7 +172,7 @@ public class AssassinRole extends Role {
     ).orElse(null);
     
     if (nearest == null) {
-      pl.setCooldown(Material.KNOWLEDGE_BOOK, 10);
+      PlayerUtils.setSkillCooldown(pl, 10);
       data.skillReloadedMessage = true;
       
       pl.sendActionBar(TextUtils.$("roles.assassin.skill.no-target"));

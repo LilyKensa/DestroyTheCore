@@ -1,10 +1,7 @@
 package dev.huey.destroyTheCore.managers;
 
 import dev.huey.destroyTheCore.DTC;
-import dev.huey.destroyTheCore.roles.KekkaiMasterRole;
-import dev.huey.destroyTheCore.roles.MoleRole;
-import dev.huey.destroyTheCore.roles.RangerRole;
-import dev.huey.destroyTheCore.roles.WandererRole;
+import dev.huey.destroyTheCore.roles.*;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class TicksManager {
@@ -55,6 +52,7 @@ public class TicksManager {
         RangerRole.onParticleTick();
         WandererRole.onParticleTick();
         MoleRole.onParticleTick();
+        FairyRole.onTick();
         
         DTC.game.onParticleTick();
       }

@@ -46,7 +46,7 @@ public class GluttonRole extends Role {
     PlayerData data = DTC.game.getPlayerData(pl);
     
     // if (pl.getFoodLevel() == 20) {
-    //   pl.setCooldown(Material.KNOWLEDGE_BOOK, 10);
+    //   PlayerUtils.setSkillCooldown(pl, 10);
     //
     //   data.skillReloadedMessage = true;
     //   pl.sendActionBar(TextUtils.$("roles.glutton.skill.not-hungry"));
@@ -93,7 +93,7 @@ public class GluttonRole extends Role {
     }
     
     if (amount <= 0) {
-      pl.setCooldown(Material.KNOWLEDGE_BOOK, 10);
+      PlayerUtils.setSkillCooldown(pl, 10);
       
       data.skillReloadedMessage = true;
       pl.sendActionBar(TextUtils.$("roles.glutton.skill.no-target"));

@@ -106,10 +106,8 @@ public class LocUtils {
   /**
    * {@link #toBlockCenter}, but it's 0.25 up from the ground, instead of 0.5
    */
-  static public Pos toSpawnPoint(Pos pos) {
-    pos = pos.center().add(0, -0.25, 0);
-    pos.setRotation(CoreUtils.snapAngle(pos.getYaw()), 5);
-    return pos;
+  static public Location toSpawnPoint(Location loc) {
+    return Pos.of(loc).spawnPoint().toLoc(loc.getWorld());
   }
   
   static public boolean closeEnough(Location target, Location source) {
@@ -195,7 +193,6 @@ public class LocUtils {
     loc.getBlock().setType(type);
     
     ParticleUtils.cloud(
-      PlayerUtils.all(),
       loc
     );
   }

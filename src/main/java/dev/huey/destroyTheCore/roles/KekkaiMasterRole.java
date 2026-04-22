@@ -464,7 +464,7 @@ public class KekkaiMasterRole extends Role {
       }
     }
     if (replacedWarning > 0) {
-      pl.setCooldown(Material.KNOWLEDGE_BOOK, 10);
+      PlayerUtils.setSkillCooldown(pl, 10);
       
       data.skillReloadedMessage = true;
       pl.sendActionBar(
@@ -502,7 +502,7 @@ public class KekkaiMasterRole extends Role {
     ) type = Kekkai.Type.SOUL;
     
     if (type == null) {
-      pl.setCooldown(Material.KNOWLEDGE_BOOK, 10);
+      PlayerUtils.setSkillCooldown(pl, 10);
       
       data.skillReloadedMessage = true;
       pl.sendActionBar(TextUtils.$("roles.kekkai-master.skill.no-material"));
