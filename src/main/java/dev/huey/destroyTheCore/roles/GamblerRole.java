@@ -142,9 +142,13 @@ public class GamblerRole extends Role {
     );
     
     EnumMap<Symbol, Integer> count = new EnumMap<>(Symbol.class);
-    for (Symbol symbol : new Symbol[]{
-      first, second, third
-    }) {
+    for (
+      Symbol symbol : new Symbol[]{
+        first,
+        second,
+        third
+      }
+    ) {
       count.put(symbol, count.getOrDefault(symbol, 0) + 1);
     }
     

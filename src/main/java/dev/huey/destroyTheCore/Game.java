@@ -405,7 +405,8 @@ public class Game {
   }
   
   static public final Side[] bothSide = new Side[]{
-    Side.RED, Side.GREEN
+    Side.RED,
+    Side.GREEN
   };
   
   public Map<Side, SideData> sideData;
@@ -544,7 +545,7 @@ public class Game {
     );
   }
   
-  Objective respawnTimeBoard, healthBoard, levelBoard;
+  Objective respawnTimeBoard, healthBoard, pingBoard, levelBoard;
   
   public void createScoreboards() {
     Scoreboard board = Bukkit.getServer().getScoreboardManager()
@@ -556,6 +557,15 @@ public class Game {
         "respawn-time",
         Criteria.DUMMY,
         Component.text("Sin Display").color(NamedTextColor.RED)
+      );
+    }
+    
+    pingBoard = board.getObjective("ping");
+    if (pingBoard == null) {
+      pingBoard = board.registerNewObjective(
+        "ping",
+        Criteria.DUMMY,
+        Component.text("Ping").color(NamedTextColor.AQUA)
       );
     }
     
@@ -588,7 +598,7 @@ public class Game {
       healthBoard.setDisplaySlot(DisplaySlot.BELOW_NAME);
     }
     else {
-      levelBoard.setDisplaySlot(DisplaySlot.PLAYER_LIST);
+      pingBoard.setDisplaySlot(DisplaySlot.PLAYER_LIST);
       levelBoard.setDisplaySlot(DisplaySlot.BELOW_NAME);
     }
   }
@@ -603,6 +613,11 @@ public class Game {
     else {
       score.setScore(data.respawnTime);
     }
+  }
+  
+  public void enforcePingScore(Player pl) {
+    Score score = pingBoard.getScore(pl);
+    score.setScore(pl.getPing());
   }
   
   public void enforceLevelScore(Player pl) {
@@ -1282,9 +1297,12 @@ public class Game {
   boolean nearRest(Location loc) {
     if (!LocUtils.inLive(loc)) return false;
     
-    for (Pos rest : new Pos[]{
-      map.restArea, LocUtils.flip(map.restArea)
-    }) {
+    for (
+      Pos rest : new Pos[]{
+        map.restArea,
+        LocUtils.flip(map.restArea)
+      }
+    ) {
       if (LocUtils.near(Pos.of(loc), rest, 6)) {
         return true;
       }
@@ -1519,7 +1537,12 @@ public class Game {
     }
     
     BlockFace[] openFacesTryOrder = {
-      BlockFace.UP, BlockFace.DOWN, BlockFace.EAST, BlockFace.NORTH, BlockFace.WEST, BlockFace.SOUTH
+      BlockFace.UP,
+      BlockFace.DOWN,
+      BlockFace.EAST,
+      BlockFace.NORTH,
+      BlockFace.WEST,
+      BlockFace.SOUTH
     };
     
     BlockFace findOpenFace() {
@@ -1605,6 +1628,7 @@ public class Game {
       sendBreakProgress(11 * age / maxAge - 1);
       
       age++;
+      if (phase.isAfter(Phase.DeathPenalty)) age++;
       if (isFast) age++;
     }
   }
@@ -2071,11 +2095,14 @@ public class Game {
   }
   
   public boolean unmovable(Block block) {
-    for (Pos rest : new Pos[]{
-      map.restArea, LocUtils.flip(
-        map.restArea
-      )
-    }) {
+    for (
+      Pos rest : new Pos[]{
+        map.restArea,
+        LocUtils.flip(
+          map.restArea
+        )
+      }
+    ) {
       if (LocUtils.near(Pos.of(block), rest, 6)) {
         return true;
       }
@@ -2333,7 +2360,7 @@ public class Game {
     }
     
     if (
-      !EnumSet.of(
+      EnumSet.of(
         InventoryAction.PLACE_ONE,
         InventoryAction.PLACE_SOME,
         InventoryAction.PLACE_ALL
@@ -2344,6 +2371,7 @@ public class Game {
           .has(Role.skillNamespace)
     ) {
       item.editMeta(data.role::editSkillItemMeta);
+      pl.updateInventory();
     }
     
     if (inv.getType() == InventoryType.PLAYER) return;
@@ -2373,6 +2401,7 @@ public class Game {
         
         takeTradeCosts(minv, recipe);
         pl.setItemOnCursor(data.role.getExclusiveItem());
+        pl.updateInventory();
       }
       
       return;
@@ -2580,11 +2609,14 @@ public class Game {
         PlayerData pd = getPlayerData(p);
         if (pd.alive || pd.side == Side.SPECTATOR) continue;
         
-        for (Pos rest : new Pos[]{
-          map.restArea, LocUtils.flip(
-            map.restArea
-          ),
-        }) {
+        for (
+          Pos rest : new Pos[]{
+            map.restArea,
+            LocUtils.flip(
+              map.restArea
+            ),
+          }
+        ) {
           if (
             LocUtils.inLive(p) && LocUtils.near(Pos.of(p), rest, 6)
           ) continue playerLoop;
@@ -2687,9 +2719,12 @@ public class Game {
   }
   
   public void setBothCoreMaterial(Material type) {
-    for (Pos pos : new Pos[]{
-      map.core, LocUtils.flip(map.core),
-    }) {
+    for (
+      Pos pos : new Pos[]{
+        map.core,
+        LocUtils.flip(map.core),
+      }
+    ) {
       LocUtils.setLiveBlock(pos, type);
     }
   }
@@ -2727,39 +2762,51 @@ public class Game {
     }
   }
   
-  public void summonShopVillagers() {
+  Map<Shop, Pos> shopPos = new HashMap<>();
+  
+  public void scheduleShopVillagers() {
+    shopPos.clear();
+    
     for (Pos pos : map.shops) {
-      Location redLoc = LocUtils.live(
-        pos.spawnPoint()
-      );
-      redLoc.setY(redLoc.getBlockY());
+      Location redLoc = LocUtils.live(pos.spawnPoint());
       
-      offsetLoop: for (Vector offset : new Vector[]{
-        new Vector(0, -2, 0), new Vector(1, 0, 0), new Vector(
-          -1,
-          0,
-          0
-        ), new Vector(0, 0, 1), new Vector(0, 0, -1)
-      }) {
+      offsetLoop: for (
+        Vector offset : new Vector[]{
+          new Vector(0, -2, 0),
+          new Vector(1, 0, 0),
+          new Vector(-1, 0, 0),
+          new Vector(0, 0, 1),
+          new Vector(0, 0, -1)
+        }
+      ) {
         for (Shop shop : shops) {
           if (shop.blockType != redLoc.clone().add(offset).getBlock().getType())
             continue;
           
-          for (Side side : Game.bothSide) {
-            Location loc = LocUtils.live(LocUtils.selfSide(pos, side));
-            
-            ParticleUtils.cloud(LocUtils.toSpawnPoint(loc));
-            
-            villagers.add(
-              new VillagerData(
-                loc,
-                shop.summonVillager(loc)
-              )
-            );
-          }
-          
+          shopPos.put(shop, pos);
           break offsetLoop;
         }
+      }
+    }
+  }
+  
+  public void summonShopVillagers() {
+    for (Map.Entry<Shop, Pos> entry : shopPos.entrySet()) {
+      for (Side side : Game.bothSide) {
+        Location loc = LocUtils.live(
+          LocUtils.selfSide(entry.getValue(), side).spawnPoint()
+        );
+        
+        ParticleUtils.cloud(loc);
+        
+        loc.setY(loc.getBlockY());
+        
+        villagers.add(
+          new VillagerData(
+            loc,
+            entry.getKey().summonVillager(loc)
+          )
+        );
       }
     }
   }
@@ -2884,6 +2931,8 @@ public class Game {
     
     setBothCoreMaterial(Material.BEDROCK);
     setDiamonds(Material.BEDROCK);
+    
+    scheduleShopVillagers();
     
     DTC.ticksManager.ticksCount = 0;
     
@@ -3034,7 +3083,7 @@ public class Game {
     for (Player p : Bukkit.getOnlinePlayers()) {
       PlayerUtils.backToLobby(p);
       
-      if (PlayerUtils.shouldHandle(p) && isPlaying) {
+      if (PlayerUtils.shouldHandle(p)) {
         p.getInventory().clear();
         p.getInventory().setItem(
           4,
@@ -3284,11 +3333,11 @@ public class Game {
   }
   
   public void onTick() {
-    // if (DTC.ticksManager.isUpdateTick()) {
-    //   for (Player p : Bukkit.getOnlinePlayers()) {
-    //     DTC.antiCheatManager.kickIfCheat(p);
-    //   }
-    // }
+    if (DTC.ticksManager.isSeconds()) {
+      for (Player p : Bukkit.getOnlinePlayers()) {
+        enforcePingScore(p);
+      }
+    }
     
     for (Player p : Bukkit.getOnlinePlayers()) {
       if (
@@ -3463,9 +3512,12 @@ public class Game {
       getSideData(Side.GREEN).directAttackCore();
       checkWinner();
       
-      for (Pos pos : new Pos[]{
-        map.core, LocUtils.flip(map.core)
-      }) {
+      for (
+        Pos pos : new Pos[]{
+          map.core,
+          LocUtils.flip(map.core)
+        }
+      ) {
         new ParticleBuilder(Particle.WITCH)
           .allPlayers()
           .location(LocUtils.live(pos.center()).add(0, -0.2, 0))
@@ -3532,9 +3584,12 @@ public class Game {
     }
     
     if (isPlaying && map.core != null) {
-      for (Pos pos : new Pos[]{
-        map.core, LocUtils.flip(map.core)
-      }) {
+      for (
+        Pos pos : new Pos[]{
+          map.core,
+          LocUtils.flip(map.core)
+        }
+      ) {
         new ParticleBuilder(Particle.ENCHANT)
           .allPlayers()
           .location(

@@ -80,14 +80,21 @@ public class WorldsManager {
     return new WorldCreator(name).generator(new VoidGenerator());
   }
   
-  public World createTemplateWorld() {
-    return Bukkit.createWorld(
-      getCreator(ConfigManager.templateWorldPrefix + mapName)
+  public World getOrCreate(String name) {
+    World world = Bukkit.getWorld(name);
+    return world == null
+      ? Bukkit.createWorld(getCreator(name))
+      : world;
+  }
+  
+  public World fetchTemplate() {
+    return getOrCreate(
+      ConfigManager.templateWorldPrefix + mapName
     );
   }
   
-  public World createLiveWorld() {
-    return Bukkit.createWorld(getCreator("live"));
+  public World fetchLive() {
+    return getOrCreate("live");
   }
   
   BossBar templateWarningBar;
@@ -121,10 +128,14 @@ public class WorldsManager {
   }
   
   public void deleteLive() {
-    if (live != null && live.getPlayerCount() > 0) {
-      clearLiveWorldPlayers();
-      CoreUtils.setTickOut(this::deleteLive);
-      return;
+    if (live != null) {
+      live.removePluginChunkTickets(DTC.instance);
+      
+      if (live.getPlayerCount() > 0) {
+        clearLiveWorldPlayers();
+        CoreUtils.setTickOut(this::deleteLive);
+        return;
+      }
     }
     
     Bukkit.unloadWorld("live", false);
@@ -164,11 +175,12 @@ public class WorldsManager {
     new File(targetFolder, "uid.dat").delete();
     
     new File(targetFolder, "session.lock").delete();
-    template = createTemplateWorld();
+    template = fetchTemplate();
     
-    live = createLiveWorld();
+    live = fetchLive();
+    live.addPluginChunkTicket(0, 0, DTC.instance);
+    
     PlayerUtils.prefixedNotice(TextUtils.$("world.copied"));
-    
     isReady = true;
   }
   

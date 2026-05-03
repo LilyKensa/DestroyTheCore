@@ -42,10 +42,6 @@ public class LocUtils {
     return pos.toLoc(DTC.worldsManager.lobby);
   }
   
-  static public Location template(Pos pos) {
-    return pos.toLoc(DTC.worldsManager.template);
-  }
-  
   static public Location live(Pos pos) {
     return pos.toLoc(DTC.worldsManager.live);
   }
@@ -56,14 +52,6 @@ public class LocUtils {
   
   static public boolean inLobby(Entity e) {
     return inLobby(e.getLocation());
-  }
-  
-  static public boolean inTemplate(Location loc) {
-    return isSameWorld(loc.getWorld(), DTC.worldsManager.template);
-  }
-  
-  static public boolean inTemplate(Entity e) {
-    return inTemplate(e.getLocation());
   }
   
   static public boolean inLive(Location loc) {
@@ -212,9 +200,12 @@ public class LocUtils {
     Pos posRed = DTC.game.map.core;
     if (posRed == null) return false;
     
-    for (Pos pos : new Pos[]{
-      posRed, LocUtils.flip(posRed)
-    }) {
+    for (
+      Pos pos : new Pos[]{
+        posRed,
+        LocUtils.flip(posRed)
+      }
+    ) {
       if (near(Pos.of(loc), pos, dist)) return true;
     }
     
@@ -225,9 +216,12 @@ public class LocUtils {
     Pos pos = Pos.of(loc);
     
     for (Pos spawnRed : DTC.game.map.spawnpoints) {
-      for (Pos spawn : new Pos[]{
-        spawnRed, LocUtils.flip(spawnRed)
-      }) {
+      for (
+        Pos spawn : new Pos[]{
+          spawnRed,
+          LocUtils.flip(spawnRed)
+        }
+      ) {
         int sx = pos.floorX();
         int sy = pos.floorY();
         int sz = pos.floorZ();

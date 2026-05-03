@@ -92,7 +92,7 @@ game:
       desc: "開始接收任務 / 鑽石礦開啟"
     death-penalty:
       name: "死亡懲罰"
-      desc: "每死一次扣 1 點核心生命"
+      desc: "礦物冷卻減半 / 死亡扣核心生命"
     double-core-damage:
       name: "雙倍核心傷害"
       desc: "核心受到的傷害雙倍"
@@ -264,7 +264,7 @@ mission:
     remove-respawn-time: "每人<yellow>減少 20 點罪惡</yellow>!"
     ban-ores: "礦區<light_purple>封鎖 2 分鐘</light_purple>!"
     ban-shop: "商店<light_purple>封鎖 2 分鐘</light_purple>!"
-    attack-core: "核心生命<light_purple>減少 10</light_purple>!"
+    attack-core: "核心生命<light_purple>減少 3 點</light_purple>!"
     summon-pig: "獲得 <light_purple><name></light_purple>!"
     pig-name: "87 豬隊友"
     void: "<player> 被<light_purple>傳送到異世界</light_purple>!"
@@ -351,6 +351,8 @@ world:
 commands:
   root:
     github: "訪問 <click:open_url:'https://github.com/LilyKensa/DestroyTheCore'><u>https://github.com/LilyKensa/DestroyTheCore</u></click> 已獲得更多訊息"
+  ping:
+    result: "你的延遲是 <value> 毫秒"
   suicide:
     bad-time: "<red>你現在不能自殺!</red>"
     already-dead: "<red>你已經死了!</red>"
@@ -638,7 +640,7 @@ items:
   truce:
     name: "[<white>令牌</white>] <light_purple>停戰協議</light_purple>"
     desc-1: "<gold>條件</gold>: <yellow>必須在階段 1 ~ 4 使用</yellow>"
-    desc-2: "<gold>條件</gold>: <yellow>一場遊戲只能使用一次</yellow>"
+    desc-2: "<gold>條件</gold>: <yellow>每隊一場遊戲只能使用一次</yellow>"
     desc-3: "雙方玩家禁止接近對方陣營 5 分鐘"
     too-late: "<red>現在已經來不及用了!</red>"
     duped-usage: "<red>你已經使用過停戰協議!</red>"
@@ -865,7 +867,7 @@ roles:
     feature-5: "永久緩速 I"
     item:
       name: "<aqua>掏金者之鑽</aqua>"
-      detail: "效率 III 鐵鎬"
+      detail: "效率 V 幸運 III 鐵鎬"
     skill:
       name: "貪婪之心"
       desc-1: "<dark_purple>獲得幸運 III (15s)</dark_purple>"

@@ -59,7 +59,7 @@ public class MissionsManager {
         new XpFountainMission(),
         new AngryBeesMission(),
         new SwapPosMission(),
-        new SwapAllPosMission(),
+        // new SwapAllPosMission(),
         new CovidMission(),
         new RandomRoleMission(),
         new FreeSoupMission(),

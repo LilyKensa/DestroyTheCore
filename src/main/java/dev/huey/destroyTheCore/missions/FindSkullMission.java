@@ -100,6 +100,8 @@ public class FindSkullMission extends TimedMission implements Listener {
     );
   }
   
+  int count = 0;
+  
   public FindSkullMission() {
     super("find-skull");
   }
@@ -108,6 +110,8 @@ public class FindSkullMission extends TimedMission implements Listener {
   
   @Override
   public void innerStart() {
+    count = 0;
+    
     for (Player p : PlayerUtils.allGaming()) {
       Location skullLoc = randomLocation(
         centerLoc.clone().add(0, RandomUtils.range(20, 30), 0),
@@ -120,6 +124,7 @@ public class FindSkullMission extends TimedMission implements Listener {
       itemEntity.setOwner(p.getUniqueId());
       
       skullEntities.add(itemEntity.getUniqueId());
+      count++;
     }
   }
   
@@ -141,6 +146,11 @@ public class FindSkullMission extends TimedMission implements Listener {
     CoreUtils.setTickOut(() -> {
       pl.getInventory().remove(item);
       giveTreasure(pl);
+      
+      count--;
+      if (count <= 0) {
+        end();
+      }
     });
   }
   

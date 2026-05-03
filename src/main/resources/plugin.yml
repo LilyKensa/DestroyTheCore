@@ -35,6 +35,8 @@ commands:
     description: Pause the game
   suicide:
     description: Please don't
+  ping:
+    description: Get your ping value
 permissions:
   dtc.admin:
     description: The admin permission
