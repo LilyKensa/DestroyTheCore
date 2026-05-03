@@ -601,9 +601,11 @@ items:
     name: "[<white>Token</white>] <light_purple>Truce</light_purple>"
     desc-1: "<gold>Condition</gold>: <yellow>Must be in phase 1 ~ 4</yellow>"
     desc-2: "<gold>Condition</gold>: <yellow>Can only be used once in a match</yellow>"
-    desc-3: "Keeps players away from their enemy's base in the next 5 minutes"
+    desc-3: "<gold>Condition</gold>: <yellow>No teammates can be near enemy's core when using this</yellow>"
+    desc-4: "Keeps players away from their enemy's base in the next 5 minutes"
     too-late: "<red>It's too late to use this!</red>"
     duped-usage: "<red>You have used the truce already!</red>"
+    enemy-core: "<red>All teammates must leave enemy's core!</red>"
     announce: "<player> used <item>"
   levi-stick:
     name: "<aqua>Stick of Levitation</aqua>"

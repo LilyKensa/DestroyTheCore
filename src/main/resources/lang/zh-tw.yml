@@ -641,9 +641,11 @@ items:
     name: "[<white>令牌</white>] <light_purple>停戰協議</light_purple>"
     desc-1: "<gold>條件</gold>: <yellow>必須在階段 1 ~ 4 使用</yellow>"
     desc-2: "<gold>條件</gold>: <yellow>每隊一場遊戲只能使用一次</yellow>"
-    desc-3: "雙方玩家禁止接近對方陣營 5 分鐘"
+    desc-3: "<gold>條件</gold>: <yellow>使用時不能有隊友在對方核心附近</yellow>"
+    desc-4: "雙方玩家禁止接近對方陣營 5 分鐘"
     too-late: "<red>現在已經來不及用了!</red>"
     duped-usage: "<red>你已經使用過停戰協議!</red>"
+    enemy-core: "<red>所有隊友必須離開對方核心!</red>"
     announce: "<player> 使用了 <item>"
   levi-stick:
     name: "<aqua>飄飄棒</aqua>"

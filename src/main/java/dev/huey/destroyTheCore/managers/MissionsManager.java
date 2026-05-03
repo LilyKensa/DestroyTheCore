@@ -123,7 +123,9 @@ public class MissionsManager {
       BossBar.Color.WHITE,
       BossBar.Overlay.PROGRESS
     );
-    for (Player p : Bukkit.getOnlinePlayers()) waitingBar.addViewer(p);
+    for (Player p : Bukkit.getOnlinePlayers()) {
+      waitingBar.addViewer(p);
+    }
     
     final int step = 20;
     new BukkitRunnable() {
