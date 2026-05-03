@@ -975,7 +975,7 @@ public class PlayerUtils {
           if (!(block.getBlockData() instanceof Ageable ageable)) continue;
           if (ageable.getAge() >= ageable.getMaximumAge()) continue;
           
-          if (RandomUtils.range(10) < 2) {
+          if (RandomUtils.range(4) < 1) {
             ageable.setAge(ageable.getAge() + 1);
             block.setBlockData(ageable);
             
@@ -987,7 +987,7 @@ public class PlayerUtils {
               .count(5)
               .spawn();
             
-            pl.giveExp(RandomUtils.range(1, 4));
+            pl.giveExp(1);
           }
         }
       }

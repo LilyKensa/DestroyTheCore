@@ -823,7 +823,7 @@ public class Game {
       
       if (finalDamage <= 0) return;
       
-      attackerData.removePostRevive();
+      // attackerData.removePostRevive();
       
       if (victimData.isPostRespawn()) {
         attacker.sendActionBar(TextUtils.$("game.banned.attack.post-respawn"));
@@ -1364,10 +1364,8 @@ public class Game {
     }
     
     if (
-      isPlaying &&
-        block.getType().equals(Material.ENDER_CHEST) &&
-        !pl
-          .isSneaking()
+      block.getType().equals(Material.ENDER_CHEST) &&
+        !pl.isSneaking()
     ) {
       ev.setCancelled(true);
       
@@ -1398,13 +1396,12 @@ public class Game {
     
     ItemStack handItem = pl.getInventory().getItemInMainHand();
     
-    if (
-      block.getBlockData() instanceof Ageable ageable &&
-        (handItem
-          .isEmpty() ||
-          Tag.ITEMS_HOES.isTagged(handItem.getType()))
-    ) {
+    if (block.getBlockData() instanceof Ageable ageable) {
       if (ageable.getAge() != ageable.getMaximumAge()) return;
+      
+      ev.setCancelled(true);
+      
+      pl.swingMainHand();
       
       int plus = 0, fortune = 0;
       switch (block.getType()) {
@@ -2476,7 +2473,6 @@ public class Game {
   }
   
   public void handleInventoryClose(InventoryCloseEvent ev) {
-    if (!isPlaying) return;
     if (!(ev.getPlayer() instanceof Player pl)) return;
     
     SideData sd = getSideData(pl);

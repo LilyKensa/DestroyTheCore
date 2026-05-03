@@ -21,6 +21,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class AssignClearInvGen extends UsableItemGen {
   
+  static final int cooldown = 10 * 60 * 20;
+  
   public AssignClearInvGen() {
     super(ItemsManager.ItemKey.ASSIGN_CLEAR_INV, Material.BAMBOO_SIGN, true);
   }
@@ -83,7 +85,11 @@ public class AssignClearInvGen extends UsableItemGen {
     SideData sideData = DTC.game.getSideData(data.side);
     if (data.side.equals(Game.Side.SPECTATOR)) return;
     
-    sideData.clearInvCooldown = 10 * 60 * 20;
+    sideData.clearInvCooldown = cooldown;
+    
+    for (Player p : PlayerUtils.getTeammates(pl)) {
+      p.setCooldown(iconType, cooldown);
+    }
     
     Player target = RandomUtils.pick(
       PlayerUtils.getEnemies(data.side).stream()
