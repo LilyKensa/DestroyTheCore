@@ -66,9 +66,26 @@ public final class DTC extends JavaPlugin {
     configManager = new ConfigManager();
     ticksManager = new TicksManager();
     
-    for (String commandName : new String[]{
-      "dtc", "rejoin", "night-vision", "shout", "broadcast", "shuffle-team", "warp", "skip", "edit", "reset", "revive", "language", "stats", "pause", "suicide"
-    }) {
+    for (
+      String commandName : new String[]{
+        "dtc",
+        "rejoin",
+        "night-vision",
+        "shout",
+        "broadcast",
+        "shuffle-team",
+        "warp",
+        "skip",
+        "edit",
+        "reset",
+        "revive",
+        "language",
+        "stats",
+        "pause",
+        "suicide",
+        "ping"
+      }
+    ) {
       PluginCommand command = getCommand(commandName);
       if (command == null) {
         CoreUtils.error("Command not found: " + commandName);

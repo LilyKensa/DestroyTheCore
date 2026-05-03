@@ -14,6 +14,7 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.AbstractArrow;
@@ -181,27 +182,43 @@ public class AssassinRole extends Role {
     
     skillFeedback(pl);
     
-    new ParticleBuilder(Particle.REVERSE_PORTAL)
-      .allPlayers()
-      .location(pl.getLocation())
-      .offset(0.2, 0.3, 0.2)
-      .extra(5)
-      .count(20)
-      .spawn();
-    
-    pl.teleport(nearest);
-    
-    PlayerUtils.addEffect(
-      pl,
-      PotionEffectType.INVISIBILITY,
-      4 * 20,
-      1
+    nearest.playSound(
+      nearest.getLocation(),
+      Sound.ENTITY_PHANTOM_DEATH,
+      1, // Volume
+      1 // Pitch
     );
-    PlayerUtils.addEffect(
-      pl,
-      PotionEffectType.STRENGTH,
-      4 * 20,
-      2
-    );
+    
+    CoreUtils.setTickOut(() -> {
+      new ParticleBuilder(Particle.REVERSE_PORTAL)
+        .allPlayers()
+        .location(pl.getLocation())
+        .offset(0.2, 0.3, 0.2)
+        .extra(5)
+        .count(20)
+        .spawn();
+      
+      pl.teleport(nearest);
+      
+      pl.playSound(
+        nearest.getLocation(),
+        Sound.ENTITY_PLAYER_TELEPORT,
+        1, // Volume
+        1 // Pitch
+      );
+      
+      PlayerUtils.addEffect(
+        pl,
+        PotionEffectType.INVISIBILITY,
+        4 * 20,
+        1
+      );
+      PlayerUtils.addEffect(
+        pl,
+        PotionEffectType.STRENGTH,
+        4 * 20,
+        2
+      );
+    }, 10);
   }
 }

@@ -4,6 +4,7 @@ import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.itemGens.UsableItemGen;
 import dev.huey.destroyTheCore.managers.ItemsManager;
+import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -30,6 +31,8 @@ public class RoleSelectorGen extends UsableItemGen {
       pl.sendActionBar(TextUtils.$("items.role-selector.no-team"));
       return;
     }
+    
+    if (!PlayerUtils.checkHandCooldown(pl)) return;
     
     DTC.guiManager.openRoleSelection(pl);
   }

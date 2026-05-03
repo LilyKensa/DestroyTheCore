@@ -134,7 +134,9 @@ public class RolesManager {
         contents[i] = role.getExclusiveItem();
       }
     }
+    
     inv.setContents(contents);
+    pl.updateInventory();
     
     if (!hasItem) PlayerUtils.give(pl, role.getExclusiveItem());
     

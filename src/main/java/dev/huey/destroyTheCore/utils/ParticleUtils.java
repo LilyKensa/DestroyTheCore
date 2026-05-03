@@ -69,36 +69,54 @@ public class ParticleUtils {
       dust(players, loc, color);
     };
     
-    for (double y : new double[]{
-      yMin, yMax
-    }) {
-      for (double z : new double[]{
-        zMin, zMax
-      }) {
+    for (
+      double y : new double[]{
+        yMin,
+        yMax
+      }
+    ) {
+      for (
+        double z : new double[]{
+          zMin,
+          zMax
+        }
+      ) {
         for (double x = xMin; x <= xMax; x += step) {
           emitter.accept(x, y, z);
         }
       }
     }
     
-    for (double x : new double[]{
-      xMin, xMax
-    }) {
-      for (double z : new double[]{
-        zMin, zMax
-      }) {
+    for (
+      double x : new double[]{
+        xMin,
+        xMax
+      }
+    ) {
+      for (
+        double z : new double[]{
+          zMin,
+          zMax
+        }
+      ) {
         for (double y = yMin; y <= yMax; y += step) {
           emitter.accept(x, y, z);
         }
       }
     }
     
-    for (double x : new double[]{
-      xMin, xMax
-    }) {
-      for (double y : new double[]{
-        yMin, yMax
-      }) {
+    for (
+      double x : new double[]{
+        xMin,
+        xMax
+      }
+    ) {
+      for (
+        double y : new double[]{
+          yMin,
+          yMax
+        }
+      ) {
         for (double z = zMin; z <= zMax; z += step) {
           emitter.accept(x, y, z);
         }
@@ -147,36 +165,54 @@ public class ParticleUtils {
       dust(players, loc, color0);
     };
     
-    for (double y : new double[]{
-      yMin, yMax
-    }) {
-      for (double z : new double[]{
-        zMin, zMax
-      }) {
+    for (
+      double y : new double[]{
+        yMin,
+        yMax
+      }
+    ) {
+      for (
+        double z : new double[]{
+          zMin,
+          zMax
+        }
+      ) {
         for (double x = xMin; x <= xMax; x += step) {
           emitter.accept(x, y, z);
         }
       }
     }
     
-    for (double x : new double[]{
-      xMin, xMax
-    }) {
-      for (double z : new double[]{
-        zMin, zMax
-      }) {
+    for (
+      double x : new double[]{
+        xMin,
+        xMax
+      }
+    ) {
+      for (
+        double z : new double[]{
+          zMin,
+          zMax
+        }
+      ) {
         for (double y = yMin; y <= yMax; y += step) {
           emitter.accept(x, y, z);
         }
       }
     }
     
-    for (double x : new double[]{
-      xMin, xMax
-    }) {
-      for (double y : new double[]{
-        yMin, yMax
-      }) {
+    for (
+      double x : new double[]{
+        xMin,
+        xMax
+      }
+    ) {
+      for (
+        double y : new double[]{
+          yMin,
+          yMax
+        }
+      ) {
         for (double z = zMin; z <= zMax; z += step) {
           emitter.accept(x, y, z);
         }

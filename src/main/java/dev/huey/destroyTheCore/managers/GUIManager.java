@@ -84,6 +84,8 @@ public class GUIManager {
       );
       
       window.addCloseHandler(() -> {
+        pl.setCooldown(Material.ENDER_CHEST, 5 * 20);
+        
         pl.playSound(
           pl,
           Sound.BLOCK_ENDER_CHEST_CLOSE,

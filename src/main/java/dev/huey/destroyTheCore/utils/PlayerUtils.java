@@ -854,9 +854,14 @@ public class PlayerUtils {
       inv.setItem(slot, item);
     };
     
-    for (EquipmentSlot slot : new EquipmentSlot[]{
-      EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET,
-    }) {
+    for (
+      EquipmentSlot slot : new EquipmentSlot[]{
+        EquipmentSlot.HEAD,
+        EquipmentSlot.CHEST,
+        EquipmentSlot.LEGS,
+        EquipmentSlot.FEET,
+      }
+    ) {
       ItemStack item = inv.getItem(slot);
       if (item.isEmpty() && data.role.id != RolesManager.RoleKey.ASSASSIN) {
         defaultEquipment.accept(slot);
@@ -937,9 +942,12 @@ public class PlayerUtils {
   static public boolean banBothHandItem(Player pl, Material type) {
     boolean found = false;
     
-    for (EquipmentSlot slot : new EquipmentSlot[]{
-      EquipmentSlot.HAND, EquipmentSlot.OFF_HAND
-    }) {
+    for (
+      EquipmentSlot slot : new EquipmentSlot[]{
+        EquipmentSlot.HAND,
+        EquipmentSlot.OFF_HAND
+      }
+    ) {
       ItemStack item = pl.getInventory().getItem(slot);
       
       if (item.getType().equals(type)) {
@@ -1121,16 +1129,24 @@ public class PlayerUtils {
     double tmax = maxDist;
     
     double[] mins = {
-      box.getMinX(), box.getMinY(), box.getMinZ()
+      box.getMinX(),
+      box.getMinY(),
+      box.getMinZ()
     };
     double[] maxs = {
-      box.getMaxX(), box.getMaxY(), box.getMaxZ()
+      box.getMaxX(),
+      box.getMaxY(),
+      box.getMaxZ()
     };
     double[] origins = {
-      origin.getX(), origin.getY(), origin.getZ()
+      origin.getX(),
+      origin.getY(),
+      origin.getZ()
     };
     double[] dirs = {
-      dir.getX(), dir.getY(), dir.getZ()
+      dir.getX(),
+      dir.getY(),
+      dir.getZ()
     };
     for (int i = 0; i < 3; i++) {
       double min = mins[i], max = maxs[i], o = origins[i], d = dirs[i];

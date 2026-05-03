@@ -52,7 +52,7 @@ game:
       desc: "Missions started / Diamonds opened"
     death-penalty:
       name: "Death Penalty"
-      desc: "Each death erases 1 core health"
+      desc: "Ores cooldown halved / Death reduces core health"
     double-core-damage:
       name: "Double Core Damage"
       desc: "Core damage doubled"
@@ -224,7 +224,7 @@ mission:
     remove-respawn-time: "each person <yellow>reduced 20 sin</yellow>!"
     ban-ores: "their ores are <light_purple>banned for 2 minutes</light_purple>!"
     ban-shop: "their shop are <light_purple>banned for 2 minutes</light_purple>!"
-    attack-core: "their core health is <light_purple>reduced by 10</light_purple>!"
+    attack-core: "their core health is <light_purple>reduced by 3</light_purple>!"
     summon-pig: "they got <light_purple><name></light_purple>!"
     pig-name: "Stupid Piggy Mates"
     void: "<player> is <light_purple>teleported to the backroom</light_purple>!"
@@ -311,6 +311,8 @@ world:
 commands:
   root:
     github: "Go to <click:open_url:'https://github.com/LilyKensa/DestroyTheCore'><u>https://github.com/LilyKensa/DestroyTheCore</u></click> for help"
+  ping:
+    result: "Your ping is <value>ms"
   suicide:
     bad-time: "<red>You can't suicide right now!</red>"
     already-dead: "<red>You're already dead!</red>"
@@ -820,7 +822,7 @@ roles:
     feature-5: "Forever gets Slowness I"
     item:
       name: "<aqua>Gold Digging Pickaxe</aqua>"
-      detail: "Efficiency III iron pickaxe"
+      detail: "Efficiency V Fortune III iron pickaxe"
     skill:
       name: "Greedy Heart"
       desc-1: "<dark_purple>Gets Luck III (15s)</dark_purple>"

@@ -57,7 +57,7 @@ public class FairyRole extends Role {
         life = maxLife;
         loc = next;
       }
-
+      
       if (loc.getY() < loc.getWorld().getMinHeight()) life = -1;
       
       if (life <= 0) return;
