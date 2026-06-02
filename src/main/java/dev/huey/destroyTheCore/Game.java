@@ -16,6 +16,7 @@ import dev.huey.destroyTheCore.managers.RolesManager;
 import dev.huey.destroyTheCore.managers.TicksManager;
 import dev.huey.destroyTheCore.missions.InfiniteOresMission;
 import dev.huey.destroyTheCore.records.*;
+import dev.huey.destroyTheCore.roles.FairyRole;
 import dev.huey.destroyTheCore.roles.KekkaiMasterRole;
 import dev.huey.destroyTheCore.roles.ProvocateurRole;
 import dev.huey.destroyTheCore.utils.*;
@@ -760,10 +761,8 @@ public class Game {
     
     if (
       ev.getDamager() instanceof Projectile proj &&
-        proj
-          .getShooter() instanceof Player shooter &&
-        ev
-          .getEntity() instanceof Player victim
+        proj.getShooter() instanceof Player shooter &&
+        ev.getEntity() instanceof Player victim
     ) {
       handlePlayerDamage(shooter, victim, proj, ev);
     }
@@ -776,11 +775,14 @@ public class Game {
   }
   
   public void checkAttackRange(Player attacker, Player victim) {
+    double threshold = 1.5;
+    if (attacker.getPing() > 200) threshold = 4.5;
+    
     if (
       !LocUtils.near(
         victim,
         attacker,
-        AttrUtils.get(attacker, Attribute.ENTITY_INTERACTION_RANGE) + 1
+        AttrUtils.get(attacker, Attribute.ENTITY_INTERACTION_RANGE) + threshold
       )
     ) {
       DTC.antiCheatManager.track(
@@ -914,6 +916,8 @@ public class Game {
     
     PlayerData data = getPlayerData(pl);
     if (!data.alive) return;
+    
+    FairyRole.resetFlying(pl);
     
     if (phase.isAfter(Phase.DeathPenalty)) {
       getSideData(pl).directAttackCore();
@@ -2367,8 +2371,10 @@ public class Game {
           .getPersistentDataContainer()
           .has(Role.skillNamespace)
     ) {
-      item.editMeta(data.role::editSkillItemMeta);
-      pl.updateInventory();
+      CoreUtils.setTickOut(() -> {
+        item.editMeta(data.role::editSkillItemMeta);
+        pl.updateInventory();
+      });
     }
     
     if (inv.getType() == InventoryType.PLAYER) return;
@@ -2539,21 +2545,22 @@ public class Game {
   public static final int nerfPowerEnchantment = 1;
   
   public void handleEnchantingTableGenerate(PrepareItemEnchantEvent ev) {
-    if (ev.getItem().getType() == Material.BOW) {
+    EnchantmentOffer[] offers = ev.getOffers();
+    
+    for (EnchantmentOffer offer : offers) {
+      if (offer == null) continue;
       
-      EnchantmentOffer[] offers = ev.getOffers();
-      
-      for (EnchantmentOffer offer : offers) {
-        if (offer == null) continue;
-        
-        if (offer.getEnchantment() == Enchantment.POWER) {
-          offer.setEnchantmentLevel(
-            Math.max(
-              offer.getEnchantmentLevel() - nerfPowerEnchantment,
-              1
-            )
-          );
-        }
+      if (offer.getEnchantment() == Enchantment.POWER) {
+        offer.setEnchantmentLevel(
+          Math.max(
+            offer.getEnchantmentLevel() - nerfPowerEnchantment,
+            1
+          )
+        );
+      }
+      else if (offer.getEnchantment() == Enchantment.FORTUNE) {
+        offer.setEnchantment(Enchantment.SILK_TOUCH);
+        offer.setEnchantmentLevel(1);
       }
     }
   }
@@ -2561,15 +2568,14 @@ public class Game {
   public void handleEnchant(EnchantItemEvent ev) {
     Map<Enchantment, Integer> enchants = ev.getEnchantsToAdd();
     
-    for (Map.Entry<Enchantment, Integer> entry : enchants.entrySet()) {
-      if (entry.getKey() == Enchantment.POWER) {
-        entry.setValue(
-          Math.max(
-            entry.getValue() - nerfPowerEnchantment,
-            1
-          )
-        );
-      }
+    int power = enchants.getOrDefault(Enchantment.POWER, 0);
+    if (power > nerfPowerEnchantment) {
+      enchants.put(Enchantment.POWER, power - nerfPowerEnchantment);
+    }
+    
+    if (enchants.containsKey(Enchantment.FORTUNE)) {
+      enchants.remove(Enchantment.FORTUNE);
+      enchants.put(Enchantment.SILK_TOUCH, 1);
     }
   }
   
@@ -2665,7 +2671,7 @@ public class Game {
         }
       }
       
-      if (map.restArea != null && data.alive) {
+      if (map.restArea != null && data.alive && LocUtils.onGround(pl)) {
         double restY = map.restArea.getY();
         
         if (pl.getY() >= restY - 2) {
@@ -2708,6 +2714,7 @@ public class Game {
     
     cropDrops.put(Material.CARROTS, Material.CARROT);
     cropDrops.put(Material.BEETROOTS, Material.BEETROOT);
+    cropDrops.put(Material.POTATOES, Material.POTATO);
     
     recreateTeams();
     createScoreboards();
@@ -3491,7 +3498,10 @@ public class Game {
         }
         
         if (p.isSneaking())
-          PlayerUtils.growNearbyCrops(p);
+          PlayerUtils.growNearbyCrops(
+            p,
+            data.role.id == RolesManager.RoleKey.FARMER ? 0.4 : 0.2
+          );
       }
     }
     
@@ -3539,11 +3549,8 @@ public class Game {
       }
     }
     
-    for (Player p : Bukkit.getOnlinePlayers()) {
-      PlayerData d = getPlayerData(p);
-      if (d.side == Side.SPECTATOR) continue;
-      
-      d.role.onTick(p);
+    for (Player p : PlayerUtils.allGaming()) {
+      getPlayerData(p).role.onTick(p);
     }
   }
   

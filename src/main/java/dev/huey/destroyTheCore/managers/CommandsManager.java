@@ -47,7 +47,8 @@ public class CommandsManager implements TabCompleter, CommandExecutor {
       new LevelCommand(),
       new PauseCommand(),
       new SuicideCommand(),
-      new PingCommand()
+      new PingCommand(),
+      new CooldownCommand()
     );
   }
   

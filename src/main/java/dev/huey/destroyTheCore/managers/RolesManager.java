@@ -49,7 +49,10 @@ public class RolesManager {
     GAMBLER,
     SORCERER,
     SUMMONER,
-    FAIRY
+    FAIRY,
+    FARMER,
+    DARKBRINGER,
+    BOMBER
   }
   
   public Map<RoleKey, Role> roles;
@@ -61,6 +64,7 @@ public class RolesManager {
       new GuardRole(),
       new GoldDiggerRole(),
       new ConstructorRole(), // Lv 2
+      new FarmerRole(), // Lv 2
       new JockeyRole(), // Lv 2
       new ProvocateurRole(), // Lv 3
       new FairyRole(), // Lv 3
@@ -72,7 +76,8 @@ public class RolesManager {
       new RangerRole(), // Lv 6
       new WandererRole(), // Lv 7
       new HackerRole(), // Lv 7
-      new GamblerRole() // Lv 8
+      new GamblerRole(), // Lv 8
+      new DarkbringerRole() // Lv 8
       // new MoleRole() // Lv 8
     ).collect(
       Collectors.toMap(r -> r.id, r -> r, (e, n) -> e, LinkedHashMap::new)

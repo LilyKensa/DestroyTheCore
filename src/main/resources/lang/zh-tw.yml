@@ -361,6 +361,10 @@ commands:
   pause:
     true: "<green>遊戲被 <player> 暫停</green>"
     false: "<green>遊戲被 <player> 繼續</green>"
+  cooldown:
+    player-not-found: "<red>找不到目標玩家!</red>"
+    made-self: "<green>技能冷卻已重置</green>"
+    made-other: "<green><player> 的技能冷卻已重置</green>"
   level:
     changed: "<aqua><player> 現在的等級是 <value> 等</aqua>"
   night-vision:
@@ -395,6 +399,7 @@ commands:
     made-self: "<player> 轉職成了<yellow><role></yellow>"
   revive:
     no-game: "<red>沒有對戰!</red>"
+    player-not-found: "<red>找不到目標玩家!</red>"
     made-other: "<player> 已將 <target> 重生"
     made-self: "<player> 已重生"
   skip:
@@ -578,6 +583,9 @@ items:
   gold-digger-chestplate:
     name: "<aqua>反光警示衣</aqua>"
     desc-1: "- <red>淘金者綁定物品</red>"
+  darkbringer-boots:
+    name: "<aqua>黑暗爬行者</aqua>"
+    desc-1: "- <red>黑暗使者綁定物品</red>"
   fairy-elytra:
     name: "<aqua>折損的羽翼</aqua>"
     desc-1: "- <red>精靈綁定物品</red>"
@@ -869,7 +877,7 @@ roles:
     feature-5: "永久緩速 I"
     item:
       name: "<aqua>掏金者之鑽</aqua>"
-      detail: "效率 V 幸運 III 鐵鎬"
+      detail: "效率 V 鐵鎬"
     skill:
       name: "貪婪之心"
       desc-1: "<dark_purple>獲得幸運 III (15s)</dark_purple>"
@@ -1160,6 +1168,37 @@ roles:
       desc-3: "<dark_purple>- 敵人碰到獲得凋零 II & 緩速 II (10s)</dark_purple>"
       desc-4: "<dark_purple>落地後鞘翅再度損毀</dark_purple>"
       announce: "<player> 使用了<yellow><role></yellow>技能, 飛上了天!"
+  darkbringer:
+    name: "黑暗使者"
+    desc-1: "<gold>你在黑暗中最懼怕的人</gold>"
+    feature-1: "當光照強度低於 7 時獲得抗性 I"
+    feature-2: "否則黑暗 I"
+    item:
+      name: "<aqua>黑暗符紋</aqua>"
+      detail: "保護 II 回聲碎片"
+    skill:
+      name: "黑暗低語"
+      desc-1: "<dark_purple>給 10 格內最近的敵人黑暗效果</dark_purple>"
+      desc-2: "<dark_purple>- 當你在黑暗中時 10s</dark_purple>"
+      desc-3: "<dark_purple>- 否則 3s</dark_purple>"
+      desc-4: "<dark_purple>若連續 5 次擊中同一目標 (每次間隔 15 秒內)</dark_purple>"
+      desc-5: "<dark_purple>將觸發堅守者音爆, 造成 8 顆心固定傷害</dark_purple>"
+      desc-6: "<dark_purple>觸發後, 技能冷卻加 100 秒</dark_purple>"
+      announce: "<player> 使用了<yellow><role></yellow>技能, 使 <target> 黑暗! (<aqua><count></aqua>/<dark_aqua><max></dark_aqua>)"
+      announce-boom: "<player> 使用了<yellow><role></yellow>技能, 對 <target> 使用音爆!"
+      no-target: "<red>找不到黑暗目標!</red>"
+  farmer:
+    name: "農夫"
+    desc-1: "<gold>打什麼架? 種田多好玩!</gold>"
+    feature-1: "種田時附近作物生長速度雙倍"
+    item:
+      name: "<aqua>耕地機</aqua>"
+      detail: "幸運 III 鐵鋤頭"
+    skill:
+      name: "用餐時間"
+      desc-1: "<dark_purple>平均分配副手食物給所有隊友食用</dark_purple>"
+      announce: "<player> 使用了<yellow><role></yellow>技能, 餵飽了隊友!"
+      no-material: "<red>無效的副手物品!</red>"
 
 advancement:
   tab: "殲滅攻城戰"
