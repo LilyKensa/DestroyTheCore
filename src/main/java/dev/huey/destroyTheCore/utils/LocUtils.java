@@ -113,6 +113,14 @@ public class LocUtils {
     return e.getBoundingBox().clone().getCenter().toLocation(e.getWorld());
   }
   
+  static public boolean onGround(Location loc) {
+    return loc.add(0, -1, 0).getBlock().isCollidable();
+  }
+  
+  static public boolean onGround(Entity e) {
+    return onGround(e.getLocation());
+  }
+  
   /** Ender chest animation, as we use custom ender chests */
   static public void playChestAnimation(Location loc, boolean open) {
     Block block = loc.getBlock();

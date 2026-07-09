@@ -321,6 +321,10 @@ commands:
   pause:
     true: "<green>Game paused by <player></green>"
     false: "<green>Game resumed <player></green>"
+  cooldown:
+    player-not-found: "<red>Player not found!</red>"
+    made-self: "<green>Skill cooldown cleared</green>"
+    made-other: "<green>Skill cooldown cleared for <player></green>"
   level:
     changed: "<aqua><player>'s level is now <value>!</aqua>"
   night-vision:
@@ -355,6 +359,7 @@ commands:
     made-self: "<player> changed role to <yellow><role></yellow>"
   revive:
     no-game: "<red>There's not a match right now!</red>"
+    player-not-found: "<red>Player not found!</red>"
     made-other: "<player> revived <target>"
     made-self: "<player> revived themself"
   skip:
@@ -538,6 +543,9 @@ items:
   gold-digger-chestplate:
     name: "<aqua>Luminous Warning Shirt</aqua>"
     desc-1: "- <red>Bound item for Gold Diggers</red>"
+  darkbringer-boots:
+    name: "<aqua>Dark Crawler</aqua>"
+    desc-1: "- <red>Bound item for Darkbringers</red>"
   fairy-elytra:
     name: "<aqua>Broken Wings</aqua>"
     desc-1: "- <red>Bound item for Fairies</red>"
@@ -824,7 +832,7 @@ roles:
     feature-5: "Forever gets Slowness I"
     item:
       name: "<aqua>Gold Digging Pickaxe</aqua>"
-      detail: "Efficiency V Fortune III iron pickaxe"
+      detail: "Efficiency V iron pickaxe"
     skill:
       name: "Greedy Heart"
       desc-1: "<dark_purple>Gets Luck III (15s)</dark_purple>"
@@ -1115,3 +1123,34 @@ roles:
       desc-3: "<dark_purple>- Enemies receive Wither II and Slow II (10s)</dark_purple>"
       desc-4: "<dark_purple>The elytra are destroyed again upon landing</dark_purple>"
       announce: "<player> used <yellow><role></yellow>'s skill, started flying!"
+  darkbringer:
+    name: "Darkbringer"
+    desc-1: "<gold>The person you fear most in the darkness</gold>"
+    feature-1: "Gains Resistence I when light level is less than 7"
+    feature-2: "Gains Darkness I otherwise"
+    item:
+      name: "<aqua>Dark Runes</aqua>"
+      detail: "Protection II echo shard"
+    skill:
+      name: "Dark Whispers"
+      desc-1: "<dark_purple>Apply Darkness effect to nearest enemy within 10 blocks</dark_purple>"
+      desc-2: "<dark_purple>- 10s when you're in the dark</dark_purple>"
+      desc-3: "<dark_purple>- 3s when not</dark_purple>"
+      desc-4: "<dark_purple>Targeting the same enemy for 5 times (each within 15s)</dark_purple>"
+      desc-5: "<dark_purple>will release a sonic boom, dealing a fixed damage of 8 hearts</dark_purple>"
+      desc-6: "<dark_purple>Upon releasing, there is an extra 100s cooldown</dark_purple>"
+      announce: "<player> used <yellow><role></yellow>'s skill, darkened <target>! (<aqua><count></aqua>/<dark_aqua><max></dark_aqua>)"
+      announce-boom: "<player> used <yellow><role></yellow>'s skill, trigger sonic boom to <target>!"
+      no-target: "<red>No target to darken!</red>"
+  farmer:
+    name: "Farmer"
+    desc-1: "<gold>Why fight? Growing crops is so much fun!</gold>"
+    feature-1: "Double speed when growing nearby crops"
+    item:
+      name: "<aqua>Tiller</aqua>"
+      detail: "Fortune III iron hoe"
+    skill:
+      name: "Meal Time"
+      desc-1: "<dark_purple>Apply the food held in offhand evenly among all teammates.</dark_purple>"
+      announce: "<player> used <yellow><role></yellow>'s skill, fed teammates!"
+      no-material: "<red>Invalid off-hand item!</red>"

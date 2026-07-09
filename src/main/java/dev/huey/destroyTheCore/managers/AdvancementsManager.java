@@ -77,7 +77,7 @@ public class AdvancementsManager {
       getDisplayBuilder(
         Material.END_STONE,
         "root"
-      ).coords(0, 9f).build(),
+      ).coords(0, 11).build(),
       "textures/block/spruce_log.png"
     );
     
@@ -119,7 +119,7 @@ public class AdvancementsManager {
       getDisplayBuilder(
         Material.WOODEN_SWORD,
         "played"
-      ).coords(1, 14).build(),
+      ).coords(1, y).build(),
       rootAdv
     );
     all.add(playedAdv);
@@ -129,17 +129,19 @@ public class AdvancementsManager {
       getDisplayBuilder(
         Material.ENDER_EYE,
         "played-spectator"
-      ).coords(2, 14).build(),
+      ).coords(2, y).build(),
       playedAdv
     );
     all.add(playedSpectatorAdv);
+    
+    y++;
     
     usedSkillAdv = new BaseAdvancement(
       "used-skill",
       getDisplayBuilder(
         Material.WRITTEN_BOOK,
         "used-skill"
-      ).coords(1, 15).build(),
+      ).coords(1, y).build(),
       rootAdv
     );
     all.add(usedSkillAdv);
@@ -149,18 +151,20 @@ public class AdvancementsManager {
       getDisplayBuilder(
         Material.KNOWLEDGE_BOOK,
         "used-many-skills"
-      ).goalFrame().coords(2, 15).build(),
+      ).goalFrame().coords(2, y).build(),
       usedSkillAdv,
       100
     );
     all.add(usedManySkillsAdv);
+    
+    y++;
     
     usedLotteryAdv = new BaseAdvancement(
       "used-lottery",
       getDisplayBuilder(
         Material.HEART_OF_THE_SEA,
         "used-lottery"
-      ).coords(1, 16).build(),
+      ).coords(1, y).build(),
       rootAdv
     );
     all.add(usedLotteryAdv);
@@ -170,7 +174,7 @@ public class AdvancementsManager {
       getDisplayBuilder(
         Material.CONDUIT,
         "used-many-lotteries"
-      ).goalFrame().coords(2, 16).build(),
+      ).goalFrame().coords(2, y).build(),
       usedLotteryAdv,
       100
     );

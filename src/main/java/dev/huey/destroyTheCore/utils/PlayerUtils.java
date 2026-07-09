@@ -959,10 +959,12 @@ public class PlayerUtils {
     return found;
   }
   
-  static public void growNearbyCrops(Player pl) {
+  static public void growNearbyCrops(Player pl, double chance) {
     if (!LocUtils.inLive(pl)) return;
     
     final int radius = 6, outerRadius = radius + 1;
+    
+    boolean grown = false;
     
     for (int x = -outerRadius; x <= outerRadius; x++) {
       for (int y = -outerRadius; y <= outerRadius; y++) {
@@ -975,7 +977,7 @@ public class PlayerUtils {
           if (!(block.getBlockData() instanceof Ageable ageable)) continue;
           if (ageable.getAge() >= ageable.getMaximumAge()) continue;
           
-          if (RandomUtils.range(4) < 1) {
+          if (RandomUtils.nextDouble() < chance) {
             ageable.setAge(ageable.getAge() + 1);
             block.setBlockData(ageable);
             
@@ -987,10 +989,14 @@ public class PlayerUtils {
               .count(5)
               .spawn();
             
-            pl.giveExp(1);
+            grown = true;
           }
         }
       }
+    }
+    
+    if (grown) {
+      pl.giveExp(RandomUtils.range(3, 5));
     }
   }
   

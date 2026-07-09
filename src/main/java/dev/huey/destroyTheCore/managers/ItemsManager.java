@@ -111,7 +111,8 @@ public class ItemsManager {
     PROVOCATEUR_HELMET,
     MOLE_BOOTS,
     ROYAL_HELMET,
-    FAIRY_ELYTRA
+    FAIRY_ELYTRA,
+    DARKBRINGER_BOOTS
   }
   
   /** Filter item-gens by type */
@@ -198,7 +199,8 @@ public class ItemsManager {
       new ProvocateurHelmetGen(),
       new MoleBootsGen(),
       new RoyalHelmetGen(),
-      new FairyElytra()
+      new FairyElytra(),
+      new DarkbringerBoots()
     ).collect(Collectors.toMap(ci -> ci.id, ci -> ci));
     
     usableGens = filterGens(UsableItemGen.class);

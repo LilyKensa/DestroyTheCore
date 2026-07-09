@@ -8,10 +8,7 @@ import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.managers.RolesManager;
 import dev.huey.destroyTheCore.records.PlayerData;
 import dev.huey.destroyTheCore.records.Pos;
-import dev.huey.destroyTheCore.utils.AttrUtils;
-import dev.huey.destroyTheCore.utils.LocUtils;
-import dev.huey.destroyTheCore.utils.PlayerUtils;
-import dev.huey.destroyTheCore.utils.TextUtils;
+import dev.huey.destroyTheCore.utils.*;
 import java.util.*;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Location;
@@ -19,7 +16,6 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -129,8 +125,17 @@ public class FairyRole extends Role {
   
   static Set<UUID> flying = new HashSet<>();
   
+  static public void resetFlying(Player pl) {
+    if (!flying.contains(pl.getUniqueId())) return;
+    
+    flying.remove(pl.getUniqueId());
+    AttrUtils.set(pl, Attribute.MAX_HEALTH, 20);
+  }
+  
   static void fixElytra(Player pl) {
-    flying.add(pl.getUniqueId());
+    CoreUtils.setTickOut(() -> {
+      flying.add(pl.getUniqueId());
+    }, 20);
     
     AttrUtils.set(pl, Attribute.MAX_HEALTH, 4);
     
@@ -147,9 +152,7 @@ public class FairyRole extends Role {
   
   static void breakElytra(Player pl) {
     if (flying.contains(pl.getUniqueId())) {
-      flying.remove(pl.getUniqueId());
-      
-      AttrUtils.set(pl, Attribute.MAX_HEALTH, 20);
+      resetFlying(pl);
       
       PlayerInventory inv = pl.getInventory();
       
@@ -199,7 +202,7 @@ public class FairyRole extends Role {
     if (DTC.ticksManager.isUpdateTick()) {
       PlayerData data = DTC.game.getPlayerData(pl);
       
-      if (((Entity) pl).isOnGround()) {
+      if (LocUtils.onGround(pl)) {
         breakElytra(pl);
       }
       
