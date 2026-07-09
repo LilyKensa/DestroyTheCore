@@ -60,7 +60,7 @@ public class Constants {
         NamedTextColor.RED,
         10,
         1,
-        5
+        2
       )
     ),
     Map.entry(
@@ -71,7 +71,7 @@ public class Constants {
         NamedTextColor.BLUE,
         10,
         1,
-        5
+        4
       )
     ),
     Map.entry(
@@ -82,7 +82,7 @@ public class Constants {
         NamedTextColor.GREEN,
         15,
         2,
-        6
+        4
       )
     ),
     Map.entry(
@@ -93,7 +93,7 @@ public class Constants {
         NamedTextColor.AQUA,
         60,
         4,
-        8
+        30
       )
     )
   );
