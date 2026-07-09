@@ -6,7 +6,7 @@
 
   <groupId>dev.huey</groupId>
   <artifactId>DestroyTheCore</artifactId>
-  <version>0.29.4</version>
+  <version>0.30.0</version>
   <packaging>jar</packaging>
 
   <name>DestroyTheCore</name>

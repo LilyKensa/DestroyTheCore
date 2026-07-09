@@ -283,6 +283,11 @@ public class PlayerUtils {
     return true;
   }
   
+  static public void setSkillCooldown(Player pl, int ticks) {
+    pl.setCooldown(Material.KNOWLEDGE_BOOK, ticks);
+    DTC.game.getPlayerData(pl).extraSkillReload = 0;
+  }
+  
   static public void takeOneItemFromHand(Player pl) {
     if (pl.getGameMode().equals(GameMode.CREATIVE)) return;
     
@@ -308,6 +313,22 @@ public class PlayerUtils {
     }
     
     pl.damageItemStack(EquipmentSlot.HAND, 1);
+  }
+  
+  /** Replaces an item, but drop the old one on the ground */
+  static public void softReplaceItem(
+    Player pl, EquipmentSlot slot, ItemStack item
+  ) {
+    PlayerInventory inv = pl.getInventory();
+    ItemStack oldItem = inv.getItem(slot);
+    
+    if (!oldItem.isEmpty() && !DTC.itemsManager.isTrash(oldItem)) {
+      pl.getWorld()
+        .dropItemNaturally(LocUtils.hitboxCenter(pl), oldItem)
+        .setPickupDelay(20);
+    }
+    
+    inv.setItem(slot, item);
   }
   
   /** Skip players in creative mode */
@@ -358,9 +379,8 @@ public class PlayerUtils {
     pl.teleport(
       LocUtils.live(
         LocUtils.selfSide(
-          LocUtils.toSpawnPoint(
-            RandomUtils.pick(DTC.game.map.spawnpoints)
-          ),
+          RandomUtils.pick(DTC.game.map.spawnpoints)
+            .spawnPoint(),
           pl
         )
       )
@@ -626,7 +646,9 @@ public class PlayerUtils {
     
     pl.setGameMode(GameMode.SURVIVAL);
     fullyHeal(pl);
+    
     teleportToSpawnPoint(pl);
+    LocUtils.breakNearbyBlocks(pl.getLocation(), 1, 3);
   }
   
   static public void scheduleRespawn(Player pl) {
@@ -736,9 +758,8 @@ public class PlayerUtils {
     DTC.worldsManager.live.dropItemNaturally(
       LocUtils.live(
         LocUtils.selfSide(
-          LocUtils.toSpawnPoint(
-            RandomUtils.pick(DTC.game.map.spawnpoints)
-          ),
+          RandomUtils.pick(DTC.game.map.spawnpoints)
+            .spawnPoint(),
           side
         )
       ),
@@ -833,9 +854,14 @@ public class PlayerUtils {
       inv.setItem(slot, item);
     };
     
-    for (EquipmentSlot slot : new EquipmentSlot[]{
-      EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET,
-    }) {
+    for (
+      EquipmentSlot slot : new EquipmentSlot[]{
+        EquipmentSlot.HEAD,
+        EquipmentSlot.CHEST,
+        EquipmentSlot.LEGS,
+        EquipmentSlot.FEET,
+      }
+    ) {
       ItemStack item = inv.getItem(slot);
       if (item.isEmpty() && data.role.id != RolesManager.RoleKey.ASSASSIN) {
         defaultEquipment.accept(slot);
@@ -883,7 +909,7 @@ public class PlayerUtils {
           inv.getItemInOffHand()
             .isEmpty()
       ) {
-        inv.setItemInOffHand(roleItem);
+        softReplaceItem(pl, EquipmentSlot.OFF_HAND, roleItem);
       }
       else {
         give(pl, roleItem);
@@ -916,18 +942,16 @@ public class PlayerUtils {
   static public boolean banBothHandItem(Player pl, Material type) {
     boolean found = false;
     
-    for (EquipmentSlot slot : new EquipmentSlot[]{
-      EquipmentSlot.HAND, EquipmentSlot.OFF_HAND
-    }) {
+    for (
+      EquipmentSlot slot : new EquipmentSlot[]{
+        EquipmentSlot.HAND,
+        EquipmentSlot.OFF_HAND
+      }
+    ) {
       ItemStack item = pl.getInventory().getItem(slot);
       
       if (item.getType().equals(type)) {
-        pl.getInventory().setItem(slot, ItemStack.empty());
-        pl.getWorld().dropItemNaturally(
-          LocUtils.hitboxCenter(pl),
-          item
-        ).setPickupDelay(20);
-        
+        softReplaceItem(pl, slot, ItemStack.empty());
         found = true;
       }
     }
@@ -935,10 +959,12 @@ public class PlayerUtils {
     return found;
   }
   
-  static public void growNearbyCrops(Player pl) {
+  static public void growNearbyCrops(Player pl, double chance) {
     if (!LocUtils.inLive(pl)) return;
     
     final int radius = 6, outerRadius = radius + 1;
+    
+    boolean grown = false;
     
     for (int x = -outerRadius; x <= outerRadius; x++) {
       for (int y = -outerRadius; y <= outerRadius; y++) {
@@ -951,7 +977,7 @@ public class PlayerUtils {
           if (!(block.getBlockData() instanceof Ageable ageable)) continue;
           if (ageable.getAge() >= ageable.getMaximumAge()) continue;
           
-          if (RandomUtils.range(10) < 2) {
+          if (RandomUtils.nextDouble() < chance) {
             ageable.setAge(ageable.getAge() + 1);
             block.setBlockData(ageable);
             
@@ -963,10 +989,14 @@ public class PlayerUtils {
               .count(5)
               .spawn();
             
-            pl.giveExp(RandomUtils.range(1, 4));
+            grown = true;
           }
         }
       }
+    }
+    
+    if (grown) {
+      pl.giveExp(RandomUtils.range(3, 5));
     }
   }
   
@@ -1105,16 +1135,24 @@ public class PlayerUtils {
     double tmax = maxDist;
     
     double[] mins = {
-      box.getMinX(), box.getMinY(), box.getMinZ()
+      box.getMinX(),
+      box.getMinY(),
+      box.getMinZ()
     };
     double[] maxs = {
-      box.getMaxX(), box.getMaxY(), box.getMaxZ()
+      box.getMaxX(),
+      box.getMaxY(),
+      box.getMaxZ()
     };
     double[] origins = {
-      origin.getX(), origin.getY(), origin.getZ()
+      origin.getX(),
+      origin.getY(),
+      origin.getZ()
     };
     double[] dirs = {
-      dir.getX(), dir.getY(), dir.getZ()
+      dir.getX(),
+      dir.getY(),
+      dir.getZ()
     };
     for (int i = 0; i < 3; i++) {
       double min = mins[i], max = maxs[i], o = origins[i], d = dirs[i];

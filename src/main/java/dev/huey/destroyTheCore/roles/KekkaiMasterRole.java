@@ -410,7 +410,7 @@ public class KekkaiMasterRole extends Role {
       }
     );
     addSkill(30 * 20);
-    addLevelReq(2);
+    addLevelReq(4);
   }
   
   @Override
@@ -464,9 +464,9 @@ public class KekkaiMasterRole extends Role {
       }
     }
     if (replacedWarning > 0) {
-      pl.setCooldown(Material.KNOWLEDGE_BOOK, 10);
-      data.skillReloadedMessage = true;
+      PlayerUtils.setSkillCooldown(pl, 10);
       
+      data.skillReloadedMessage = true;
       pl.sendActionBar(
         TextUtils.$(
           "roles.kekkai-master.skill.inside-kekkai",
@@ -482,9 +482,11 @@ public class KekkaiMasterRole extends Role {
     ItemStack offhandItem = pl.getInventory().getItemInOffHand();
     
     Kekkai.Type type = null;
-    for (Kekkai.Type t : Kekkai.Type.values()) if (
-      offhandItem.getType().equals(t.sourceMaterial)
-    ) type = t;
+    for (Kekkai.Type t : Kekkai.Type.values()) {
+      if (offhandItem.getType().equals(t.sourceMaterial)) {
+        type = t;
+      }
+    }
     
     if (
       DTC.itemsManager.checkGen(
@@ -500,7 +502,9 @@ public class KekkaiMasterRole extends Role {
     ) type = Kekkai.Type.SOUL;
     
     if (type == null) {
-      pl.setCooldown(Material.KNOWLEDGE_BOOK, 10);
+      PlayerUtils.setSkillCooldown(pl, 10);
+      
+      data.skillReloadedMessage = true;
       pl.sendActionBar(TextUtils.$("roles.kekkai-master.skill.no-material"));
       return;
     }
@@ -510,10 +514,12 @@ public class KekkaiMasterRole extends Role {
       pl.getInventory().setItemInOffHand(offhandItem);
     }
     
-    if (type.name().endsWith("PLUS")) pl.setCooldown(
-      Material.KNOWLEDGE_BOOK,
-      180 * 20
-    );
+    if (type.name().endsWith("PLUS")) {
+      pl.setCooldown(
+        Material.KNOWLEDGE_BOOK,
+        6 * skillCooldown
+      );
+    }
     
     kekkais.add(new Kekkai(type, LocUtils.hitboxCenter(pl), pl));
     

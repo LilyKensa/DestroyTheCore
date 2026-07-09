@@ -13,10 +13,7 @@ import dev.huey.destroyTheCore.gui.shop.DetailShopItem;
 import dev.huey.destroyTheCore.gui.shop.NewShopItem;
 import dev.huey.destroyTheCore.gui.shop.RenameShopItem;
 import dev.huey.destroyTheCore.records.MaybeGen;
-import dev.huey.destroyTheCore.utils.AdvUtils;
-import dev.huey.destroyTheCore.utils.CoreUtils;
-import dev.huey.destroyTheCore.utils.PlayerUtils;
-import dev.huey.destroyTheCore.utils.TextUtils;
+import dev.huey.destroyTheCore.utils.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -48,13 +45,6 @@ import xyz.xenondevs.invui.window.Window;
 public class GUIManager {
   
   public void openRoleSelection(Player pl) {
-    pl.playSound(
-      pl,
-      Sound.BLOCK_ENDER_CHEST_OPEN,
-      1, // Volume
-      1 // Pitch
-    );
-    
     Gui roleGui = PagedGui.items().setStructure(
       "# # # # # # # # #",
       "# x x x x x x x #",
@@ -85,14 +75,25 @@ public class GUIManager {
       )
     ).setGui(roleGui).build();
     
-    window.addCloseHandler(() -> {
+    if (LocUtils.inLobby(pl)) {
       pl.playSound(
         pl,
-        Sound.BLOCK_ENDER_CHEST_CLOSE,
+        Sound.BLOCK_ENDER_CHEST_OPEN,
         1, // Volume
         1 // Pitch
       );
-    });
+      
+      window.addCloseHandler(() -> {
+        pl.setCooldown(Material.ENDER_CHEST, 5 * 20);
+        
+        pl.playSound(
+          pl,
+          Sound.BLOCK_ENDER_CHEST_CLOSE,
+          1, // Volume
+          1 // Pitch
+        );
+      });
+    }
     
     window.open();
     

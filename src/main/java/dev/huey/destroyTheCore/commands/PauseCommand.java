@@ -18,6 +18,11 @@ public class PauseCommand extends Subcommand {
   
   @Override
   public void execute(Player pl, List<String> args) {
+    if (!PlayerUtils.isAdmin(pl)) {
+      PlayerUtils.reportNoPerm(pl);
+      return;
+    }
+    
     if (!DTC.game.isPlaying) return;
     
     DTC.game.paused = !DTC.game.paused;

@@ -21,6 +21,10 @@ public class ParticleUtils {
       .spawn();
   }
   
+  static public void dust(Location loc, Color color) {
+    dust(PlayerUtils.all(), loc, color);
+  }
+  
   static public void cloud(List<Player> players, Location loc) {
     new ParticleBuilder(Particle.CLOUD)
       .receivers(players)
@@ -29,6 +33,10 @@ public class ParticleUtils {
       .count(15)
       .extra(0.05)
       .spawn();
+  }
+  
+  static public void cloud(Location loc) {
+    cloud(PlayerUtils.all(), loc);
   }
   
   static public void simpleRegion(
@@ -61,36 +69,54 @@ public class ParticleUtils {
       dust(players, loc, color);
     };
     
-    for (double y : new double[]{
-      yMin, yMax
-    }) {
-      for (double z : new double[]{
-        zMin, zMax
-      }) {
+    for (
+      double y : new double[]{
+        yMin,
+        yMax
+      }
+    ) {
+      for (
+        double z : new double[]{
+          zMin,
+          zMax
+        }
+      ) {
         for (double x = xMin; x <= xMax; x += step) {
           emitter.accept(x, y, z);
         }
       }
     }
     
-    for (double x : new double[]{
-      xMin, xMax
-    }) {
-      for (double z : new double[]{
-        zMin, zMax
-      }) {
+    for (
+      double x : new double[]{
+        xMin,
+        xMax
+      }
+    ) {
+      for (
+        double z : new double[]{
+          zMin,
+          zMax
+        }
+      ) {
         for (double y = yMin; y <= yMax; y += step) {
           emitter.accept(x, y, z);
         }
       }
     }
     
-    for (double x : new double[]{
-      xMin, xMax
-    }) {
-      for (double y : new double[]{
-        yMin, yMax
-      }) {
+    for (
+      double x : new double[]{
+        xMin,
+        xMax
+      }
+    ) {
+      for (
+        double y : new double[]{
+          yMin,
+          yMax
+        }
+      ) {
         for (double z = zMin; z <= zMax; z += step) {
           emitter.accept(x, y, z);
         }
@@ -139,36 +165,54 @@ public class ParticleUtils {
       dust(players, loc, color0);
     };
     
-    for (double y : new double[]{
-      yMin, yMax
-    }) {
-      for (double z : new double[]{
-        zMin, zMax
-      }) {
+    for (
+      double y : new double[]{
+        yMin,
+        yMax
+      }
+    ) {
+      for (
+        double z : new double[]{
+          zMin,
+          zMax
+        }
+      ) {
         for (double x = xMin; x <= xMax; x += step) {
           emitter.accept(x, y, z);
         }
       }
     }
     
-    for (double x : new double[]{
-      xMin, xMax
-    }) {
-      for (double z : new double[]{
-        zMin, zMax
-      }) {
+    for (
+      double x : new double[]{
+        xMin,
+        xMax
+      }
+    ) {
+      for (
+        double z : new double[]{
+          zMin,
+          zMax
+        }
+      ) {
         for (double y = yMin; y <= yMax; y += step) {
           emitter.accept(x, y, z);
         }
       }
     }
     
-    for (double x : new double[]{
-      xMin, xMax
-    }) {
-      for (double y : new double[]{
-        yMin, yMax
-      }) {
+    for (
+      double x : new double[]{
+        xMin,
+        xMax
+      }
+    ) {
+      for (
+        double y : new double[]{
+          yMin,
+          yMax
+        }
+      ) {
         for (double z = zMin; z <= zMax; z += step) {
           emitter.accept(x, y, z);
         }

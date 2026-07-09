@@ -92,7 +92,7 @@ game:
       desc: "開始接收任務 / 鑽石礦開啟"
     death-penalty:
       name: "死亡懲罰"
-      desc: "每死一次扣 1 點核心生命"
+      desc: "礦物冷卻減半 / 死亡扣核心生命"
     double-core-damage:
       name: "雙倍核心傷害"
       desc: "核心受到的傷害雙倍"
@@ -196,7 +196,7 @@ game:
       foot: "+---------------------------------------+"
     top-attackers: "+--------------- <light_purple>核心攻擊數</light_purple> ---------------+"
     top-killers: "+--------------- <light_purple>殺人如麻者</light_purple> ---------------+"
-    top-dyers: "+--------------- <light_purple>死到脫褲者</light_purple> ---------------+"
+    top-dyers: "+--------------- <light_purple>死神的常客</light_purple> ---------------+"
     top-miners: "+--------------- <light_purple>最優質礦工</light_purple> ---------------+"
     thanks: "<gold>感謝您的遊玩!</gold>"
     sign: "- 插件製作人, <yellow>_hueeey_</yellow>"
@@ -264,7 +264,7 @@ mission:
     remove-respawn-time: "每人<yellow>減少 20 點罪惡</yellow>!"
     ban-ores: "礦區<light_purple>封鎖 2 分鐘</light_purple>!"
     ban-shop: "商店<light_purple>封鎖 2 分鐘</light_purple>!"
-    attack-core: "核心生命<light_purple>減少 10</light_purple>!"
+    attack-core: "核心生命<light_purple>減少 3 點</light_purple>!"
     summon-pig: "獲得 <light_purple><name></light_purple>!"
     pig-name: "87 豬隊友"
     void: "<player> 被<light_purple>傳送到異世界</light_purple>!"
@@ -351,6 +351,8 @@ world:
 commands:
   root:
     github: "訪問 <click:open_url:'https://github.com/LilyKensa/DestroyTheCore'><u>https://github.com/LilyKensa/DestroyTheCore</u></click> 已獲得更多訊息"
+  ping:
+    result: "你的延遲是 <value> 毫秒"
   suicide:
     bad-time: "<red>你現在不能自殺!</red>"
     already-dead: "<red>你已經死了!</red>"
@@ -359,6 +361,10 @@ commands:
   pause:
     true: "<green>遊戲被 <player> 暫停</green>"
     false: "<green>遊戲被 <player> 繼續</green>"
+  cooldown:
+    player-not-found: "<red>找不到目標玩家!</red>"
+    made-self: "<green>技能冷卻已重置</green>"
+    made-other: "<green><player> 的技能冷卻已重置</green>"
   level:
     changed: "<aqua><player> 現在的等級是 <value> 等</aqua>"
   night-vision:
@@ -393,6 +399,7 @@ commands:
     made-self: "<player> 轉職成了<yellow><role></yellow>"
   revive:
     no-game: "<red>沒有對戰!</red>"
+    player-not-found: "<red>找不到目標玩家!</red>"
     made-other: "<player> 已將 <target> 重生"
     made-self: "<player> 已重生"
   skip:
@@ -509,10 +516,15 @@ items:
   random-role:
     name: "<light_purple>轉職書</light_purple>"
     desc-1: "經過菩薩加持!"
-    desc-2: "使用後可以隨機轉換職業"
+    desc-2: "使用後可以<yellow>隨機</yellow>轉換職業"
     confirm: "<yellow>蹲下以確認!</yellow>"
     announce: "<player> 使用了<item>, 轉職成<yellow><role></yellow>"
   choose-role:
+    name: "<light_purple>轉職書</light_purple>"
+    desc-1: "經過菩薩加持!"
+    desc-2: "使用後可以轉換至<yellow>指定</yellow>職業"
+    announce: "<player> 使用了<item>, 轉職成<yellow><role></yellow>"
+  role-selector:
     name: "<aqua>選擇職業</aqua>"
     no-team: "<red>請先加入隊伍!</red>"
     locked: "<red>你尚未解鎖此職業!</red>"
@@ -571,6 +583,12 @@ items:
   gold-digger-chestplate:
     name: "<aqua>反光警示衣</aqua>"
     desc-1: "- <red>淘金者綁定物品</red>"
+  darkbringer-boots:
+    name: "<aqua>黑暗爬行者</aqua>"
+    desc-1: "- <red>黑暗使者綁定物品</red>"
+  fairy-elytra:
+    name: "<aqua>折損的羽翼</aqua>"
+    desc-1: "- <red>精靈綁定物品</red>"
   provocateur-helmet:
     name: "<aqua>厚紙板箱子</aqua>"
     desc-1: "- <red>小丑綁定物品</red>"
@@ -582,7 +600,7 @@ items:
     desc-1: "- <red>建築師綁定物品</red>"
   kekkai-master-leggings:
     name: "<aqua>符文褲</aqua>"
-    desc-1: "- <red>結界師綁定物品</red>"
+    desc-1: "- <red>結界師 & 咒術師綁定物品</red>"
   mole-boots:
     name: "<aqua>腳爪封印</aqua>"
     desc-1: "- <red>地鼠綁定物品</red>"
@@ -630,10 +648,12 @@ items:
   truce:
     name: "[<white>令牌</white>] <light_purple>停戰協議</light_purple>"
     desc-1: "<gold>條件</gold>: <yellow>必須在階段 1 ~ 4 使用</yellow>"
-    desc-2: "<gold>條件</gold>: <yellow>一場遊戲只能使用一次</yellow>"
-    desc-3: "雙方玩家禁止接近對方陣營 5 分鐘"
+    desc-2: "<gold>條件</gold>: <yellow>每隊一場遊戲只能使用一次</yellow>"
+    desc-3: "<gold>條件</gold>: <yellow>使用時不能有隊友在對方核心附近</yellow>"
+    desc-4: "雙方玩家禁止接近對方陣營 5 分鐘"
     too-late: "<red>現在已經來不及用了!</red>"
     duped-usage: "<red>你已經使用過停戰協議!</red>"
+    enemy-core: "<red>所有隊友必須離開對方核心!</red>"
     announce: "<player> 使用了 <item>"
   levi-stick:
     name: "<aqua>飄飄棒</aqua>"
@@ -857,7 +877,7 @@ roles:
     feature-5: "永久緩速 I"
     item:
       name: "<aqua>掏金者之鑽</aqua>"
-      detail: "效率 III 鐵鎬"
+      detail: "效率 V 鐵鎬"
     skill:
       name: "貪婪之心"
       desc-1: "<dark_purple>獲得幸運 III (15s)</dark_purple>"
@@ -884,7 +904,7 @@ roles:
         enemy-unknown: "你踩到了陷阱!"
   kekkai-master:
     name: "結界師"
-    desc-1: "輔助職業, 可放置各種結界"
+    desc-1: "<gold>輔助職業, 可放置各種結界</gold>"
     feature-1: "永久抗火"
     feature-2: "手持結界杖站在結界裡可以維持結界"
     item:
@@ -907,10 +927,10 @@ roles:
       desc-13: "<dark_purple>鑽石磚 - 力量 III (180s)</dark_purple>"
       desc-14: "<dark_purple>渾沌之物 - 隨機效果 III (10s)</dark_purple>"
       desc-15: "<dark_purple>靈魂碎片 - 加速 II, 回復 II, 力量 II, 增加罪惡 (30s)</dark_purple>"
-      desc-16: "<dark_purple>加強結界需要 6 倍冷卻時間</dark_purple>"
+      desc-16: "<dark_purple>強化結界需要 6 倍冷卻時間</dark_purple>"
       announce: "<player> 使用了<yellow><role></yellow>技能, 放置了一個<aqua><type></aqua>結界!"
       inside-kekkai: "<red>將覆蓋 <amount> 個結界, 蹲下以確認!</red>"
-      no-material: "<red>這副手物品沒效果啊!</red>"
+      no-material: "<red>無效的副手物品!</red>"
       duration: "<aqua>結界剩餘時間: <value> 秒</aqua>"
     kekkais:
       speed: "加速"
@@ -1073,6 +1093,112 @@ roles:
         enemy: "入侵"
     potion-warning: "<red>你不能喝藥水!</red>"
     invis-warning: "<red>你不能隱形!</red>"
+  gambler:
+    name: "賭徒"
+    desc-1: "<gold>哪有小孩天天哭, 哪有賭徒天天輸!</gold>"
+    feature-1: "每 10 秒減少 1 點罪惡值"
+    item:
+      name: "<aqua>賭城入場券</aqua>"
+      detail: "魚餌 III 命名牌"
+    skill:
+      name: "賭一波大的"
+      desc-1: "<dark_purple>將副手的礦物拿去賭博</dark_purple>"
+      desc-2: "<dark_purple>沒有人知道中獎的機率是多少</dark_purple>"
+      announce: "<player> 使用了<yellow><role></yellow>技能, 賭上 <item> × <dark_aqua><amount></dark_aqua>!"
+      no-material: "<red>你不能賭博此物品!</red>"
+      too-few: "<red>你至少要賭博 10 個物品!<red>"
+      result:
+        bad: "<red>再接再厲!</red>"
+        good: "<aqua><ratio> 倍獎勵!</aqua>"
+  sorcerer:
+    name: "咒術師"
+    desc-1: "<gold>可消耗礦物對敵人施展各種咒術</gold>"
+    feature-1: "免疫凋零傷害"
+    item:
+      name: "<aqua>咒術鐮刀</aqua>"
+      detail: "鋒利 V 鑽石鋤頭"
+    skill:
+      name: "發動咒術"
+      desc-1: "<dark_purple>根據副手物品發動不同效果的咒術</dark_purple>"
+      desc-2: "<dark_purple>鐵碇 - 緩速 II (10s)</dark_purple>"
+      desc-3: "<dark_purple>金碇 - 飢餓 II (10s)</dark_purple>"
+      desc-4: "<dark_purple>紅石 - 黑暗 (10s)</dark_purple>"
+      desc-5: "<dark_purple>綠寶石 - 虛弱 (10s)</dark_purple>"
+      desc-6: "<dark_purple>青金石 - 中毒 (5s)</dark_purple>"
+      desc-7: "<dark_purple>鑽石 - 跳躍旋轉 180° (10s)</dark_purple>"
+      desc-8: "<dark_purple>鐵方塊 - 緩速 IV (10s)</dark_purple>"
+      desc-9: "<dark_purple>金方塊 - 飢餓 V (10s)</dark_purple>"
+      desc-10: "<dark_purple>紅石方塊 - 失明 (10s)</dark_purple>"
+      desc-11: "<dark_purple>綠寶石方塊 - 虛弱 II (10s)</dark_purple>"
+      desc-12: "<dark_purple>青金石方塊 - 凋零 II (10s)</dark_purple>"
+      desc-13: "<dark_purple>鑽石方塊 - 跳躍旋轉隨機角度 (10s)</dark_purple>"
+      desc-14: "<dark_purple>渾沌之物 - 隨機效果 III (10s)</dark_purple>"
+      desc-15: "<dark_purple>靈魂碎片 - 緩速 & 黑暗 & 虛弱, 代價是 30 點罪惡值 (10s)</dark_purple>"
+      desc-16: "<dark_purple>高級咒術需要 3 倍冷卻時間</dark_purple>"
+      announce: "<player> 使用了<yellow><role></yellow>技能, 施放<aqua><type></aqua>!"
+      no-material: "<red>無效的副手物品!</red>"
+      no-target: "<red>找不到施咒目標!</red>"
+    spells:
+      slow: "緩咒"
+      hunger: "餓咒"
+      blind: "盲咒"
+      weak: "虛咒"
+      poison: "毒咒"
+      turn: "轉咒"
+      slow-plus: "強緩咒"
+      hunger-plus: "強餓咒"
+      blind-plus: "強盲咒"
+      weak-plus: "強虛咒"
+      poison-plus: "強毒咒"
+      turn-plus: "強轉咒"
+      chaos: "濁咒"
+      soul: "靈咒"
+  fairy:
+    name: "精靈"
+    desc-1: "<gold>飛上天給隊友或敵人撒花!</gold>"
+    feature-1: "技能期間最大血量減少 80%"
+    feature-2: "落地時得到緩速 II (5s)"
+    item:
+      name: "<aqua>風之弓</aqua>"
+      detail: "擊退 I 弓"
+    skill:
+      name: "撒花"
+      desc-1: "<dark_purple>鞘翅暫時修復並飛升上天撒花</dark_purple>"
+      desc-2: "<dark_purple>- 隊友碰到獲得立即治療 & 速度 II (10s)</dark_purple>"
+      desc-3: "<dark_purple>- 敵人碰到獲得凋零 II & 緩速 II (10s)</dark_purple>"
+      desc-4: "<dark_purple>落地後鞘翅再度損毀</dark_purple>"
+      announce: "<player> 使用了<yellow><role></yellow>技能, 飛上了天!"
+  darkbringer:
+    name: "黑暗使者"
+    desc-1: "<gold>你在黑暗中最懼怕的人</gold>"
+    feature-1: "當光照強度低於 7 時獲得抗性 I"
+    feature-2: "否則黑暗 I"
+    item:
+      name: "<aqua>黑暗符紋</aqua>"
+      detail: "保護 II 回聲碎片"
+    skill:
+      name: "黑暗低語"
+      desc-1: "<dark_purple>給 10 格內最近的敵人黑暗效果</dark_purple>"
+      desc-2: "<dark_purple>- 當你在黑暗中時 10s</dark_purple>"
+      desc-3: "<dark_purple>- 否則 3s</dark_purple>"
+      desc-4: "<dark_purple>若連續 5 次擊中同一目標 (每次間隔 15 秒內)</dark_purple>"
+      desc-5: "<dark_purple>將觸發堅守者音爆, 造成 8 顆心固定傷害</dark_purple>"
+      desc-6: "<dark_purple>觸發後, 技能冷卻加 100 秒</dark_purple>"
+      announce: "<player> 使用了<yellow><role></yellow>技能, 使 <target> 黑暗! (<aqua><count></aqua>/<dark_aqua><max></dark_aqua>)"
+      announce-boom: "<player> 使用了<yellow><role></yellow>技能, 對 <target> 使用音爆!"
+      no-target: "<red>找不到黑暗目標!</red>"
+  farmer:
+    name: "農夫"
+    desc-1: "<gold>打什麼架? 種田多好玩!</gold>"
+    feature-1: "種田時附近作物生長速度雙倍"
+    item:
+      name: "<aqua>耕地機</aqua>"
+      detail: "幸運 III 鐵鋤頭"
+    skill:
+      name: "用餐時間"
+      desc-1: "<dark_purple>平均分配副手食物給所有隊友食用</dark_purple>"
+      announce: "<player> 使用了<yellow><role></yellow>技能, 餵飽了隊友!"
+      no-material: "<red>無效的副手物品!</red>"
 
 advancement:
   tab: "殲滅攻城戰"

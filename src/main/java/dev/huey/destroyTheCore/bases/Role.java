@@ -402,6 +402,29 @@ public class Role extends GUIItem {
   public void handleClick(
     ClickType clickType, Player pl, InventoryClickEvent ev
   ) {
+    closeWindow(pl);
+    
+    ItemStack handItem = pl.getInventory().getItemInMainHand();
+    ItemGen gen = DTC.itemsManager.getGen(handItem);
+    
+    if (gen != null && gen.id == ItemsManager.ItemKey.CHOOSE_ROLE) {
+      PlayerUtils.broadcast(
+        TextUtils.$(
+          "items.choose-role.announce",
+          List.of(
+            Placeholder.component("player", PlayerUtils.getName(pl)),
+            Placeholder.component("item", gen.getItem().effectiveName()),
+            Placeholder.unparsed("role", name)
+          )
+        )
+      );
+      
+      DTC.rolesManager.setRole(pl, this);
+      DTC.game.enforceDisplay(pl);
+      DTC.boardsManager.refresh(pl);
+      return;
+    }
+    
     if (
       DTC.game.getStats(pl).levels >= levelReq || PlayerUtils.isAdmin(pl)
     ) {
@@ -424,6 +447,5 @@ public class Role extends GUIItem {
       );
       pl.sendActionBar(TextUtils.$("items.choose-role.locked"));
     }
-    closeWindow(pl);
   }
 }

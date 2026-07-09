@@ -171,9 +171,12 @@ public class EventsManager implements Listener {
   
   @EventHandler
   public void onPlayerAttemptPickupItem(PlayerAttemptPickupItemEvent ev) {
-    if (checkPaused(ev, ev.getPlayer())) return;
+    Player pl = ev.getPlayer();
+    Item itemEntity = ev.getItem();
     
-    DTC.game.handlePickupItem(ev);
+    if (checkPaused(ev, pl)) return;
+    
+    DTC.game.handlePickupItem(pl, itemEntity, itemEntity.getItemStack(), ev);
   }
   
   @EventHandler
@@ -268,7 +271,10 @@ public class EventsManager implements Listener {
   
   @EventHandler
   public void onPlayerJump(PlayerJumpEvent ev) {
-    MoleRole.onPlayerJump(ev.getPlayer());
+    Player pl = ev.getPlayer();
+    
+    MoleRole.onPlayerJump(pl);
+    SorcererRole.onPlayerJump(pl);
   }
   
   @EventHandler

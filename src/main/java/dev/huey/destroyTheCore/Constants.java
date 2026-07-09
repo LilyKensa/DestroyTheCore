@@ -25,7 +25,7 @@ public class Constants {
         Material.COAL_ORE,
         Material.COAL,
         NamedTextColor.GRAY,
-        5,
+        10,
         3,
         9
       )
@@ -36,7 +36,7 @@ public class Constants {
         Material.IRON_ORE,
         Material.RAW_IRON,
         NamedTextColor.WHITE,
-        7,
+        10,
         0,
         0
       )
@@ -47,7 +47,7 @@ public class Constants {
         Material.GOLD_ORE,
         Material.RAW_GOLD,
         NamedTextColor.YELLOW,
-        8,
+        10,
         0,
         0
       )
@@ -58,9 +58,9 @@ public class Constants {
         Material.REDSTONE_ORE,
         Material.REDSTONE,
         NamedTextColor.RED,
-        5,
+        10,
         1,
-        5
+        2
       )
     ),
     Map.entry(
@@ -71,7 +71,7 @@ public class Constants {
         NamedTextColor.BLUE,
         10,
         1,
-        5
+        4
       )
     ),
     Map.entry(
@@ -80,9 +80,9 @@ public class Constants {
         Material.EMERALD_ORE,
         Material.EMERALD,
         NamedTextColor.GREEN,
-        13,
+        15,
         2,
-        6
+        4
       )
     ),
     Map.entry(
@@ -91,9 +91,9 @@ public class Constants {
         Material.DIAMOND_ORE,
         Material.DIAMOND,
         NamedTextColor.AQUA,
-        90,
+        60,
         4,
-        8
+        30
       )
     )
   );

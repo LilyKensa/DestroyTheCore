@@ -14,7 +14,7 @@ public class AttackCoreResult extends Mission.Result {
   public void forLoser(Game.Side side) {
     outro(side);
     
-    DTC.game.getSideData(side).directAttackCore(10);
+    DTC.game.getSideData(side).directAttackCore(3);
     DTC.game.checkWinner();
   }
 }

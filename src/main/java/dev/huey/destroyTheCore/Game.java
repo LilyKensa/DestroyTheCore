@@ -16,6 +16,7 @@ import dev.huey.destroyTheCore.managers.RolesManager;
 import dev.huey.destroyTheCore.managers.TicksManager;
 import dev.huey.destroyTheCore.missions.InfiniteOresMission;
 import dev.huey.destroyTheCore.records.*;
+import dev.huey.destroyTheCore.roles.FairyRole;
 import dev.huey.destroyTheCore.roles.KekkaiMasterRole;
 import dev.huey.destroyTheCore.roles.ProvocateurRole;
 import dev.huey.destroyTheCore.utils.*;
@@ -405,7 +406,8 @@ public class Game {
   }
   
   static public final Side[] bothSide = new Side[]{
-    Side.RED, Side.GREEN
+    Side.RED,
+    Side.GREEN
   };
   
   public Map<Side, SideData> sideData;
@@ -544,7 +546,7 @@ public class Game {
     );
   }
   
-  Objective respawnTimeBoard, healthBoard, levelBoard;
+  Objective respawnTimeBoard, healthBoard, pingBoard, levelBoard;
   
   public void createScoreboards() {
     Scoreboard board = Bukkit.getServer().getScoreboardManager()
@@ -556,6 +558,15 @@ public class Game {
         "respawn-time",
         Criteria.DUMMY,
         Component.text("Sin Display").color(NamedTextColor.RED)
+      );
+    }
+    
+    pingBoard = board.getObjective("ping");
+    if (pingBoard == null) {
+      pingBoard = board.registerNewObjective(
+        "ping",
+        Criteria.DUMMY,
+        Component.text("Ping").color(NamedTextColor.AQUA)
       );
     }
     
@@ -588,7 +599,7 @@ public class Game {
       healthBoard.setDisplaySlot(DisplaySlot.BELOW_NAME);
     }
     else {
-      levelBoard.setDisplaySlot(DisplaySlot.PLAYER_LIST);
+      pingBoard.setDisplaySlot(DisplaySlot.PLAYER_LIST);
       levelBoard.setDisplaySlot(DisplaySlot.BELOW_NAME);
     }
   }
@@ -603,6 +614,11 @@ public class Game {
     else {
       score.setScore(data.respawnTime);
     }
+  }
+  
+  public void enforcePingScore(Player pl) {
+    Score score = pingBoard.getScore(pl);
+    score.setScore(pl.getPing());
   }
   
   public void enforceLevelScore(Player pl) {
@@ -660,12 +676,15 @@ public class Game {
     if (PlayerUtils.shouldHandle(pl)) {
       DTC.inventoriesManager.store(pl);
       
-      pl.getInventory().setItem(
+      PlayerInventory inv = pl.getInventory();
+      
+      inv.setItem(
         4,
         DTC.itemsManager.gens.get(
-          ItemsManager.ItemKey.CHOOSE_ROLE
+          ItemsManager.ItemKey.ROLE_SELECTOR
         ).getItem()
       );
+      inv.setHeldItemSlot(4);
       
       PlayerUtils.backToLobby(pl);
     }
@@ -742,10 +761,8 @@ public class Game {
     
     if (
       ev.getDamager() instanceof Projectile proj &&
-        proj
-          .getShooter() instanceof Player shooter &&
-        ev
-          .getEntity() instanceof Player victim
+        proj.getShooter() instanceof Player shooter &&
+        ev.getEntity() instanceof Player victim
     ) {
       handlePlayerDamage(shooter, victim, proj, ev);
     }
@@ -758,11 +775,14 @@ public class Game {
   }
   
   public void checkAttackRange(Player attacker, Player victim) {
+    double threshold = 1.5;
+    if (attacker.getPing() > 200) threshold = 4.5;
+    
     if (
       !LocUtils.near(
         victim,
         attacker,
-        AttrUtils.get(attacker, Attribute.ENTITY_INTERACTION_RANGE) + 1
+        AttrUtils.get(attacker, Attribute.ENTITY_INTERACTION_RANGE) + threshold
       )
     ) {
       DTC.antiCheatManager.track(
@@ -805,7 +825,7 @@ public class Game {
       
       if (finalDamage <= 0) return;
       
-      attackerData.removePostRevive();
+      // attackerData.removePostRevive();
       
       if (victimData.isPostRespawn()) {
         attacker.sendActionBar(TextUtils.$("game.banned.attack.post-respawn"));
@@ -896,6 +916,8 @@ public class Game {
     
     PlayerData data = getPlayerData(pl);
     if (!data.alive) return;
+    
+    FairyRole.resetFlying(pl);
     
     if (phase.isAfter(Phase.DeathPenalty)) {
       getSideData(pl).directAttackCore();
@@ -1113,6 +1135,11 @@ public class Game {
   BukkitTask startingTask = null;
   
   public void handleInteract(PlayerInteractEvent ev) {
+    if (ev.getAction() == Action.PHYSICAL) {
+      ev.setCancelled(true);
+      return;
+    }
+    
     Player pl = ev.getPlayer();
     PlayerData data = getPlayerData(pl);
     ItemStack item = ev.getItem();
@@ -1120,10 +1147,16 @@ public class Game {
     if (ev.getAction() == Action.LEFT_CLICK_BLOCK) handleLeftClickBlock(ev);
     if (ev.getAction() == Action.RIGHT_CLICK_BLOCK) handleRightClickBlock(ev);
     
-    if (
-      List.of(Action.RIGHT_CLICK_AIR, Action.RIGHT_CLICK_BLOCK)
-        .contains(ev.getAction())
-    ) {
+    if (ev.getAction().isRightClick()) {
+      if (
+        ev.getHand() == EquipmentSlot.OFF_HAND &&
+          pl.getInventory().getItemInMainHand()
+            .getType() == Material.KNOWLEDGE_BOOK
+      ) {
+        ev.setCancelled(true);
+        return;
+      }
+      
       if (
         !PlayerUtils.checkUsingBlock(
           pl,
@@ -1131,10 +1164,8 @@ public class Game {
         ) &&
           item != null &&
           !item.isEmpty() &&
-          item
-            .getType().equals(
-              Material.KNOWLEDGE_BOOK
-            )
+          item.getType()
+            .equals(Material.KNOWLEDGE_BOOK)
       ) ev.setCancelled(true);
       
       if (!data.alive && !LocUtils.inLobby(pl)) {
@@ -1154,12 +1185,12 @@ public class Game {
             .has(Role.skillNamespace)
       ) {
         if (!PlayerUtils.checkHandCooldown(pl, data.extraSkillReload)) return;
-        PlayerUtils.setHandCooldown(pl, data.role.skillCooldown);
+        PlayerUtils.setSkillCooldown(pl, data.role.skillCooldown);
         data.skillReloadedMessage = false;
         
         data.role.useSkill(pl);
         
-        if (PlayerUtils.getHandCooldown(pl) > 20) {
+        if (PlayerUtils.getHandCooldown(pl) >= 20) {
           AdvUtils.grant(
             pl,
             DTC.advancementsManager.usedSkillAdv
@@ -1270,9 +1301,12 @@ public class Game {
   boolean nearRest(Location loc) {
     if (!LocUtils.inLive(loc)) return false;
     
-    for (Pos rest : new Pos[]{
-      map.restArea, LocUtils.flip(map.restArea)
-    }) {
+    for (
+      Pos rest : new Pos[]{
+        map.restArea,
+        LocUtils.flip(map.restArea)
+      }
+    ) {
       if (LocUtils.near(Pos.of(loc), rest, 6)) {
         return true;
       }
@@ -1334,10 +1368,8 @@ public class Game {
     }
     
     if (
-      isPlaying &&
-        block.getType().equals(Material.ENDER_CHEST) &&
-        !pl
-          .isSneaking()
+      block.getType().equals(Material.ENDER_CHEST) &&
+        !pl.isSneaking()
     ) {
       ev.setCancelled(true);
       
@@ -1368,13 +1400,12 @@ public class Game {
     
     ItemStack handItem = pl.getInventory().getItemInMainHand();
     
-    if (
-      block.getBlockData() instanceof Ageable ageable &&
-        (handItem
-          .isEmpty() ||
-          Tag.ITEMS_HOES.isTagged(handItem.getType()))
-    ) {
+    if (block.getBlockData() instanceof Ageable ageable) {
       if (ageable.getAge() != ageable.getMaximumAge()) return;
+      
+      ev.setCancelled(true);
+      
+      pl.swingMainHand();
       
       int plus = 0, fortune = 0;
       switch (block.getType()) {
@@ -1463,11 +1494,11 @@ public class Game {
       return;
     }
     
-    if (LocUtils.nearSpawn(blockLoc)) {
-      ev.getPlayer().sendActionBar(TextUtils.$("game.banned.place.spawn"));
-      ev.setCancelled(true);
-      return;
-    }
+    // if (LocUtils.nearSpawn(blockLoc)) {
+    //   ev.getPlayer().sendActionBar(TextUtils.$("game.banned.place.spawn"));
+    //   ev.setCancelled(true);
+    //   return;
+    // }
   }
   
   public AtomicInteger fakeBreakerId = new AtomicInteger(1_000_000);
@@ -1507,7 +1538,12 @@ public class Game {
     }
     
     BlockFace[] openFacesTryOrder = {
-      BlockFace.UP, BlockFace.DOWN, BlockFace.EAST, BlockFace.NORTH, BlockFace.WEST, BlockFace.SOUTH
+      BlockFace.UP,
+      BlockFace.DOWN,
+      BlockFace.EAST,
+      BlockFace.NORTH,
+      BlockFace.WEST,
+      BlockFace.SOUTH
     };
     
     BlockFace findOpenFace() {
@@ -1569,7 +1605,6 @@ public class Game {
       if (age >= maxAge) {
         block.setType(data.blockType());
         ParticleUtils.cloud(
-          PlayerUtils.all(),
           LocUtils.toBlockCenter(block.getLocation())
         );
         
@@ -1594,6 +1629,7 @@ public class Game {
       sendBreakProgress(11 * age / maxAge - 1);
       
       age++;
+      if (phase.isAfter(Phase.DeathPenalty)) age++;
       if (isFast) age++;
     }
   }
@@ -1997,17 +2033,17 @@ public class Game {
   public void handleFallenBlock(
     FallingBlock entity, Block block, EntityChangeBlockEvent ev
   ) {
-    if (LocUtils.nearSpawn(block.getLocation())) {
-      ev.setCancelled(true);
-      entity.remove();
-      
-      for (ItemStack item : entity.getBlockState().getDrops()) {
-        block.getWorld().dropItemNaturally(
-          LocUtils.toBlockCenter(block.getLocation()),
-          item
-        );
-      }
-    }
+    // if (LocUtils.nearSpawn(block.getLocation())) {
+    //   ev.setCancelled(true);
+    //   entity.remove();
+    //
+    //   for (ItemStack item : entity.getBlockState().getDrops()) {
+    //     block.getWorld().dropItemNaturally(
+    //       LocUtils.toBlockCenter(block.getLocation()),
+    //       item
+    //     );
+    //   }
+    // }
   }
   
   public void handleBlockForm(BlockFormEvent ev) {
@@ -2060,11 +2096,14 @@ public class Game {
   }
   
   public boolean unmovable(Block block) {
-    for (Pos rest : new Pos[]{
-      map.restArea, LocUtils.flip(
-        map.restArea
-      )
-    }) {
+    for (
+      Pos rest : new Pos[]{
+        map.restArea,
+        LocUtils.flip(
+          map.restArea
+        )
+      }
+    ) {
       if (LocUtils.near(Pos.of(block), rest, 6)) {
         return true;
       }
@@ -2197,9 +2236,10 @@ public class Game {
     }
   }
   
-  public void handlePickupItem(PlayerAttemptPickupItemEvent ev) {
-    Player pl = ev.getPlayer();
-    ItemStack item = ev.getItem().getItemStack();
+  public void handlePickupItem(
+    Player pl, Item entity, ItemStack item, PlayerAttemptPickupItemEvent ev
+  ) {
+    if (!PlayerUtils.shouldHandle(pl)) return;
     
     if (getPlayerData(pl).side.equals(Side.SPECTATOR)) {
       ev.setCancelled(true);
@@ -2233,6 +2273,57 @@ public class Game {
     if (getPlayerData(pl).side.equals(Side.SPECTATOR)) {
       ev.setCancelled(true);
       return;
+    }
+  }
+  
+  public void takeTradeCosts(MerchantInventory minv, MerchantRecipe recipe) {
+    Map<Material, Integer> costs = new HashMap<>();
+    Map<Material, Integer> given = new HashMap<>();
+    
+    for (ItemStack ingredient : recipe.getIngredients()) {
+      if (ingredient.isEmpty()) continue;
+      
+      costs.put(
+        ingredient.getType(),
+        costs.getOrDefault(
+          ingredient.getType(),
+          0
+        ) + ingredient.getAmount()
+      );
+    }
+    
+    for (int i = 0; i < 2; ++i) {
+      ItemStack slotItem = minv.getItem(i);
+      if (slotItem == null || slotItem.isEmpty()) continue;
+      
+      given.put(
+        slotItem.getType(),
+        given.getOrDefault(slotItem.getType(), 0) + slotItem.getAmount()
+      );
+    }
+    
+    for (Material type : costs.keySet()) {
+      int count = given.getOrDefault(type, 0) - costs.get(type);
+      if (count < 0) return;
+    }
+    
+    for (int i = 0; i < 2; ++i) {
+      ItemStack slotItem = minv.getItem(i);
+      if (slotItem == null || slotItem.isEmpty()) continue;
+      
+      Material type = slotItem.getType();
+      int count = costs.getOrDefault(type, 0) - slotItem.getAmount();
+      
+      if (count >= 0) {
+        slotItem = null;
+        costs.put(type, count);
+      }
+      else {
+        slotItem.setAmount(-count);
+        costs.put(type, 0);
+      }
+      
+      minv.setItem(i, slotItem);
     }
   }
   
@@ -2270,7 +2361,7 @@ public class Game {
     }
     
     if (
-      !EnumSet.of(
+      EnumSet.of(
         InventoryAction.PLACE_ONE,
         InventoryAction.PLACE_SOME,
         InventoryAction.PLACE_ALL
@@ -2280,10 +2371,44 @@ public class Game {
           .getPersistentDataContainer()
           .has(Role.skillNamespace)
     ) {
-      item.editMeta(data.role::editSkillItemMeta);
+      CoreUtils.setTickOut(() -> {
+        item.editMeta(data.role::editSkillItemMeta);
+        pl.updateInventory();
+      });
     }
     
     if (inv.getType() == InventoryType.PLAYER) return;
+    
+    if (inv instanceof MerchantInventory minv && ev.getRawSlot() == 2) {
+      MerchantRecipe recipe = minv.getSelectedRecipe();
+      if (recipe == null) return;
+      
+      if (DTC.itemsManager.isGen(item)) {
+        ItemGen gen = DTC.itemsManager.getGen(item);
+        
+        if (gen instanceof UsableItemGen ugen && ugen.isInstantUse()) {
+          ev.setCancelled(true);
+          
+          if (!ugen.canUse(pl)) {
+            inv.close();
+            return;
+          }
+          
+          takeTradeCosts(minv, recipe);
+          ugen.use(pl, null);
+        }
+      }
+      
+      if (DTC.rolesManager.isExclusiveItem(item)) {
+        ev.setCancelled(true);
+        
+        takeTradeCosts(minv, recipe);
+        pl.setItemOnCursor(data.role.getExclusiveItem());
+        pl.updateInventory();
+      }
+      
+      return;
+    }
     
     if (
       click != ClickType.DROP &&
@@ -2294,73 +2419,6 @@ public class Game {
     ) {
       ev.setCancelled(true);
       return;
-    }
-    
-    if (inv instanceof MerchantInventory minv && ev.getRawSlot() == 2) {
-      if (DTC.itemsManager.isGen(item)) {
-        MerchantRecipe recipe = minv.getSelectedRecipe();
-        
-        ItemGen gen = DTC.itemsManager.getGen(item);
-        if (gen instanceof UsableItemGen ugen && ugen.isInstantUse()) {
-          ev.setCancelled(true);
-          
-          if (!ugen.canUse(pl)) {
-            inv.close();
-            return;
-          }
-          
-          Map<Material, Integer> costs = new HashMap<>();
-          Map<Material, Integer> given = new HashMap<>();
-          
-          for (ItemStack ingredient : recipe.getIngredients()) {
-            if (ingredient.isEmpty()) continue;
-            
-            costs.put(
-              ingredient.getType(),
-              costs.getOrDefault(
-                ingredient.getType(),
-                0
-              ) + ingredient.getAmount()
-            );
-          }
-          
-          for (int i = 0; i < 2; ++i) {
-            ItemStack slotItem = minv.getItem(i);
-            if (slotItem == null || slotItem.isEmpty()) continue;
-            
-            given.put(
-              slotItem.getType(),
-              given.getOrDefault(slotItem.getType(), 0) + slotItem.getAmount()
-            );
-          }
-          
-          for (Material type : costs.keySet()) {
-            int count = given.getOrDefault(type, 0) - costs.get(type);
-            if (count < 0) return;
-          }
-          
-          for (int i = 0; i < 2; ++i) {
-            ItemStack slotItem = minv.getItem(i);
-            if (slotItem == null || slotItem.isEmpty()) continue;
-            
-            Material type = slotItem.getType();
-            int count = costs.getOrDefault(type, 0) - slotItem.getAmount();
-            
-            if (count >= 0) {
-              slotItem = null;
-              costs.put(type, count);
-            }
-            else {
-              slotItem.setAmount(-count);
-              costs.put(type, 0);
-            }
-            
-            minv.setItem(i, slotItem);
-          }
-          
-          ugen.use(pl, null);
-        }
-      }
     }
   }
   
@@ -2421,7 +2479,6 @@ public class Game {
   }
   
   public void handleInventoryClose(InventoryCloseEvent ev) {
-    if (!isPlaying) return;
     if (!(ev.getPlayer() instanceof Player pl)) return;
     
     SideData sd = getSideData(pl);
@@ -2445,11 +2502,16 @@ public class Game {
     }
   }
   
+  boolean isUnmodifiableItem(ItemStack item) {
+    return DTC.itemsManager.isGen(item) ||
+      DTC.rolesManager.isExclusiveItem(item);
+  }
+  
   boolean checkTwoGen(ItemStack first, ItemStack second) {
     return (first != null &&
-      DTC.itemsManager.isGen(
-        first
-      )) || (second != null && DTC.itemsManager.isGen(second));
+      isUnmodifiableItem(first)) ||
+      (second != null &&
+        isUnmodifiableItem(second));
   }
   
   public void handleRepair(PrepareAnvilEvent ev) {
@@ -2483,21 +2545,22 @@ public class Game {
   public static final int nerfPowerEnchantment = 1;
   
   public void handleEnchantingTableGenerate(PrepareItemEnchantEvent ev) {
-    if (ev.getItem().getType() == Material.BOW) {
+    EnchantmentOffer[] offers = ev.getOffers();
+    
+    for (EnchantmentOffer offer : offers) {
+      if (offer == null) continue;
       
-      EnchantmentOffer[] offers = ev.getOffers();
-      
-      for (EnchantmentOffer offer : offers) {
-        if (offer == null) continue;
-        
-        if (offer.getEnchantment() == Enchantment.POWER) {
-          offer.setEnchantmentLevel(
-            Math.max(
-              offer.getEnchantmentLevel() - nerfPowerEnchantment,
-              1
-            )
-          );
-        }
+      if (offer.getEnchantment() == Enchantment.POWER) {
+        offer.setEnchantmentLevel(
+          Math.max(
+            offer.getEnchantmentLevel() - nerfPowerEnchantment,
+            1
+          )
+        );
+      }
+      else if (offer.getEnchantment() == Enchantment.FORTUNE) {
+        offer.setEnchantment(Enchantment.SILK_TOUCH);
+        offer.setEnchantmentLevel(1);
       }
     }
   }
@@ -2505,15 +2568,14 @@ public class Game {
   public void handleEnchant(EnchantItemEvent ev) {
     Map<Enchantment, Integer> enchants = ev.getEnchantsToAdd();
     
-    for (Map.Entry<Enchantment, Integer> entry : enchants.entrySet()) {
-      if (entry.getKey() == Enchantment.POWER) {
-        entry.setValue(
-          Math.max(
-            entry.getValue() - nerfPowerEnchantment,
-            1
-          )
-        );
-      }
+    int power = enchants.getOrDefault(Enchantment.POWER, 0);
+    if (power > nerfPowerEnchantment) {
+      enchants.put(Enchantment.POWER, power - nerfPowerEnchantment);
+    }
+    
+    if (enchants.containsKey(Enchantment.FORTUNE)) {
+      enchants.remove(Enchantment.FORTUNE);
+      enchants.put(Enchantment.SILK_TOUCH, 1);
     }
   }
   
@@ -2549,11 +2611,14 @@ public class Game {
         PlayerData pd = getPlayerData(p);
         if (pd.alive || pd.side == Side.SPECTATOR) continue;
         
-        for (Pos rest : new Pos[]{
-          map.restArea, LocUtils.flip(
-            map.restArea
-          ),
-        }) {
+        for (
+          Pos rest : new Pos[]{
+            map.restArea,
+            LocUtils.flip(
+              map.restArea
+            ),
+          }
+        ) {
           if (
             LocUtils.inLive(p) && LocUtils.near(Pos.of(p), rest, 6)
           ) continue playerLoop;
@@ -2606,7 +2671,7 @@ public class Game {
         }
       }
       
-      if (map.restArea != null && data.alive) {
+      if (map.restArea != null && data.alive && LocUtils.onGround(pl)) {
         double restY = map.restArea.getY();
         
         if (pl.getY() >= restY - 2) {
@@ -2649,6 +2714,7 @@ public class Game {
     
     cropDrops.put(Material.CARROTS, Material.CARROT);
     cropDrops.put(Material.BEETROOTS, Material.BEETROOT);
+    cropDrops.put(Material.POTATOES, Material.POTATO);
     
     recreateTeams();
     createScoreboards();
@@ -2656,11 +2722,28 @@ public class Game {
   }
   
   public void setBothCoreMaterial(Material type) {
-    for (Pos pos : new Pos[]{
-      map.core, LocUtils.flip(map.core),
-    }) {
+    for (
+      Pos pos : new Pos[]{
+        map.core,
+        LocUtils.flip(map.core),
+      }
+    ) {
       LocUtils.setLiveBlock(pos, type);
     }
+  }
+  
+  public void destroyCore(Side side) {
+    Block block = LocUtils.live(LocUtils.selfSide(map.core, side)).getBlock();
+    Location center = LocUtils.toBlockCenter(block.getLocation());
+    
+    new ParticleBuilder(Particle.EXPLOSION_EMITTER)
+      .allPlayers()
+      .location(center)
+      .count(1)
+      .extra(0)
+      .spawn();
+    
+    block.setType(Material.SOUL_SAND);
   }
   
   public void setDiamonds(Material type) {
@@ -2682,45 +2765,51 @@ public class Game {
     }
   }
   
-  public void summonShopVillagers() {
+  Map<Shop, Pos> shopPos = new HashMap<>();
+  
+  public void scheduleShopVillagers() {
+    shopPos.clear();
+    
     for (Pos pos : map.shops) {
-      Location loc = LocUtils.live(
-        LocUtils.toSpawnPoint(pos)
-      );
-      loc.setY(loc.getBlockY());
+      Location redLoc = LocUtils.live(pos.spawnPoint());
       
-      for (Villager e : loc.getNearbyEntitiesByType(Villager.class, 2)) {
-        if (LocUtils.near(Pos.of(e), pos, 1)) e.remove();
-      }
-      
-      offsetLoop: for (Vector offset : new Vector[]{
-        new Vector(0, -2, 0), new Vector(1, 0, 0), new Vector(
-          -1,
-          0,
-          0
-        ), new Vector(0, 0, 1), new Vector(0, 0, -1)
-      }) {
+      offsetLoop: for (
+        Vector offset : new Vector[]{
+          new Vector(0, -2, 0),
+          new Vector(1, 0, 0),
+          new Vector(-1, 0, 0),
+          new Vector(0, 0, 1),
+          new Vector(0, 0, -1)
+        }
+      ) {
         for (Shop shop : shops) {
-          if (shop.blockType != loc.clone().add(offset).getBlock().getType())
+          if (shop.blockType != redLoc.clone().add(offset).getBlock().getType())
             continue;
           
-          Location flipped = LocUtils.live(LocUtils.flip(Pos.of(loc)));
-          
-          villagers.add(
-            new VillagerData(
-              loc,
-              shop.summonVillager(loc)
-            )
-          );
-          villagers.add(
-            new VillagerData(
-              flipped,
-              shop.summonVillager(flipped)
-            )
-          );
-          
+          shopPos.put(shop, pos);
           break offsetLoop;
         }
+      }
+    }
+  }
+  
+  public void summonShopVillagers() {
+    for (Map.Entry<Shop, Pos> entry : shopPos.entrySet()) {
+      for (Side side : Game.bothSide) {
+        Location loc = LocUtils.live(
+          LocUtils.selfSide(entry.getValue(), side).spawnPoint()
+        );
+        
+        ParticleUtils.cloud(loc);
+        
+        loc.setY(loc.getBlockY());
+        
+        villagers.add(
+          new VillagerData(
+            loc,
+            entry.getKey().summonVillager(loc)
+          )
+        );
       }
     }
   }
@@ -2846,7 +2935,7 @@ public class Game {
     setBothCoreMaterial(Material.BEDROCK);
     setDiamonds(Material.BEDROCK);
     
-    summonShopVillagers();
+    scheduleShopVillagers();
     
     DTC.ticksManager.ticksCount = 0;
     
@@ -2901,6 +2990,7 @@ public class Game {
     
     if (phase.equals(Phase.CoreProtected.next)) {
       setBothCoreMaterial(Material.END_STONE);
+      summonShopVillagers();
     }
     
     if (phase.equals(Phase.MissionsStarted)) {
@@ -2996,12 +3086,12 @@ public class Game {
     for (Player p : Bukkit.getOnlinePlayers()) {
       PlayerUtils.backToLobby(p);
       
-      if (PlayerUtils.shouldHandle(p) && isPlaying) {
+      if (PlayerUtils.shouldHandle(p)) {
         p.getInventory().clear();
         p.getInventory().setItem(
           4,
           DTC.itemsManager.gens.get(
-            ItemsManager.ItemKey.CHOOSE_ROLE
+            ItemsManager.ItemKey.ROLE_SELECTOR
           ).getItem()
         );
       }
@@ -3033,9 +3123,11 @@ public class Game {
     }
     else {
       if (greenHealth <= 0) {
+        destroyCore(Side.GREEN);
         reflectResult(Side.RED, "destroyed");
       }
       else if (redHealth <= 0) {
+        destroyCore(Side.RED);
         reflectResult(Side.GREEN, "destroyed");
       }
       else {
@@ -3244,11 +3336,11 @@ public class Game {
   }
   
   public void onTick() {
-    // if (DTC.ticksManager.isUpdateTick()) {
-    //   for (Player p : Bukkit.getOnlinePlayers()) {
-    //     DTC.antiCheatManager.kickIfCheat(p);
-    //   }
-    // }
+    if (DTC.ticksManager.isSeconds()) {
+      for (Player p : Bukkit.getOnlinePlayers()) {
+        enforcePingScore(p);
+      }
+    }
     
     for (Player p : Bukkit.getOnlinePlayers()) {
       if (
@@ -3406,7 +3498,10 @@ public class Game {
         }
         
         if (p.isSneaking())
-          PlayerUtils.growNearbyCrops(p);
+          PlayerUtils.growNearbyCrops(
+            p,
+            data.role.id == RolesManager.RoleKey.FARMER ? 0.4 : 0.2
+          );
       }
     }
     
@@ -3423,9 +3518,12 @@ public class Game {
       getSideData(Side.GREEN).directAttackCore();
       checkWinner();
       
-      for (Pos pos : new Pos[]{
-        map.core, LocUtils.flip(map.core)
-      }) {
+      for (
+        Pos pos : new Pos[]{
+          map.core,
+          LocUtils.flip(map.core)
+        }
+      ) {
         new ParticleBuilder(Particle.WITCH)
           .allPlayers()
           .location(LocUtils.live(pos.center()).add(0, -0.2, 0))
@@ -3451,11 +3549,8 @@ public class Game {
       }
     }
     
-    for (Player p : Bukkit.getOnlinePlayers()) {
-      PlayerData d = getPlayerData(p);
-      if (d.side == Side.SPECTATOR) continue;
-      
-      d.role.onTick(p);
+    for (Player p : PlayerUtils.allGaming()) {
+      getPlayerData(p).role.onTick(p);
     }
   }
   
@@ -3492,9 +3587,12 @@ public class Game {
     }
     
     if (isPlaying && map.core != null) {
-      for (Pos pos : new Pos[]{
-        map.core, LocUtils.flip(map.core)
-      }) {
+      for (
+        Pos pos : new Pos[]{
+          map.core,
+          LocUtils.flip(map.core)
+        }
+      ) {
         new ParticleBuilder(Particle.ENCHANT)
           .allPlayers()
           .location(
