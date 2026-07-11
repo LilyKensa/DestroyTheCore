@@ -79,13 +79,13 @@ public class FairyRole extends Role {
           if (!LocUtils.near(Pos.of(p), Pos.of(loc), radius)) continue;
           
           if (DTC.game.getPlayerData(p).side == side) {
-            PlayerUtils.addEffect(
+            PlayerUtils.addPassiveEffect(
               p,
               PotionEffectType.INSTANT_HEALTH,
               10 * 20,
               2
             );
-            PlayerUtils.addEffect(
+            PlayerUtils.addPassiveEffect(
               p,
               PotionEffectType.SPEED,
               10 * 20,
@@ -93,13 +93,13 @@ public class FairyRole extends Role {
             );
           }
           else {
-            PlayerUtils.addEffect(
+            PlayerUtils.addPassiveEffect(
               p,
               PotionEffectType.WITHER,
               10 * 20,
               2
             );
-            PlayerUtils.addEffect(
+            PlayerUtils.addPassiveEffect(
               p,
               PotionEffectType.SLOWNESS,
               10 * 20,
@@ -199,12 +199,12 @@ public class FairyRole extends Role {
   
   @Override
   public void onTick(Player pl) {
+    if (LocUtils.onGround(pl)) {
+      breakElytra(pl);
+    }
+    
     if (DTC.ticksManager.isUpdateTick()) {
       PlayerData data = DTC.game.getPlayerData(pl);
-      
-      if (LocUtils.onGround(pl)) {
-        breakElytra(pl);
-      }
       
       if (pl.isGliding()) {
         spawnPotion(pl.getLocation(), data.side);

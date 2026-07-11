@@ -9,42 +9,15 @@ import dev.huey.destroyTheCore.utils.TextUtils;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.FoodProperties;
 import java.util.*;
+import java.util.stream.Collectors;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
-import org.bukkit.Particle;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 public class FarmerRole extends Role {
-  
-  static public Map<Player, Integer> distribute(
-    List<Player> players, int total
-  ) {
-    players = new ArrayList<>(players);
-    Map<Player, Integer> distribution = new HashMap<>();
-    
-    if (players.isEmpty() || total <= 0) {
-      return distribution;
-    }
-    
-    int playerCount = players.size();
-    int baseAmount = total / playerCount;
-    int remainder = total % playerCount;
-    
-    Collections.shuffle(players);
-    
-    for (int i = 0; i < playerCount; i++) {
-      int finalAmount = baseAmount + (i < remainder ? 1 : 0);
-      
-      if (finalAmount > 0) {
-        distribution.put(players.get(i), finalAmount);
-      }
-    }
-    
-    return distribution;
-  }
   
   public FarmerRole() {
     super(RolesManager.RoleType.WORKING, RolesManager.RoleKey.FARMER);
@@ -56,7 +29,7 @@ public class FarmerRole extends Role {
         meta.addEnchant(Enchantment.FORTUNE, 3, true);
       }
     );
-    addSkill(60 * 20);
+    addSkill(90 * 20);
   }
   
   @Override
@@ -68,18 +41,18 @@ public class FarmerRole extends Role {
     PlayerInventory inv = pl.getInventory();
     ItemStack offhandItem = inv.getItemInOffHand();
     
-    int food = 0;
-    float saturation = 0;
+    int singleFood = 0;
+    float singleSatu = 0;
     
     if (offhandItem.getType().isEdible()) {
       FoodProperties props = offhandItem.getType().getDefaultData(
         DataComponentTypes.FOOD
       );
-      food = props.nutrition();
-      saturation = props.saturation();
+      singleFood = props.nutrition();
+      singleSatu = props.saturation();
     }
     
-    if (food == 0) {
+    if (singleFood == 0) {
       PlayerUtils.setSkillCooldown(pl, 10);
       data.skillReloadedMessage = true;
       
@@ -87,31 +60,56 @@ public class FarmerRole extends Role {
       return;
     }
     
-    food *= offhandItem.getAmount();
-    saturation *= offhandItem.getAmount();
-    
-    inv.setItemInOffHand(ItemStack.empty());
-    
     List<Player> teammates = PlayerUtils.getTeammates(pl).stream()
       .filter(p -> p != pl)
-      .toList();
+      .collect(Collectors.toList());
+    Collections.shuffle(teammates);
     
-    Map<Player, Integer> foodMap = distribute(teammates, food);
+    Map<Player, Integer> virtualFood = new HashMap<>();
+    Map<Player, Float> virtualSatu = new HashMap<>();
     
-    float s = saturation / teammates.size();
     for (Player p : teammates) {
-      int f = foodMap.get(p);
-      
-      PlayerUtils.delayAssign(
-        pl,
-        p,
-        Particle.HAPPY_VILLAGER,
-        () -> {
-          p.setFoodLevel(p.getFoodLevel() + f);
-          p.setSaturation(p.getSaturation() + s);
-        }
-      );
+      virtualFood.put(p, p.getFoodLevel());
+      virtualSatu.put(p, p.getSaturation());
     }
+    
+    int used = 0;
+    boolean next = true;
+    
+    distributionLoop: while (next) {
+      next = false;
+      
+      for (Player p : teammates) {
+        if (used >= offhandItem.getAmount()) break distributionLoop;
+        
+        int currentFood = virtualFood.get(p);
+        float currentSatu = virtualSatu.get(p);
+        if (currentFood < 20 || currentSatu < currentFood * 0.8) {
+          int nextFood = Math.min(currentFood + singleFood, 20);
+          float nextSatu = Math.min(currentSatu + singleSatu, nextFood);
+          virtualFood.put(p, nextFood);
+          virtualSatu.put(p, nextSatu);
+          
+          used++;
+          next = true;
+        }
+      }
+    }
+    
+    if (used == 0) {
+      PlayerUtils.setSkillCooldown(pl, 10);
+      data.skillReloadedMessage = true;
+      
+      pl.sendActionBar(TextUtils.$("roles.farmer.skill.all-full"));
+      return;
+    }
+    
+    for (Player p : teammates) {
+      p.setFoodLevel(virtualFood.get(p));
+      p.setSaturation(virtualSatu.get(p));
+    }
+    
+    offhandItem.setAmount(offhandItem.getAmount() - used);
     
     PlayerUtils.auraBroadcast(
       pl.getLocation(),

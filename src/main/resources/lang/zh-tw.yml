@@ -880,7 +880,7 @@ roles:
       detail: "效率 V 鐵鎬"
     skill:
       name: "貪婪之心"
-      desc-1: "<dark_purple>獲得幸運 III (15s)</dark_purple>"
+      desc-1: "<dark_purple>獲得幸運 II (15s)</dark_purple>"
       announce: "<player> 使用了<yellow><role></yellow>技能, 運氣提升!"
     ores-bonus: "<aqua><player> 的加成<ore></aqua>"
   ranger:
@@ -891,7 +891,7 @@ roles:
     feature-2: "每階段發放 20 支箭矢"
     item:
       name: "<aqua>暴風弩</aqua>"
-      detail: "快速上弦 III 弩"
+      detail: "貫穿 II 弩"
     skill:
       name: "獵人陷阱"
       desc-1: "<dark_purple>放置一個陷阱 (最多存在 3 個)</dark_purple>"
@@ -960,7 +960,7 @@ roles:
     skill:
       name: "暗夜突刺"
       desc-1: "<dark_purple>只能在隱形時發動</dark_purple>"
-      desc-2: "<dark_purple>傳送到最近的玩家 (隊友或敵人!)</dark_purple>"
+      desc-2: "<dark_purple>傳送到 10 格內最近的敵人</dark_purple>"
       desc-3: "<dark_purple>得到額外 4 秒隱形及力量 III</dark_purple>"
       not-invis: "<red>你必須隱形才能使用技能!</red>"
       no-target: "<red>找不到傳送目標!</red>"
@@ -1199,6 +1199,7 @@ roles:
       desc-1: "<dark_purple>平均分配副手食物給所有隊友食用</dark_purple>"
       announce: "<player> 使用了<yellow><role></yellow>技能, 餵飽了隊友!"
       no-material: "<red>無效的副手物品!</red>"
+      all-full: "<red>你全部的隊友都很飽!</red>"
 
 advancement:
   tab: "殲滅攻城戰"

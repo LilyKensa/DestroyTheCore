@@ -24,7 +24,6 @@ public class GoldDiggerRole extends Role {
       Material.IRON_PICKAXE,
       meta -> {
         meta.addEnchant(Enchantment.EFFICIENCY, 5, true);
-        meta.addEnchant(Enchantment.FORTUNE, 3, true);
       }
     );
     addSkill(120 * 20);

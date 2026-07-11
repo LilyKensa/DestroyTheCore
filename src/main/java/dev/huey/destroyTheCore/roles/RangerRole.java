@@ -166,7 +166,7 @@ public class RangerRole extends Role {
     addExclusiveItem(
       Material.CROSSBOW,
       meta -> {
-        meta.addEnchant(Enchantment.QUICK_CHARGE, 3, true);
+        meta.addEnchant(Enchantment.PIERCING, 2, true);
       }
     );
     addSkill(150 * 20);

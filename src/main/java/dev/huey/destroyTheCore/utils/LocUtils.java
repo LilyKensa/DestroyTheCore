@@ -198,7 +198,7 @@ public class LocUtils {
   }
   
   static public boolean near(Entity a, Entity b, double dist) {
-    return near(Pos.of(a.getLocation()), Pos.of(b), dist);
+    return near(Pos.of(a), Pos.of(b), dist);
   }
   
   static public boolean nearAnyCore(Location loc, int dist) {

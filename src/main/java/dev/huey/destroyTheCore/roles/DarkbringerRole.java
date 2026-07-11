@@ -218,7 +218,7 @@ public class DarkbringerRole extends Role {
       Location locB = LocUtils.hitboxCenter(target);
       
       double dist = locA.distance(locB);
-      double speed = 0.5;
+      double speed = 0.8;
       
       int totalSteps = (int) (dist / speed);
       Vector dir = locB.toVector().subtract(locA.toVector()).normalize();
@@ -226,7 +226,7 @@ public class DarkbringerRole extends Role {
       
       Location loc = locA.clone();
       
-      for (int i = 0; i < totalSteps; i++) {
+      for (int i = 0; i < totalSteps + 5; ++i) {
         new ParticleBuilder(Particle.SONIC_BOOM)
           .allPlayers()
           .location(loc)

@@ -11,7 +11,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -91,7 +90,7 @@ public class AssassinRole extends Role {
         meta.addEnchant(Enchantment.SMITE, 5, true);
       }
     );
-    addSkill(180 * 20);
+    addSkill(120 * 20);
     addLevelReq(5);
   }
   
@@ -155,20 +154,14 @@ public class AssassinRole extends Role {
       return;
     }
     
-    Player nearest = Bukkit.getOnlinePlayers().stream().filter(
-      p -> !p.equals(
-        pl
-      ) &&
+    Player nearest = PlayerUtils.getEnemies(pl).stream().filter(
+      p -> PlayerUtils.shouldHandle(p) &&
         p.getWorld().equals(pl.getWorld()) &&
-        PlayerUtils.shouldHandle(
-          p
-        ) &&
-        DTC.game.getPlayerData(p).isGaming()
+        LocUtils.near(p, pl, 10)
     ).min(
       Comparator.comparingDouble(
-        p -> p.getLocation().distanceSquared(
-          pl.getLocation()
-        )
+        p -> p.getLocation()
+          .distanceSquared(pl.getLocation())
       )
     ).orElse(null);
     

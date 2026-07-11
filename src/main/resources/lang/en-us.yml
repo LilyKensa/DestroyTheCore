@@ -835,7 +835,7 @@ roles:
       detail: "Efficiency V iron pickaxe"
     skill:
       name: "Greedy Heart"
-      desc-1: "<dark_purple>Gets Luck III (15s)</dark_purple>"
+      desc-1: "<dark_purple>Gets Luck II (15s)</dark_purple>"
       announce: "<player> used <yellow><role></yellow>'s skill, increased luck!"
     ores-bonus: "<aqua>Bonus <ore> by <player></aqua>"
   ranger:
@@ -846,7 +846,7 @@ roles:
     feature-2: "Receives 20 free arrows each phase"
     item:
       name: "<aqua>Storm Crossbow</aqua>"
-      detail: "Quick Charge III crossbow"
+      detail: "Piercing II crossbow"
     skill:
       name: "Hunter Trap"
       desc-1: "<dark_purple>Places a trap (Max 3 at a time)</dark_purple>"
@@ -915,7 +915,7 @@ roles:
     skill:
       name: "Midnight Assault"
       desc-1: "<dark_purple>Can only be used when invisible</dark_purple>"
-      desc-2: "<dark_purple>Teleports to the nearest person (teammates or enemy!)</dark_purple>"
+      desc-2: "<dark_purple>Teleports to the nearest enemy within 10 blocks</dark_purple>"
       desc-3: "<dark_purple>Gain invisible for another 4 seconds & Strength III</dark_purple>"
       not-invis: "<red>You need to be invisible to use this skill!</red>"
       no-target: "<red>No target to teleport to!</red>"
@@ -1154,3 +1154,4 @@ roles:
       desc-1: "<dark_purple>Apply the food held in offhand evenly among all teammates.</dark_purple>"
       announce: "<player> used <yellow><role></yellow>'s skill, fed teammates!"
       no-material: "<red>Invalid off-hand item!</red>"
+      all-full: "<red>All your teammates are full!</red>"

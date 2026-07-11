@@ -1416,16 +1416,26 @@ public class Game {
       }
       
       int count = CoreUtils.applyFortune(fortune) + plus;
-      block.getWorld().dropItemNaturally(
-        block.getLocation().add(0.5, 0.1, 0.5),
-        new ItemStack(
-          block.getType().isItem() ? block.getType()
-            : cropDrops.getOrDefault(
-              block.getType(),
-              Material.APPLE
-            ),
-          count
-        )
+      // block.getWorld().dropItemNaturally(
+      //   block.getLocation().add(0.5, 0.1, 0.5),
+      //   new ItemStack(
+      //     block.getType().isItem() ? block.getType()
+      //       : cropDrops.getOrDefault(
+      //         block.getType(),
+      //         Material.APPLE
+      //       ),
+      //     count
+      //   )
+      // );
+      PlayerUtils.give(
+        pl,
+        block.getType().isItem()
+          ? block.getType()
+          : cropDrops.getOrDefault(
+            block.getType(),
+            Material.APPLE
+          ),
+        count
       );
       
       ageable.setAge(0);

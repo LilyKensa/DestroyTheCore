@@ -4,10 +4,11 @@ import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.managers.RolesManager;
 import dev.huey.destroyTheCore.records.PlayerData;
-import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
-import java.util.List;
+
+import java.util.*;
+import java.util.stream.Collectors;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
@@ -16,6 +17,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 
 public class GluttonRole extends Role {
+  
+  static public final int maxDrain = 75;
+  
   public GluttonRole() {
     super(RolesManager.RoleType.ASSISTANCE, RolesManager.RoleKey.GLUTTON);
     addInfo(Material.COOKED_SALMON);
@@ -55,50 +59,86 @@ public class GluttonRole extends Role {
     
     skillFeedback(pl);
     
-    int amount = 0;
-    int resistance = 0, speed = 0;
+    List<Player> targets = PlayerUtils.allGaming().stream()
+      .filter(p -> p != pl)
+      .collect(Collectors.toList());
+    Collections.shuffle(targets);
     
-    int totalFood = 0;
-    float totalSaturation = 0;
-    for (Player p : PlayerUtils.allGaming()) {
-      if (p == pl) continue;
-      if (!LocUtils.near(p, pl, 5)) continue;
-      
-      int food = Math.min(18, p.getFoodLevel());
-      float saturation = Math.min(6, p.getSaturation());
-      
-      if (food <= 0) continue;
-      
-      if (PlayerUtils.isTeammate(p, pl))
-        resistance++;
-      else
-        speed++;
-      
-      p.setFoodLevel(p.getFoodLevel() - food);
-      p.setSaturation(p.getSaturation() - saturation);
-      
-      totalFood += food;
-      totalSaturation += saturation;
-      
-      p.sendActionBar(
-        TextUtils.$(
-          "roles.glutton.skill.stolen",
-          List.of(
-            Placeholder.component("player", PlayerUtils.getName(pl))
-          )
-        )
-      );
-      
-      amount++;
+    Map<Player, Integer> virtualFood = new HashMap<>();
+    Map<Player, Float> virtualSatu = new HashMap<>();
+    
+    for (Player p : targets) {
+      virtualFood.put(p, p.getFoodLevel());
+      virtualSatu.put(p, p.getSaturation());
     }
     
-    if (amount <= 0) {
-      PlayerUtils.setSkillCooldown(pl, 10);
+    boolean next = true;
+    float drained = 0;
+
+    int resistance = 0, speed = 0;
+    
+    distributionLoop: while (next) {
+      next = false;
       
-      data.skillReloadedMessage = true;
+      for (Player p : targets) {
+        if (drained >= maxDrain) break distributionLoop;
+        
+        int currentFood = virtualFood.get(p);
+        float currentSatu = virtualSatu.get(p);
+        
+        if (currentSatu > 0.01) {
+          float drain = Math.min(2, currentSatu);
+          virtualSatu.put(p, currentSatu - drain);
+          drained += drain;
+        }
+        else if (currentFood > 0) {
+          virtualFood.put(p, currentFood - 1);
+          drained++;
+        }
+        else {
+          continue;
+        }
+
+        if (PlayerUtils.isTeammate(p, pl))
+          resistance++;
+        else
+          speed++;
+        
+        next = true;
+      }
+    }
+    
+    if (drained <= 0) {
+      PlayerUtils.setSkillCooldown(pl, 5 * 20);
       pl.sendActionBar(TextUtils.$("roles.glutton.skill.no-target"));
       return;
     }
+    
+    for (Player p : targets) {
+      p.setFoodLevel(virtualFood.get(p));
+      p.setSaturation(virtualSatu.get(p));
+    }
+    
+    int food = (int) Math.min(drained, 20 - pl.getFoodLevel());
+    drained -= food;
+    float satu = Math.min(drained, 20 - pl.getSaturation());
+    
+    pl.setFoodLevel(pl.getFoodLevel() + food);
+    pl.setSaturation(pl.getSaturation() + satu);
+    
+    PlayerUtils.addPassiveEffect(
+      pl,
+      resistance > speed ? PotionEffectType.RESISTANCE : PotionEffectType.SPEED,
+      (4 + targets.size()) * 20,
+      Math.max(resistance, speed)
+    );
+    
+    PlayerUtils.addPassiveEffect(
+      pl,
+      PotionEffectType.WEAKNESS,
+      10 * 20,
+      1
+    );
     
     PlayerUtils.auraBroadcast(
       pl.getLocation(),
@@ -108,38 +148,9 @@ public class GluttonRole extends Role {
         List.of(
           Placeholder.component("player", PlayerUtils.getName(pl)),
           Placeholder.unparsed("role", name),
-          Placeholder.component("amount", Component.text(amount))
+          Placeholder.component("amount", Component.text(targets.size()))
         )
       )
-    );
-    
-    pl.setFoodLevel(pl.getFoodLevel() + totalFood);
-    pl.setSaturation(pl.getSaturation() + totalSaturation);
-    
-    PlayerUtils.addPassiveEffect(
-      pl,
-      PotionEffectType.REGENERATION,
-      2 * 20,
-      4
-    );
-    PlayerUtils.addPassiveEffect(
-      pl,
-      PotionEffectType.REGENERATION,
-      10 * 20,
-      2
-    );
-    
-    PlayerUtils.addPassiveEffect(
-      pl,
-      PotionEffectType.RESISTANCE,
-      (4 + amount) * 20,
-      resistance
-    );
-    PlayerUtils.addPassiveEffect(
-      pl,
-      PotionEffectType.RESISTANCE,
-      (4 + speed) * 20,
-      speed
     );
   }
 }

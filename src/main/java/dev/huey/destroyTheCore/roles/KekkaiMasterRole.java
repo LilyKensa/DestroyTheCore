@@ -317,30 +317,56 @@ public class KekkaiMasterRole extends Role {
           }
           
           if (kekkai.type == Kekkai.Type.SOUL) {
-            PlayerUtils.addEffect(
-              p,
-              PotionEffectType.SPEED,
-              30,
-              2,
-              true,
-              true
-            );
-            PlayerUtils.addEffect(
-              p,
-              PotionEffectType.RESISTANCE,
-              30,
-              2,
-              true,
-              true
-            );
-            PlayerUtils.addEffect(
-              p,
-              PotionEffectType.STRENGTH,
-              30,
-              2,
-              true,
-              true
-            );
+            int level = 1;
+            if (d.respawnTime < 60) {
+              if (d.respawnTime < 20) level = 2;
+              
+              PlayerUtils.addEffect(
+                p,
+                PotionEffectType.SPEED,
+                30,
+                level,
+                true,
+                true
+              );
+              PlayerUtils.addEffect(
+                p,
+                PotionEffectType.RESISTANCE,
+                30,
+                level,
+                true,
+                true
+              );
+              PlayerUtils.addEffect(
+                p,
+                PotionEffectType.STRENGTH,
+                30,
+                level,
+                true,
+                true
+              );
+            }
+            else {
+              if (d.respawnTime >= 120) level = 4;
+              
+              PlayerUtils.addEffect(
+                p,
+                PotionEffectType.SLOWNESS,
+                30,
+                level,
+                true,
+                true
+              );
+              
+              PlayerUtils.addEffect(
+                p,
+                PotionEffectType.NAUSEA,
+                3 * 20,
+                1,
+                true,
+                true
+              );
+            }
             
             d.addRespawnTime(1);
             DTC.boardsManager.refresh(p);
