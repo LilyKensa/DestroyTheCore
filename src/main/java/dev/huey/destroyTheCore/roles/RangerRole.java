@@ -238,7 +238,7 @@ public class RangerRole extends Role {
         "roles.ranger.skill.announce",
         List.of(
           Placeholder.component("player", PlayerUtils.getName(pl)),
-          Placeholder.unparsed("role", name)
+          Placeholder.component("role", name)
         )
       )
     );

@@ -2,42 +2,32 @@ package dev.huey.destroyTheCore.gui.shop;
 
 import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
-import dev.huey.destroyTheCore.bases.GUIItem;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import java.util.List;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import xyz.xenondevs.invui.item.ItemProvider;
-import xyz.xenondevs.invui.item.builder.ItemBuilder;
+import xyz.xenondevs.invui.item.BoundItem;
+import xyz.xenondevs.invui.item.Item;
+import xyz.xenondevs.invui.item.ItemBuilder;
 
-public class RenameShopItem extends GUIItem {
+public class RenameShopItem {
   
-  Game.Shop shop;
-  
-  public RenameShopItem(Game.Shop shop) {
-    this.shop = shop;
-  }
-  
-  @Override
-  public ItemProvider getItemProvider() {
-    return new ItemBuilder(Material.NAME_TAG).setDisplayName(
-      TextUtils.$r(
-        "gui.buttons.rename-shop.title"
+  static public Item of(Game.Shop shop) {
+    return BoundItem.builder()
+      .setItemProvider(
+        new ItemBuilder(Material.NAME_TAG)
+          .setCustomName(TextUtils.$("gui.buttons.rename-shop.title"))
+          .addLoreLines(
+            TextUtils.$(
+              "gui.buttons.rename-shop.desc",
+              List.of(Placeholder.unparsed("name", shop.name))
+            )
+          )
+          .build()
       )
-    ).addLoreLines(
-      TextUtils.$r(
-        "gui.buttons.rename-shop.desc",
-        List.of(Placeholder.unparsed("name", shop.name))
-      )
-    );
-  }
-  
-  @Override
-  public void handleClick(ClickType click, Player pl, InventoryClickEvent ev) {
-    DTC.guiManager.postClick = true;
-    DTC.guiManager.openShopRenameEditor(pl, shop);
+      .addClickHandler((item, gui, click) -> {
+        DTC.guiManager.openShopRenameEditor(click.player(), shop);
+      })
+      .build();
   }
 }

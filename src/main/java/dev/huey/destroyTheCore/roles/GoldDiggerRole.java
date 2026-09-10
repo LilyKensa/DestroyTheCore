@@ -77,7 +77,7 @@ public class GoldDiggerRole extends Role {
         "roles.gold-digger.skill.announce",
         List.of(
           Placeholder.component("player", PlayerUtils.getName(pl)),
-          Placeholder.unparsed("role", name)
+          Placeholder.component("role", name)
         )
       )
     );

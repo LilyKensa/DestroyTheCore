@@ -331,7 +331,7 @@ public class SorcererRole extends Role {
         "roles.sorcerer.skill.announce",
         List.of(
           Placeholder.component("player", PlayerUtils.getName(pl)),
-          Placeholder.unparsed("role", name),
+          Placeholder.component("role", name),
           Placeholder.component("type", spell.displayName())
         )
       )

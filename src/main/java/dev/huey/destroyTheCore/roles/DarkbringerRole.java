@@ -203,7 +203,7 @@ public class DarkbringerRole extends Role {
           : ""),
         List.of(
           Placeholder.component("player", PlayerUtils.getName(pl)),
-          Placeholder.unparsed("role", name),
+          Placeholder.component("role", name),
           Placeholder.component("target", PlayerUtils.getName(target)),
           Placeholder.component("count", Component.text(curse.combo)),
           Placeholder.component("max", Component.text(maxCombo))

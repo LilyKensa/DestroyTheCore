@@ -223,7 +223,7 @@ public class FairyRole extends Role {
         "roles.fairy.skill.announce",
         List.of(
           Placeholder.component("player", PlayerUtils.getName(pl)),
-          Placeholder.unparsed("role", name)
+          Placeholder.component("role", name)
         )
       )
     );

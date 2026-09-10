@@ -279,7 +279,7 @@ public class MoleRole extends Role {
         "roles.mole.skill.announce",
         List.of(
           Placeholder.component("player", PlayerUtils.getName(pl)),
-          Placeholder.unparsed("role", name)
+          Placeholder.component("role", name)
         )
       )
     );

@@ -26,16 +26,17 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
+import xyz.xenondevs.invui.Click;
+import xyz.xenondevs.invui.gui.Gui;
+import xyz.xenondevs.invui.item.Item;
+import xyz.xenondevs.invui.item.ItemBuilder;
 import xyz.xenondevs.invui.item.ItemProvider;
-import xyz.xenondevs.invui.item.builder.ItemBuilder;
 
-public class Role extends GUIItem {
+public class Role {
   
   /** Used to distinguish skill items, stored data is {@code true} */
   static public final NamespacedKey skillNamespace = new NamespacedKey(
@@ -75,42 +76,40 @@ public class Role extends GUIItem {
   }
   
   /** Translation with {@code %s} being the role's {@link #id} */
-  String $r(String translateRoot) {
-    return TextUtils.$r(translateRoot.formatted(translationName));
+  Component $(String translateRoot) {
+    return TextUtils.$(translateRoot.formatted(translationName));
   }
   
-  /** Multi-line version of {@link #$r} */
-  List<String> $ra(String translateRoot) {
-    List<String> list = new ArrayList<>();
+  /** Multi-line version of {@link #$} */
+  List<Component> $a(String translateRoot) {
+    List<Component> list = new ArrayList<>();
     
     String key;
     for (int i = 1; true; ++i) {
-      key = translateRoot.formatted(translationName) + "-" + i;
+      key = "%s-%d".formatted(translateRoot.formatted(translationName), i);
       
-      if (DTC.translationsManager.has(key)) list.add(
-        TextUtils.miniToRawCodes(
-          DTC.translationsManager.unparsed(key)
-        )
-      );
-      else break;
+      if (DTC.translationsManager.has(key))
+        list.add(TextUtils.$(key));
+      else
+        break;
     }
     
     return list;
   }
   
   public Material iconType;
-  public String name;
-  public List<String> lore;
+  public Component name;
+  public List<Component> lore;
   
-  public List<String> featureDesc;
+  public List<Component> featureDesc;
   
   public Material itemType;
-  public String itemName;
-  public String itemDesc;
+  public Component itemName;
+  public Component itemDesc;
   public Consumer<ItemMeta> itemMetaEditor;
   
-  public String skillName;
-  public List<String> skillDesc;
+  public Component skillName;
+  public List<Component> skillDesc;
   public int skillCooldown;
   public double skillRadius = 0;
   
@@ -118,18 +117,19 @@ public class Role extends GUIItem {
   
   public void addInfo(Material iconType) {
     this.iconType = iconType;
-    this.name = TextUtils.stripColor($r("roles.%s.name"));
-    this.lore = $ra("roles.%s.desc");
+    this.name = $("roles.%s.name").color(null);
+    this.lore = $a("roles.%s.desc");
   }
   
   public void addFeature() {
-    featureDesc = $ra("roles.%s.feature");
+    featureDesc = $a("roles.%s.feature").stream()
+      .map(c -> c.color(null)).toList();
   }
   
   public void addExclusiveItem(Material type, Consumer<ItemMeta> editor) {
     itemType = type;
-    itemName = $r("roles.%s.item.name");
-    itemDesc = $r("roles.%s.item.detail");
+    itemName = $("roles.%s.item.name").color(null);
+    itemDesc = $("roles.%s.item.detail").color(null);
     itemMetaEditor = editor;
   }
   
@@ -139,8 +139,8 @@ public class Role extends GUIItem {
   }
   
   public void addSkill(int cd, double radius) {
-    skillName = TextUtils.stripColor($r("roles.%s.skill.name"));
-    skillDesc = $ra("roles.%s.skill.desc");
+    skillName = $("roles.%s.skill.name").color(null);
+    skillDesc = $a("roles.%s.skill.desc");
     skillCooldown = cd;
     skillRadius = radius;
   }
@@ -160,7 +160,7 @@ public class Role extends GUIItem {
         "role.change",
         List.of(
           Placeholder.component("player", PlayerUtils.getName(pl)),
-          Placeholder.unparsed("role", name)
+          Placeholder.component("role", name)
         )
       )
     );
@@ -172,17 +172,15 @@ public class Role extends GUIItem {
     meta.displayName(
       TextUtils.$(
         "role.skill.title",
-        List.of(Placeholder.unparsed("name", skillName))
+        List.of(Placeholder.component("name", skillName))
       )
     );
     
     List<Component> lore = new ArrayList<>();
-    for (String line : skillDesc) lore.add(
-      Component.text(line).decoration(
-        TextDecoration.ITALIC,
-        TextDecoration.State.FALSE
-      )
-    );
+    for (Component line : skillDesc)
+      lore.add(
+        line.decoration(TextDecoration.ITALIC, false)
+      );
     
     lore.add(Component.empty());
     lore.add(
@@ -226,12 +224,12 @@ public class Role extends GUIItem {
     item.editMeta(meta -> {
       meta.setUnbreakable(true);
       
-      meta.displayName(Component.text(itemName));
+      meta.displayName(itemName);
       meta.lore(
         List.of(
           TextUtils.$(
             "role.item-lore",
-            List.of(Placeholder.unparsed("role", name))
+            List.of(Placeholder.component("role", name))
           )
         )
       );
@@ -309,24 +307,23 @@ public class Role extends GUIItem {
   }
   
   /** @see GUIManager */
-  @Override
-  public ItemProvider getItemProvider(Player pl) {
-    List<String> combinedLore = new ArrayList<>();
+  public ItemProvider getGuiItem(Player pl) {
+    List<Component> combinedLore = new ArrayList<>();
     
     if (lore != null) {
       combinedLore.addAll(lore);
-      combinedLore.add("");
+      combinedLore.add(Component.empty());
     }
     
     combinedLore.add(
-      TextUtils.$r(
+      TextUtils.$(
         "role.desc.type",
         List.of(
-          Placeholder.unparsed(
+          Placeholder.component(
             "type",
-            DTC.translationsManager.unparsed(
+            TextUtils.$(
               "role.desc.types." + type.name().toLowerCase()
-            )
+            ).color(null)
           )
         )
       )
@@ -335,11 +332,11 @@ public class Role extends GUIItem {
     if (featureDesc != null) {
       String featureLineType = "first";
       
-      for (String line : featureDesc) {
+      for (Component line : featureDesc) {
         combinedLore.add(
-          TextUtils.$r(
+          TextUtils.$(
             "role.desc.feature." + featureLineType,
-            List.of(Placeholder.unparsed("desc", line))
+            List.of(Placeholder.component("desc", line))
           )
         );
         
@@ -349,28 +346,29 @@ public class Role extends GUIItem {
     
     if (itemName != null) {
       combinedLore.add(
-        TextUtils.$r(
+        TextUtils.$(
           "role.desc.item",
           List.of(
-            Placeholder.unparsed("name", TextUtils.stripColor(itemName)),
-            Placeholder.unparsed("detail", TextUtils.stripColor(itemDesc))
+            Placeholder.component("name", itemName),
+            Placeholder.component("detail", itemDesc)
           )
         )
       );
     }
     
-    if (!combinedLore.getLast().isEmpty()) combinedLore.add("");
+    if (!combinedLore.getLast().equals(Component.empty()))
+      combinedLore.add(Component.empty());
     
     if (skillName != null && skillDesc != null) {
       combinedLore.add(
-        TextUtils.$r(
+        TextUtils.$(
           "role.skill.title",
-          List.of(Placeholder.unparsed("name", skillName))
+          List.of(Placeholder.component("name", skillName))
         )
       );
       combinedLore.addAll(skillDesc);
       combinedLore.add(
-        TextUtils.$r(
+        TextUtils.$(
           "role.skill.cooldown",
           List.of(
             Placeholder.component(
@@ -385,30 +383,33 @@ public class Role extends GUIItem {
     Stats stat = DTC.game.getStats(pl);
     
     return new ItemBuilder(iconType)
-      .setDisplayName(
-        TextUtils.$r(
-          stat.levels >= levelReq ? "role.name" : "role.name-locked"
+      .setCustomName(
+        TextUtils.$(
+          "role.name" + (stat.levels >= levelReq ? "" : "-locked"),
+          List.of(
+            Placeholder.component("name", name),
+            Placeholder.component("levels", Component.text(levelReq))
+          )
         )
-          .replaceAll("<name>", name)
-          .replaceAll("<levels>", "%d".formatted(levelReq))
       )
-      .addItemFlags(
-        ItemFlag.HIDE_ATTRIBUTES,
-        ItemFlag.HIDE_ADDITIONAL_TOOLTIP
-      )
+      .addModifier(item -> {
+        item.addItemFlags(
+          ItemFlag.HIDE_ARMOR_TRIM,
+          ItemFlag.HIDE_ATTRIBUTES,
+          ItemFlag.HIDE_DYE
+        );
+        return item;
+      })
       .addLoreLines(
-        combinedLore.toArray(
-          new String[0]
-        )
+        combinedLore.toArray(new Component[0])
       );
   }
   
   /** @see GUIManager */
-  @Override
-  public void handleClick(
-    ClickType clickType, Player pl, InventoryClickEvent ev
-  ) {
-    closeWindow(pl);
+  public void handleClick(Item item, Gui gui, Click click) {
+    Player pl = click.player();
+    
+    gui.closeForAllViewers();
     
     ItemStack handItem = pl.getInventory().getItemInMainHand();
     ItemGen gen = DTC.itemsManager.getGen(handItem);
@@ -420,7 +421,7 @@ public class Role extends GUIItem {
           List.of(
             Placeholder.component("player", PlayerUtils.getName(pl)),
             Placeholder.component("item", gen.getItem().effectiveName()),
-            Placeholder.unparsed("role", name)
+            Placeholder.component("role", name)
           )
         )
       );

@@ -153,7 +153,7 @@ public class GluttonRole extends Role {
         "roles.glutton.skill.announce",
         List.of(
           Placeholder.component("player", PlayerUtils.getName(pl)),
-          Placeholder.unparsed("role", name),
+          Placeholder.component("role", name),
           Placeholder.component("amount", Component.text(targets.size()))
         )
       )

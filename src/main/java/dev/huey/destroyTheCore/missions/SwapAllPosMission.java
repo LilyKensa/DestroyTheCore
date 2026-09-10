@@ -3,14 +3,12 @@ package dev.huey.destroyTheCore.missions;
 import dev.huey.destroyTheCore.bases.missions.TimedMission;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.RandomUtils;
-import io.papermc.paper.entity.TeleportFlag;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerTeleportEvent;
 
 public class SwapAllPosMission extends TimedMission {
   
@@ -40,10 +38,9 @@ public class SwapAllPosMission extends TimedMission {
     
     for (int i = 0; i < players.size(); ++i) {
       players.get(i).teleport(
-        pos.get(i),
-        PlayerTeleportEvent.TeleportCause.PLUGIN,
-        TeleportFlag.EntityState.RETAIN_VEHICLE,
-        TeleportFlag.EntityState.RETAIN_OPEN_INVENTORY
+        pos.get(i)
+        // TeleportFlag.Relative,
+        // TeleportFlag.EntityState.RETAIN_OPEN_INVENTORY
       );
     }
   }

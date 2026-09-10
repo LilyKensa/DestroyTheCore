@@ -4,10 +4,8 @@ import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.missions.TimedMission;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.RandomUtils;
-import io.papermc.paper.entity.TeleportFlag;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.PlayerTeleportEvent;
 
 public class SwapPosMission extends TimedMission {
   
@@ -29,10 +27,9 @@ public class SwapPosMission extends TimedMission {
   
   public void teleport(Player pl, Location loc) {
     pl.teleport(
-      loc,
-      PlayerTeleportEvent.TeleportCause.PLUGIN,
-      TeleportFlag.EntityState.RETAIN_VEHICLE,
-      TeleportFlag.EntityState.RETAIN_OPEN_INVENTORY
+      loc
+      // TeleportFlag.EntityState.RETAIN_VEHICLE,
+      // TeleportFlag.EntityState.RETAIN_OPEN_INVENTORY
     );
   }
   

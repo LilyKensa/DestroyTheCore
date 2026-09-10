@@ -101,7 +101,7 @@ public class AdvancementsManager {
             role.iconType,
             "played-role",
             List.of(
-              Placeholder.unparsed(
+              Placeholder.component(
                 "role",
                 role.name
               )

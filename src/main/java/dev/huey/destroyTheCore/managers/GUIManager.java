@@ -26,54 +26,67 @@ import org.bukkit.Registry;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
-import xyz.xenondevs.invui.gui.Gui;
-import xyz.xenondevs.invui.gui.PagedGui;
-import xyz.xenondevs.invui.gui.ScrollGui;
-import xyz.xenondevs.invui.gui.structure.Markers;
+import xyz.xenondevs.invui.Click;
+import xyz.xenondevs.invui.gui.*;
 import xyz.xenondevs.invui.inventory.VirtualInventory;
-import xyz.xenondevs.invui.item.Item;
-import xyz.xenondevs.invui.item.ItemProvider;
-import xyz.xenondevs.invui.item.builder.ItemBuilder;
-import xyz.xenondevs.invui.item.impl.AbstractItem;
-import xyz.xenondevs.invui.item.impl.SimpleItem;
+import xyz.xenondevs.invui.item.*;
 import xyz.xenondevs.invui.window.AnvilWindow;
 import xyz.xenondevs.invui.window.Window;
 
 public class GUIManager {
   
-  public void openRoleSelection(Player pl) {
-    Gui roleGui = PagedGui.items().setStructure(
-      "# # # # # # # # #",
-      "# x x x x x x x #",
-      "# x x x x x x x #",
-      "# x x x x x x x #",
-      "# # < # R # > # #"
-    ).addIngredient(
+  public void init() {
+    Structure.addGlobalIngredient(
       '#',
-      new SimpleItem(new ItemBuilder(CoreUtils.emptyGuiItem()))
-    ).addIngredient('<', new PrevPageItem()).addIngredient(
-      '>',
-      new NextPageItem()
-    ).addIngredient(
-      'R',
-      new RandomRoleItem()
-    ).addIngredient(
-      'x',
-      Markers.CONTENT_LIST_SLOT_HORIZONTAL
-    ).setContent(
-      DTC.rolesManager.roles.values().stream()
-        .map(role -> (Item) role)
-        .toList()
-    ).build();
-    
-    Window window = Window.single().setViewer(pl).setTitle(
-      TextUtils.$r(
-        "gui.titles.choose-role"
+      Item.simple(
+        new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE)
+          .hideTooltip(true)
       )
-    ).setGui(roleGui).build();
+    );
+    Structure.addGlobalIngredient(
+      '-',
+      Markers.CONTENT_LIST_SLOT_HORIZONTAL
+    );
+    Structure.addGlobalIngredient(
+      '|',
+      Markers.CONTENT_LIST_SLOT_VERTICAL
+    );
+    Structure.addGlobalIngredient('<', PrevPageItem.it);
+    Structure.addGlobalIngredient('>', NextPageItem.it);
+    Structure.addGlobalIngredient('[', ScrollUpItem.it);
+    Structure.addGlobalIngredient(']', ScrollDownItem.it);
+  }
+  
+  public void openRoleSelection(Player pl) {
+    Gui roleGui = PagedGui.itemsBuilder()
+      .setStructure(
+        "# # # # # # # # #",
+        "# - - - - - - - #",
+        "# - - - - - - - #",
+        "# - - - - - - - #",
+        "# # < # R # > # #"
+      )
+      .addIngredient('R', RandomRoleItem.it)
+      .setContent(
+        DTC.rolesManager.roles.values().stream()
+          .map(
+            role -> BoundItem.pagedBuilder()
+              .setItemProvider(role::getGuiItem)
+              .addClickHandler(role::handleClick)
+              .build()
+          )
+          .toList()
+      )
+      .build();
+    
+    Window window = Window.builder()
+      .setViewer(pl)
+      .setTitle(TextUtils.$("gui.titles.choose-role"))
+      .setUpperGui(roleGui)
+      .build();
     
     if (LocUtils.inLobby(pl)) {
       pl.playSound(
@@ -83,9 +96,8 @@ public class GUIManager {
         1 // Pitch
       );
       
-      window.addCloseHandler(() -> {
+      window.addCloseHandler((reason) -> {
         pl.setCooldown(Material.ENDER_CHEST, 5 * 20);
-        
         pl.playSound(
           pl,
           Sound.BLOCK_ENDER_CHEST_CLOSE,
@@ -101,69 +113,57 @@ public class GUIManager {
   }
   
   public void openTeleporter(Player pl) {
-    Gui teleportGui = PagedGui.items().setStructure(
-      "# # # # # # # # #",
-      "# x x x x x x x #",
-      "# x x x x x x x #",
-      "# x x x x x x x #",
-      "# # < # # # > # #"
-    ).addIngredient(
-      '#',
-      new SimpleItem(new ItemBuilder(CoreUtils.emptyGuiItem()))
-    ).addIngredient('<', new PrevPageItem()).addIngredient(
-      '>',
-      new NextPageItem()
-    ).addIngredient(
-      'x',
-      Markers.CONTENT_LIST_SLOT_HORIZONTAL
-    ).setContent(
-      Bukkit.getOnlinePlayers().stream().filter(
-        p -> DTC.game.getPlayerData(
-          p
-        ).side != Game.Side.SPECTATOR
-      ).map(p -> (Item) new AbstractItem() {
-        @Override
-        public ItemProvider getItemProvider() {
-          ItemStack item = new ItemStack(Material.PLAYER_HEAD);
-          SkullMeta meta = (SkullMeta) item.getItemMeta();
-          
-          meta.displayName(
-            PlayerUtils.getName(p).decoration(TextDecoration.ITALIC, false)
-          );
-          meta.setOwningPlayer(p);
-          
-          item.setItemMeta(meta);
-          return new ItemBuilder(item);
-        }
-        
-        @Override
-        public void handleClick(
-          ClickType click, Player pl, InventoryClickEvent ev
-        ) {
-          pl.teleport(p);
-        }
-      }
-      ).toList()
-    ).build();
-    
-    Window window = Window.single().setViewer(pl).setTitle(
-      TextUtils.$r(
-        "gui.titles.teleporter"
+    Gui teleportGui = PagedGui.itemsBuilder()
+      .setStructure(
+        "# # # # # # # # #",
+        "# - - - - - - - #",
+        "# - - - - - - - #",
+        "# - - - - - - - #",
+        "# # < # # # > # #"
       )
-    ).setGui(teleportGui).build();
+      .setContent(
+        Bukkit.getOnlinePlayers().stream()
+          .filter(
+            p -> DTC.game.getPlayerData(p).side != Game.Side.SPECTATOR
+          )
+          .map(p -> (Item) new AbstractItem() {
+            
+            @Override
+            public ItemProvider getItemProvider(Player pl) {
+              ItemStack item = new ItemStack(Material.PLAYER_HEAD);
+              SkullMeta meta = (SkullMeta) item.getItemMeta();
+              
+              meta.displayName(
+                PlayerUtils.getName(p)
+                  .decoration(TextDecoration.ITALIC, false)
+              );
+              meta.setOwningPlayer(p);
+              
+              item.setItemMeta(meta);
+              return new ItemBuilder(item);
+            }
+            
+            @Override
+            public void handleClick(ClickType type, Player pl, Click click) {
+              pl.teleport(p);
+            }
+          }).toList()
+      )
+      .build();
+    
+    Window window = Window.builder()
+      .setViewer(pl)
+      .setTitle(TextUtils.$("gui.titles.teleporter"))
+      .setUpperGui(teleportGui)
+      .build();
     
     window.open();
   }
   
-  public boolean postClick = false;
-  
   public UUID shopEditor = null;
   
   public boolean isEditingShop() {
-    return (shopEditor != null &&
-      Bukkit.getOfflinePlayer(
-        shopEditor
-      ).isOnline());
+    return shopEditor != null && Bukkit.getOfflinePlayer(shopEditor).isOnline();
   }
   
   public void onPlayerLeave(Player pl) {
@@ -173,73 +173,73 @@ public class GUIManager {
   public void openShopListEditor(Player pl) {
     shopEditor = pl.getUniqueId();
     
-    Gui shopListGui = PagedGui.items().setStructure(
-      "# # # # # # # # #",
-      "# x x x x x x x #",
-      "# x x x x x x x #",
-      "# x x x x x x x #",
-      "# # < # + # > # #"
-    ).addIngredient(
-      '#',
-      new SimpleItem(new ItemBuilder(CoreUtils.emptyGuiItem()))
-    ).addIngredient('<', new PrevPageItem()).addIngredient(
-      '>',
-      new NextPageItem()
-    ).addIngredient(
-      'x',
-      Markers.CONTENT_LIST_SLOT_HORIZONTAL
-    ).addIngredient(
-      '+',
-      new NewShopItem()
-    ).setContent(
-      DTC.game.shops.stream().map(
-        shop -> (Item) new AbstractItem() {
-          @Override
-          public ItemProvider getItemProvider() {
-            ItemStack item = new ItemStack(shop.blockType);
-            item.editMeta(meta -> {
-              meta.displayName(
-                Component.text(shop.name).color(
-                  NamedTextColor.YELLOW
-                ).decoration(
-                  TextDecoration.ITALIC,
-                  false
-                )
-              );
-            });
-            return new ItemBuilder(item);
-          }
-          
-          @Override
-          public void handleClick(
-            ClickType click, Player pl, InventoryClickEvent ev
-          ) {
-            postClick = true;
-            DTC.guiManager.openShopTradesEditor(pl, shop);
-          }
-        }
-      ).toList()
-    ).build();
-    
-    Window window = Window.single().setViewer(pl).setTitle(
-      TextUtils.$r(
-        "gui.titles.shop.list"
+    Gui shopListGui = PagedGui.itemsBuilder()
+      .setStructure(
+        "# # # # # # # # #",
+        "# - - - - - - - #",
+        "# - - - - - - - #",
+        "# - - - - - - - #",
+        "# # < # + # > # #"
       )
-    ).setGui(shopListGui).build();
+      .addIngredient('+', NewShopItem.it)
+      .setContent(
+        DTC.game.shops.stream().map(
+          shop -> (Item) new AbstractItem() {
+            
+            @Override
+            public ItemProvider getItemProvider(Player pl) {
+              ItemStack item = new ItemStack(shop.blockType);
+              item.editMeta(meta -> {
+                meta.displayName(
+                  Component.text(shop.name).color(
+                    NamedTextColor.YELLOW
+                  ).decoration(
+                    TextDecoration.ITALIC,
+                    false
+                  )
+                );
+              });
+              return new ItemBuilder(item);
+            }
+            
+            @Override
+            public void handleClick(
+              ClickType type, Player pl, Click click
+            ) {
+              DTC.guiManager.openShopTradesEditor(pl, shop);
+            }
+          }
+        ).toList()
+      )
+      .build();
+    
+    Window window = Window.builder()
+      .setViewer(pl)
+      .setTitle(TextUtils.$("gui.titles.shop.list"))
+      .setUpperGui(shopListGui)
+      .addCloseHandler((reason) -> {
+        if (reason != InventoryCloseEvent.Reason.OPEN_NEW)
+          shopEditor = null;
+      })
+      .build();
     
     window.open();
-    
-    window.addCloseHandler(() -> {
-      if (postClick) postClick = false;
-      else shopEditor = null;
-    });
   }
   
   public void openShopTradesEditor(Player pl, Game.Shop shop) {
+    List<ItemStack> displayItems = new ArrayList<>();
+    for (int i = 0; i + 1 < shop.items.size(); i += 2) {
+      ItemStack good = shop.items.get(i).get(), cost = shop.items.get(i + 1)
+        .get();
+      
+      displayItems.add(good);
+      displayItems.add(ItemStack.empty());
+      displayItems.add(cost);
+    }
+    
     VirtualInventory tradesInv = new VirtualInventory(
-      shop.items.stream().map(MaybeGen::get).toList().toArray(new ItemStack[0])
+      displayItems.toArray(new ItemStack[0])
     );
-    tradesInv.resize(3 * 7 * 2); // 3 pages
     
     VirtualInventory blockInv = new VirtualInventory(
       new ItemStack[]{
@@ -247,147 +247,101 @@ public class GUIManager {
       }
     );
       
-    Gui shopGui = ScrollGui.inventories().setStructure(
-      "# # # # # # # # #",
-      "# x x x x x x x #",
-      "# # # # # # # # #",
-      "# x x x x x x x #",
-      "# # < # # # > # #",
-      "# b # # # v r d #"
-    ).addIngredient(
-      '#',
-      new SimpleItem(new ItemBuilder(CoreUtils.emptyGuiItem()))
-    ).addIngredient('<', new ScrollUpItem()).addIngredient(
-      '>',
-      new ScrollDownItem()
-    ).addIngredient(
-      'x',
-      Markers.CONTENT_LIST_SLOT_VERTICAL
-    ).addIngredient(
-      'b',
-      blockInv
-    ).addIngredient('v', new DetailShopItem(shop)).addIngredient(
-      'r',
-      new RenameShopItem(shop)
-    ).addIngredient(
-      'd',
-      new DeleteShopItem(shop)
-    ).setContent(List.of(tradesInv)).build();
-    
-    Window window = Window.single().setViewer(pl).setTitle(
-      TextUtils.$r(
-        "gui.titles.shop.trades"
+    Gui shopGui = ScrollGui.inventoriesBuilder()
+      .setStructure(
+        "# # # # # # # # #",
+        "# | | | | | | | #",
+        "# # # # # # # # #",
+        "# | | | | | | | #",
+        "# # [ # # # ] # #",
+        "# b # # # v r d #"
       )
-    ).setGui(shopGui).build();
+      .addIngredient('b', blockInv)
+      .addIngredient('v', DetailShopItem.of(shop))
+      .addIngredient('r', RenameShopItem.of(shop))
+      .addIngredient('d', DeleteShopItem.of(shop))
+      .setContent(List.of(tradesInv))
+      .build();
+    
+    Window window = Window.builder()
+      .setViewer(pl)
+      .setTitle(TextUtils.$("gui.titles.shop.trades"))
+      .setUpperGui(shopGui)
+      .addCloseHandler((reason) -> {
+        ItemStack blockStack = blockInv.getItem(0);
+        if (blockStack != null) shop.blockType = blockStack.getType();
+        
+        shop.items.clear();
+        
+        ItemStack[] stacks = tradesInv.getItems();
+        for (int i = 0; i + 1 < stacks.length; i += 3) {
+          ItemStack good = stacks[i], cost = stacks[i + 2];
+          if (good == null && cost == null) continue;
+          
+          shop.items.add(MaybeGen.fromItem(good));
+          shop.items.add(MaybeGen.fromItem(cost));
+        }
+        
+        if (reason != InventoryCloseEvent.Reason.OPEN_NEW)
+          CoreUtils.setTickOut(
+            () -> openShopListEditor(pl)
+          );
+      })
+      .build();
     
     window.open();
-    
-    window.addCloseHandler(() -> {
-      ItemStack blockStack = blockInv.getItem(0);
-      if (blockStack != null) shop.blockType = blockStack.getType();
-      
-      shop.items.clear();
-      
-      ItemStack[] stacks = tradesInv.getItems();
-      for (int i = 0; i + 1 < stacks.length; i += 2) {
-        ItemStack good = stacks[i], cost = stacks[i + 1];
-        if (good == null && cost == null) continue;
-        
-        shop.items.add(MaybeGen.fromItem(good));
-        shop.items.add(MaybeGen.fromItem(cost));
-      }
-      
-      if (postClick) postClick = false;
-      else CoreUtils.setTickOut(
-        () -> openShopListEditor(pl)
-      );
-    });
   }
   
   public void openShopRenameEditor(Player pl, Game.Shop shop) {
     ItemStack item = new ItemStack(shop.blockType);
     item.editMeta(meta -> {
       meta.displayName(
-        Component.text(shop.name).decoration(TextDecoration.ITALIC, false)
+        Component.text(shop.name)
+          .decoration(TextDecoration.ITALIC, false)
       );
     });
     
-    Gui renameGui = Gui.normal().setStructure("x").addIngredient(
-      'x',
-      item
-    ).build();
+    Gui renameGui = Gui.builder()
+      .setStructure("x")
+      .addIngredient('x', item)
+      .build();
     
-    AnvilWindow window = AnvilWindow.single().setViewer(pl).setTitle(
-      TextUtils.$r("gui.titles.shop.rename")
-    ).setGui(renameGui).build();
+    AnvilWindow window = AnvilWindow.builder()
+      .setViewer(pl)
+      .setTitle(TextUtils.$("gui.titles.shop.rename"))
+      .setUpperGui(renameGui)
+      .build();
+    
+    window.addCloseHandler((reason) -> {
+      String name = window.getRenameText();
+      if (!name.isEmpty()) shop.name = name;
+      
+      if (reason != InventoryCloseEvent.Reason.OPEN_NEW)
+        CoreUtils.setTickOut(
+          () -> openShopTradesEditor(pl, shop)
+        );
+    });
     
     window.open();
-    
-    window.addCloseHandler(() -> {
-      String name = window.getRenameText();
-      if (name != null && !name.isEmpty()) shop.name = name;
-      
-      CoreUtils.setTickOut(() -> openShopTradesEditor(pl, shop));
-    });
   }
   
   public void openShopDetailEditor(Player pl, Game.Shop shop) {
     List<Item> itemList = new ArrayList<>();
     
     itemList.addAll(
-      Registry.VILLAGER_TYPE.stream().map(type -> (Item) new AbstractItem() {
-        @Override
-        public ItemProvider getItemProvider() {
-          ItemStack item = new ItemStack(Constants.villagerIcons.get(type));
-          item.editMeta(meta -> {
-            meta.displayName(
-              TextUtils.$("gui.villagers." + type.getKey().getKey()).color(
-                NamedTextColor.YELLOW
-              ).decoration(TextDecoration.ITALIC, false)
-            );
-            if (type == shop.biome) {
-              meta.setEnchantmentGlintOverride(true);
-              meta.lore(
-                List.of(TextUtils.$("gui.buttons.detail-shop.selected"))
-              );
-            }
-          });
-          return new ItemBuilder(item);
-        }
-        
-        @Override
-        public void handleClick(
-          ClickType click, Player pl, InventoryClickEvent ev
-        ) {
-          shop.biome = type;
+      Registry.VILLAGER_TYPE.stream()
+        .map(biome -> (Item) new AbstractItem() {
           
-          CoreUtils.setTickOut(() -> {
-            postClick = true;
-            openShopDetailEditor(pl, shop);
-          });
-        }
-      }
-      ).toList()
-    );
-    
-    itemList.addAll(
-      Registry.VILLAGER_PROFESSION.stream().map(
-        prof -> (Item) new AbstractItem() {
           @Override
-          public ItemProvider getItemProvider() {
-            ItemStack item = new ItemStack(
-              Constants.villagerJobSites.get(prof)
-            );
+          public ItemProvider getItemProvider(Player pl) {
+            ItemStack item = new ItemStack(Constants.villagerIcons.get(biome));
             item.editMeta(meta -> {
               meta.displayName(
-                Component.translatable(prof.translationKey()).color(
-                  NamedTextColor.YELLOW
-                ).decoration(
-                  TextDecoration.ITALIC,
-                  false
-                )
+                TextUtils.$("gui.villagers." + biome.getKey().getKey())
+                  .color(NamedTextColor.YELLOW)
+                  .decoration(TextDecoration.ITALIC, false)
               );
-              if (prof == shop.prof) {
+              if (biome == shop.biome) {
                 meta.setEnchantmentGlintOverride(true);
                 meta.lore(
                   List.of(TextUtils.$("gui.buttons.detail-shop.selected"))
@@ -399,12 +353,52 @@ public class GUIManager {
           
           @Override
           public void handleClick(
-            ClickType click, Player pl, InventoryClickEvent ev
+            ClickType type, Player pl, Click click
+          ) {
+            shop.biome = biome;
+            
+            CoreUtils.setTickOut(() -> {
+              openShopDetailEditor(pl, shop);
+            });
+          }
+        })
+        .toList()
+    );
+    
+    itemList.addAll(
+      Registry.VILLAGER_PROFESSION.stream().map(
+        prof -> (Item) new AbstractItem() {
+          
+          @Override
+          public ItemProvider getItemProvider(Player pl) {
+            ItemStack item = new ItemStack(
+              Constants.villagerJobSites.get(prof)
+            );
+            item.editMeta(meta -> {
+              meta.displayName(
+                Component.translatable(prof.translationKey())
+                  .color(NamedTextColor.YELLOW)
+                  .decoration(TextDecoration.ITALIC, false)
+              );
+              if (prof == shop.prof) {
+                meta.setEnchantmentGlintOverride(true);
+                meta.lore(
+                  List.of(
+                    TextUtils.$("gui.buttons.detail-shop.selected")
+                  )
+                );
+              }
+            });
+            return new ItemBuilder(item);
+          }
+          
+          @Override
+          public void handleClick(
+            ClickType type, Player pl, Click click
           ) {
             shop.prof = prof;
             
             CoreUtils.setTickOut(() -> {
-              postClick = true;
               openShopDetailEditor(pl, shop);
             });
           }
@@ -412,33 +406,30 @@ public class GUIManager {
       ).toList()
     );
     
-    Gui shopGui = PagedGui.items().setStructure(
-      "# # # # # # # # #",
-      "# x x x x x x x #",
-      "# # # # # # # # #",
-      "# x x x x x x x #",
-      "# x x x x x x x #",
-      "# # # # # # # # #"
-    ).addIngredient(
-      '#',
-      new SimpleItem(new ItemBuilder(CoreUtils.emptyGuiItem()))
-    ).addIngredient('x', Markers.CONTENT_LIST_SLOT_HORIZONTAL).setContent(
-      itemList
-    ).build();
-    
-    Window window = Window.single().setViewer(pl).setTitle(
-      TextUtils.$r(
-        "gui.titles.shop.villager"
+    Gui detailsGui = PagedGui.itemsBuilder()
+      .setStructure(
+        "# # # # # # # # #",
+        "# - - - - - - - #",
+        "# # # # # # # # #",
+        "# - - - - - - - #",
+        "# - - - - - - - #",
+        "# # # # # # # # #"
       )
-    ).setGui(shopGui).build();
+      .setContent(itemList)
+      .build();
+    
+    Window window = Window.builder()
+      .setViewer(pl)
+      .setTitle(TextUtils.$("gui.titles.shop.villager"))
+      .setUpperGui(detailsGui)
+      .addCloseHandler((reason) -> {
+        if (reason != InventoryCloseEvent.Reason.OPEN_NEW)
+          CoreUtils.setTickOut(
+            () -> openShopTradesEditor(pl, shop)
+          );
+      })
+      .build();
     
     window.open();
-    
-    window.addCloseHandler(() -> {
-      if (postClick) postClick = false;
-      else CoreUtils.setTickOut(
-        () -> openShopTradesEditor(pl, shop)
-      );
-    });
   }
 }

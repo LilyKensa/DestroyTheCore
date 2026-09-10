@@ -61,7 +61,7 @@ public class RoyalRole extends Role {
         "roles.royal.skill.announce",
         List.of(
           Placeholder.component("player", PlayerUtils.getName(pl)),
-          Placeholder.unparsed("role", name)
+          Placeholder.component("role", name)
         )
       )
     );

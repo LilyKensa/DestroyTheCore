@@ -46,7 +46,7 @@ public class BoardsManager {
       lines.add(
         TextUtils.$r(
           "board.role",
-          List.of(Placeholder.unparsed("role", data.role.name))
+          List.of(Placeholder.component("role", data.role.name))
         )
       );
     }

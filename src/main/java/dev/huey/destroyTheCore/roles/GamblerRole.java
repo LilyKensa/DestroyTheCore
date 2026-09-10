@@ -104,7 +104,7 @@ public class GamblerRole extends Role {
         "roles.gambler.skill.announce",
         List.of(
           Placeholder.component("player", PlayerUtils.getName(pl)),
-          Placeholder.unparsed("role", name),
+          Placeholder.component("role", name),
           Placeholder.component(
             "item",
             offhandItem.effectiveName().color(NamedTextColor.AQUA)

@@ -79,7 +79,7 @@ public class HackerRole extends Role {
         "roles.hacker.skill.announce",
         List.of(
           Placeholder.component("player", PlayerUtils.getName(pl)),
-          Placeholder.unparsed("role", name),
+          Placeholder.component("role", name),
           Placeholder.component(
             "type",
             TextUtils.$("roles.hacker.skill.types." + (self ? "self" : "enemy"))

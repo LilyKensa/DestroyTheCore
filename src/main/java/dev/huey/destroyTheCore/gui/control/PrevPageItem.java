@@ -5,38 +5,40 @@ import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
-import xyz.xenondevs.invui.gui.PagedGui;
-import xyz.xenondevs.invui.item.ItemProvider;
-import xyz.xenondevs.invui.item.builder.ItemBuilder;
-import xyz.xenondevs.invui.item.impl.controlitem.PageItem;
+import xyz.xenondevs.invui.item.BoundItem;
+import xyz.xenondevs.invui.item.ItemBuilder;
 
-public class PrevPageItem extends PageItem {
+public class PrevPageItem {
   
-  public PrevPageItem() {
-    super(false);
-  }
-  
-  @Override
-  public ItemProvider getItemProvider(PagedGui<?> gui) {
-    ItemBuilder builder = new ItemBuilder(
-      gui.hasPreviousPage() ? Material.GLOWSTONE_DUST : Material.GUNPOWDER
-    );
-    builder.setDisplayName(
-      TextUtils.$r(
-        "gui.buttons.prev-page.title"
+  static public final BoundItem it = BoundItem.pagedBuilder()
+    .setItemProvider(
+      (pl, gui) -> new ItemBuilder(
+        gui.getPage() > 0
+          ? Material.GLOWSTONE_DUST
+          : Material.GUNPOWDER
       )
-    ).addLoreLines(
-      gui.hasNextPage() ? TextUtils.$r(
-        "gui.buttons.prev-page.desc",
-        List.of(
-          Placeholder.component(
-            "prev",
-            Component.text(gui.getCurrentPage() + 2)
-          ),
-          Placeholder.component("max", Component.text(gui.getPageAmount()))
+        .setCustomName(
+          TextUtils.$(
+            "gui.buttons.prev-page.title"
+          )
         )
-      ) : TextUtils.$r("gui.buttons.prev-page.desc-end")
-    );
-    return builder;
-  }
+        .addLoreLines(
+          gui.getPage() > 0
+            ? TextUtils.$(
+              "gui.buttons.prev-page.desc",
+              List.of(
+                Placeholder.component(
+                  "prev",
+                  Component.text(gui.getPage())
+                ),
+                Placeholder.component("max", Component.text(gui.getPageCount()))
+              )
+            )
+            : TextUtils.$("gui.buttons.prev-page.desc-end")
+        )
+    )
+    .addClickHandler((item, gui, click) -> {
+      gui.setPage(gui.getPage() - 1);
+    })
+    .build();
 }

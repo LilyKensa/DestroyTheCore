@@ -102,16 +102,15 @@ public class WorldsManager {
   public void init() {
     lobby = Bukkit.getWorlds().getFirst();
     
-    lobby.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
-    lobby.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
-    lobby.setGameRule(GameRule.DO_FIRE_TICK, false);
-    lobby.setGameRule(GameRule.DO_VINES_SPREAD, false);
-    lobby.setGameRule(GameRule.DO_MOB_SPAWNING, false);
-    lobby.setGameRule(GameRule.RANDOM_TICK_SPEED, 0);
-    
-    lobby.setGameRule(GameRule.SPAWN_CHUNK_RADIUS, 0);
-    lobby.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
-    lobby.setGameRule(GameRule.COMMAND_BLOCK_OUTPUT, false);
+    lobby.setGameRule(GameRules.ADVANCE_TIME, false);
+    lobby.setGameRule(GameRules.ADVANCE_WEATHER, false);
+    lobby.setGameRule(GameRules.FIRE_SPREAD_RADIUS_AROUND_PLAYER, 0);
+    lobby.setGameRule(GameRules.SPREAD_VINES, false);
+    lobby.setGameRule(GameRules.SPAWN_MOBS, false);
+    lobby.setGameRule(GameRules.RANDOM_TICK_SPEED, 0);
+    lobby.setGameRule(GameRules.RESPAWN_RADIUS, 0);
+    lobby.setGameRule(GameRules.SHOW_ADVANCEMENT_MESSAGES, false);
+    lobby.setGameRule(GameRules.COMMAND_BLOCK_OUTPUT, false);
   }
   
   public void clearLiveWorldPlayers() {

@@ -1,7 +1,6 @@
 package dev.huey.destroyTheCore.gui.role;
 
 import dev.huey.destroyTheCore.DTC;
-import dev.huey.destroyTheCore.bases.GUIItem;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.managers.RolesManager;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
@@ -12,24 +11,23 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import xyz.xenondevs.invui.item.ItemProvider;
-import xyz.xenondevs.invui.item.builder.ItemBuilder;
+import xyz.xenondevs.invui.item.BoundItem;
+import xyz.xenondevs.invui.item.ItemBuilder;
 
-public class RandomRoleItem extends GUIItem {
+public class RandomRoleItem {
   
-  @Override
-  public ItemProvider getItemProvider() {
-    return new ItemBuilder(Material.REDSTONE).setDisplayName(
-      TextUtils.$r(
-        "gui.buttons.pick-random.title"
-      )
-    );
-  }
+  static public final BoundItem it = BoundItem.builder()
+    .setItemProvider(
+      (pl, gui) -> new ItemBuilder(Material.REDSTONE)
+        .setCustomName(TextUtils.$("gui.buttons.pick-random.title"))
+    )
+    .addClickHandler((item, gui, click) -> {
+      onClick(click.player());
+      gui.closeForAllViewers();
+    })
+    .build();
   
-  @Override
-  public void handleClick(ClickType click, Player pl, InventoryClickEvent ev) {
+  static public void onClick(Player pl) {
     Role role = RandomUtils.pick(
       DTC.rolesManager.roles.values().stream().filter(
         r -> r.id != RolesManager.RoleKey.DEFAULT &&
@@ -45,7 +43,7 @@ public class RandomRoleItem extends GUIItem {
         "gui.buttons.pick-random.announce",
         List.of(
           Placeholder.component("player", PlayerUtils.getName(pl)),
-          Placeholder.unparsed("role", role.name)
+          Placeholder.component("role", role.name)
         )
       )
     );
@@ -59,7 +57,5 @@ public class RandomRoleItem extends GUIItem {
     DTC.rolesManager.setRole(pl, role);
     DTC.game.enforceDisplay(pl);
     DTC.boardsManager.refresh(pl);
-    
-    closeWindow(pl);
   }
 }

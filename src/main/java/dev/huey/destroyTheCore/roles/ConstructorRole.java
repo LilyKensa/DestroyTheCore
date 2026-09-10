@@ -147,7 +147,7 @@ public class ConstructorRole extends Role {
         "roles.constructor.skill.announce",
         List.of(
           Placeholder.component("player", PlayerUtils.getName(pl)),
-          Placeholder.unparsed("role", name)
+          Placeholder.component("role", name)
         )
       )
     );
