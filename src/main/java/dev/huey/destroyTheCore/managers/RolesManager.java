@@ -127,11 +127,7 @@ public class RolesManager {
       ItemStack item = contents[i];
       if (item == null) continue;
       
-      if (
-        item.hasItemMeta() &&
-          item.getItemMeta().getPersistentDataContainer()
-            .has(Role.skillNamespace)
-      ) {
+      if (DTC.rolesManager.isSkillItem(item)) {
         contents[i].editMeta(role::editSkillItemMeta);
       }
       if (isExclusiveItem(item)) {
@@ -186,5 +182,13 @@ public class RolesManager {
       ) {
         role.onPhaseChange(phase, p);
       }
+  }
+  
+  public boolean isSkillItem(ItemStack item) {
+    return (item.hasItemMeta() &&
+      item.getItemMeta()
+        .getPersistentDataContainer().has(
+          Role.skillNamespace
+        ));
   }
 }

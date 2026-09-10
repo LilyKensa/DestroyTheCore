@@ -90,7 +90,7 @@ public class AssassinRole extends Role {
         meta.addEnchant(Enchantment.SMITE, 5, true);
       }
     );
-    addSkill(120 * 20);
+    addSkill(120 * 20, 10);
     addLevelReq(5);
   }
   
@@ -157,7 +157,7 @@ public class AssassinRole extends Role {
     Player nearest = PlayerUtils.getEnemies(pl).stream().filter(
       p -> PlayerUtils.shouldHandle(p) &&
         p.getWorld().equals(pl.getWorld()) &&
-        LocUtils.near(p, pl, 10)
+        LocUtils.near(p, pl, skillRadius)
     ).min(
       Comparator.comparingDouble(
         p -> p.getLocation()

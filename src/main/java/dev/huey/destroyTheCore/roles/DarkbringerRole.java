@@ -90,7 +90,7 @@ public class DarkbringerRole extends Role {
         meta.addEnchant(Enchantment.PROTECTION, 2, true);
       }
     );
-    addSkill(10 * 20);
+    addSkill(10 * 20, 10);
   }
   
   @Override
@@ -152,14 +152,14 @@ public class DarkbringerRole extends Role {
     if (curse != null) {
       Player lastTarget = curse.getPlayer();
       
-      if (lastTarget != null && LocUtils.near(lastTarget, pl, 10)) {
+      if (lastTarget != null && LocUtils.near(lastTarget, pl, skillRadius)) {
         target = lastTarget;
       }
     }
     
     if (target == null) {
       for (Player e : PlayerUtils.getEnemies(pl)) {
-        if (LocUtils.near(e, pl, 10)) {
+        if (LocUtils.near(e, pl, skillRadius)) {
           target = e;
           break;
         }

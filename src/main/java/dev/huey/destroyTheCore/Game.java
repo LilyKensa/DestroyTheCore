@@ -8,7 +8,6 @@ import com.comphenix.protocol.wrappers.BlockPosition;
 import com.destroystokyo.paper.ParticleBuilder;
 import dev.huey.destroyTheCore.bases.ItemGen;
 import dev.huey.destroyTheCore.bases.Mission;
-import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.bases.itemGens.UsableItemGen;
 import dev.huey.destroyTheCore.managers.AntiCheatManager;
 import dev.huey.destroyTheCore.managers.ItemsManager;
@@ -1181,8 +1180,7 @@ public class Game {
           ev.getHand() == EquipmentSlot.HAND &&
           item != null &&
           item.hasItemMeta() &&
-          item.getItemMeta().getPersistentDataContainer()
-            .has(Role.skillNamespace)
+          DTC.rolesManager.isSkillItem(item)
       ) {
         if (!PlayerUtils.checkHandCooldown(pl, data.extraSkillReload)) return;
         PlayerUtils.setSkillCooldown(pl, data.role.skillCooldown);
@@ -2268,11 +2266,7 @@ public class Game {
     
     PlayerData data = getPlayerData(pl);
     
-    if (
-      item.hasItemMeta() &&
-        item.getItemMeta().getPersistentDataContainer()
-          .has(Role.skillNamespace)
-    ) {
+    if (DTC.rolesManager.isSkillItem(item)) {
       item.editMeta(data.role::editSkillItemMeta);
     }
   }
@@ -2376,10 +2370,7 @@ public class Game {
         InventoryAction.PLACE_SOME,
         InventoryAction.PLACE_ALL
       ).contains(action) &&
-        item.hasItemMeta() &&
-        item.getItemMeta()
-          .getPersistentDataContainer()
-          .has(Role.skillNamespace)
+        DTC.rolesManager.isSkillItem(item)
     ) {
       CoreUtils.setTickOut(() -> {
         item.editMeta(data.role::editSkillItemMeta);
@@ -3571,14 +3562,11 @@ public class Game {
       if (p.hasPotionEffect(PotionEffectType.INVISIBILITY)) continue;
       
       PlayerData data = getPlayerData(p);
+      PlayerInventory inv = p.getInventory();
       
       if (
-        p.getInventory().contains(
-          Material.ENCHANTING_TABLE
-        ) ||
-          p.getInventory().contains(
-            Material.ENDER_CHEST
-          )
+        inv.contains(Material.ENCHANTING_TABLE) ||
+          inv.contains(Material.ENDER_CHEST)
       ) {
         ParticleUtils.dust(
           PlayerUtils.all(),
@@ -3592,6 +3580,19 @@ public class Game {
           PlayerUtils.all(),
           p.getEyeLocation().add(0, 0.6, 0),
           Color.YELLOW
+        );
+      }
+      
+      if (
+        data.role.skillRadius > 0 &&
+          DTC.rolesManager.isSkillItem(inv.getItemInMainHand())
+      ) {
+        ParticleUtils.ring(
+          PlayerUtils.all(),
+          p.getLocation(),
+          data.role.skillRadius,
+          (int) Math.ceil(data.role.skillRadius * 2 * Math.PI),
+          data.side.dyeColor
         );
       }
     }

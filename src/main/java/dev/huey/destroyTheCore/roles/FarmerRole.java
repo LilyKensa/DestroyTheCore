@@ -30,7 +30,7 @@ public class FarmerRole extends Role {
         meta.addEnchant(Enchantment.FORTUNE, 3, true);
       }
     );
-    addSkill(90 * 20);
+    addSkill(90 * 20, 10);
   }
   
   @Override
@@ -63,7 +63,7 @@ public class FarmerRole extends Role {
     
     List<Player> teammates = PlayerUtils.getTeammates(pl).stream()
       .filter(p -> p != pl)
-      .filter(p -> LocUtils.near(p, pl, 10))
+      .filter(p -> LocUtils.near(p, pl, skillCooldown))
       .collect(Collectors.toList());
     Collections.shuffle(teammates);
     

@@ -3,7 +3,7 @@ package dev.huey.destroyTheCore.roles;
 import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.managers.RolesManager;
-import dev.huey.destroyTheCore.records.PlayerData;
+import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import java.util.*;
@@ -26,7 +26,7 @@ public class GluttonRole extends Role {
     addExclusiveItem(Material.COOKED_SALMON, meta -> {
       meta.addEnchant(Enchantment.SHARPNESS, 2, true);
     });
-    addSkill(60 * 20);
+    addSkill(60 * 20, 10);
     addLevelReq(6);
   }
   
@@ -46,7 +46,7 @@ public class GluttonRole extends Role {
   
   @Override
   public void useSkill(Player pl) {
-    PlayerData data = DTC.game.getPlayerData(pl);
+    // PlayerData data = DTC.game.getPlayerData(pl);
     
     // if (pl.getFoodLevel() == 20) {
     //   PlayerUtils.setSkillCooldown(pl, 10);
@@ -60,6 +60,7 @@ public class GluttonRole extends Role {
     
     List<Player> targets = PlayerUtils.allGaming().stream()
       .filter(p -> p != pl)
+      .filter(p -> LocUtils.near(p, pl, skillRadius))
       .collect(Collectors.toList());
     Collections.shuffle(targets);
     

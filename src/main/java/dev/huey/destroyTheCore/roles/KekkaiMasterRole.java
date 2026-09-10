@@ -25,6 +25,8 @@ import org.bukkit.potion.PotionEffectType;
 
 public class KekkaiMasterRole extends Role {
   
+  static public final int kekkaiSize = 15;
+  
   static public class Kekkai {
     
     public enum Type {
@@ -112,7 +114,7 @@ public class KekkaiMasterRole extends Role {
       }
     }
     
-    double size = 15;
+    double size = kekkaiSize;
     int duration;
     public Type type;
     public Location loc;
@@ -435,7 +437,7 @@ public class KekkaiMasterRole extends Role {
         meta.addEnchant(Enchantment.KNOCKBACK, 1, true);
       }
     );
-    addSkill(30 * 20);
+    addSkill(30 * 20, kekkaiSize);
     addLevelReq(4);
   }
   

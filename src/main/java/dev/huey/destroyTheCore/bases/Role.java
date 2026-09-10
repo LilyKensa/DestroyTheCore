@@ -112,6 +112,7 @@ public class Role extends GUIItem {
   public String skillName;
   public List<String> skillDesc;
   public int skillCooldown;
+  public double skillRadius = 0;
   
   public int levelReq;
   
@@ -137,10 +138,15 @@ public class Role extends GUIItem {
     });
   }
   
-  public void addSkill(int cd) {
+  public void addSkill(int cd, double radius) {
     skillName = TextUtils.stripColor($r("roles.%s.skill.name"));
     skillDesc = $ra("roles.%s.skill.desc");
     skillCooldown = cd;
+    skillRadius = radius;
+  }
+  
+  public void addSkill(int cd) {
+    addSkill(cd, 0);
   }
   
   public void addLevelReq(int lvl) {
