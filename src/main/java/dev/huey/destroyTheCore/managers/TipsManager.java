@@ -77,6 +77,8 @@ public class TipsManager {
     if (tip == null) return;
     
     for (Player p : Bukkit.getOnlinePlayers()) {
+      if (!PlayerUtils.shouldHandle(p)) continue;
+      
       sendTip(p, tip);
     }
   }

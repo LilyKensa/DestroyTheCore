@@ -38,6 +38,8 @@ public final class DTC extends JavaPlugin {
   
   static public Game game = new Game();
   
+  boolean notEvenStarted = true;
+  
   @Override
   public void onEnable() {
     instance = this;
@@ -66,9 +68,26 @@ public final class DTC extends JavaPlugin {
     configManager = new ConfigManager();
     ticksManager = new TicksManager();
     
-    for (String commandName : new String[]{
-      "dtc", "rejoin", "night-vision", "shout", "broadcast", "shuffle-team", "warp", "skip", "edit", "reset", "revive", "language", "stats", "pause", "suicide"
-    }) {
+    for (
+      String commandName : new String[]{
+        "dtc",
+        "rejoin",
+        "night-vision",
+        "shout",
+        "broadcast",
+        "shuffle-team",
+        "warp",
+        "skip",
+        "edit",
+        "reset",
+        "revive",
+        "language",
+        "stats",
+        "pause",
+        "suicide",
+        "ping"
+      }
+    ) {
       PluginCommand command = getCommand(commandName);
       if (command == null) {
         CoreUtils.error("Command not found: " + commandName);
@@ -90,6 +109,7 @@ public final class DTC extends JavaPlugin {
     glowManager.init();
     recipesManager.init();
     rolesManager.init();
+    guiManager.init();
     tipsManager.init();
     advancementsManager.init();
     antiCheatManager.init();
@@ -100,10 +120,13 @@ public final class DTC extends JavaPlugin {
     prefix = TextUtils.$("general.plugin-prefix");
     
     CoreUtils.log("Enabled");
+    notEvenStarted = false;
   }
   
   @Override
   public void onDisable() {
+    if (notEvenStarted) return;
+    
     configManager.save();
     
     CoreUtils.log("Disabled");

@@ -25,6 +25,8 @@ import org.bukkit.potion.PotionEffectType;
 
 public class KekkaiMasterRole extends Role {
   
+  static public final int kekkaiSize = 15;
+  
   static public class Kekkai {
     
     public enum Type {
@@ -112,7 +114,7 @@ public class KekkaiMasterRole extends Role {
       }
     }
     
-    double size = 15;
+    double size = kekkaiSize;
     int duration;
     public Type type;
     public Location loc;
@@ -317,30 +319,56 @@ public class KekkaiMasterRole extends Role {
           }
           
           if (kekkai.type == Kekkai.Type.SOUL) {
-            PlayerUtils.addEffect(
-              p,
-              PotionEffectType.SPEED,
-              30,
-              2,
-              true,
-              true
-            );
-            PlayerUtils.addEffect(
-              p,
-              PotionEffectType.RESISTANCE,
-              30,
-              2,
-              true,
-              true
-            );
-            PlayerUtils.addEffect(
-              p,
-              PotionEffectType.STRENGTH,
-              30,
-              2,
-              true,
-              true
-            );
+            int level = 1;
+            if (d.respawnTime < 60) {
+              if (d.respawnTime < 20) level = 2;
+              
+              PlayerUtils.addEffect(
+                p,
+                PotionEffectType.SPEED,
+                30,
+                level,
+                true,
+                true
+              );
+              PlayerUtils.addEffect(
+                p,
+                PotionEffectType.RESISTANCE,
+                30,
+                level,
+                true,
+                true
+              );
+              PlayerUtils.addEffect(
+                p,
+                PotionEffectType.STRENGTH,
+                30,
+                level,
+                true,
+                true
+              );
+            }
+            else {
+              if (d.respawnTime >= 120) level = 4;
+              
+              PlayerUtils.addEffect(
+                p,
+                PotionEffectType.SLOWNESS,
+                30,
+                level,
+                true,
+                true
+              );
+              
+              PlayerUtils.addEffect(
+                p,
+                PotionEffectType.NAUSEA,
+                3 * 20,
+                1,
+                true,
+                true
+              );
+            }
             
             d.addRespawnTime(1);
             DTC.boardsManager.refresh(p);
@@ -409,8 +437,8 @@ public class KekkaiMasterRole extends Role {
         meta.addEnchant(Enchantment.KNOCKBACK, 1, true);
       }
     );
-    addSkill(30 * 20);
-    addLevelReq(2);
+    addSkill(30 * 20, kekkaiSize);
+    addLevelReq(4);
   }
   
   @Override
@@ -464,9 +492,9 @@ public class KekkaiMasterRole extends Role {
       }
     }
     if (replacedWarning > 0) {
-      pl.setCooldown(Material.KNOWLEDGE_BOOK, 10);
-      data.skillReloadedMessage = true;
+      PlayerUtils.setSkillCooldown(pl, 10);
       
+      data.skillReloadedMessage = true;
       pl.sendActionBar(
         TextUtils.$(
           "roles.kekkai-master.skill.inside-kekkai",
@@ -482,9 +510,11 @@ public class KekkaiMasterRole extends Role {
     ItemStack offhandItem = pl.getInventory().getItemInOffHand();
     
     Kekkai.Type type = null;
-    for (Kekkai.Type t : Kekkai.Type.values()) if (
-      offhandItem.getType().equals(t.sourceMaterial)
-    ) type = t;
+    for (Kekkai.Type t : Kekkai.Type.values()) {
+      if (offhandItem.getType().equals(t.sourceMaterial)) {
+        type = t;
+      }
+    }
     
     if (
       DTC.itemsManager.checkGen(
@@ -500,7 +530,9 @@ public class KekkaiMasterRole extends Role {
     ) type = Kekkai.Type.SOUL;
     
     if (type == null) {
-      pl.setCooldown(Material.KNOWLEDGE_BOOK, 10);
+      PlayerUtils.setSkillCooldown(pl, 10);
+      
+      data.skillReloadedMessage = true;
       pl.sendActionBar(TextUtils.$("roles.kekkai-master.skill.no-material"));
       return;
     }
@@ -510,10 +542,12 @@ public class KekkaiMasterRole extends Role {
       pl.getInventory().setItemInOffHand(offhandItem);
     }
     
-    if (type.name().endsWith("PLUS")) pl.setCooldown(
-      Material.KNOWLEDGE_BOOK,
-      180 * 20
-    );
+    if (type.name().endsWith("PLUS")) {
+      pl.setCooldown(
+        Material.KNOWLEDGE_BOOK,
+        6 * skillCooldown
+      );
+    }
     
     kekkais.add(new Kekkai(type, LocUtils.hitboxCenter(pl), pl));
     
@@ -524,7 +558,7 @@ public class KekkaiMasterRole extends Role {
         "roles.kekkai-master.skill.announce",
         List.of(
           Placeholder.component("player", PlayerUtils.getName(pl)),
-          Placeholder.unparsed("role", name),
+          Placeholder.component("role", name),
           Placeholder.component("type", type.displayName())
         )
       )

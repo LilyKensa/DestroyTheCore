@@ -13,7 +13,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
@@ -89,15 +88,6 @@ public class CoreUtils {
       Component.text(":").color(NamedTextColor.GRAY),
       Component.text("%02d".formatted(seconds)).color(color)
     );
-  }
-  
-  /** Empty item for GUIs */
-  static public ItemStack emptyGuiItem() {
-    ItemStack item = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
-    item.editMeta(meta -> {
-      meta.setHideTooltip(true);
-    });
-    return item;
   }
   
   static public void dyeTeamColor(ItemStack item, Game.Side side) {

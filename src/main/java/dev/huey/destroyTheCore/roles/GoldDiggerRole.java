@@ -23,7 +23,7 @@ public class GoldDiggerRole extends Role {
     addExclusiveItem(
       Material.IRON_PICKAXE,
       meta -> {
-        meta.addEnchant(Enchantment.EFFICIENCY, 3, true);
+        meta.addEnchant(Enchantment.EFFICIENCY, 5, true);
       }
     );
     addSkill(120 * 20);
@@ -77,7 +77,7 @@ public class GoldDiggerRole extends Role {
         "roles.gold-digger.skill.announce",
         List.of(
           Placeholder.component("player", PlayerUtils.getName(pl)),
-          Placeholder.unparsed("role", name)
+          Placeholder.component("role", name)
         )
       )
     );

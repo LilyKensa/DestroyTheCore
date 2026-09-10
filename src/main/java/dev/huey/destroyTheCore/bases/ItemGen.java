@@ -57,7 +57,9 @@ public class ItemGen {
       meta.displayName(name.decoration(TextDecoration.ITALIC, false));
       meta.lore(lore);
       
-      if (item.getType().getMaxDurability() > 0) meta.setUnbreakable(true);
+      if (item.getType().getMaxDurability() > 0) {
+        meta.setUnbreakable(true);
+      }
       meta.setEnchantmentGlintOverride(true);
       
       computeMeta(meta);

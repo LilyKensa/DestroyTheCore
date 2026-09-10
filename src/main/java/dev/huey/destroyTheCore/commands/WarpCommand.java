@@ -37,9 +37,8 @@ public class WarpCommand extends Subcommand {
       }
       case "spawn" -> {
         loc = LocUtils.live(
-          LocUtils.toSpawnPoint(
-            RandomUtils.pick(DTC.game.map.spawnpoints)
-          )
+          RandomUtils.pick(DTC.game.map.spawnpoints)
+            .spawnPoint()
         );
       }
     }

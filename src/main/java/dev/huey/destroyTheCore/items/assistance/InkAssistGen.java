@@ -24,7 +24,7 @@ public class InkAssistGen extends AssistItemGen {
         PlayerUtils.addEffect(
           attacker,
           PotionEffectType.BLINDNESS,
-          5 * 20,
+          3 * 20,
           1
         );
       }

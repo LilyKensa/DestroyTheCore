@@ -11,9 +11,9 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.AbstractArrow;
@@ -90,8 +90,8 @@ public class AssassinRole extends Role {
         meta.addEnchant(Enchantment.SMITE, 5, true);
       }
     );
-    addSkill(180 * 20);
-    addLevelReq(7);
+    addSkill(120 * 20, 10);
+    addLevelReq(5);
   }
   
   @Override
@@ -102,7 +102,7 @@ public class AssassinRole extends Role {
     
     if (isStanding(pl)) {
       if (!pl.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
-        ParticleUtils.cloud(PlayerUtils.all(), LocUtils.hitboxCenter(pl));
+        ParticleUtils.cloud(LocUtils.hitboxCenter(pl));
       }
       
       PlayerUtils.addPassiveEffect(
@@ -147,32 +147,26 @@ public class AssassinRole extends Role {
     PlayerData data = DTC.game.getPlayerData(pl);
     
     if (!pl.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
-      pl.setCooldown(Material.KNOWLEDGE_BOOK, 10);
+      PlayerUtils.setSkillCooldown(pl, 10);
       data.skillReloadedMessage = true;
       
       pl.sendActionBar(TextUtils.$("roles.assassin.skill.not-invis"));
       return;
     }
     
-    Player nearest = Bukkit.getOnlinePlayers().stream().filter(
-      p -> !p.equals(
-        pl
-      ) &&
+    Player nearest = PlayerUtils.getEnemies(pl).stream().filter(
+      p -> PlayerUtils.shouldHandle(p) &&
         p.getWorld().equals(pl.getWorld()) &&
-        PlayerUtils.shouldHandle(
-          p
-        ) &&
-        DTC.game.getPlayerData(p).isGaming()
+        LocUtils.near(p, pl, skillRadius)
     ).min(
       Comparator.comparingDouble(
-        p -> p.getLocation().distanceSquared(
-          pl.getLocation()
-        )
+        p -> p.getLocation()
+          .distanceSquared(pl.getLocation())
       )
     ).orElse(null);
     
     if (nearest == null) {
-      pl.setCooldown(Material.KNOWLEDGE_BOOK, 10);
+      PlayerUtils.setSkillCooldown(pl, 10);
       data.skillReloadedMessage = true;
       
       pl.sendActionBar(TextUtils.$("roles.assassin.skill.no-target"));
@@ -181,27 +175,43 @@ public class AssassinRole extends Role {
     
     skillFeedback(pl);
     
-    new ParticleBuilder(Particle.REVERSE_PORTAL)
-      .allPlayers()
-      .location(pl.getLocation())
-      .offset(0.2, 0.3, 0.2)
-      .extra(5)
-      .count(20)
-      .spawn();
-    
-    pl.teleport(nearest);
-    
-    PlayerUtils.addEffect(
-      pl,
-      PotionEffectType.INVISIBILITY,
-      4 * 20,
-      1
+    nearest.playSound(
+      nearest.getLocation(),
+      Sound.ENTITY_PHANTOM_DEATH,
+      1, // Volume
+      1 // Pitch
     );
-    PlayerUtils.addEffect(
-      pl,
-      PotionEffectType.STRENGTH,
-      4 * 20,
-      2
-    );
+    
+    CoreUtils.setTickOut(() -> {
+      new ParticleBuilder(Particle.REVERSE_PORTAL)
+        .allPlayers()
+        .location(pl.getLocation())
+        .offset(0.2, 0.3, 0.2)
+        .extra(5)
+        .count(20)
+        .spawn();
+      
+      pl.teleport(nearest);
+      
+      pl.playSound(
+        nearest.getLocation(),
+        Sound.ENTITY_PLAYER_TELEPORT,
+        1, // Volume
+        1 // Pitch
+      );
+      
+      PlayerUtils.addEffect(
+        pl,
+        PotionEffectType.INVISIBILITY,
+        4 * 20,
+        1
+      );
+      PlayerUtils.addEffect(
+        pl,
+        PotionEffectType.STRENGTH,
+        4 * 20,
+        2
+      );
+    }, 10);
   }
 }

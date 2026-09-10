@@ -21,9 +21,12 @@ public class HeroMission extends InstantMission {
   public void run() {
     Player a = randomPlayer(Game.Side.RED), b = randomPlayer(Game.Side.GREEN);
     
-    for (Player pl : new Player[]{
-      a, b
-    }) {
+    for (
+      Player pl : new Player[]{
+        a,
+        b
+      }
+    ) {
       if (pl == null) continue;
       
       PlayerUtils.glow(pl, 60 * 20);

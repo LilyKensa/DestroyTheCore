@@ -2,31 +2,21 @@ package dev.huey.destroyTheCore.gui.shop;
 
 import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
-import dev.huey.destroyTheCore.bases.GUIItem;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import xyz.xenondevs.invui.item.ItemProvider;
-import xyz.xenondevs.invui.item.builder.ItemBuilder;
+import xyz.xenondevs.invui.item.BoundItem;
+import xyz.xenondevs.invui.item.ItemBuilder;
 
-public class NewShopItem extends GUIItem {
+public class NewShopItem {
   
-  @Override
-  public ItemProvider getItemProvider() {
-    return new ItemBuilder(Material.EMERALD).setDisplayName(
-      TextUtils.$r(
-        "gui.buttons.new-shop.title"
-      )
-    );
-  }
-  
-  @Override
-  public void handleClick(ClickType click, Player pl, InventoryClickEvent ev) {
-    DTC.game.shops.add(new Game.Shop());
-    
-    DTC.guiManager.postClick = true;
-    DTC.guiManager.openShopListEditor(pl);
-  }
+  static public final BoundItem it = BoundItem.builder()
+    .setItemProvider(
+      (pl, gui) -> new ItemBuilder(Material.EMERALD)
+        .setCustomName(TextUtils.$("gui.buttons.new-shop.title"))
+    )
+    .addClickHandler((item, gui, click) -> {
+      DTC.game.shops.add(new Game.Shop());
+      DTC.guiManager.openShopListEditor(click.player());
+    })
+    .build();
 }

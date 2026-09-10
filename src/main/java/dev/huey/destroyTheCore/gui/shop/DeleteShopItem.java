@@ -2,44 +2,39 @@ package dev.huey.destroyTheCore.gui.shop;
 
 import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
-import dev.huey.destroyTheCore.bases.GUIItem;
 import dev.huey.destroyTheCore.utils.TextUtils;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import xyz.xenondevs.invui.item.ItemProvider;
-import xyz.xenondevs.invui.item.builder.ItemBuilder;
+import xyz.xenondevs.invui.item.BoundItem;
+import xyz.xenondevs.invui.item.Item;
+import xyz.xenondevs.invui.item.ItemBuilder;
 
-public class DeleteShopItem extends GUIItem {
+public class DeleteShopItem {
   
-  Game.Shop shop;
-  boolean confirming = false;
-  
-  public DeleteShopItem(Game.Shop shop) {
-    this.shop = shop;
-  }
-  
-  @Override
-  public ItemProvider getItemProvider() {
-    return new ItemBuilder(Material.REDSTONE).setDisplayName(
-      TextUtils.$r(
-        "gui.buttons.delete-shop.title" + (confirming ? "-confirm" : "")
+  static public Item of(Game.Shop shop) {
+    AtomicBoolean confirming = new AtomicBoolean(false);
+    
+    return BoundItem.builder()
+      .setItemProvider(
+        (pl) -> new ItemBuilder(Material.REDSTONE)
+          .setCustomName(
+            TextUtils.$(
+              "gui.buttons.delete-shop.title" + (confirming.get() ? "-confirm"
+                : "")
+            )
+          )
       )
-    );
-  }
-  
-  @Override
-  public void handleClick(ClickType click, Player pl, InventoryClickEvent ev) {
-    if (!confirming) {
-      confirming = true;
-      notifyWindows();
-      return;
-    }
-    
-    DTC.game.shops.remove(shop);
-    
-    DTC.guiManager.postClick = true;
-    DTC.guiManager.openShopListEditor(pl);
+      .addClickHandler((item, gui, click) -> {
+        if (!confirming.get()) {
+          confirming.set(true);
+          gui.notifyWindows();
+          return;
+        }
+        
+        DTC.game.shops.remove(shop);
+        
+        DTC.guiManager.openShopListEditor(click.player());
+      })
+      .build();
   }
 }

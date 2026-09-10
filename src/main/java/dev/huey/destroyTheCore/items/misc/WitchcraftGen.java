@@ -144,7 +144,7 @@ public class WitchcraftGen extends UsableItemGen {
                 List.of(
                   Placeholder.component("player", PlayerUtils.getName(pl)),
                   Placeholder.component("target", PlayerUtils.getName(e)),
-                  Placeholder.unparsed("role", role.name)
+                  Placeholder.component("role", role.name)
                 )
               )
             );

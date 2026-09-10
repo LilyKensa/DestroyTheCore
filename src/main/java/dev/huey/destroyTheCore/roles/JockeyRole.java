@@ -29,7 +29,7 @@ public class JockeyRole extends Role {
       meta.addEnchant(Enchantment.KNOCKBACK, 1, true);
     });
     addSkill(60 * 20);
-    addLevelReq(4);
+    addLevelReq(2);
   }
   
   @Override
@@ -71,7 +71,7 @@ public class JockeyRole extends Role {
         "roles.jockey.skill.announce",
         List.of(
           Placeholder.component("player", PlayerUtils.getName(pl)),
-          Placeholder.unparsed("role", name),
+          Placeholder.component("role", name),
           Placeholder.component(
             "action",
             TextUtils.$(

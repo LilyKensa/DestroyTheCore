@@ -6,7 +6,6 @@ import java.util.function.Consumer;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
-import org.jetbrains.annotations.NotNull;
 
 public class Region implements ConfigurationSerializable {
   Pos first, second, min, max;
@@ -19,7 +18,7 @@ public class Region implements ConfigurationSerializable {
   }
   
   @Override
-  public @NotNull Map<String, Object> serialize() {
+  public Map<String, Object> serialize() {
     return Map.ofEntries(
       Map.entry("first", first),
       Map.entry("second", second)

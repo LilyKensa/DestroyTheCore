@@ -79,7 +79,7 @@ public class GuardRole extends Role {
       pl.sendActionBar(
         TextUtils.$(
           "roles.guard.near-enemy-core-warning",
-          List.of(Placeholder.unparsed("role", name))
+          List.of(Placeholder.component("role", name))
         )
       );
       if (DTC.ticksManager.isUpdateTick()) {
@@ -110,7 +110,7 @@ public class GuardRole extends Role {
         "roles.guard.skill.announce",
         List.of(
           Placeholder.component("player", PlayerUtils.getName(pl)),
-          Placeholder.unparsed("role", name)
+          Placeholder.component("role", name)
         )
       )
     );

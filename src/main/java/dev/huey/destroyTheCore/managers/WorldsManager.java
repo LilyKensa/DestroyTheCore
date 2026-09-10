@@ -80,14 +80,21 @@ public class WorldsManager {
     return new WorldCreator(name).generator(new VoidGenerator());
   }
   
-  public World createTemplateWorld() {
-    return Bukkit.createWorld(
-      getCreator(ConfigManager.templateWorldPrefix + mapName)
+  public World getOrCreate(String name) {
+    World world = Bukkit.getWorld(name);
+    return world == null
+      ? Bukkit.createWorld(getCreator(name))
+      : world;
+  }
+  
+  public World fetchTemplate() {
+    return getOrCreate(
+      ConfigManager.templateWorldPrefix + mapName
     );
   }
   
-  public World createLiveWorld() {
-    return Bukkit.createWorld(getCreator("live"));
+  public World fetchLive() {
+    return getOrCreate("live");
   }
   
   BossBar templateWarningBar;
@@ -95,16 +102,15 @@ public class WorldsManager {
   public void init() {
     lobby = Bukkit.getWorlds().getFirst();
     
-    lobby.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
-    lobby.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
-    lobby.setGameRule(GameRule.DO_FIRE_TICK, false);
-    lobby.setGameRule(GameRule.DO_VINES_SPREAD, false);
-    lobby.setGameRule(GameRule.DO_MOB_SPAWNING, false);
-    lobby.setGameRule(GameRule.RANDOM_TICK_SPEED, 0);
-    
-    lobby.setGameRule(GameRule.SPAWN_CHUNK_RADIUS, 0);
-    lobby.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
-    lobby.setGameRule(GameRule.COMMAND_BLOCK_OUTPUT, false);
+    lobby.setGameRule(GameRules.ADVANCE_TIME, false);
+    lobby.setGameRule(GameRules.ADVANCE_WEATHER, false);
+    lobby.setGameRule(GameRules.FIRE_SPREAD_RADIUS_AROUND_PLAYER, 0);
+    lobby.setGameRule(GameRules.SPREAD_VINES, false);
+    lobby.setGameRule(GameRules.SPAWN_MOBS, false);
+    lobby.setGameRule(GameRules.RANDOM_TICK_SPEED, 0);
+    lobby.setGameRule(GameRules.RESPAWN_RADIUS, 0);
+    lobby.setGameRule(GameRules.SHOW_ADVANCEMENT_MESSAGES, false);
+    lobby.setGameRule(GameRules.COMMAND_BLOCK_OUTPUT, false);
   }
   
   public void clearLiveWorldPlayers() {
@@ -121,10 +127,14 @@ public class WorldsManager {
   }
   
   public void deleteLive() {
-    if (live != null && live.getPlayerCount() > 0) {
-      clearLiveWorldPlayers();
-      CoreUtils.setTickOut(this::deleteLive);
-      return;
+    if (live != null) {
+      live.removePluginChunkTickets(DTC.instance);
+      
+      if (live.getPlayerCount() > 0) {
+        clearLiveWorldPlayers();
+        CoreUtils.setTickOut(this::deleteLive);
+        return;
+      }
     }
     
     Bukkit.unloadWorld("live", false);
@@ -164,11 +174,12 @@ public class WorldsManager {
     new File(targetFolder, "uid.dat").delete();
     
     new File(targetFolder, "session.lock").delete();
-    template = createTemplateWorld();
+    template = fetchTemplate();
     
-    live = createLiveWorld();
+    live = fetchLive();
+    live.addPluginChunkTicket(0, 0, DTC.instance);
+    
     PlayerUtils.prefixedNotice(TextUtils.$("world.copied"));
-    
     isReady = true;
   }
   

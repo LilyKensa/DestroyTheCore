@@ -6,7 +6,6 @@ import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.records.PlayerData;
 import dev.huey.destroyTheCore.roles.*;
 import dev.huey.destroyTheCore.utils.CoreUtils;
-import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -46,7 +45,14 @@ public class RolesManager {
     JOCKEY,
     ROYAL,
     GLUTTON,
-    HACKER
+    HACKER,
+    GAMBLER,
+    SORCERER,
+    SUMMONER,
+    FAIRY,
+    FARMER,
+    DARKBRINGER,
+    BOMBER
   }
   
   public Map<RoleKey, Role> roles;
@@ -57,17 +63,22 @@ public class RolesManager {
       new AttackerRole(),
       new GuardRole(),
       new GoldDiggerRole(),
-      new KekkaiMasterRole(), // Lv 2
+      new ConstructorRole(), // Lv 2
+      new FarmerRole(), // Lv 2
+      new JockeyRole(), // Lv 2
       new ProvocateurRole(), // Lv 3
-      new JockeyRole(), // Lv 4
-      new ConstructorRole(), // Lv 5
-      new RoyalRole(), // Lv 6
-      new AssassinRole(), // Lv 7
-      new GluttonRole(), // Lv 8
-      new RangerRole(), // Lv 9
-      new WandererRole(), // Lv 10
-      new HackerRole() // Lv 11
-//      new MoleRole() // Lv 12
+      new FairyRole(), // Lv 3
+      new KekkaiMasterRole(), // Lv 4
+      new SorcererRole(), // Lv 4
+      new RoyalRole(), // Lv 5
+      new AssassinRole(), // Lv 5
+      new GluttonRole(), // Lv 6
+      new RangerRole(), // Lv 6
+      new WandererRole(), // Lv 7
+      new HackerRole(), // Lv 7
+      // new GamblerRole(), // Lv 8
+      // new MoleRole(), // Lv 8
+      new DarkbringerRole() // Lv 8
     ).collect(
       Collectors.toMap(r -> r.id, r -> r, (e, n) -> e, LinkedHashMap::new)
     );
@@ -97,22 +108,11 @@ public class RolesManager {
       
       if (
         item.isEmpty() ||
-          (DTC.itemsManager.isGen(item) &&
-            DTC.itemsManager
-              .getGen(item).isTrash())
+          DTC.itemsManager.isTrash(item) ||
+          replacement.getItemMeta()
+            .hasEnchant(Enchantment.BINDING_CURSE)
       ) {
-        inv.setItem(slot, replacement);
-      }
-      else if (
-        replacement.hasItemMeta() &&
-          replacement.getItemMeta().hasEnchant(
-            Enchantment.BINDING_CURSE
-          )
-      ) {
-        pl.getWorld()
-          .dropItemNaturally(LocUtils.hitboxCenter(pl), item)
-          .setPickupDelay(20);
-        inv.setItem(slot, replacement);
+        PlayerUtils.softReplaceItem(pl, slot, replacement);
       }
     };
     
@@ -127,11 +127,7 @@ public class RolesManager {
       ItemStack item = contents[i];
       if (item == null) continue;
       
-      if (
-        item.hasItemMeta() &&
-          item.getItemMeta().getPersistentDataContainer()
-            .has(Role.skillNamespace)
-      ) {
+      if (DTC.rolesManager.isSkillItem(item)) {
         contents[i].editMeta(role::editSkillItemMeta);
       }
       if (isExclusiveItem(item)) {
@@ -139,7 +135,9 @@ public class RolesManager {
         contents[i] = role.getExclusiveItem();
       }
     }
+    
     inv.setContents(contents);
+    pl.updateInventory();
     
     if (!hasItem) PlayerUtils.give(pl, role.getExclusiveItem());
     
@@ -184,5 +182,13 @@ public class RolesManager {
       ) {
         role.onPhaseChange(phase, p);
       }
+  }
+  
+  public boolean isSkillItem(ItemStack item) {
+    return (item.hasItemMeta() &&
+      item.getItemMeta()
+        .getPersistentDataContainer().has(
+          Role.skillNamespace
+        ));
   }
 }
