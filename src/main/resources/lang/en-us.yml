@@ -1151,7 +1151,7 @@ roles:
       detail: "Fortune III iron hoe"
     skill:
       name: "Meal Time"
-      desc-1: "<dark_purple>Apply the food held in offhand evenly among all teammates.</dark_purple>"
+      desc-1: "<dark_purple>Apply the food held in offhand evenly among teammates within 10 blocks.</dark_purple>"
       announce: "<player> used <yellow><role></yellow>'s skill, fed teammates!"
       no-material: "<red>Invalid off-hand item!</red>"
       all-full: "<red>All your teammates are full!</red>"

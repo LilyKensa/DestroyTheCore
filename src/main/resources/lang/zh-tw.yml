@@ -1196,7 +1196,7 @@ roles:
       detail: "幸運 III 鐵鋤頭"
     skill:
       name: "用餐時間"
-      desc-1: "<dark_purple>平均分配副手食物給所有隊友食用</dark_purple>"
+      desc-1: "<dark_purple>平均分配副手食物給 10 格內隊友食用</dark_purple>"
       announce: "<player> 使用了<yellow><role></yellow>技能, 餵飽了隊友!"
       no-material: "<red>無效的副手物品!</red>"
       all-full: "<red>你全部的隊友都很飽!</red>"

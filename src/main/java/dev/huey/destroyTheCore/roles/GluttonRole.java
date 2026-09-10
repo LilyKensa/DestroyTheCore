@@ -6,7 +6,6 @@ import dev.huey.destroyTheCore.managers.RolesManager;
 import dev.huey.destroyTheCore.records.PlayerData;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
-
 import java.util.*;
 import java.util.stream.Collectors;
 import net.kyori.adventure.text.Component;
@@ -67,15 +66,20 @@ public class GluttonRole extends Role {
     Map<Player, Integer> virtualFood = new HashMap<>();
     Map<Player, Float> virtualSatu = new HashMap<>();
     
+    int resistance = 0, speed = 0;
+    
     for (Player p : targets) {
       virtualFood.put(p, p.getFoodLevel());
       virtualSatu.put(p, p.getSaturation());
+      
+      if (PlayerUtils.isTeammate(p, pl))
+        resistance++;
+      else
+        speed++;
     }
     
     boolean next = true;
     float drained = 0;
-
-    int resistance = 0, speed = 0;
     
     distributionLoop: while (next) {
       next = false;
@@ -98,11 +102,6 @@ public class GluttonRole extends Role {
         else {
           continue;
         }
-
-        if (PlayerUtils.isTeammate(p, pl))
-          resistance++;
-        else
-          speed++;
         
         next = true;
       }
@@ -128,9 +127,15 @@ public class GluttonRole extends Role {
     
     PlayerUtils.addPassiveEffect(
       pl,
-      resistance > speed ? PotionEffectType.RESISTANCE : PotionEffectType.SPEED,
-      (4 + targets.size()) * 20,
-      Math.max(resistance, speed)
+      PotionEffectType.RESISTANCE,
+      (4 + resistance) * 20,
+      resistance
+    );
+    PlayerUtils.addPassiveEffect(
+      pl,
+      PotionEffectType.SPEED,
+      (4 + speed) * 20,
+      speed
     );
     
     PlayerUtils.addPassiveEffect(

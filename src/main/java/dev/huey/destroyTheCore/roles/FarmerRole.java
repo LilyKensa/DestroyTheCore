@@ -4,6 +4,7 @@ import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.managers.RolesManager;
 import dev.huey.destroyTheCore.records.PlayerData;
+import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import io.papermc.paper.datacomponent.DataComponentTypes;
@@ -62,6 +63,7 @@ public class FarmerRole extends Role {
     
     List<Player> teammates = PlayerUtils.getTeammates(pl).stream()
       .filter(p -> p != pl)
+      .filter(p -> LocUtils.near(p, pl, 10))
       .collect(Collectors.toList());
     Collections.shuffle(teammates);
     
