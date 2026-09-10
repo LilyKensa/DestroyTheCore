@@ -8,7 +8,6 @@ import org.bukkit.Material;
 import xyz.xenondevs.invui.item.BoundItem;
 import xyz.xenondevs.invui.item.Item;
 import xyz.xenondevs.invui.item.ItemBuilder;
-import xyz.xenondevs.invui.item.ItemProvider;
 
 public class DeleteShopItem {
   
@@ -17,14 +16,13 @@ public class DeleteShopItem {
     
     return BoundItem.builder()
       .setItemProvider(
-        (pl) -> (ItemProvider) new ItemBuilder(Material.REDSTONE)
+        (pl) -> new ItemBuilder(Material.REDSTONE)
           .setCustomName(
             TextUtils.$(
               "gui.buttons.delete-shop.title" + (confirming.get() ? "-confirm"
                 : "")
             )
           )
-          .build()
       )
       .addClickHandler((item, gui, click) -> {
         if (!confirming.get()) {
