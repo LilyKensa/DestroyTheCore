@@ -86,7 +86,7 @@ public class HackerRole extends Role {
           ),
           Placeholder.component(
             "side",
-            (self ? data.side : data.side.opposite()).titleComp()
+            (self ? data.side : data.side.opposite()).title()
           )
         )
       )

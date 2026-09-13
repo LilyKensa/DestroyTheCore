@@ -56,7 +56,7 @@ public abstract class Mission implements Listener {
     /** Broadcast when mission is ended */
     public void outro(Game.Side side) {
       List<TagResolver> placeholders = new ArrayList<>();
-      placeholders.add(Placeholder.component("side", side.titleComp()));
+      placeholders.add(Placeholder.component("side", side.title()));
       placeholders.add(
         Placeholder.component(
           "action",

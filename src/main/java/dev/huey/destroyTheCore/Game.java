@@ -380,15 +380,7 @@ public class Game {
       this.dyeColor = dyeColor;
     }
     
-    public String title() {
-      return TextUtils.$r(translateKey);
-    }
-    
-    public String pureTitle() {
-      return TextUtils.stripColor(title());
-    }
-    
-    public Component titleComp() {
+    public Component title() {
       return TextUtils.$(translateKey);
     }
     
@@ -533,7 +525,7 @@ public class Game {
       Team team = board.registerNewTeam(side.id);
       
       team.color(side.color);
-      team.displayName(side.titleComp());
+      team.displayName(side.title());
       
       team.setCanSeeFriendlyInvisibles(true);
       
@@ -1881,7 +1873,7 @@ public class Game {
         "game.core-attack.message",
         List.of(
           Placeholder.component("player", PlayerUtils.getName(pl)),
-          Placeholder.component("side", oppositeSide.titleComp()),
+          Placeholder.component("side", oppositeSide.title()),
           Placeholder.component("health", Component.text(ocd.coreHealth))
         )
       )
@@ -2580,7 +2572,7 @@ public class Game {
           pl,
           TextUtils.$(
             "game.side.join.success",
-            List.of(Placeholder.component("side", side.titleComp()))
+            List.of(Placeholder.component("side", side.title()))
           )
         );
         getPlayerData(pl).join(side);
@@ -2897,11 +2889,9 @@ public class Game {
           TextUtils.$(
             "game.missing-locs.message",
             List.of(
-              Placeholder.unparsed(
+              Placeholder.component(
                 "location",
-                TextUtils.stripColor(
-                  TextUtils.$r("game.missing-locs.locs." + name)
-                )
+                TextUtils.$("game.missing-locs.locs." + name).color(null)
               )
             )
           )
@@ -3306,7 +3296,7 @@ public class Game {
         TitlePart.SUBTITLE,
         TextUtils.$(
           "game.result.subtitles." + reasonKey,
-          List.of(Placeholder.component("side", winner.titleComp()))
+          List.of(Placeholder.component("side", winner.title()))
         )
       );
       p.playSound(

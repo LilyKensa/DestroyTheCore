@@ -37,7 +37,7 @@ public class BoardsManager {
         "",
         TextUtils.$r(
           "board.team",
-          List.of(Placeholder.component("side", data.side.titleComp()))
+          List.of(Placeholder.component("side", data.side.title()))
         )
       )
     );

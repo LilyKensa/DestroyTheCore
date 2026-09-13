@@ -69,7 +69,7 @@ public class SetTeamCommand extends Subcommand {
           List.of(
             Placeholder.component("player", PlayerUtils.getName(pl)),
             Placeholder.component("target", PlayerUtils.getName(target)),
-            Placeholder.component("side", side.titleComp())
+            Placeholder.component("side", side.title())
           )
         )
       );
@@ -91,7 +91,7 @@ public class SetTeamCommand extends Subcommand {
           "commands.join.made-self",
           List.of(
             Placeholder.component("player", PlayerUtils.getName(pl)),
-            Placeholder.component("side", side.titleComp())
+            Placeholder.component("side", side.title())
           )
         )
       );

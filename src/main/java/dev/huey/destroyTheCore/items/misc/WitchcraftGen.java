@@ -65,7 +65,7 @@ public class WitchcraftGen extends UsableItemGen {
             "items.witchcraft.announce.drop-ores",
             List.of(
               Placeholder.component("player", PlayerUtils.getName(pl)),
-              Placeholder.component("enemy", oppSide.titleComp())
+              Placeholder.component("enemy", oppSide.title())
             )
           )
         );
@@ -92,7 +92,7 @@ public class WitchcraftGen extends UsableItemGen {
             "items.witchcraft.announce.poison",
             List.of(
               Placeholder.component("player", PlayerUtils.getName(pl)),
-              Placeholder.component("enemy", oppSide.titleComp())
+              Placeholder.component("enemy", oppSide.title())
             )
           )
         );
@@ -117,7 +117,7 @@ public class WitchcraftGen extends UsableItemGen {
             "items.witchcraft.announce.add-skill-cooldown",
             List.of(
               Placeholder.component("player", PlayerUtils.getName(pl)),
-              Placeholder.component("enemy", oppSide.titleComp())
+              Placeholder.component("enemy", oppSide.title())
             )
           )
         );
@@ -177,7 +177,7 @@ public class WitchcraftGen extends UsableItemGen {
             "items.witchcraft.announce.unluck",
             List.of(
               Placeholder.component("player", PlayerUtils.getName(pl)),
-              Placeholder.component("enemy", oppSide.titleComp())
+              Placeholder.component("enemy", oppSide.title())
             )
           )
         );
@@ -199,7 +199,7 @@ public class WitchcraftGen extends UsableItemGen {
             "items.witchcraft.announce.add-respawn-time",
             List.of(
               Placeholder.component("player", PlayerUtils.getName(pl)),
-              Placeholder.component("enemy", oppSide.titleComp())
+              Placeholder.component("enemy", oppSide.title())
             )
           )
         );
@@ -216,7 +216,7 @@ public class WitchcraftGen extends UsableItemGen {
             "items.witchcraft.announce.ban-ores",
             List.of(
               Placeholder.component("player", PlayerUtils.getName(pl)),
-              Placeholder.component("enemy", oppSide.titleComp())
+              Placeholder.component("enemy", oppSide.title())
             )
           )
         );
@@ -243,7 +243,7 @@ public class WitchcraftGen extends UsableItemGen {
             "items.witchcraft.announce.glow",
             List.of(
               Placeholder.component("player", PlayerUtils.getName(pl)),
-              Placeholder.component("enemy", oppSide.titleComp())
+              Placeholder.component("enemy", oppSide.title())
             )
           )
         );
@@ -259,7 +259,7 @@ public class WitchcraftGen extends UsableItemGen {
             "items.witchcraft.announce.attack-core",
             List.of(
               Placeholder.component("player", PlayerUtils.getName(pl)),
-              Placeholder.component("enemy", oppSide.titleComp())
+              Placeholder.component("enemy", oppSide.title())
             )
           )
         );
@@ -274,7 +274,7 @@ public class WitchcraftGen extends UsableItemGen {
             "items.witchcraft.announce.attack-core-3",
             List.of(
               Placeholder.component("player", PlayerUtils.getName(pl)),
-              Placeholder.component("enemy", oppSide.titleComp())
+              Placeholder.component("enemy", oppSide.title())
             )
           )
         );
@@ -301,7 +301,7 @@ public class WitchcraftGen extends UsableItemGen {
             "items.witchcraft.announce.slowness",
             List.of(
               Placeholder.component("player", PlayerUtils.getName(pl)),
-              Placeholder.component("enemy", oppSide.titleComp())
+              Placeholder.component("enemy", oppSide.title())
             )
           )
         );
@@ -328,7 +328,7 @@ public class WitchcraftGen extends UsableItemGen {
             "items.witchcraft.announce.mining-fatigue",
             List.of(
               Placeholder.component("player", PlayerUtils.getName(pl)),
-              Placeholder.component("enemy", oppSide.titleComp())
+              Placeholder.component("enemy", oppSide.title())
             )
           )
         );
