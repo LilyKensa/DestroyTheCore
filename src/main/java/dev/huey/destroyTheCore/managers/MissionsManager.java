@@ -59,7 +59,7 @@ public class MissionsManager {
         new XpFountainMission(),
         new AngryBeesMission(),
         new SwapPosMission(),
-        new SwapAllPosMission(),
+        // new SwapAllPosMission(),
         new CovidMission(),
         new RandomRoleMission(),
         new FreeSoupMission(),
@@ -81,7 +81,7 @@ public class MissionsManager {
   public void start() {
     prefix = TextUtils.$("mission.prefix");
     
-    Mission.centerLoc = LocUtils.live(DTC.game.map.mission);
+    Mission.centerLoc = LocUtils.live(DTC.game.map.mission.center());
     
     Scoreboard board = Bukkit.getServer().getScoreboardManager()
       .getMainScoreboard();
@@ -123,7 +123,9 @@ public class MissionsManager {
       BossBar.Color.WHITE,
       BossBar.Overlay.PROGRESS
     );
-    for (Player p : Bukkit.getOnlinePlayers()) waitingBar.addViewer(p);
+    for (Player p : Bukkit.getOnlinePlayers()) {
+      waitingBar.addViewer(p);
+    }
     
     final int step = 20;
     new BukkitRunnable() {

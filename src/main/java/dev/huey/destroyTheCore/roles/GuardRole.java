@@ -54,7 +54,7 @@ public class GuardRole extends Role {
     if (
       LocUtils.near(
         Pos.of(pl),
-        LocUtils.selfSide(DTC.game.map.core, pl),
+        LocUtils.selfSide(DTC.game.map.core, pl).center(),
         15
       )
     ) {
@@ -72,14 +72,14 @@ public class GuardRole extends Role {
     if (
       LocUtils.near(
         Pos.of(pl),
-        LocUtils.enemySide(DTC.game.map.core, pl),
+        LocUtils.enemySide(DTC.game.map.core, pl).center(),
         15
       )
     ) {
       pl.sendActionBar(
         TextUtils.$(
           "roles.guard.near-enemy-core-warning",
-          List.of(Placeholder.unparsed("role", name))
+          List.of(Placeholder.component("role", name))
         )
       );
       if (DTC.ticksManager.isUpdateTick()) {
@@ -110,7 +110,7 @@ public class GuardRole extends Role {
         "roles.guard.skill.announce",
         List.of(
           Placeholder.component("player", PlayerUtils.getName(pl)),
-          Placeholder.unparsed("role", name)
+          Placeholder.component("role", name)
         )
       )
     );
@@ -124,7 +124,7 @@ public class GuardRole extends Role {
       if (
         LocUtils.near(
           Pos.of(e),
-          LocUtils.selfSide(DTC.game.map.core, pl),
+          LocUtils.selfSide(DTC.game.map.core, pl).center(),
           15
         )
       ) {

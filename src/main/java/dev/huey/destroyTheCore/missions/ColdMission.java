@@ -43,11 +43,8 @@ public class ColdMission extends TimedMission {
       
       for (Player p : PlayerUtils.allGaming()) {
         if (
-          PlayerUtils.allGaming().stream().anyMatch(
-            e -> !e.equals(
-              p
-            ) && LocUtils.near(e, p, 5)
-          )
+          PlayerUtils.allGaming().stream()
+            .anyMatch(e -> !e.equals(p) && LocUtils.near(e, p, 5))
         ) {
           isClose.add(p);
         }

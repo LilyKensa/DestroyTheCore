@@ -52,7 +52,9 @@ public class WoodsTool extends RegionTool {
     Set<Pos> set = new HashSet<>();
     
     region.forEachBlock(DTC.worldsManager.template, block -> {
-      if (Tag.LOGS.isTagged(block.getType())) set.add(Pos.of(block));
+      if (Tag.LOGS.isTagged(block.getType())) {
+        set.add(Pos.of(block));
+      }
     });
     DTC.game.map.woods = set;
   }

@@ -10,6 +10,7 @@ import xyz.xenondevs.invui.InvUI;
 
 public final class DTC extends JavaPlugin {
   
+  /** The global {@link JavaPlugin} instance */
   static public DTC instance;
   static public String version;
   
@@ -38,10 +39,12 @@ public final class DTC extends JavaPlugin {
   
   static public Game game = new Game();
   
+  boolean notEvenStarted = true;
+  
   @Override
   public void onEnable() {
     instance = this;
-    version = getDescription().getVersion();
+    version = getPluginMeta().getVersion();
     
     InvUI.getInstance().setPlugin(this);
     
@@ -66,9 +69,26 @@ public final class DTC extends JavaPlugin {
     configManager = new ConfigManager();
     ticksManager = new TicksManager();
     
-    for (String commandName : new String[]{
-      "dtc", "rejoin", "night-vision", "shout", "broadcast", "shuffle-team", "warp", "skip", "edit", "reset", "revive", "language", "stats", "pause", "suicide"
-    }) {
+    for (
+      String commandName : new String[]{
+        "dtc",
+        "rejoin",
+        "night-vision",
+        "shout",
+        "broadcast",
+        "shuffle-team",
+        "warp",
+        "skip",
+        "edit",
+        "reset",
+        "revive",
+        "language",
+        "stats",
+        "pause",
+        "suicide",
+        "ping"
+      }
+    ) {
       PluginCommand command = getCommand(commandName);
       if (command == null) {
         CoreUtils.error("Command not found: " + commandName);
@@ -90,6 +110,7 @@ public final class DTC extends JavaPlugin {
     glowManager.init();
     recipesManager.init();
     rolesManager.init();
+    guiManager.init();
     tipsManager.init();
     advancementsManager.init();
     antiCheatManager.init();
@@ -99,12 +120,16 @@ public final class DTC extends JavaPlugin {
     
     prefix = TextUtils.$("general.plugin-prefix");
     
+    notEvenStarted = false;
     CoreUtils.log("Enabled");
   }
   
   @Override
   public void onDisable() {
-    configManager.save();
+    if (notEvenStarted) return;
+    
+    configManager.exit();
+    worldsManager.exit();
     
     CoreUtils.log("Disabled");
   }

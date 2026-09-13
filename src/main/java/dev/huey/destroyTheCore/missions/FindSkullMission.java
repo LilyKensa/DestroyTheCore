@@ -23,6 +23,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerAttemptPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 public class FindSkullMission extends TimedMission implements Listener {
@@ -30,6 +31,10 @@ public class FindSkullMission extends TimedMission implements Listener {
   static public final NamespacedKey dataNamespace = new NamespacedKey(
     DTC.instance,
     "find-skull-mission-item"
+  );
+  static public final NamespacedKey expiredNamespace = new NamespacedKey(
+    DTC.instance,
+    "find-skull-mission-item-expired"
   );
   
   static public ItemStack getSkullItem(Player pl) {
@@ -49,13 +54,12 @@ public class FindSkullMission extends TimedMission implements Listener {
   }
   
   static public boolean isSkullItem(ItemStack item) {
-    return (item != null &&
-      !item.isEmpty() &&
-      item.hasItemMeta() &&
-      item
-        .getItemMeta().getPersistentDataContainer().has(
-          dataNamespace
-        ));
+    if (item == null || item.isEmpty()) return false;
+    if (!item.hasItemMeta()) return false;
+    
+    PersistentDataContainer container = item.getItemMeta()
+      .getPersistentDataContainer();
+    return container.has(dataNamespace) && !container.has(expiredNamespace);
   }
   
   static public Location randomLocation(Location center, double radius) {
@@ -100,6 +104,8 @@ public class FindSkullMission extends TimedMission implements Listener {
     );
   }
   
+  int count = 0;
+  
   public FindSkullMission() {
     super("find-skull");
   }
@@ -108,6 +114,8 @@ public class FindSkullMission extends TimedMission implements Listener {
   
   @Override
   public void innerStart() {
+    count = 0;
+    
     for (Player p : PlayerUtils.allGaming()) {
       Location skullLoc = randomLocation(
         centerLoc.clone().add(0, RandomUtils.range(20, 30), 0),
@@ -120,6 +128,7 @@ public class FindSkullMission extends TimedMission implements Listener {
       itemEntity.setOwner(p.getUniqueId());
       
       skullEntities.add(itemEntity.getUniqueId());
+      count++;
     }
   }
   
@@ -132,15 +141,28 @@ public class FindSkullMission extends TimedMission implements Listener {
     if (!ev.getFlyAtPlayer()) return;
     
     Player pl = ev.getPlayer();
-    
     Item itemEntity = ev.getItem();
-    ItemStack item = itemEntity.getItemStack();
+    if (itemEntity.getOwner() != pl.getUniqueId()) return;
     
+    ItemStack item = itemEntity.getItemStack();
     if (!isSkullItem(item)) return;
+    
+    item.editMeta(meta -> {
+      meta.getPersistentDataContainer().set(
+        expiredNamespace,
+        PersistentDataType.BOOLEAN,
+        true
+      );
+    });
     
     CoreUtils.setTickOut(() -> {
       pl.getInventory().remove(item);
       giveTreasure(pl);
+      
+      count--;
+      if (count <= 0) {
+        end();
+      }
     });
   }
   

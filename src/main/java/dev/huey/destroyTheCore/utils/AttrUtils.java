@@ -20,7 +20,7 @@ public class AttrUtils {
     return new AttributeModifier(
       new NamespacedKey(
         DTC.instance,
-        "add-%s-%g".formatted(name, amount)
+        "add-%s-%.2f".formatted(name, amount)
       ),
       amount,
       AttributeModifier.Operation.ADD_NUMBER,

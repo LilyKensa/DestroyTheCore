@@ -4,7 +4,9 @@ import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.itemGens.UsableItemGen;
 import dev.huey.destroyTheCore.managers.ItemsManager;
+import dev.huey.destroyTheCore.records.Pos;
 import dev.huey.destroyTheCore.records.SideData;
+import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import java.util.List;
@@ -31,6 +33,15 @@ public class TruceGen extends UsableItemGen {
     if (DTC.game.phase.isAfter(Game.Phase.DoubleDamage)) {
       pl.sendActionBar(TextUtils.$("items.truce.too-late"));
       return false;
+    }
+    
+    Pos enemyCore = LocUtils.enemySide(DTC.game.map.core, pl).center();
+    
+    for (Player p : PlayerUtils.getTeammates(pl)) {
+      if (LocUtils.near(Pos.of(p), enemyCore, 20)) {
+        pl.sendActionBar(TextUtils.$("items.truce.enemy-core"));
+        return false;
+      }
     }
     
     return true;

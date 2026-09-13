@@ -21,6 +21,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class AssignClearInvGen extends UsableItemGen {
   
+  static final int cooldown = 10 * 60 * 20;
+  
   public AssignClearInvGen() {
     super(ItemsManager.ItemKey.ASSIGN_CLEAR_INV, Material.BAMBOO_SIGN, true);
   }
@@ -45,8 +47,8 @@ public class AssignClearInvGen extends UsableItemGen {
   
   @Override
   public boolean canUse(Player pl) {
-    Game.Side side = DTC.game.getPlayerData(pl).side;
-    SideData sideData = DTC.game.getSideData(side);
+    PlayerData data = DTC.game.getPlayerData(pl);
+    SideData sideData = DTC.game.getSideData(data.side);
     
     if (sideData.clearInvCooldown > 0) {
       pl.sendActionBar(
@@ -64,7 +66,7 @@ public class AssignClearInvGen extends UsableItemGen {
     }
     
     if (
-      PlayerUtils.getEnemies(side).stream()
+      PlayerUtils.getEnemies(data.side).stream()
         .noneMatch(p -> {
           PlayerData d = DTC.game.getPlayerData(p);
           return d.alive && !d.clearedInv;
@@ -79,14 +81,18 @@ public class AssignClearInvGen extends UsableItemGen {
   
   @Override
   public void use(Player pl, Block block) {
-    Game.Side side = DTC.game.getPlayerData(pl).side;
-    SideData sideData = DTC.game.getSideData(side);
-    if (side.equals(Game.Side.SPECTATOR)) return;
+    PlayerData data = DTC.game.getPlayerData(pl);
+    SideData sideData = DTC.game.getSideData(data.side);
+    if (data.side.equals(Game.Side.SPECTATOR)) return;
     
-    sideData.clearInvCooldown = 10 * 60 * 20;
+    sideData.clearInvCooldown = cooldown;
+    
+    for (Player p : PlayerUtils.getTeammates(pl)) {
+      p.setCooldown(iconType, cooldown);
+    }
     
     Player target = RandomUtils.pick(
-      PlayerUtils.getEnemies(side).stream()
+      PlayerUtils.getEnemies(data.side).stream()
         .filter(p -> {
           PlayerData d = DTC.game.getPlayerData(p);
           return d.alive && !d.clearedInv;
@@ -124,15 +130,15 @@ public class AssignClearInvGen extends UsableItemGen {
               if (
                 item == null ||
                   item.isEmpty() ||
-                  item
-                    .getType() == Material.KNOWLEDGE_BOOK ||
-                  DTC.rolesManager
-                    .isExclusiveItem(item)
+                  item.getType() == Material.KNOWLEDGE_BOOK ||
+                  DTC.rolesManager.isExclusiveItem(item)
               ) continue;
               
               inv.setItem(index, ItemStack.empty());
               
-              summonAllayWithItem(LocUtils.hitboxCenter(target), item);
+              if (!DTC.itemsManager.isTrash(item)) {
+                summonAllayWithItem(LocUtils.hitboxCenter(target), item);
+              }
             }
           }
         }.runTaskTimer(DTC.instance, 0, 2);
@@ -175,6 +181,6 @@ public class AssignClearInvGen extends UsableItemGen {
       }
     );
     
-    DTC.game.getPlayerData(pl).addExtraExp(25);
+    data.addExtraExp(25);
   }
 }

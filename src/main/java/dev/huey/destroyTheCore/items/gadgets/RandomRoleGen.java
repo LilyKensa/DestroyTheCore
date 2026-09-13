@@ -54,7 +54,7 @@ public class RandomRoleGen extends UsableItemGen {
         List.of(
           Placeholder.component("player", PlayerUtils.getName(pl)),
           Placeholder.component("item", getItem().effectiveName()),
-          Placeholder.unparsed("role", role.name)
+          Placeholder.component("role", role.name)
         )
       )
     );

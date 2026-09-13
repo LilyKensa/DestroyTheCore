@@ -52,7 +52,7 @@ game:
       desc: "Missions started / Diamonds opened"
     death-penalty:
       name: "Death Penalty"
-      desc: "Each death erases 1 core health"
+      desc: "Ores cooldown halved / Death reduces core health"
     double-core-damage:
       name: "Double Core Damage"
       desc: "Core damage doubled"
@@ -224,7 +224,7 @@ mission:
     remove-respawn-time: "each person <yellow>reduced 20 sin</yellow>!"
     ban-ores: "their ores are <light_purple>banned for 2 minutes</light_purple>!"
     ban-shop: "their shop are <light_purple>banned for 2 minutes</light_purple>!"
-    attack-core: "their core health is <light_purple>reduced by 10</light_purple>!"
+    attack-core: "their core health is <light_purple>reduced by 3</light_purple>!"
     summon-pig: "they got <light_purple><name></light_purple>!"
     pig-name: "Stupid Piggy Mates"
     void: "<player> is <light_purple>teleported to the backroom</light_purple>!"
@@ -311,6 +311,8 @@ world:
 commands:
   root:
     github: "Go to <click:open_url:'https://github.com/LilyKensa/DestroyTheCore'><u>https://github.com/LilyKensa/DestroyTheCore</u></click> for help"
+  ping:
+    result: "Your ping is <value>ms"
   suicide:
     bad-time: "<red>You can't suicide right now!</red>"
     already-dead: "<red>You're already dead!</red>"
@@ -319,6 +321,10 @@ commands:
   pause:
     true: "<green>Game paused by <player></green>"
     false: "<green>Game resumed <player></green>"
+  cooldown:
+    player-not-found: "<red>Player not found!</red>"
+    made-self: "<green>Skill cooldown cleared</green>"
+    made-other: "<green>Skill cooldown cleared for <player></green>"
   level:
     changed: "<aqua><player>'s level is now <value>!</aqua>"
   night-vision:
@@ -353,6 +359,7 @@ commands:
     made-self: "<player> changed role to <yellow><role></yellow>"
   revive:
     no-game: "<red>There's not a match right now!</red>"
+    player-not-found: "<red>Player not found!</red>"
     made-other: "<player> revived <target>"
     made-self: "<player> revived themself"
   skip:
@@ -469,10 +476,15 @@ items:
   random-role:
     name: "<light_purple>Job Changing Book</light_purple>"
     desc-1: "After the blessing of the great bodhisattva!"
-    desc-2: "By using this, you will be randomly assigned to another role"
+    desc-2: "By using this, you will be <yellow>randomly</yellow> assigned to another role"
     confirm: "<yellow>Crouch to confirm!</yellow>"
-    announce: "<player> used <item> and became <yellow><role></yellow>"
+    announce: "<player> used <item>, became <yellow><role></yellow>"
   choose-role:
+    name: "<light_purple>Job Changing Book</light_purple>"
+    desc-1: "After the blessing of the great bodhisattva!"
+    desc-2: "By using this, you can choose a <yellow>specific</yellow> role"
+    announce: "<player> used <item>, became <yellow><role></yellow>"
+  role-selector:
     name: "<aqua>Role Selection</aqua>"
     no-team: "<red>Join a team first!</red>"
     locked: "<red>You haven't unlocked this role yet!</red>"
@@ -531,6 +543,12 @@ items:
   gold-digger-chestplate:
     name: "<aqua>Luminous Warning Shirt</aqua>"
     desc-1: "- <red>Bound item for Gold Diggers</red>"
+  darkbringer-boots:
+    name: "<aqua>Dark Crawler</aqua>"
+    desc-1: "- <red>Bound item for Darkbringers</red>"
+  fairy-elytra:
+    name: "<aqua>Broken Wings</aqua>"
+    desc-1: "- <red>Bound item for Fairies</red>"
   provocateur-helmet:
     name: "<aqua>Cardboard Box</aqua>"
     desc-1: "- <red>Bound item for Provocateurs</red>"
@@ -542,7 +560,7 @@ items:
     desc-1: "- <red>Bound item for Constructors</red>"
   kekkai-master-leggings:
     name: "<aqua>Rune Pants</aqua>"
-    desc-1: "- <red>Bound item for Kekkai Masters</red>"
+    desc-1: "- <red>Bound item for Kekkai Masters & Sorcerers</red>"
   mole-boots:
     name: "<aqua>Claw Seal</aqua>"
     desc-1: "- <red>Bound item for Moles</red>"
@@ -591,9 +609,11 @@ items:
     name: "[<white>Token</white>] <light_purple>Truce</light_purple>"
     desc-1: "<gold>Condition</gold>: <yellow>Must be in phase 1 ~ 4</yellow>"
     desc-2: "<gold>Condition</gold>: <yellow>Can only be used once in a match</yellow>"
-    desc-3: "Keeps players away from their enemy's base in the next 5 minutes"
+    desc-3: "<gold>Condition</gold>: <yellow>No teammates can be near enemy's core when using this</yellow>"
+    desc-4: "Keeps players away from their enemy's base in the next 5 minutes"
     too-late: "<red>It's too late to use this!</red>"
     duped-usage: "<red>You have used the truce already!</red>"
+    enemy-core: "<red>All teammates must leave enemy's core!</red>"
     announce: "<player> used <item>"
   levi-stick:
     name: "<aqua>Stick of Levitation</aqua>"
@@ -812,10 +832,10 @@ roles:
     feature-5: "Forever gets Slowness I"
     item:
       name: "<aqua>Gold Digging Pickaxe</aqua>"
-      detail: "Efficiency III iron pickaxe"
+      detail: "Efficiency V iron pickaxe"
     skill:
       name: "Greedy Heart"
-      desc-1: "<dark_purple>Gets Luck III (15s)</dark_purple>"
+      desc-1: "<dark_purple>Gets Luck II (15s)</dark_purple>"
       announce: "<player> used <yellow><role></yellow>'s skill, increased luck!"
     ores-bonus: "<aqua>Bonus <ore> by <player></aqua>"
   ranger:
@@ -826,7 +846,7 @@ roles:
     feature-2: "Receives 20 free arrows each phase"
     item:
       name: "<aqua>Storm Crossbow</aqua>"
-      detail: "Quick Charge III crossbow"
+      detail: "Piercing II crossbow"
     skill:
       name: "Hunter Trap"
       desc-1: "<dark_purple>Places a trap (Max 3 at a time)</dark_purple>"
@@ -839,7 +859,7 @@ roles:
         enemy-unknown: "You fell into someone's trap!"
   kekkai-master:
     name: "Kekkai Master"
-    desc-1: "Auxiliary role, can place various different barriers"
+    desc-1: "<gold>Auxiliary role, can place various different barriers</gold>"
     feature-1: "Forever Fire Resistance I"
     feature-2: "Standing in a kekkai while holding Kekkai Staff keeps it alive"
     item:
@@ -862,7 +882,7 @@ roles:
       desc-13: "<dark_purple>Diamond Block - Strength III (180s)</dark_purple>"
       desc-14: "<dark_purple>Mysterious Relic - Random Effect III (10s)</dark_purple>"
       desc-15: "<dark_purple>Soul Fragment - Speed, Regeneration, Strength II, adds sin (30s)</dark_purple>"
-      desc-16: "<dark_purple>A plus kekkai takes 6 times the normal skill cooldown</dark_purple>"
+      desc-16: "<dark_purple>A kekkai with block takes 6 times the normal skill cooldown</dark_purple>"
       announce: "<player> used <yellow><role></yellow>'s skill, placed a <aqua><type></aqua> kekkai!"
       inside-kekkai: "<red>Replacing <amount> kekkais, crouch to confirm!</red>"
       no-material: "<red>Invalid material on off-hand!</red>"
@@ -895,7 +915,7 @@ roles:
     skill:
       name: "Midnight Assault"
       desc-1: "<dark_purple>Can only be used when invisible</dark_purple>"
-      desc-2: "<dark_purple>Teleports to the nearest person (teammates or enemy!)</dark_purple>"
+      desc-2: "<dark_purple>Teleports to the nearest enemy within 10 blocks</dark_purple>"
       desc-3: "<dark_purple>Gain invisible for another 4 seconds & Strength III</dark_purple>"
       not-invis: "<red>You need to be invisible to use this skill!</red>"
       no-target: "<red>No target to teleport to!</red>"
@@ -1028,3 +1048,110 @@ roles:
         enemy: "invasion"
     potion-warning: "<red>You can't drink potions!</red>"
     invis-warning: "<red>You can't turn invisible!</red>"
+  gambler:
+    name: "Gambler"
+    desc-1: "<gold>99% of the gamblers quited before they win big!</gold>"
+    feature-1: "Sins reduce every 10 second"
+    item:
+      name: "<aqua>Casino Admission Ticket</aqua>"
+      detail: "Lure III Name Tag"
+    skill:
+      name: "Let's Go Gambling"
+      desc-1: "<dark_purple>Gambles the ores on the offhand</dark_purple>"
+      desc-2: "<dark_purple>No one actually knows the chances of winning</dark_purple>"
+      announce: "<player> used <yellow><role></yellow>'s skill, gambled <item> × <dark_aqua><amount></dark_aqua>!"
+      no-material: "<red>You can't gamble this item!</red>"
+      too-few: "<red>You need to gamble more than 10 items!<red>"
+      result:
+        bad: "<red>Try Again!</red>"
+        good: "<aqua><ratio>× rewards!</aqua>"
+  sorcerer:
+    name: "Sorcerer"
+    desc-1: "<gold>Can trigger spells with different effects</gold>"
+    feature-1: "Immune to Wither damage"
+    item:
+      name: "<aqua>Spell Scythe</aqua>"
+      detail: "Sharpness V diamond hoe"
+    skill:
+      name: "Spell Activate"
+      desc-1: "<dark_purple>Casts a spell based on the material on off-hand</dark_purple>"
+      desc-2: "<dark_purple>Iron Ingot - Slowness II (10s)</dark_purple>"
+      desc-3: "<dark_purple>Gold Ingot - Hunger II (10s)</dark_purple>"
+      desc-4: "<dark_purple>Redstone - Darkness (10s)</dark_purple>"
+      desc-5: "<dark_purple>Emerald - Weakness (10s)</dark_purple>"
+      desc-6: "<dark_purple>Lapis Lazuli - Poison (5s)</dark_purple>"
+      desc-7: "<dark_purple>Diamond - Jumping turns 180° (10s)</dark_purple>"
+      desc-8: "<dark_purple>Iron Block - Slowness IV (10s)</dark_purple>"
+      desc-9: "<dark_purple>Gold Block - Hunger V (10s)</dark_purple>"
+      desc-10: "<dark_purple>Redstone Block - Blindness (10s)</dark_purple>"
+      desc-11: "<dark_purple>Emerald Block - Weakness II (10s)</dark_purple>"
+      desc-12: "<dark_purple>Lapis Block - Wither II (10s)</dark_purple>"
+      desc-13: "<dark_purple>Diamond Block - Jumping turns randomly (10s)</dark_purple>"
+      desc-14: "<dark_purple>Mysterious Relic - Random effect III (10s)</dark_purple>"
+      desc-15: "<dark_purple>Soul Fragment - Slowness & Darkness & Weakness, costs 30 sin (10s)</dark_purple>"
+      desc-16: "<dark_purple>A spell with block takes 3 times the normal skill cooldown</dark_purple>"
+      announce: "<player> used <yellow><role></yellow>'s skill, casted a <aqua><type></aqua>!"
+      no-material: "<red>Invalid material on off-hand!</red>"
+      no-target: "<red>No target to cast spell!</red>"
+    spells:
+      slow: "Slow"
+      hunger: "Hunger"
+      blind: "Blind"
+      weak: "Weak"
+      poison: "Poison"
+      turn: "Turn"
+      slow-plus: "Slow +"
+      hunger-plus: "Hunger +"
+      blind-plus: "Blind +"
+      weak-plus: "Weak +"
+      poison-plus: "Poison +"
+      turn-plus: "Turn +"
+      chaos: "Chaos"
+      soul: "Soul"
+  fairy:
+    name: "Fairy"
+    desc-1: "<gold>Fly up and sprinkle magic powders on teammates or enemies!</gold>"
+    feature-1: "Lose 80% max health when using skill"
+    feature-2: "Get Slowness II (5s) when landing"
+    item:
+      name: "<aqua>Wind Bow</aqua>"
+      detail: "Punch I bow"
+    skill:
+      name: "Sprinkle Flowers"
+      desc-1: "<dark_purple>The elytra repair briefly and bounce up to toss flowers</dark_purple>"
+      desc-2: "<dark_purple>- Teammates receive Instant Heal and Speed II (10s)</dark_purple>"
+      desc-3: "<dark_purple>- Enemies receive Wither II and Slow II (10s)</dark_purple>"
+      desc-4: "<dark_purple>The elytra are destroyed again upon landing</dark_purple>"
+      announce: "<player> used <yellow><role></yellow>'s skill, started flying!"
+  darkbringer:
+    name: "Darkbringer"
+    desc-1: "<gold>The person you fear most in the darkness</gold>"
+    feature-1: "Gains Resistence I when light level is less than 7"
+    feature-2: "Gains Darkness I otherwise"
+    item:
+      name: "<aqua>Dark Runes</aqua>"
+      detail: "Protection II echo shard"
+    skill:
+      name: "Dark Whispers"
+      desc-1: "<dark_purple>Apply Darkness effect to nearest enemy within 10 blocks</dark_purple>"
+      desc-2: "<dark_purple>- 10s when you're in the dark</dark_purple>"
+      desc-3: "<dark_purple>- 3s when not</dark_purple>"
+      desc-4: "<dark_purple>Targeting the same enemy for 5 times (each within 15s)</dark_purple>"
+      desc-5: "<dark_purple>will release a sonic boom, dealing a fixed damage of 8 hearts</dark_purple>"
+      desc-6: "<dark_purple>Upon releasing, there is an extra 100s cooldown</dark_purple>"
+      announce: "<player> used <yellow><role></yellow>'s skill, darkened <target>! (<aqua><count></aqua>/<dark_aqua><max></dark_aqua>)"
+      announce-boom: "<player> used <yellow><role></yellow>'s skill, trigger sonic boom to <target>!"
+      no-target: "<red>No target to darken!</red>"
+  farmer:
+    name: "Farmer"
+    desc-1: "<gold>Why fight? Growing crops is so much fun!</gold>"
+    feature-1: "Double speed when growing nearby crops"
+    item:
+      name: "<aqua>Tiller</aqua>"
+      detail: "Fortune III iron hoe"
+    skill:
+      name: "Meal Time"
+      desc-1: "<dark_purple>Apply the food held in offhand evenly among teammates within 10 blocks.</dark_purple>"
+      announce: "<player> used <yellow><role></yellow>'s skill, fed teammates!"
+      no-material: "<red>Invalid off-hand item!</red>"
+      all-full: "<red>All your teammates are full!</red>"

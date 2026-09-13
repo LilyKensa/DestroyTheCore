@@ -170,6 +170,10 @@ public class Pos implements ConfigurationSerializable {
     return floor().add(0.5, 0.5, 0.5);
   }
   
+  public Pos spawnPoint() {
+    return center().add(0, -0.25, 0);
+  }
+  
   public boolean isSameBlockAs(Pos that) {
     Pos a = this.floor();
     Pos b = that.floor();

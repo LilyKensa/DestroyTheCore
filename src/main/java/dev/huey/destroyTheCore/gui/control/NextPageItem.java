@@ -5,39 +5,40 @@ import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
-import xyz.xenondevs.invui.gui.PagedGui;
-import xyz.xenondevs.invui.item.ItemProvider;
-import xyz.xenondevs.invui.item.builder.ItemBuilder;
-import xyz.xenondevs.invui.item.impl.controlitem.PageItem;
+import xyz.xenondevs.invui.item.BoundItem;
+import xyz.xenondevs.invui.item.ItemBuilder;
 
-public class NextPageItem extends PageItem {
+public class NextPageItem {
   
-  public NextPageItem() {
-    super(true);
-  }
-  
-  @Override
-  public ItemProvider getItemProvider(PagedGui<?> gui) {
-    ItemBuilder builder = new ItemBuilder(
-      gui.hasNextPage() ? Material.GLOWSTONE_DUST : Material.GUNPOWDER
-    );
-    builder.setDisplayName(
-      TextUtils.$r(
-        "gui.buttons.next-page.title"
+  static public final BoundItem it = BoundItem.pagedBuilder()
+    .setItemProvider(
+      (pl, gui) -> new ItemBuilder(
+        gui.getPage() < gui.getPageCount() - 1
+          ? Material.GLOWSTONE_DUST
+          : Material.GUNPOWDER
       )
-    ).addLoreLines(
-      gui.hasNextPage() ? TextUtils.$r(
-        "gui.buttons.next-page.desc",
-        List.of(
-          Placeholder.component(
-            "next",
-            Component.text(gui.getCurrentPage() + 2)
-          ),
-          Placeholder.component("max", Component.text(gui.getPageAmount()))
+        .setCustomName(
+          TextUtils.$(
+            "gui.buttons.next-page.title"
+          )
         )
-      ) : TextUtils.$r("gui.buttons.next-page.desc-end")
-    );
-    
-    return builder;
-  }
+        .addLoreLines(
+          gui.getPage() < gui.getPageCount() - 1
+            ? TextUtils.$(
+              "gui.buttons.next-page.desc",
+              List.of(
+                Placeholder.component(
+                  "next",
+                  Component.text(gui.getPage() + 2)
+                ),
+                Placeholder.component("max", Component.text(gui.getPageCount()))
+              )
+            )
+            : TextUtils.$("gui.buttons.next-page.desc-end")
+        )
+    )
+    .addClickHandler((item, gui, click) -> {
+      gui.setPage(gui.getPage() + 1);
+    })
+    .build();
 }

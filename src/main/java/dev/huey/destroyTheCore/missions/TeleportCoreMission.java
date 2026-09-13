@@ -19,9 +19,8 @@ public class TeleportCoreMission extends InstantMission {
       p.teleport(
         LocUtils.live(
           LocUtils.selfSide(
-            LocUtils.toSpawnPoint(
-              RandomUtils.pick(DTC.game.map.spawnpoints)
-            ),
+            RandomUtils.pick(DTC.game.map.spawnpoints)
+              .spawnPoint(),
             p
           )
         )

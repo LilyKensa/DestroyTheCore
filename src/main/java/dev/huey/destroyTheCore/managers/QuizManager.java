@@ -55,7 +55,23 @@ public class QuizManager {
       
       PlayerData data = DTC.game.getPlayerData(pl);
       
-      if (correct) data.quizQuota--;
+      if (correct) {
+        data.quizQuota--;
+        
+        if (DTC.ticksManager.ticksCount - startTime < 10) {
+          DTC.antiCheatManager.track(pl, AntiCheatManager.Cheat.QUIZ_SPEED, 50);
+        }
+        else if (DTC.ticksManager.ticksCount - startTime < 40) {
+          DTC.antiCheatManager.track(pl, AntiCheatManager.Cheat.QUIZ_SPEED, 20);
+        }
+        else {
+          DTC.antiCheatManager.track(
+            pl,
+            AntiCheatManager.Cheat.QUIZ_SPEED,
+            -40
+          );
+        }
+      }
       
       send(
         pl,
@@ -67,16 +83,6 @@ public class QuizManager {
           )
         )
       );
-      
-      if (DTC.ticksManager.ticksCount - startTime < 10) {
-        DTC.antiCheatManager.track(pl, AntiCheatManager.Cheat.QUIZ_SPEED, 50);
-      }
-      else if (DTC.ticksManager.ticksCount - startTime < 40) {
-        DTC.antiCheatManager.track(pl, AntiCheatManager.Cheat.QUIZ_SPEED, 20);
-      }
-      else {
-        DTC.antiCheatManager.track(pl, AntiCheatManager.Cheat.QUIZ_SPEED, -20);
-      }
       
       pl.playSound(
         pl.getLocation(),

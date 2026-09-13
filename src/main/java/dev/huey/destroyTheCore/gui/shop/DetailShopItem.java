@@ -2,54 +2,46 @@ package dev.huey.destroyTheCore.gui.shop;
 
 import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
-import dev.huey.destroyTheCore.bases.GUIItem;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.translation.GlobalTranslator;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import xyz.xenondevs.invui.item.ItemProvider;
-import xyz.xenondevs.invui.item.builder.ItemBuilder;
+import xyz.xenondevs.invui.item.BoundItem;
+import xyz.xenondevs.invui.item.Item;
+import xyz.xenondevs.invui.item.ItemBuilder;
 
-public class DetailShopItem extends GUIItem {
+public class DetailShopItem {
   
-  Game.Shop shop;
-  
-  public DetailShopItem(Game.Shop shop) {
-    this.shop = shop;
-  }
-  
-  @Override
-  public ItemProvider getItemProvider() {
-    return new ItemBuilder(Material.VILLAGER_SPAWN_EGG).setDisplayName(
-      TextUtils.$r("gui.buttons.detail-shop.title")
-    ).addLoreLines(
-      TextUtils.$r(
-        "gui.buttons.detail-shop.desc",
-        List.of(
-          Placeholder.component(
-            "type",
-            TextUtils.$("gui.villagers." + shop.biome.getKey().getKey())
-          ),
-          Placeholder.component(
-            "profession",
-            GlobalTranslator.render(
-              Component.translatable(shop.prof.translationKey()),
-              DTC.translationsManager.currentLocale
+  static public Item of(Game.Shop shop) {
+    return BoundItem.builder()
+      .setItemProvider(
+        new ItemBuilder(Material.VILLAGER_SPAWN_EGG)
+          .setCustomName(TextUtils.$("gui.buttons.detail-shop.title"))
+          .addLoreLines(
+            TextUtils.$(
+              "gui.buttons.detail-shop.desc",
+              List.of(
+                Placeholder.component(
+                  "type",
+                  TextUtils.$("gui.villagers." + shop.biome.getKey().getKey())
+                ),
+                Placeholder.component(
+                  "profession",
+                  GlobalTranslator.render(
+                    Component.translatable(shop.prof.translationKey()),
+                    DTC.translationsManager.currentLocale
+                  )
+                )
+              )
             )
           )
-        )
+          .build()
       )
-    );
-  }
-  
-  @Override
-  public void handleClick(ClickType click, Player pl, InventoryClickEvent ev) {
-    DTC.guiManager.postClick = true;
-    DTC.guiManager.openShopDetailEditor(pl, shop);
+      .addClickHandler((item, gui, click) -> {
+        DTC.guiManager.openShopDetailEditor(click.player(), shop);
+      })
+      .build();
   }
 }

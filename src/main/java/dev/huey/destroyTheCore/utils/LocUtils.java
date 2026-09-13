@@ -42,10 +42,6 @@ public class LocUtils {
     return pos.toLoc(DTC.worldsManager.lobby);
   }
   
-  static public Location template(Pos pos) {
-    return pos.toLoc(DTC.worldsManager.template);
-  }
-  
   static public Location live(Pos pos) {
     return pos.toLoc(DTC.worldsManager.live);
   }
@@ -56,14 +52,6 @@ public class LocUtils {
   
   static public boolean inLobby(Entity e) {
     return inLobby(e.getLocation());
-  }
-  
-  static public boolean inTemplate(Location loc) {
-    return isSameWorld(loc.getWorld(), DTC.worldsManager.template);
-  }
-  
-  static public boolean inTemplate(Entity e) {
-    return inTemplate(e.getLocation());
   }
   
   static public boolean inLive(Location loc) {
@@ -106,10 +94,8 @@ public class LocUtils {
   /**
    * {@link #toBlockCenter}, but it's 0.25 up from the ground, instead of 0.5
    */
-  static public Pos toSpawnPoint(Pos pos) {
-    pos = pos.center().add(0, -0.25, 0);
-    pos.setRotation(CoreUtils.snapAngle(pos.getYaw()), 5);
-    return pos;
+  static public Location toSpawnPoint(Location loc) {
+    return Pos.of(loc).spawnPoint().toLoc(loc.getWorld());
   }
   
   static public boolean closeEnough(Location target, Location source) {
@@ -125,6 +111,14 @@ public class LocUtils {
   
   static public Location hitboxCenter(Entity e) {
     return e.getBoundingBox().clone().getCenter().toLocation(e.getWorld());
+  }
+  
+  static public boolean onGround(Location loc) {
+    return loc.add(0, -1, 0).getBlock().isCollidable();
+  }
+  
+  static public boolean onGround(Entity e) {
+    return onGround(e.getLocation());
   }
   
   /** Ender chest animation, as we use custom ender chests */
@@ -152,7 +146,7 @@ public class LocUtils {
     
     // Send the packet to all players in the world who are near the block
     for (Player p : loc.getWorld().getPlayers()) {
-      if (near(Pos.of(p), Pos.of(loc), 64)) {
+      if (near(Pos.of(p), Pos.of(loc).center(), 64)) {
         ProtocolLibrary.getProtocolManager().sendServerPacket(p, packet);
         p.playSound(
           loc,
@@ -195,63 +189,56 @@ public class LocUtils {
     loc.getBlock().setType(type);
     
     ParticleUtils.cloud(
-      PlayerUtils.all(),
       loc
     );
   }
   
   static public boolean near(Pos a, Pos b, double dist) {
-    return a.center().distSq(b.center()) <= dist * dist;
+    return a.distSq(b) <= dist * dist;
   }
   
   static public boolean near(Entity a, Entity b, double dist) {
-    return near(Pos.of(a.getLocation()), Pos.of(b), dist);
+    return near(Pos.of(a), Pos.of(b), dist);
   }
   
-  static public boolean nearAnyCore(Location loc, int dist) {
+  static public boolean centerNear(Pos a, Pos b, double dist) {
+    return near(a.center(), b.center(), dist);
+  }
+  
+  static public boolean centerNearCore(Location loc, int dist) {
     if (!isSameWorld(loc.getWorld(), DTC.worldsManager.live))
       return false;
     
     Pos posRed = DTC.game.map.core;
     if (posRed == null) return false;
     
-    for (Pos pos : new Pos[]{
-      posRed, LocUtils.flip(posRed)
-    }) {
-      if (near(Pos.of(loc), pos, dist)) return true;
+    for (
+      Pos pos : new Pos[]{
+        posRed,
+        LocUtils.flip(posRed)
+      }
+    ) {
+      if (near(Pos.of(loc), pos.center(), dist)) return true;
     }
     
     return false;
   }
   
-  static public boolean nearSpawn(Location loc) {
-    Pos pos = Pos.of(loc);
-    
-    for (Pos spawnRed : DTC.game.map.spawnpoints) {
-      for (Pos spawn : new Pos[]{
-        spawnRed, LocUtils.flip(spawnRed)
-      }) {
-        int sx = pos.floorX();
-        int sy = pos.floorY();
-        int sz = pos.floorZ();
-        int tx = spawn.floorX();
-        int ty = spawn.floorY();
-        int tz = spawn.floorZ();
-        
-        if (
-          sx >= tx - 1 &&
-            sx <= tx + 1 &&
-            sy >= ty &&
-            sy <= ty + 2 &&
-            sz >= tz - 1 &&
-            sz <= tz + 1
-        ) {
-          return true;
+  static public void breakNearbyBlocks(
+    Location feet, int horizontalRadius, int height
+  ) {
+    for (int dx = -horizontalRadius; dx <= horizontalRadius; ++dx) {
+      for (int dz = -horizontalRadius; dz <= horizontalRadius; ++dz) {
+        for (int dy = 0; dy < height; ++dy) {
+          Location loc = feet.clone().add(dx, dy, dz);
+          Block block = loc.getBlock();
+          
+          if (block.isCollidable()) {
+            block.breakNaturally();
+          }
         }
       }
     }
-    
-    return false;
   }
   
   /** Flip X & Z, useful for red / green locations conversion */

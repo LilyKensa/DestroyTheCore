@@ -68,7 +68,7 @@ public class SetRoleCommand extends Subcommand {
           List.of(
             Placeholder.component("player", PlayerUtils.getName(pl)),
             Placeholder.component("target", PlayerUtils.getName(target)),
-            Placeholder.unparsed("role", role.name)
+            Placeholder.component("role", role.name)
           )
         )
       );
@@ -90,7 +90,7 @@ public class SetRoleCommand extends Subcommand {
           "commands.role.made-self",
           List.of(
             Placeholder.component("player", PlayerUtils.getName(pl)),
-            Placeholder.unparsed("role", role.name)
+            Placeholder.component("role", role.name)
           )
         )
       );

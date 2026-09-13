@@ -34,7 +34,7 @@ public class ProvocateurRole extends Role {
         meta.addEnchant(Enchantment.SWEEPING_EDGE, 3, true);
       }
     );
-    addSkill(180 * 20);
+    addSkill(180 * 20, 10);
     addLevelReq(3);
   }
   
@@ -49,7 +49,7 @@ public class ProvocateurRole extends Role {
       PlayerUtils.getTeammates(pl).stream().anyMatch(
         p -> !p.equals(
           pl
-        ) && LocUtils.near(p, pl, 10)
+        ) && LocUtils.near(p, pl, skillRadius)
       )
     ) {
       new ParticleBuilder(Particle.PORTAL)
@@ -95,7 +95,7 @@ public class ProvocateurRole extends Role {
         "roles.provocateur.skill.announce",
         List.of(
           Placeholder.component("player", PlayerUtils.getName(pl)),
-          Placeholder.unparsed("role", name)
+          Placeholder.component("role", name)
         )
       )
     );

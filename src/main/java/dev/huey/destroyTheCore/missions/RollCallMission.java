@@ -40,7 +40,7 @@ public class RollCallMission extends ProgressiveMission {
         if (
           LocUtils.near(
             Pos.of(p),
-            LocUtils.selfSide(DTC.game.map.core, p),
+            LocUtils.selfSide(DTC.game.map.core, p).center(),
             6
           )
         ) {

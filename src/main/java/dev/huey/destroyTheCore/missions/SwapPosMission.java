@@ -25,6 +25,14 @@ public class SwapPosMission extends TimedMission {
     return RandomUtils.pick(PlayerUtils.getTeammates(side));
   }
   
+  public void teleport(Player pl, Location loc) {
+    pl.teleport(
+      loc
+      // TeleportFlag.EntityState.RETAIN_VEHICLE,
+      // TeleportFlag.EntityState.RETAIN_OPEN_INVENTORY
+    );
+  }
+  
   @Override
   public void innerFinish() {
     Player a = randomPlayer(Game.Side.RED), b = randomPlayer(Game.Side.GREEN);
@@ -32,7 +40,7 @@ public class SwapPosMission extends TimedMission {
     
     Location al = a.getLocation(), bl = b.getLocation();
     
-    a.teleport(bl);
-    b.teleport(al);
+    teleport(a, bl);
+    teleport(b, al);
   }
 }

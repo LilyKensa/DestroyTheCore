@@ -166,11 +166,11 @@ public class RangerRole extends Role {
     addExclusiveItem(
       Material.CROSSBOW,
       meta -> {
-        meta.addEnchant(Enchantment.QUICK_CHARGE, 3, true);
+        meta.addEnchant(Enchantment.PIERCING, 2, true);
       }
     );
     addSkill(150 * 20);
-    addLevelReq(9);
+    addLevelReq(6);
   }
   
   @Override
@@ -238,7 +238,7 @@ public class RangerRole extends Role {
         "roles.ranger.skill.announce",
         List.of(
           Placeholder.component("player", PlayerUtils.getName(pl)),
-          Placeholder.unparsed("role", name)
+          Placeholder.component("role", name)
         )
       )
     );
