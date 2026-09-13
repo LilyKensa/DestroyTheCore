@@ -54,7 +54,7 @@ public class GuardRole extends Role {
     if (
       LocUtils.near(
         Pos.of(pl),
-        LocUtils.selfSide(DTC.game.map.core, pl),
+        LocUtils.selfSide(DTC.game.map.core, pl).center(),
         15
       )
     ) {
@@ -72,7 +72,7 @@ public class GuardRole extends Role {
     if (
       LocUtils.near(
         Pos.of(pl),
-        LocUtils.enemySide(DTC.game.map.core, pl),
+        LocUtils.enemySide(DTC.game.map.core, pl).center(),
         15
       )
     ) {
@@ -124,7 +124,7 @@ public class GuardRole extends Role {
       if (
         LocUtils.near(
           Pos.of(e),
-          LocUtils.selfSide(DTC.game.map.core, pl),
+          LocUtils.selfSide(DTC.game.map.core, pl).center(),
           15
         )
       ) {

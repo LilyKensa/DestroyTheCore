@@ -10,6 +10,7 @@ import xyz.xenondevs.invui.InvUI;
 
 public final class DTC extends JavaPlugin {
   
+  /** The global {@link JavaPlugin} instance */
   static public DTC instance;
   static public String version;
   
@@ -43,7 +44,7 @@ public final class DTC extends JavaPlugin {
   @Override
   public void onEnable() {
     instance = this;
-    version = getDescription().getVersion();
+    version = getPluginMeta().getVersion();
     
     InvUI.getInstance().setPlugin(this);
     
@@ -119,15 +120,16 @@ public final class DTC extends JavaPlugin {
     
     prefix = TextUtils.$("general.plugin-prefix");
     
-    CoreUtils.log("Enabled");
     notEvenStarted = false;
+    CoreUtils.log("Enabled");
   }
   
   @Override
   public void onDisable() {
     if (notEvenStarted) return;
     
-    configManager.save();
+    configManager.exit();
+    worldsManager.exit();
     
     CoreUtils.log("Disabled");
   }

@@ -81,7 +81,7 @@ public class MissionsManager {
   public void start() {
     prefix = TextUtils.$("mission.prefix");
     
-    Mission.centerLoc = LocUtils.live(DTC.game.map.mission);
+    Mission.centerLoc = LocUtils.live(DTC.game.map.mission.center());
     
     Scoreboard board = Bukkit.getServer().getScoreboardManager()
       .getMainScoreboard();

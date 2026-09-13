@@ -146,7 +146,7 @@ public class LocUtils {
     
     // Send the packet to all players in the world who are near the block
     for (Player p : loc.getWorld().getPlayers()) {
-      if (near(Pos.of(p), Pos.of(loc), 64)) {
+      if (near(Pos.of(p), Pos.of(loc).center(), 64)) {
         ProtocolLibrary.getProtocolManager().sendServerPacket(p, packet);
         p.playSound(
           loc,
@@ -194,14 +194,18 @@ public class LocUtils {
   }
   
   static public boolean near(Pos a, Pos b, double dist) {
-    return a.center().distSq(b.center()) <= dist * dist;
+    return a.distSq(b) <= dist * dist;
   }
   
   static public boolean near(Entity a, Entity b, double dist) {
     return near(Pos.of(a), Pos.of(b), dist);
   }
   
-  static public boolean nearAnyCore(Location loc, int dist) {
+  static public boolean centerNear(Pos a, Pos b, double dist) {
+    return near(a.center(), b.center(), dist);
+  }
+  
+  static public boolean centerNearCore(Location loc, int dist) {
     if (!isSameWorld(loc.getWorld(), DTC.worldsManager.live))
       return false;
     
@@ -214,40 +218,7 @@ public class LocUtils {
         LocUtils.flip(posRed)
       }
     ) {
-      if (near(Pos.of(loc), pos, dist)) return true;
-    }
-    
-    return false;
-  }
-  
-  static public boolean nearSpawn(Location loc) {
-    Pos pos = Pos.of(loc);
-    
-    for (Pos spawnRed : DTC.game.map.spawnpoints) {
-      for (
-        Pos spawn : new Pos[]{
-          spawnRed,
-          LocUtils.flip(spawnRed)
-        }
-      ) {
-        int sx = pos.floorX();
-        int sy = pos.floorY();
-        int sz = pos.floorZ();
-        int tx = spawn.floorX();
-        int ty = spawn.floorY();
-        int tz = spawn.floorZ();
-        
-        if (
-          sx >= tx - 1 &&
-            sx <= tx + 1 &&
-            sy >= ty &&
-            sy <= ty + 2 &&
-            sz >= tz - 1 &&
-            sz <= tz + 1
-        ) {
-          return true;
-        }
-      }
+      if (near(Pos.of(loc), pos.center(), dist)) return true;
     }
     
     return false;

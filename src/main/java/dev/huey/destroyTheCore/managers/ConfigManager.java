@@ -219,4 +219,8 @@ public class ConfigManager {
     lobby.save();
     map.save();
   }
+  
+  public void exit() {
+    save();
+  }
 }

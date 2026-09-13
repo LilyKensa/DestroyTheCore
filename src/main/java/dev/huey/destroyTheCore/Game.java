@@ -200,7 +200,7 @@ public class Game {
     
     public List<MaybeGen> items = new ArrayList<>();
     
-    public Villager summonVillager(Location loc) {
+    public Villager summonVillager(Location loc, Side side) {
       World world = loc.getWorld();
       
       Villager villager = (Villager) world.spawnEntity(
@@ -217,6 +217,8 @@ public class Game {
       villager.setVillagerType(biome);
       villager.setProfession(prof);
       villager.setVillagerLevel(5);
+      
+      villager.customName(Component.text(name).color(side.color));
       
       List<MerchantRecipe> recipes = new ArrayList<>();
       
@@ -1305,7 +1307,7 @@ public class Game {
         LocUtils.flip(map.restArea)
       }
     ) {
-      if (LocUtils.near(Pos.of(loc), rest, 6)) {
+      if (LocUtils.centerNear(Pos.of(loc), rest, 6)) {
         return true;
       }
     }
@@ -1495,18 +1497,12 @@ public class Game {
     if (
       List.of(Material.OBSIDIAN, Material.CRYING_OBSIDIAN).contains(
         block.getType()
-      ) && LocUtils.nearAnyCore(blockLoc, 3)
+      ) && LocUtils.centerNearCore(blockLoc, 3)
     ) {
       pl.sendActionBar(TextUtils.$("game.banned.place.obsidian"));
       ev.setCancelled(true);
       return;
     }
-    
-    // if (LocUtils.nearSpawn(blockLoc)) {
-    //   ev.getPlayer().sendActionBar(TextUtils.$("game.banned.place.spawn"));
-    //   ev.setCancelled(true);
-    //   return;
-    // }
   }
   
   public AtomicInteger fakeBreakerId = new AtomicInteger(1_000_000);
@@ -2041,17 +2037,7 @@ public class Game {
   public void handleFallenBlock(
     FallingBlock entity, Block block, EntityChangeBlockEvent ev
   ) {
-    // if (LocUtils.nearSpawn(block.getLocation())) {
-    //   ev.setCancelled(true);
-    //   entity.remove();
-    //
-    //   for (ItemStack item : entity.getBlockState().getDrops()) {
-    //     block.getWorld().dropItemNaturally(
-    //       LocUtils.toBlockCenter(block.getLocation()),
-    //       item
-    //     );
-    //   }
-    // }
+    // Something related to cleaning spawn area were here but the logic has been changed
   }
   
   public void handleBlockForm(BlockFormEvent ev) {
@@ -2065,7 +2051,7 @@ public class Game {
         ).contains(
           block.getType()
         ) &&
-        LocUtils.nearAnyCore(
+        LocUtils.centerNearCore(
           block.getLocation(),
           3
         )
@@ -2079,7 +2065,7 @@ public class Game {
     
     if (
       LocUtils.inLive(block.getLocation()) &&
-        LocUtils.nearAnyCore(
+        LocUtils.centerNearCore(
           block.getLocation(),
           3
         )
@@ -2093,7 +2079,7 @@ public class Game {
     
     if (
       LocUtils.inLive(block.getLocation()) &&
-        LocUtils.nearAnyCore(
+        LocUtils.centerNearCore(
           block.getLocation(),
           3
         )
@@ -2112,7 +2098,7 @@ public class Game {
         )
       }
     ) {
-      if (LocUtils.near(Pos.of(block), rest, 6)) {
+      if (LocUtils.centerNear(Pos.of(block), rest, 6)) {
         return true;
       }
     }
@@ -2621,7 +2607,7 @@ public class Game {
           }
         ) {
           if (
-            LocUtils.inLive(p) && LocUtils.near(Pos.of(p), rest, 6)
+            LocUtils.inLive(p) && LocUtils.near(Pos.of(p), rest.center(), 6)
           ) continue playerLoop;
         }
         
@@ -2808,7 +2794,7 @@ public class Game {
         villagers.add(
           new VillagerData(
             loc,
-            entry.getKey().summonVillager(loc)
+            entry.getKey().summonVillager(loc, side)
           )
         );
       }
@@ -3556,13 +3542,27 @@ public class Game {
   }
   
   public void onParticleTick() {
-    for (Player p : Bukkit.getOnlinePlayers()) {
+    for (Player p : PlayerUtils.allGaming()) {
       if (!isPlaying) continue;
       if (LocUtils.inLobby(p)) continue;
-      if (p.hasPotionEffect(PotionEffectType.INVISIBILITY)) continue;
       
       PlayerData data = getPlayerData(p);
       PlayerInventory inv = p.getInventory();
+      
+      if (
+        data.role.skillRadius > 0 &&
+          DTC.rolesManager.isSkillItem(inv.getItemInMainHand())
+      ) {
+        ParticleUtils.ring(
+          List.of(p),
+          p.getLocation().add(0, 0.75, 0),
+          data.role.skillRadius,
+          (int) Math.ceil(data.role.skillRadius * 2 * Math.PI),
+          data.side.dyeColor
+        );
+      }
+      
+      if (p.hasPotionEffect(PotionEffectType.INVISIBILITY)) continue;
       
       if (
         inv.contains(Material.ENCHANTING_TABLE) ||
@@ -3580,19 +3580,6 @@ public class Game {
           PlayerUtils.all(),
           p.getEyeLocation().add(0, 0.6, 0),
           Color.YELLOW
-        );
-      }
-      
-      if (
-        data.role.skillRadius > 0 &&
-          DTC.rolesManager.isSkillItem(inv.getItemInMainHand())
-      ) {
-        ParticleUtils.ring(
-          PlayerUtils.all(),
-          p.getLocation(),
-          data.role.skillRadius,
-          (int) Math.ceil(data.role.skillRadius * 2 * Math.PI),
-          data.side.dyeColor
         );
       }
     }

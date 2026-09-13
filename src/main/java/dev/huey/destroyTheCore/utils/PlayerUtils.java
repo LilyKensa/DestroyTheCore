@@ -15,6 +15,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -161,17 +162,23 @@ public class PlayerUtils {
     ).toList();
   }
   
+  static public Component getPrefix(Player pl) {
+    PlayerData data = DTC.game.getPlayerData(pl);
+    
+    return Component.join(
+      JoinConfiguration.noSeparators(),
+      Component.text("["),
+      data.side == Game.Side.SPECTATOR
+        ? data.side.titleComp()
+        : data.role.name,
+      Component.text("] ")
+    ).color(data.side.color);
+  }
+  
   static public Component getName(Player pl) {
     PlayerData data = DTC.game.getPlayerData(pl);
     
-    return Component.text(
-      "[%s] %s".formatted(
-        data.side == Game.Side.SPECTATOR
-          ? data.side.pureTitle()
-          : data.role.name,
-        pl.getName()
-      )
-    ).color(data.side.color);
+    return getPrefix(pl).append(pl.name()).color(data.side.color);
   }
   
   /** Send 1.5 + 0.25 title duration */
@@ -541,7 +548,7 @@ public class PlayerUtils {
       pl.isSneaking() &&
         LocUtils.near(
           Pos.of(pl),
-          LocUtils.selfSide(DTC.game.map.core, d.side),
+          LocUtils.selfSide(DTC.game.map.core, d.side).center(),
           5
         )
     ) {

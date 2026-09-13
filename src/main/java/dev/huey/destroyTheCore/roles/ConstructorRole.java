@@ -161,7 +161,6 @@ public class ConstructorRole extends Role {
         for (Vector vec : skillPlacePos.get(step)) {
           Location loc = startLoc.clone().add(vec);
           if (loc.getBlock().isCollidable()) continue;
-          // if (LocUtils.nearSpawn(loc)) continue;
           
           if (DTC.game.map.restArea != null) {
             for (
@@ -173,7 +172,7 @@ public class ConstructorRole extends Role {
             }
             ) {
               if (
-                LocUtils.near(Pos.of(loc), rest, 6)
+                LocUtils.centerNear(Pos.of(loc), rest, 6)
               ) return;
             }
           }
