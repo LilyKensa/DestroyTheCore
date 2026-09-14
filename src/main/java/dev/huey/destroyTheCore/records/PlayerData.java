@@ -12,8 +12,9 @@ import org.bukkit.entity.Player;
 public class PlayerData implements HasStats {
   
   /** Constants */
-  static public final int minRespawnTime = 5, maxRespawnTime = 180;
-  static public final int killPunishment = 2, corePunishment = 5;
+  static public int minRespawnTime = 5, maxRespawnTime = 180,
+    respawnTimeIncrement = 3;
+  static public int killPunishment = 2, corePunishment = 5;
   static public final int shoutCooldownDuration = 10 * 20;
   static public final int rrtDuration = 5 * 20; // Reduce respawn time
   

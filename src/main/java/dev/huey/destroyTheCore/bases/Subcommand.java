@@ -1,14 +1,12 @@
 package dev.huey.destroyTheCore.bases;
 
 import dev.huey.destroyTheCore.managers.CommandsManager;
-import dev.huey.destroyTheCore.utils.PlayerUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 
-public class Subcommand {
+public abstract class Subcommand {
   
   static public class Argument {
     
@@ -40,11 +38,5 @@ public class Subcommand {
   }
   
   /** @implNote Required - The command callback */
-  public void execute(Player pl, List<String> args) {
-    PlayerUtils.prefixedSend(
-      pl,
-      "This command isn't implemented yet!",
-      NamedTextColor.RED
-    );
-  }
+  public abstract void execute(Player pl, List<String> args);
 }

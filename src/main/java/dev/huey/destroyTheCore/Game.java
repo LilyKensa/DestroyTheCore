@@ -186,7 +186,12 @@ public class Game {
             .subtract(LocUtils.hitboxCenter(villager).toVector())
         )
         .min(Comparator.comparing(Vector::lengthSquared))
-        .ifPresent(loc::setDirection);
+        .ifPresentOrElse((vector) -> {
+          villager.setCustomNameVisible(true);
+          loc.setDirection(vector);
+        }, () -> {
+          villager.setCustomNameVisible(false);
+        });
       
       villager.setRotation(loc.getYaw(), loc.getPitch());
     }
@@ -342,7 +347,7 @@ public class Game {
     }
     
     public int minRespawnTime() {
-      return PlayerData.minRespawnTime + 3 * index;
+      return PlayerData.minRespawnTime + PlayerData.respawnTimeIncrement * index;
     }
     
     public boolean isAfter(Phase that) {
@@ -1342,6 +1347,7 @@ public class Game {
           );
         }
         ev.setCancelled(true);
+        return;
       }
     }
     
@@ -1458,6 +1464,14 @@ public class Game {
   public void handleInteractEntity(PlayerInteractEntityEvent ev) {
     Player pl = ev.getPlayer();
     PlayerData data = getPlayerData(pl);
+    
+    if (!PlayerUtils.shouldHandle(pl)) return;
+    
+    if (!LocUtils.inLive(pl)) {
+      pl.sendActionBar(TextUtils.$("game.banned.use.lobby"));
+      ev.setCancelled(true);
+      return;
+    }
     
     if (data.side == Side.SPECTATOR) {
       pl.sendActionBar(TextUtils.$("game.banned.use.spectator"));
@@ -1599,7 +1613,7 @@ public class Game {
     
     public void onTick() {
       if (age >= maxAge) {
-        block.setType(data.blockType());
+        block.setType(data.blockType);
         ParticleUtils.cloud(
           LocUtils.toBlockCenter(block.getLocation())
         );
@@ -1618,7 +1632,7 @@ public class Game {
         
         armorStand.setCustomNameVisible(true);
         armorStand.customName(
-          Component.text(countdownSeconds).color(data.textColor())
+          Component.text(countdownSeconds).color(data.textColor)
         );
       }
       
@@ -1663,7 +1677,7 @@ public class Game {
     
     Constants.OreData ore = Constants.ores.get(block.getType());
     
-    getPlayerData(pl).addOre(ore.blockType());
+    getPlayerData(pl).addOre(ore.blockType);
     
     ItemStack tool = pl.getInventory().getItemInMainHand();
     if (block.isPreferredTool(tool)) {
@@ -1689,7 +1703,7 @@ public class Game {
         ) amount *= 0.5;
       }
       if (amount >= 1) {
-        PlayerUtils.give(pl, ore.dropType(), (int) amount);
+        PlayerUtils.give(pl, ore.dropType, (int) amount);
         
         if (amount >= 2) {
           pl.sendActionBar(
@@ -1706,13 +1720,13 @@ public class Game {
         pl.sendActionBar(TextUtils.$("game.ores.bad-luck"));
       }
       
-      int orbsCount = ore.maxXp() > 0 ? RandomUtils.range(5, 8) : 0;
+      int orbsCount = ore.maxXp > 0 ? RandomUtils.range(5, 8) : 0;
       for (int i = 0; i < orbsCount; ++i) {
         ExperienceOrb orb = (ExperienceOrb) block.getWorld().spawnEntity(
           LocUtils.toBlockCenter(block.getLocation()),
           EntityType.EXPERIENCE_ORB
         );
-        orb.setExperience(RandomUtils.range(ore.minXp(), ore.maxXp() + 1));
+        orb.setExperience(RandomUtils.range(ore.minXp, ore.maxXp + 1));
       }
       
       if (getPlayerData(pl).role.id == RolesManager.RoleKey.GOLD_DIGGER) {
@@ -1721,7 +1735,7 @@ public class Game {
           if (!LocUtils.near(p, pl, 10)) continue;
           
           if (RandomUtils.hit(0.25)) {
-            ItemStack item = new ItemStack(ore.dropType());
+            ItemStack item = new ItemStack(ore.dropType);
             PlayerUtils.give(p, item);
             
             p.sendActionBar(
@@ -1753,7 +1767,7 @@ public class Game {
     
     addRegenOre(
       block,
-      ore.cooldownSeconds() * 20
+      ore.cooldownSeconds * 20
     );
   }
   

@@ -257,8 +257,4 @@ public class WorldsManager {
       pl.hideBossBar(templateWarningBar);
     }
   }
-  
-  public void exit() {
-    deleteLive();
-  }
 }

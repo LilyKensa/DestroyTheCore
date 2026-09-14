@@ -53,6 +53,7 @@ public class ConfigManager {
   }
   
   public abstract static class Config {
+    
     String path;
     File file;
     YamlConfiguration config;
@@ -114,6 +115,13 @@ public class ConfigManager {
         
         DTC.worldsManager.mapName = config.getString("map");
         DTC.worldsManager.cloneLive();
+        
+        ConfigurationSection settingsSection = config.getConfigurationSection(
+          "settings"
+        );
+        if (settingsSection != null) {
+          DTC.settingsManager.load(settingsSection);
+        }
       }
       
       @Override
@@ -124,6 +132,7 @@ public class ConfigManager {
             .toLowerCase()
         );
         config.set("map", DTC.worldsManager.mapName);
+        config.set("settings", DTC.settingsManager.generateConfigSection());
       }
     };
     stats = new Config("stats.yml") {

@@ -13,7 +13,8 @@ package dev.huey.destroyTheCore.bases;
  * <pre>
  * WPlayer pl = somewhere.getPlayer();
  * somewhere.doThings(pl.data.side);</pre>
- * This requires changing almost everything, so it won't be done in any recent point
+ * This requires changing almost everything, so it won't be done in any recent
+ * point
  */
 public abstract class Wrapped<W> {
   public W w;

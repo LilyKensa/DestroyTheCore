@@ -18,6 +18,7 @@ public final class DTC extends JavaPlugin {
   
   static public TranslationsManager translationsManager;
   static public ConfigManager configManager;
+  static public SettingsManager settingsManager;
   static public ToolsManager toolsManager;
   static public CommandsManager commandsManager;
   static public EventsManager eventsManager;
@@ -30,7 +31,7 @@ public final class DTC extends JavaPlugin {
   static public RolesManager rolesManager;
   static public QuizManager quizManager;
   static public MissionsManager missionsManager;
-  static public GUIManager guiManager;
+  static public GuiManager guiManager;
   static public TipsManager tipsManager;
   static public AdvancementsManager advancementsManager;
   static public AntiCheatManager antiCheatManager;
@@ -50,6 +51,7 @@ public final class DTC extends JavaPlugin {
     
     translationsManager = new TranslationsManager();
     toolsManager = new ToolsManager();
+    settingsManager = new SettingsManager();
     commandsManager = new CommandsManager();
     eventsManager = new EventsManager();
     damageManager = new DamageManager();
@@ -61,7 +63,7 @@ public final class DTC extends JavaPlugin {
     rolesManager = new RolesManager();
     quizManager = new QuizManager();
     missionsManager = new MissionsManager();
-    guiManager = new GUIManager();
+    guiManager = new GuiManager();
     tipsManager = new TipsManager();
     advancementsManager = new AdvancementsManager();
     antiCheatManager = new AntiCheatManager();
@@ -129,7 +131,6 @@ public final class DTC extends JavaPlugin {
     if (notEvenStarted) return;
     
     configManager.exit();
-    worldsManager.exit();
     
     CoreUtils.log("Disabled");
   }
