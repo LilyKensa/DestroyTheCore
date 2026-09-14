@@ -642,7 +642,7 @@ public class Game {
   public void handleJoinedPlayer(Player pl) {
     UUID id = pl.getUniqueId();
     
-    AttrUtils.set(pl, Attribute.WAYPOINT_TRANSMIT_RANGE, 10);
+    AttrUtils.set(pl, Attribute.WAYPOINT_TRANSMIT_RANGE, 25);
     
     AdvUtils.grant(pl, DTC.advancementsManager.rootAdv);
     

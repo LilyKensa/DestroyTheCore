@@ -8,5 +8,6 @@ public class PlaceholderGen extends ItemGen {
   
   public PlaceholderGen() {
     super(ItemsManager.ItemKey.PLACEHOLDER, Material.GRAY_DYE);
+    setNeverDrop();
   }
 }
