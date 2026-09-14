@@ -159,10 +159,10 @@ public class Game {
   public LobbyPos lobby = new LobbyPos();
   public MapPos map = new MapPos();
   
-  record VillagerData(Location loc, Villager villager) {
+  public record VillagerData(Location loc, Villager villager) {
   }
   
-  List<VillagerData> villagers = new ArrayList<>();
+  public List<VillagerData> villagers = new ArrayList<>();
   
   public void updateVillagers() {
     villagers.removeIf(vd -> !vd.villager.isValid() || vd.villager.isDead());
@@ -221,7 +221,6 @@ public class Game {
       
       villager.setVillagerType(biome);
       villager.setProfession(prof);
-      villager.setVillagerLevel(5);
       
       villager.customName(Component.text(name).color(side.color));
       
@@ -508,8 +507,10 @@ public class Game {
   public Map<Side, Team> teams = new HashMap<>();
   
   public void enforceDisplay(Player pl) {
-    teams.get(getPlayerData(pl).side).addPlayer(pl);
+    PlayerData data = getPlayerData(pl);
+    teams.get(data.side).addPlayer(pl);
     pl.playerListName(PlayerUtils.getName(pl));
+    pl.setWaypointColor(data.side.dyeColor);
   }
   
   public void recreateTeams() {
@@ -640,6 +641,8 @@ public class Game {
   
   public void handleJoinedPlayer(Player pl) {
     UUID id = pl.getUniqueId();
+    
+    AttrUtils.set(pl, Attribute.WAYPOINT_TRANSMIT_RANGE, 10);
     
     AdvUtils.grant(pl, DTC.advancementsManager.rootAdv);
     
@@ -1133,7 +1136,13 @@ public class Game {
   BukkitTask startingTask = null;
   
   public void handleInteract(PlayerInteractEvent ev) {
-    if (ev.getAction() == Action.PHYSICAL) {
+    Block block = ev.getClickedBlock();
+    
+    if (
+      ev.getAction() == Action.PHYSICAL &&
+        block != null &&
+        block.getType() == Material.FARMLAND
+    ) {
       ev.setCancelled(true);
       return;
     }
@@ -1142,8 +1151,16 @@ public class Game {
     PlayerData data = getPlayerData(pl);
     ItemStack item = ev.getItem();
     
-    if (ev.getAction() == Action.LEFT_CLICK_BLOCK) handleLeftClickBlock(ev);
-    if (ev.getAction() == Action.RIGHT_CLICK_BLOCK) handleRightClickBlock(ev);
+    if (ev.getAction() == Action.LEFT_CLICK_BLOCK) handleLeftClickBlock(
+      ev,
+      pl,
+      block
+    );
+    if (ev.getAction() == Action.RIGHT_CLICK_BLOCK) handleRightClickBlock(
+      ev,
+      pl,
+      block
+    );
     
     if (ev.getAction().isRightClick()) {
       if (
@@ -1156,10 +1173,7 @@ public class Game {
       }
       
       if (
-        !PlayerUtils.checkUsingBlock(
-          pl,
-          ev.getClickedBlock()
-        ) &&
+        !PlayerUtils.checkUsingBlock(pl, block) &&
           item != null &&
           !item.isEmpty() &&
           item.getType()
@@ -1232,11 +1246,10 @@ public class Game {
   
   Map<Pos.BlockRec, BlockFace> leftClickFaces = new HashMap<>();
   
-  public void handleLeftClickBlock(PlayerInteractEvent ev) {
+  public void handleLeftClickBlock(
+    PlayerInteractEvent ev, Player pl, Block block
+  ) {
     if (ev.getHand() != EquipmentSlot.HAND) return;
-    
-    Player pl = ev.getPlayer();
-    Block block = ev.getClickedBlock();
     if (block == null) return;
     
     leftClickFaces.put(Pos.of(block).toBlockRec(), ev.getBlockFace());
@@ -1314,11 +1327,10 @@ public class Game {
   
   EnumMap<Material, Material> cropDrops = new EnumMap<>(Material.class);
   
-  public void handleRightClickBlock(PlayerInteractEvent ev) {
+  public void handleRightClickBlock(
+    PlayerInteractEvent ev, Player pl, Block block
+  ) {
     if (ev.getHand() != EquipmentSlot.HAND) return;
-    
-    Player pl = ev.getPlayer();
-    Block block = ev.getClickedBlock();
     if (block == null) return;
     
     if (LocUtils.inLobby(pl)) {
@@ -1773,6 +1785,7 @@ public class Game {
   
   public void handleCoreAttack(Player pl, Block block) {
     PlayerUtils.damageHandItem(pl);
+    pl.setExhaustion(pl.getExhaustion() + 0.19f);
     
     BiConsumer<PotionEffectType, Integer> effector = (type, level) -> {
       PlayerUtils.addEffect(
@@ -2936,6 +2949,8 @@ public class Game {
     for (Player pl : Bukkit.getOnlinePlayers()) {
       if (!PlayerUtils.shouldHandle(pl)) continue;
       
+      PlayerUtils.setSkillCooldown(pl, 0);
+      
       PlayerData oldData = getPlayerData(pl);
       playerData.put(
         pl.getUniqueId(),
@@ -2958,6 +2973,9 @@ public class Game {
       
       PlayerUtils.refreshSpectatorAbilities(pl);
       PlayerUtils.respawn(pl);
+      
+      PlayerUtils.addPassiveEffect(pl, PotionEffectType.SPEED, 30 * 20, 2);
+      PlayerUtils.addPassiveEffect(pl, PotionEffectType.HASTE, 30 * 20, 2);
     }
     DTC.boardsManager.refresh();
     

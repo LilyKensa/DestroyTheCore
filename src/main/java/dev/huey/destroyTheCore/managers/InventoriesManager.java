@@ -156,7 +156,7 @@ public class InventoriesManager {
     
     pl.setLevel(currentLevel - 3);
     
-    int toDrop = xpBefore - pl.calculateTotalExperiencePoints();
+    int toDrop = Math.min(xpBefore - pl.calculateTotalExperiencePoints(), 3000);
     
     while (toDrop > 0) {
       int value = Math.min(RandomUtils.range(2, 72), toDrop);

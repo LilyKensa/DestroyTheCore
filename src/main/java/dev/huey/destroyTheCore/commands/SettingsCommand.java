@@ -1,4 +1,4 @@
-package dev.huey.destroyTheCore.managers;
+package dev.huey.destroyTheCore.commands;
 
 import dev.huey.destroyTheCore.bases.Subcommand;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
@@ -7,9 +7,9 @@ import org.bukkit.entity.Player;
 
 public class SettingsCommand extends Subcommand {
   public SettingsCommand() {
-    super("settings");
+    super("setting");
     addArgument("name", () -> List.of("<name>"));
-    addArgument("value", () -> List.of("<value>"));
+    addArgument("operations", () -> List.of("<operations>"));
   }
   
   @Override

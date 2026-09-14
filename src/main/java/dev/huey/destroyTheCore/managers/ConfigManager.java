@@ -14,7 +14,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
@@ -30,7 +29,8 @@ public class ConfigManager {
     
     try (
          DirectoryStream<Path> stream = Files.newDirectoryStream(
-           Bukkit.getWorldContainer().toPath(),
+           DTC.worldsManager.lobby.getWorldFolder().toPath().getParent()
+             .getParent(),
            templateWorldPrefix + "*"
          )
     ) {

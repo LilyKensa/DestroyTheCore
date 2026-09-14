@@ -1,25 +1,23 @@
 package dev.huey.destroyTheCore.managers;
 
 import dev.huey.destroyTheCore.Constants;
+import dev.huey.destroyTheCore.bases.Setting;
+import dev.huey.destroyTheCore.settings.OresSetting;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 public class SettingsManager {
   
+  Map<String, Setting> settings = Stream.of(
+    new OresSetting()
+  ).collect(Collectors.toMap(s -> s.id, s -> s));
+  
   public void load(ConfigurationSection section) {
-    ConfigurationSection oresSection = section.getConfigurationSection("ores");
-    if (oresSection != null) {
-      for (String name : oresSection.getKeys(false)) {
-        ConfigurationSection in = oresSection.getConfigurationSection(name);
-        Constants.OreData out = Constants.ores.get(Material.valueOf(name));
-        if (in == null) continue;
-        
-        out.minXp = in.getInt("min-xp");
-        out.maxXp = in.getInt("max-xp");
-        out.cooldownSeconds = in.getInt("cooldown-seconds");
-      }
-    }
+    
   }
   
   public ConfigurationSection generateConfigSection() {

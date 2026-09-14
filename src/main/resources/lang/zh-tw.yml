@@ -351,6 +351,9 @@ world:
 commands:
   root:
     github: "訪問 <click:open_url:'https://github.com/LilyKensa/DestroyTheCore'><u>https://github.com/LilyKensa/DestroyTheCore</u></click> 已獲得更多訊息"
+  debug:
+    no-game: "<red>There's not a match right now!</red>"
+    good: "<green>Debug succeeded!</green>"
   ping:
     result: "你的延遲是 <value> 毫秒"
   suicide:
@@ -498,6 +501,19 @@ items:
     name: "<yellow>造橋輔助</yellow>"
     desc-1: "生成一個 15 格高的磚塊柱子"
     no-block: "<red>請看著一個方塊使用!</red>"
+  dash-spear:
+    name: "<yellow>衝刺長矛</yellow>"
+    desc-1: "不會造成傷害, 能讓你衝刺一次"
+  slot-machine:
+    name: "<yellow>老虎機</yellow>"
+    desc-1: "將副手的礦物拿去賭博"
+    desc-2: "沒有人知道中獎的機率究竟是多少"
+    announce: "<player> 使用了<yellow><item></yellow>, 賭上 <used> × <dark_aqua><amount></dark_aqua>!"
+    no-material: "<red>你不能賭博此物品!</red>"
+    too-few: "<red>你至少要賭博 10 個物品!<red>"
+    result:
+      bad: "<red>再接再厲!</red>"
+      good: "<aqua><ratio> 倍獎勵!</aqua>"
   give-jump-boost:
     name: "<yellow>彈跳球</yellow>"
     desc-1: "給你 6 秒跳躍提升 X"
