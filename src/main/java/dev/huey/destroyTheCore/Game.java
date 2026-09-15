@@ -694,7 +694,7 @@ public class Game {
       PlayerUtils.refreshAllSpectatorVisibilitiesFor(pl);
     }
     
-    DTC.worldsManager.onPlayerChangeWorld(pl, pl.getWorld());
+    DTC.worldsManager.handlePlayerChangeWorld(pl, pl.getWorld());
   }
   
   public void handleQuitedPlayer(Player pl) {

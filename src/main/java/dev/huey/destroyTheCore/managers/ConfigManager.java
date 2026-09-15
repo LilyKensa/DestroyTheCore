@@ -29,8 +29,7 @@ public class ConfigManager {
     
     try (
          DirectoryStream<Path> stream = Files.newDirectoryStream(
-           DTC.worldsManager.lobby.getWorldFolder().toPath().getParent()
-             .getParent(),
+           DTC.worldsManager.lobby.getWorldFolder().toPath().getParent(),
            templateWorldPrefix + "*"
          )
     ) {

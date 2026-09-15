@@ -128,7 +128,7 @@ public class EventsManager implements Listener {
     DTC.game.handleQuitedPlayer(ev.getPlayer());
     
     DTC.boardsManager.onPlayerQuit(ev);
-    DTC.guiManager.onPlayerLeave(ev.getPlayer());
+    DTC.guiManager.onPlayerQuit(ev.getPlayer());
   }
   
   @EventHandler
@@ -136,7 +136,7 @@ public class EventsManager implements Listener {
     if (checkPaused(ev, ev.getPlayer())) return;
     
     if (!LocUtils.isSameWorld(ev.getFrom(), ev.getTo())) {
-      DTC.worldsManager.onPlayerChangeWorld(
+      DTC.worldsManager.handlePlayerChangeWorld(
         ev.getPlayer(),
         ev.getTo().getWorld()
       );

@@ -238,7 +238,7 @@ public class WorldsManager {
     }
   }
   
-  public void onPlayerChangeWorld(Player pl, World world) {
+  public void handlePlayerChangeWorld(Player pl, World world) {
     if (template == null) return;
     
     if (templateWarningBar == null) {
@@ -252,9 +252,11 @@ public class WorldsManager {
     
     if (LocUtils.isSameWorld(world, template)) {
       pl.showBossBar(templateWarningBar);
+      DTC.boardsManager.hide(pl);
     }
     else {
       pl.hideBossBar(templateWarningBar);
+      DTC.boardsManager.show(pl);
     }
   }
 }

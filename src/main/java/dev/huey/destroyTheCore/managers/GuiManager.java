@@ -166,8 +166,9 @@ public class GuiManager {
     return shopEditor != null && Bukkit.getOfflinePlayer(shopEditor).isOnline();
   }
   
-  public void onPlayerLeave(Player pl) {
-    shopEditor = null;
+  public void onPlayerQuit(Player pl) {
+    if (shopEditor == pl.getUniqueId())
+      shopEditor = null;
   }
   
   public void openShopListEditor(Player pl) {

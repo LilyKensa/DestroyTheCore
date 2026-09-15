@@ -6,6 +6,7 @@ import dev.huey.destroyTheCore.records.PlayerData;
 import dev.huey.destroyTheCore.records.SideData;
 import dev.huey.destroyTheCore.records.Stats;
 import dev.huey.destroyTheCore.utils.CoreUtils;
+import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import fr.mrmicky.fastboard.FastBoard;
 import java.util.*;
@@ -269,9 +270,7 @@ public class BoardsManager {
     }
   }
   
-  public void onPlayerJoin(PlayerJoinEvent ev) {
-    Player pl = ev.getPlayer();
-    
+  public void show(Player pl) {
     FastBoard board = new FastBoard(pl);
     board.updateTitle(TextUtils.$r("board.title"));
     
@@ -279,10 +278,18 @@ public class BoardsManager {
     refresh(pl);
   }
   
-  public void onPlayerQuit(PlayerQuitEvent ev) {
-    Player player = ev.getPlayer();
-    
-    FastBoard board = this.boards.remove(player.getUniqueId());
+  public void hide(Player pl) {
+    FastBoard board = this.boards.remove(pl.getUniqueId());
     if (board != null) board.delete();
+  }
+  
+  public void onPlayerJoin(PlayerJoinEvent ev) {
+    Player pl = ev.getPlayer();
+    if (!LocUtils.inTemplate(pl))
+      show(pl);
+  }
+  
+  public void onPlayerQuit(PlayerQuitEvent ev) {
+    hide(ev.getPlayer());
   }
 }

@@ -1,6 +1,7 @@
 package dev.huey.destroyTheCore.managers;
 
 import dev.huey.destroyTheCore.DTC;
+import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.RandomUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
@@ -13,7 +14,7 @@ import org.bukkit.entity.Player;
 public class TipsManager {
   static Component prefix;
   
-  class Tip {
+  static class Tip {
     Component title;
     List<Component> contents;
     
@@ -77,7 +78,7 @@ public class TipsManager {
     if (tip == null) return;
     
     for (Player p : Bukkit.getOnlinePlayers()) {
-      if (!PlayerUtils.shouldHandle(p)) continue;
+      if (!PlayerUtils.shouldHandle(p) || LocUtils.inTemplate(p)) continue;
       
       sendTip(p, tip);
     }
