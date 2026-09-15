@@ -7,6 +7,7 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.Tag;
 import org.bukkit.inventory.*;
 
 public class RecipesManager {
@@ -22,6 +23,9 @@ public class RecipesManager {
       Recipe recipe = it.next();
       if (recipe instanceof CraftingRecipe cr) {
         if (cr.getResult().getType() == Material.GOLDEN_CARROT) {
+          it.remove();
+        }
+        if (Tag.ITEMS_SPEARS.isTagged(recipe.getResult().getType())) {
           it.remove();
         }
       }
@@ -41,7 +45,11 @@ public class RecipesManager {
       getKey("expensive_golden_carrot"),
       new ItemStack(Material.GOLDEN_CARROT)
     );
-    goldenCarrotRecipe.shape("GGG", "GCG", "GGG");
+    goldenCarrotRecipe.shape(
+      "GGG",
+      "GCG",
+      "GGG"
+    );
     goldenCarrotRecipe.setIngredient('G', Material.GOLD_INGOT);
     goldenCarrotRecipe.setIngredient('C', Material.CARROT);
     

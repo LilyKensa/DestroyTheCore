@@ -806,6 +806,17 @@ public class Game {
     EntityDamageByEntityEvent ev
   ) {
     if (isPlaying) {
+      if (
+        ev.getDamageSource().getDamageType() == DamageType.SPEAR &&
+          DTC.itemsManager.checkGen(
+            attacker.getInventory().getItemInMainHand(),
+            ItemsManager.ItemKey.DASH_SPEAR
+          )
+      ) {
+        ev.setCancelled(true);
+        return;
+      }
+      
       double damage = ev.getDamage(), finalDamage = ev.getFinalDamage();
       
       PlayerData attackerData = getPlayerData(attacker),
@@ -3377,6 +3388,8 @@ public class Game {
       if (!ro.active) roit.remove();
     }
     
+    updateVillagers();
+    
     if (!isPlaying || paused) return;
     
     if (phaseTimer <= 0) {
@@ -3514,8 +3527,6 @@ public class Game {
       }
     }
     
-    updateVillagers();
-    
     if (
       map.core != null &&
         phase.isAfter(
@@ -3565,7 +3576,6 @@ public class Game {
   
   public void onParticleTick() {
     for (Player p : PlayerUtils.allGaming()) {
-      if (!isPlaying) continue;
       if (LocUtils.inLobby(p)) continue;
       
       PlayerData data = getPlayerData(p);
@@ -3584,6 +3594,7 @@ public class Game {
         );
       }
       
+      if (!isPlaying) continue;
       if (p.hasPotionEffect(PotionEffectType.INVISIBILITY)) continue;
       
       if (
