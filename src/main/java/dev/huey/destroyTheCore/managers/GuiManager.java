@@ -36,15 +36,15 @@ import xyz.xenondevs.invui.item.*;
 import xyz.xenondevs.invui.window.AnvilWindow;
 import xyz.xenondevs.invui.window.Window;
 
-public class GUIManager {
+public class GuiManager {
+  
+  ItemProvider wallItem = new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE)
+    .hideTooltip(true);
   
   public void init() {
     Structure.addGlobalIngredient(
       '#',
-      Item.simple(
-        new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE)
-          .hideTooltip(true)
-      )
+      Item.simple(wallItem)
     );
     Structure.addGlobalIngredient(
       '-',
@@ -54,10 +54,10 @@ public class GUIManager {
       '|',
       Markers.CONTENT_LIST_SLOT_VERTICAL
     );
-    Structure.addGlobalIngredient('<', PrevPageItem.it);
-    Structure.addGlobalIngredient('>', NextPageItem.it);
-    Structure.addGlobalIngredient('[', ScrollUpItem.it);
-    Structure.addGlobalIngredient(']', ScrollDownItem.it);
+    Structure.addGlobalIngredient('<', PrevPageItem.get());
+    Structure.addGlobalIngredient('>', NextPageItem.get());
+    Structure.addGlobalIngredient('[', ScrollUpItem.get());
+    Structure.addGlobalIngredient(']', ScrollDownItem.get());
   }
   
   public void openRoleSelection(Player pl) {
@@ -69,7 +69,7 @@ public class GUIManager {
         "# - - - - - - - #",
         "# # < # R # > # #"
       )
-      .addIngredient('R', RandomRoleItem.it)
+      .addIngredient('R', RandomRoleItem.get())
       .setContent(
         DTC.rolesManager.roles.values().stream()
           .map(
@@ -166,8 +166,9 @@ public class GUIManager {
     return shopEditor != null && Bukkit.getOfflinePlayer(shopEditor).isOnline();
   }
   
-  public void onPlayerLeave(Player pl) {
-    shopEditor = null;
+  public void onPlayerQuit(Player pl) {
+    if (shopEditor == pl.getUniqueId())
+      shopEditor = null;
   }
   
   public void openShopListEditor(Player pl) {
@@ -181,7 +182,7 @@ public class GUIManager {
         "# - - - - - - - #",
         "# # < # + # > # #"
       )
-      .addIngredient('+', NewShopItem.it)
+      .addIngredient('+', NewShopItem.get())
       .setContent(
         DTC.game.shops.stream().map(
           shop -> (Item) new AbstractItem() {
@@ -233,8 +234,18 @@ public class GUIManager {
         .get();
       
       displayItems.add(good);
-      displayItems.add(ItemStack.empty());
+      displayItems.add(wallItem.get());
       displayItems.add(cost);
+    }
+    
+    for (int i = 0; i < 7; ++i) {
+      displayItems.addAll(
+        List.of(
+          ItemStack.empty(),
+          wallItem.get(),
+          ItemStack.empty()
+        )
+      );
     }
     
     VirtualInventory tradesInv = new VirtualInventory(

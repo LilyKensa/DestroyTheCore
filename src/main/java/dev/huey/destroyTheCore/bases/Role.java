@@ -7,7 +7,7 @@ import dev.huey.destroyTheCore.items.starter.StarterBootsGen;
 import dev.huey.destroyTheCore.items.starter.StarterChestplateGen;
 import dev.huey.destroyTheCore.items.starter.StarterHelmetGen;
 import dev.huey.destroyTheCore.items.starter.StarterLeggingsGen;
-import dev.huey.destroyTheCore.managers.GUIManager;
+import dev.huey.destroyTheCore.managers.GuiManager;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.managers.RolesManager;
 import dev.huey.destroyTheCore.records.Stats;
@@ -306,7 +306,7 @@ public class Role {
     );
   }
   
-  /** @see GUIManager */
+  /** @see GuiManager */
   public ItemProvider getGuiItem(Player pl) {
     List<Component> combinedLore = new ArrayList<>();
     
@@ -405,7 +405,7 @@ public class Role {
       );
   }
   
-  /** @see GUIManager */
+  /** @see GuiManager */
   public void handleClick(Item item, Gui gui, Click click) {
     Player pl = click.player();
     

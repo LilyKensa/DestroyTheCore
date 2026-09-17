@@ -9,14 +9,16 @@ import xyz.xenondevs.invui.item.ItemBuilder;
 
 public class NewShopItem {
   
-  static public final BoundItem it = BoundItem.builder()
-    .setItemProvider(
-      (pl, gui) -> new ItemBuilder(Material.EMERALD)
-        .setCustomName(TextUtils.$("gui.buttons.new-shop.title"))
-    )
-    .addClickHandler((item, gui, click) -> {
-      DTC.game.shops.add(new Game.Shop());
-      DTC.guiManager.openShopListEditor(click.player());
-    })
-    .build();
+  static public BoundItem get() {
+    return BoundItem.builder()
+      .setItemProvider(
+        (pl, gui) -> new ItemBuilder(Material.EMERALD)
+          .setCustomName(TextUtils.$("gui.buttons.new-shop.title"))
+      )
+      .addClickHandler((item, gui, click) -> {
+        DTC.game.shops.add(new Game.Shop());
+        DTC.guiManager.openShopListEditor(click.player());
+      })
+      .build();
+  }
 }

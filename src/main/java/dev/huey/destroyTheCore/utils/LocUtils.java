@@ -54,6 +54,14 @@ public class LocUtils {
     return inLobby(e.getLocation());
   }
   
+  static public boolean inTemplate(Location loc) {
+    return isSameWorld(loc.getWorld(), DTC.worldsManager.template);
+  }
+  
+  static public boolean inTemplate(Entity e) {
+    return inTemplate(e.getLocation());
+  }
+  
   static public boolean inLive(Location loc) {
     return isSameWorld(loc.getWorld(), DTC.worldsManager.live);
   }

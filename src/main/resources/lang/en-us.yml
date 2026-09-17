@@ -227,7 +227,7 @@ mission:
     attack-core: "their core health is <light_purple>reduced by 3</light_purple>!"
     summon-pig: "they got <light_purple><name></light_purple>!"
     pig-name: "Stupid Piggy Mates"
-    void: "<player> is <light_purple>teleported to the backroom</light_purple>!"
+    void: "<player> is <light_purple>sent to heaven</light_purple>!"
     give-emerald: "each person got <yellow>5 emerald</yellow>!"
     lightning: "they got <light_purple>striked by lightning</light_purple>"
     tnt: "<player> got a <light_purple><lang:entity.minecraft.tnt></light_purple>!"
@@ -311,6 +311,9 @@ world:
 commands:
   root:
     github: "Go to <click:open_url:'https://github.com/LilyKensa/DestroyTheCore'><u>https://github.com/LilyKensa/DestroyTheCore</u></click> for help"
+  debug:
+    no-game: "<red>There's not a match right now!</red>"
+    good: "<green>Debug succeeded!</green>"
   ping:
     result: "Your ping is <value>ms"
   suicide:
@@ -458,6 +461,19 @@ items:
     name: "<yellow>Bridge Helper</yellow>"
     desc-1: "Generates a 15 blocks tall bricks pillar"
     no-block: "<red>Please look at a block!</red>"
+  dash-spear:
+    name: "<yellow>Dash Spear</yellow>"
+    desc-1: "Deals no damage, allows you to dash once"
+  slot-machine:
+    name: "<yellow>Slot Machine</yellow>"
+    desc-1: "Gambles the ores on the offhand"
+    desc-2: "No one actually knows the chance of winning"
+    announce: "<player> used <yellow><item></yellow>, gambled <used> × <dark_aqua><amount></dark_aqua>!"
+    no-material: "<red>You can't gamble this item!</red>"
+    too-few: "<red>You need to gamble more than 10 items!<red>"
+    result:
+      bad: "<red>Try Again!</red>"
+      good: "<aqua><ratio>× rewards!</aqua>"
   give-jump-boost:
     name: "<yellow>Bouncy Ball</yellow>"
     desc-1: "Gives you 6 seconds of Jump Boost X"
@@ -1058,7 +1074,7 @@ roles:
     skill:
       name: "Let's Go Gambling"
       desc-1: "<dark_purple>Gambles the ores on the offhand</dark_purple>"
-      desc-2: "<dark_purple>No one actually knows the chances of winning</dark_purple>"
+      desc-2: "<dark_purple>No one actually knows the chance of winning</dark_purple>"
       announce: "<player> used <yellow><role></yellow>'s skill, gambled <item> × <dark_aqua><amount></dark_aqua>!"
       no-material: "<red>You can't gamble this item!</red>"
       too-few: "<red>You need to gamble more than 10 items!<red>"

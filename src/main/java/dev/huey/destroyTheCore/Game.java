@@ -159,10 +159,10 @@ public class Game {
   public LobbyPos lobby = new LobbyPos();
   public MapPos map = new MapPos();
   
-  record VillagerData(Location loc, Villager villager) {
+  public record VillagerData(Location loc, Villager villager) {
   }
   
-  List<VillagerData> villagers = new ArrayList<>();
+  public List<VillagerData> villagers = new ArrayList<>();
   
   public void updateVillagers() {
     villagers.removeIf(vd -> !vd.villager.isValid() || vd.villager.isDead());
@@ -186,7 +186,12 @@ public class Game {
             .subtract(LocUtils.hitboxCenter(villager).toVector())
         )
         .min(Comparator.comparing(Vector::lengthSquared))
-        .ifPresent(loc::setDirection);
+        .ifPresentOrElse((vector) -> {
+          villager.setCustomNameVisible(true);
+          loc.setDirection(vector);
+        }, () -> {
+          villager.setCustomNameVisible(false);
+        });
       
       villager.setRotation(loc.getYaw(), loc.getPitch());
     }
@@ -216,7 +221,6 @@ public class Game {
       
       villager.setVillagerType(biome);
       villager.setProfession(prof);
-      villager.setVillagerLevel(5);
       
       villager.customName(Component.text(name).color(side.color));
       
@@ -342,7 +346,7 @@ public class Game {
     }
     
     public int minRespawnTime() {
-      return PlayerData.minRespawnTime + 3 * index;
+      return PlayerData.minRespawnTime + PlayerData.respawnTimeIncrement * index;
     }
     
     public boolean isAfter(Phase that) {
@@ -380,15 +384,7 @@ public class Game {
       this.dyeColor = dyeColor;
     }
     
-    public String title() {
-      return TextUtils.$r(translateKey);
-    }
-    
-    public String pureTitle() {
-      return TextUtils.stripColor(title());
-    }
-    
-    public Component titleComp() {
+    public Component title() {
       return TextUtils.$(translateKey);
     }
     
@@ -511,8 +507,10 @@ public class Game {
   public Map<Side, Team> teams = new HashMap<>();
   
   public void enforceDisplay(Player pl) {
-    teams.get(getPlayerData(pl).side).addPlayer(pl);
+    PlayerData data = getPlayerData(pl);
+    teams.get(data.side).addPlayer(pl);
     pl.playerListName(PlayerUtils.getName(pl));
+    pl.setWaypointColor(data.side.dyeColor);
   }
   
   public void recreateTeams() {
@@ -533,7 +531,7 @@ public class Game {
       Team team = board.registerNewTeam(side.id);
       
       team.color(side.color);
-      team.displayName(side.titleComp());
+      team.displayName(side.title());
       
       team.setCanSeeFriendlyInvisibles(true);
       
@@ -644,6 +642,9 @@ public class Game {
   public void handleJoinedPlayer(Player pl) {
     UUID id = pl.getUniqueId();
     
+    AttrUtils.set(pl, Attribute.MAX_HEALTH, 20);
+    AttrUtils.set(pl, Attribute.WAYPOINT_TRANSMIT_RANGE, 25);
+    
     AdvUtils.grant(pl, DTC.advancementsManager.rootAdv);
     
     if (!stats.containsKey(id)) stats.put(id, new Stats());
@@ -694,7 +695,7 @@ public class Game {
       PlayerUtils.refreshAllSpectatorVisibilitiesFor(pl);
     }
     
-    DTC.worldsManager.onPlayerChangeWorld(pl, pl.getWorld());
+    DTC.worldsManager.handlePlayerChangeWorld(pl, pl.getWorld());
   }
   
   public void handleQuitedPlayer(Player pl) {
@@ -806,6 +807,17 @@ public class Game {
     EntityDamageByEntityEvent ev
   ) {
     if (isPlaying) {
+      if (
+        ev.getDamageSource().getDamageType() == DamageType.SPEAR &&
+          DTC.itemsManager.checkGen(
+            attacker.getInventory().getItemInMainHand(),
+            ItemsManager.ItemKey.DASH_SPEAR
+          )
+      ) {
+        ev.setCancelled(true);
+        return;
+      }
+      
       double damage = ev.getDamage(), finalDamage = ev.getFinalDamage();
       
       PlayerData attackerData = getPlayerData(attacker),
@@ -1136,7 +1148,13 @@ public class Game {
   BukkitTask startingTask = null;
   
   public void handleInteract(PlayerInteractEvent ev) {
-    if (ev.getAction() == Action.PHYSICAL) {
+    Block block = ev.getClickedBlock();
+    
+    if (
+      ev.getAction() == Action.PHYSICAL &&
+        block != null &&
+        block.getType() == Material.FARMLAND
+    ) {
       ev.setCancelled(true);
       return;
     }
@@ -1145,8 +1163,16 @@ public class Game {
     PlayerData data = getPlayerData(pl);
     ItemStack item = ev.getItem();
     
-    if (ev.getAction() == Action.LEFT_CLICK_BLOCK) handleLeftClickBlock(ev);
-    if (ev.getAction() == Action.RIGHT_CLICK_BLOCK) handleRightClickBlock(ev);
+    if (ev.getAction() == Action.LEFT_CLICK_BLOCK) handleLeftClickBlock(
+      ev,
+      pl,
+      block
+    );
+    if (ev.getAction() == Action.RIGHT_CLICK_BLOCK) handleRightClickBlock(
+      ev,
+      pl,
+      block
+    );
     
     if (ev.getAction().isRightClick()) {
       if (
@@ -1159,10 +1185,7 @@ public class Game {
       }
       
       if (
-        !PlayerUtils.checkUsingBlock(
-          pl,
-          ev.getClickedBlock()
-        ) &&
+        !PlayerUtils.checkUsingBlock(pl, block) &&
           item != null &&
           !item.isEmpty() &&
           item.getType()
@@ -1235,11 +1258,10 @@ public class Game {
   
   Map<Pos.BlockRec, BlockFace> leftClickFaces = new HashMap<>();
   
-  public void handleLeftClickBlock(PlayerInteractEvent ev) {
+  public void handleLeftClickBlock(
+    PlayerInteractEvent ev, Player pl, Block block
+  ) {
     if (ev.getHand() != EquipmentSlot.HAND) return;
-    
-    Player pl = ev.getPlayer();
-    Block block = ev.getClickedBlock();
     if (block == null) return;
     
     leftClickFaces.put(Pos.of(block).toBlockRec(), ev.getBlockFace());
@@ -1317,11 +1339,10 @@ public class Game {
   
   EnumMap<Material, Material> cropDrops = new EnumMap<>(Material.class);
   
-  public void handleRightClickBlock(PlayerInteractEvent ev) {
+  public void handleRightClickBlock(
+    PlayerInteractEvent ev, Player pl, Block block
+  ) {
     if (ev.getHand() != EquipmentSlot.HAND) return;
-    
-    Player pl = ev.getPlayer();
-    Block block = ev.getClickedBlock();
     if (block == null) return;
     
     if (LocUtils.inLobby(pl)) {
@@ -1350,6 +1371,7 @@ public class Game {
           );
         }
         ev.setCancelled(true);
+        return;
       }
     }
     
@@ -1466,6 +1488,14 @@ public class Game {
   public void handleInteractEntity(PlayerInteractEntityEvent ev) {
     Player pl = ev.getPlayer();
     PlayerData data = getPlayerData(pl);
+    
+    if (!PlayerUtils.shouldHandle(pl)) return;
+    
+    if (!LocUtils.inLive(pl)) {
+      pl.sendActionBar(TextUtils.$("game.banned.use.lobby"));
+      ev.setCancelled(true);
+      return;
+    }
     
     if (data.side == Side.SPECTATOR) {
       pl.sendActionBar(TextUtils.$("game.banned.use.spectator"));
@@ -1607,7 +1637,7 @@ public class Game {
     
     public void onTick() {
       if (age >= maxAge) {
-        block.setType(data.blockType());
+        block.setType(data.blockType);
         ParticleUtils.cloud(
           LocUtils.toBlockCenter(block.getLocation())
         );
@@ -1626,7 +1656,7 @@ public class Game {
         
         armorStand.setCustomNameVisible(true);
         armorStand.customName(
-          Component.text(countdownSeconds).color(data.textColor())
+          Component.text(countdownSeconds).color(data.textColor)
         );
       }
       
@@ -1671,7 +1701,7 @@ public class Game {
     
     Constants.OreData ore = Constants.ores.get(block.getType());
     
-    getPlayerData(pl).addOre(ore.blockType());
+    getPlayerData(pl).addOre(ore.blockType);
     
     ItemStack tool = pl.getInventory().getItemInMainHand();
     if (block.isPreferredTool(tool)) {
@@ -1697,7 +1727,7 @@ public class Game {
         ) amount *= 0.5;
       }
       if (amount >= 1) {
-        PlayerUtils.give(pl, ore.dropType(), (int) amount);
+        PlayerUtils.give(pl, ore.dropType, (int) amount);
         
         if (amount >= 2) {
           pl.sendActionBar(
@@ -1714,13 +1744,13 @@ public class Game {
         pl.sendActionBar(TextUtils.$("game.ores.bad-luck"));
       }
       
-      int orbsCount = ore.maxXp() > 0 ? RandomUtils.range(5, 8) : 0;
+      int orbsCount = ore.maxXp > 0 ? RandomUtils.range(5, 8) : 0;
       for (int i = 0; i < orbsCount; ++i) {
         ExperienceOrb orb = (ExperienceOrb) block.getWorld().spawnEntity(
           LocUtils.toBlockCenter(block.getLocation()),
           EntityType.EXPERIENCE_ORB
         );
-        orb.setExperience(RandomUtils.range(ore.minXp(), ore.maxXp() + 1));
+        orb.setExperience(RandomUtils.range(ore.minXp, ore.maxXp + 1));
       }
       
       if (getPlayerData(pl).role.id == RolesManager.RoleKey.GOLD_DIGGER) {
@@ -1729,7 +1759,7 @@ public class Game {
           if (!LocUtils.near(p, pl, 10)) continue;
           
           if (RandomUtils.hit(0.25)) {
-            ItemStack item = new ItemStack(ore.dropType());
+            ItemStack item = new ItemStack(ore.dropType);
             PlayerUtils.give(p, item);
             
             p.sendActionBar(
@@ -1761,12 +1791,13 @@ public class Game {
     
     addRegenOre(
       block,
-      ore.cooldownSeconds() * 20
+      ore.cooldownSeconds * 20
     );
   }
   
   public void handleCoreAttack(Player pl, Block block) {
     PlayerUtils.damageHandItem(pl);
+    pl.setExhaustion(pl.getExhaustion() + 0.19f);
     
     BiConsumer<PotionEffectType, Integer> effector = (type, level) -> {
       PlayerUtils.addEffect(
@@ -1881,7 +1912,7 @@ public class Game {
         "game.core-attack.message",
         List.of(
           Placeholder.component("player", PlayerUtils.getName(pl)),
-          Placeholder.component("side", oppositeSide.titleComp()),
+          Placeholder.component("side", oppositeSide.title()),
           Placeholder.component("health", Component.text(ocd.coreHealth))
         )
       )
@@ -2580,7 +2611,7 @@ public class Game {
           pl,
           TextUtils.$(
             "game.side.join.success",
-            List.of(Placeholder.component("side", side.titleComp()))
+            List.of(Placeholder.component("side", side.title()))
           )
         );
         getPlayerData(pl).join(side);
@@ -2897,11 +2928,9 @@ public class Game {
           TextUtils.$(
             "game.missing-locs.message",
             List.of(
-              Placeholder.unparsed(
+              Placeholder.component(
                 "location",
-                TextUtils.stripColor(
-                  TextUtils.$r("game.missing-locs.locs." + name)
-                )
+                TextUtils.$("game.missing-locs.locs." + name).color(null)
               )
             )
           )
@@ -2932,6 +2961,8 @@ public class Game {
     for (Player pl : Bukkit.getOnlinePlayers()) {
       if (!PlayerUtils.shouldHandle(pl)) continue;
       
+      PlayerUtils.setSkillCooldown(pl, 0);
+      
       PlayerData oldData = getPlayerData(pl);
       playerData.put(
         pl.getUniqueId(),
@@ -2954,6 +2985,9 @@ public class Game {
       
       PlayerUtils.refreshSpectatorAbilities(pl);
       PlayerUtils.respawn(pl);
+      
+      PlayerUtils.addPassiveEffect(pl, PotionEffectType.SPEED, 30 * 20, 2);
+      PlayerUtils.addPassiveEffect(pl, PotionEffectType.HASTE, 30 * 20, 2);
     }
     DTC.boardsManager.refresh();
     
@@ -3306,7 +3340,7 @@ public class Game {
         TitlePart.SUBTITLE,
         TextUtils.$(
           "game.result.subtitles." + reasonKey,
-          List.of(Placeholder.component("side", winner.titleComp()))
+          List.of(Placeholder.component("side", winner.title()))
         )
       );
       p.playSound(
@@ -3354,6 +3388,8 @@ public class Game {
       ro.onTick();
       if (!ro.active) roit.remove();
     }
+    
+    updateVillagers();
     
     if (!isPlaying || paused) return;
     
@@ -3492,8 +3528,6 @@ public class Game {
       }
     }
     
-    updateVillagers();
-    
     if (
       map.core != null &&
         phase.isAfter(
@@ -3543,7 +3577,6 @@ public class Game {
   
   public void onParticleTick() {
     for (Player p : PlayerUtils.allGaming()) {
-      if (!isPlaying) continue;
       if (LocUtils.inLobby(p)) continue;
       
       PlayerData data = getPlayerData(p);
@@ -3562,6 +3595,7 @@ public class Game {
         );
       }
       
+      if (!isPlaying) continue;
       if (p.hasPotionEffect(PotionEffectType.INVISIBILITY)) continue;
       
       if (

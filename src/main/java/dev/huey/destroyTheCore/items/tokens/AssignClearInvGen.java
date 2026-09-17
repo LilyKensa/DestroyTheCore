@@ -40,7 +40,7 @@ public class AssignClearInvGen extends UsableItemGen {
     allay.setHealth(1);
     
     allay.getEquipment().setItemInMainHand(item);
-    allay.getEquipment().setItemInMainHandDropChance(1);
+    allay.getEquipment().setItemInMainHandDropChance(0);
     
     return allay;
   }

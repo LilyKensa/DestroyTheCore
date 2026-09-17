@@ -93,36 +93,31 @@ public class InventoriesManager {
       if (item == null) continue;
       
       if (
-        List.of(Material.SHIELD, Material.KNOWLEDGE_BOOK).contains(
-          item.getType()
-        )
+        List.of(Material.SHIELD, Material.KNOWLEDGE_BOOK)
+          .contains(item.getType())
       ) continue;
       if (DTC.rolesManager.isExclusiveItem(item)) continue;
       if (
-        DTC.itemsManager.isGen(
-          item
-        ) && DTC.itemsManager.getGen(item).willNeverDrop()
+        DTC.itemsManager.isGen(item) &&
+          DTC.itemsManager.getGen(item).willNeverDrop()
       ) continue;
       
       if (
-        DTC.itemsManager.isGen(
-          item
-        ) && DTC.itemsManager.getGen(item).willVanish()
+        DTC.itemsManager.isGen(item) &&
+          DTC.itemsManager.getGen(item).willVanish()
       ) {
         contents[i] = placeholder;
       }
       else if (
         item.getType() == Material.ENCHANTING_TABLE ||
-          item
-            .getType() == Material.ENDER_CHEST ||
-          Constants.oreItems.contains(
-            item.getType()
-          ) ||
+          item.getType() == Material.ENDER_CHEST ||
+          Constants.oreItems
+            .contains(item.getType()) ||
           RandomUtils.hit(chance)
       ) {
-        pl.getWorld().dropItemNaturally(pl.getLocation(), item).setPickupDelay(
-          20
-        );
+        pl.getWorld()
+          .dropItemNaturally(pl.getLocation(), item)
+          .setPickupDelay(20);
         contents[i] = placeholder;
       }
     }
@@ -156,7 +151,7 @@ public class InventoriesManager {
     
     pl.setLevel(currentLevel - 3);
     
-    int toDrop = xpBefore - pl.calculateTotalExperiencePoints();
+    int toDrop = Math.min(xpBefore - pl.calculateTotalExperiencePoints(), 3000);
     
     while (toDrop > 0) {
       int value = Math.min(RandomUtils.range(2, 72), toDrop);

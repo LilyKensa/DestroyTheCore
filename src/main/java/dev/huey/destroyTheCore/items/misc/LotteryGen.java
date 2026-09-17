@@ -302,7 +302,7 @@ public class LotteryGen extends UsableItemGen {
               Placeholder.component("player", PlayerUtils.getName(pl)),
               Placeholder.component(
                 "side",
-                DTC.game.getPlayerData(pl).side.titleComp()
+                DTC.game.getPlayerData(pl).side.title()
               )
             )
           )
@@ -391,7 +391,7 @@ public class LotteryGen extends UsableItemGen {
                   ),
                   Placeholder.component(
                     "side",
-                    DTC.game.getPlayerData(pl).side.titleComp()
+                    DTC.game.getPlayerData(pl).side.title()
                   )
                 )
               )
@@ -419,7 +419,7 @@ public class LotteryGen extends UsableItemGen {
                   Placeholder.component("player", PlayerUtils.getName(pl)),
                   Placeholder.component(
                     "side",
-                    DTC.game.getPlayerData(pl).side.titleComp()
+                    DTC.game.getPlayerData(pl).side.title()
                   )
                 )
               )

@@ -8,14 +8,24 @@ import org.bukkit.entity.Villager;
 
 public class Constants {
   
-  public record OreData(
-    Material blockType,
-    Material dropType,
-    NamedTextColor textColor,
-    int cooldownSeconds,
-    int minXp,
-    int maxXp
-  ) {
+  static public class OreData {
+    public final Material blockType;
+    public final Material dropType;
+    public final NamedTextColor textColor;
+    public int cooldownSeconds;
+    public int minXp;
+    public int maxXp;
+    
+    public OreData(
+      Material blockType, Material dropType, NamedTextColor textColor, int cooldownSeconds, int minXp, int maxXp
+    ) {
+      this.blockType = blockType;
+      this.dropType = dropType;
+      this.textColor = textColor;
+      this.cooldownSeconds = cooldownSeconds;
+      this.minXp = minXp;
+      this.maxXp = maxXp;
+    }
   }
   
   static public final Map<Material, OreData> ores = Map.ofEntries(

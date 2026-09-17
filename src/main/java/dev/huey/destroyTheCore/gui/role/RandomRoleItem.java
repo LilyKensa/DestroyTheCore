@@ -16,16 +16,18 @@ import xyz.xenondevs.invui.item.ItemBuilder;
 
 public class RandomRoleItem {
   
-  static public final BoundItem it = BoundItem.builder()
-    .setItemProvider(
-      (pl, gui) -> new ItemBuilder(Material.REDSTONE)
-        .setCustomName(TextUtils.$("gui.buttons.pick-random.title"))
-    )
-    .addClickHandler((item, gui, click) -> {
-      onClick(click.player());
-      gui.closeForAllViewers();
-    })
-    .build();
+  static public BoundItem get() {
+    return BoundItem.builder()
+      .setItemProvider(
+        (pl, gui) -> new ItemBuilder(Material.REDSTONE)
+          .setCustomName(TextUtils.$("gui.buttons.pick-random.title"))
+      )
+      .addClickHandler((item, gui, click) -> {
+        onClick(click.player());
+        gui.closeForAllViewers();
+      })
+      .build();
+  }
   
   static public void onClick(Player pl) {
     Role role = RandomUtils.pick(

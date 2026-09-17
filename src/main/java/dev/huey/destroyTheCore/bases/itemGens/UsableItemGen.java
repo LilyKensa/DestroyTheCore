@@ -2,16 +2,14 @@ package dev.huey.destroyTheCore.bases.itemGens;
 
 import dev.huey.destroyTheCore.bases.ItemGen;
 import dev.huey.destroyTheCore.managers.ItemsManager;
-import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
-public class UsableItemGen extends ItemGen {
+public abstract class UsableItemGen extends ItemGen {
   
   boolean instantUse;
   
@@ -49,19 +47,13 @@ public class UsableItemGen extends ItemGen {
   }
   
   /**
-   * @implNote Optional - If item is instant-use, will check first so that
-   *           emerald don't get taken away
+   * @implNote Optional - If item is instant-use in shop, will check first so
+   *           that the cost don't get taken away
    */
   public boolean canUse(Player pl) {
     return true;
   }
   
-  /** @implNote Required - The functionality when right clicked */
-  public void use(Player pl, Block block) {
-    PlayerUtils.prefixedSend(
-      pl,
-      "This item's usage isn't implemented yet!",
-      NamedTextColor.RED
-    );
-  }
+  /** @implNote Required - The functionality when right-clicked */
+  public abstract void use(Player pl, Block block);
 }

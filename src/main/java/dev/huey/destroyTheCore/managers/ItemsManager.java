@@ -77,6 +77,8 @@ public class ItemsManager {
     GRENADE,
     RANDOM_ROLE,
     CHOOSE_ROLE,
+    DASH_SPEAR,
+    SLOT_MACHINE,
     // Wands
     LEVI_STICK,
     // Tokens
@@ -165,6 +167,8 @@ public class ItemsManager {
       new GrenadeGen(),
       new RandomRoleGen(),
       new ChooseRoleGen(),
+      new DashSpearGen(),
+      new SlotMachineGen(),
       // Wands
       new LeviStickGen(),
       // Tokens

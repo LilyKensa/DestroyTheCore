@@ -103,24 +103,29 @@ public class Pos implements ConfigurationSerializable {
     return pitch;
   }
   
-  public void setX(double x) {
+  public Pos setX(double x) {
     this.x = x;
+    return this;
   }
   
-  public void setY(double y) {
+  public Pos setY(double y) {
     this.y = y;
+    return this;
   }
   
-  public void setZ(double z) {
+  public Pos setZ(double z) {
     this.z = z;
+    return this;
   }
   
-  public void setYaw(float yaw) {
+  public Pos setYaw(float yaw) {
     this.yaw = yaw;
+    return this;
   }
   
-  public void setPitch(float pitch) {
+  public Pos setPitch(float pitch) {
     this.pitch = pitch;
+    return this;
   }
   
   public void setPos(double x, double y, double z) {

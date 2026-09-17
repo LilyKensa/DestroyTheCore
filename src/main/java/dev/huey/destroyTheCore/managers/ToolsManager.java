@@ -33,16 +33,30 @@ public class ToolsManager {
         )
       ),
       Map.entry(
-        "map",
+        "map-sided",
         List.of(
           new RestAreaTool(),
           new SpawnpointsTool(),
           new CoreBlockTool(),
           new WoodsTool(),
           new OresTool(),
-          new DiamondsTool(),
           new ShopsTool(),
+          new EmptyTool(),
+          new EmptyTool(),
+          new CancelTool()
+        )
+      ),
+      Map.entry(
+        "map-central",
+        List.of(
+          new DiamondsTool(),
           new MissionTool(),
+          new EmptyTool(),
+          new EmptyTool(),
+          new EmptyTool(),
+          new EmptyTool(),
+          new EmptyTool(),
+          new EmptyTool(),
           new CancelTool()
         )
       )

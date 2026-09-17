@@ -169,7 +169,7 @@ public class PlayerUtils {
       JoinConfiguration.noSeparators(),
       Component.text("["),
       data.side == Game.Side.SPECTATOR
-        ? data.side.titleComp()
+        ? data.side.title()
         : data.role.name,
       Component.text("] ")
     ).color(data.side.color);
