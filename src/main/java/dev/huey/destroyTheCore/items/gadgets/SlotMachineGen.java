@@ -59,11 +59,11 @@ public class SlotMachineGen extends UsableItemGen {
   
   @Override
   public void use(Player pl, Block block) {
+    if (!PlayerUtils.checkHandCooldown(pl)) return;
+
     ItemStack offhandItem = pl.getInventory().getItemInOffHand();
     Material type = offhandItem.getType();
     int amount = offhandItem.getAmount();
-    
-    PlayerData data = DTC.game.getPlayerData(pl);
     
     if (!acceptableTypes.contains(type)) {
       PlayerUtils.setHandCooldown(pl, 10);
@@ -184,7 +184,7 @@ public class SlotMachineGen extends UsableItemGen {
           );
           
           if (rewardRatio > 0) {
-            pl.setCooldown(iconType, 180);
+            pl.setCooldown(iconType, 60 * 20);
           }
           
           cancel();

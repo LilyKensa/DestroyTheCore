@@ -267,7 +267,7 @@ mission:
     attack-core: "核心生命<light_purple>減少 3 點</light_purple>!"
     summon-pig: "獲得 <light_purple><name></light_purple>!"
     pig-name: "87 豬隊友"
-    void: "<player> 被<light_purple>傳送到異世界</light_purple>!"
+    void: "<player> 被<light_purple>傳送到天堂</light_purple>!"
     give-emerald: "每人獲得 <yellow>5 個綠寶石</yellow>!"
     lightning: "全員<light_purple>被閃電劈</light_purple>!"
     tnt: "<player> 得到<light_purple><lang:entity.minecraft.tnt></light_purple>!"

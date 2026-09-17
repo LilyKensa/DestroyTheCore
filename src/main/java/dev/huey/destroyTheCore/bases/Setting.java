@@ -12,5 +12,5 @@ public abstract class Setting {
   
   public abstract void load(ConfigurationSection section);
   
-  public abstract ConfigurationSection generate();
+  public abstract void save(ConfigurationSection section);
 }

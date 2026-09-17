@@ -227,7 +227,7 @@ mission:
     attack-core: "their core health is <light_purple>reduced by 3</light_purple>!"
     summon-pig: "they got <light_purple><name></light_purple>!"
     pig-name: "Stupid Piggy Mates"
-    void: "<player> is <light_purple>teleported to the backroom</light_purple>!"
+    void: "<player> is <light_purple>sent to heaven</light_purple>!"
     give-emerald: "each person got <yellow>5 emerald</yellow>!"
     lightning: "they got <light_purple>striked by lightning</light_purple>"
     tnt: "<player> got a <light_purple><lang:entity.minecraft.tnt></light_purple>!"

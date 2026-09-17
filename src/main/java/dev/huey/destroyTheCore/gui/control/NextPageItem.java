@@ -5,6 +5,7 @@ import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
+import org.bukkit.event.inventory.ClickType;
 import xyz.xenondevs.invui.gui.PagedGui;
 import xyz.xenondevs.invui.item.BoundItem;
 import xyz.xenondevs.invui.item.ItemBuilder;
@@ -43,6 +44,7 @@ public class NextPageItem {
           )
       )
       .addClickHandler((item, gui, click) -> {
+        if (click.clickType() == ClickType.DOUBLE_CLICK) return;
         gui.setPage(gui.getPage() + 1);
       });
   }

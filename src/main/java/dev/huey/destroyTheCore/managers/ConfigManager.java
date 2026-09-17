@@ -115,9 +115,8 @@ public class ConfigManager {
         DTC.worldsManager.mapName = config.getString("map");
         DTC.worldsManager.cloneLive();
         
-        ConfigurationSection settingsSection = config.getConfigurationSection(
-          "settings"
-        );
+        ConfigurationSection settingsSection = config
+          .getConfigurationSection("settings");
         if (settingsSection != null) {
           DTC.settingsManager.load(settingsSection);
         }
@@ -131,7 +130,10 @@ public class ConfigManager {
             .toLowerCase()
         );
         config.set("map", DTC.worldsManager.mapName);
-        config.set("settings", DTC.settingsManager.generateConfigSection());
+        
+        YamlConfiguration settingSection = new YamlConfiguration();
+        DTC.settingsManager.save(settingSection);
+        config.set("settings", settingSection);
       }
     };
     stats = new Config("stats.yml") {

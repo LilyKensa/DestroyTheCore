@@ -258,6 +258,11 @@ public class EventsManager implements Listener {
   }
   
   @EventHandler
+  public void onFurnaceBurn(FurnaceBurnEvent ev) {
+    DTC.recipesManager.onFurnaceBurn(ev);
+  }
+  
+  @EventHandler
   public void onPlayerMove(PlayerMoveEvent ev) {
     if (ev.hasChangedPosition()) {
       if (checkPaused(ev, ev.getPlayer())) return;

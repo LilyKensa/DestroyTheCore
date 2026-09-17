@@ -4,6 +4,7 @@ import dev.huey.destroyTheCore.Constants;
 import dev.huey.destroyTheCore.bases.Setting;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 public class OresSetting extends Setting {
   
@@ -13,22 +14,28 @@ public class OresSetting extends Setting {
   
   @Override
   public void load(ConfigurationSection section) {
-    ConfigurationSection oresSection = section.getConfigurationSection("ores");
-    if (oresSection != null) {
-      for (String name : oresSection.getKeys(false)) {
-        ConfigurationSection in = oresSection.getConfigurationSection(name);
-        Constants.OreData out = Constants.ores.get(Material.valueOf(name));
-        if (in == null) continue;
-        
-        out.minXp = in.getInt("min-xp");
-        out.maxXp = in.getInt("max-xp");
-        out.cooldownSeconds = in.getInt("cooldown-seconds");
-      }
+    for (String name : section.getKeys(false)) {
+      ConfigurationSection in = section.getConfigurationSection(name);
+      Constants.OreData out = Constants.ores.get(Material.valueOf(name));
+      if (in == null) continue;
+      
+      out.minXp = in.getInt("min-xp");
+      out.maxXp = in.getInt("max-xp");
+      out.cooldownSeconds = in.getInt("cooldown-seconds");
     }
   }
   
   @Override
-  public ConfigurationSection generate() {
-    return null;
+  public void save(ConfigurationSection section) {
+    for (Material type : Constants.ores.keySet()) {
+      Constants.OreData in = Constants.ores.get(type);
+      ConfigurationSection out = new YamlConfiguration();
+      
+      out.set("min-xp", in.minXp);
+      out.set("max-xp", in.maxXp);
+      out.set("cooldown-seconds", in.cooldownSeconds);
+      
+      section.set(type.name(), out);
+    }
   }
 }

@@ -7,6 +7,7 @@ import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import java.util.List;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Villager;
 
 public class DebugCommand extends Subcommand {
   
@@ -30,7 +31,9 @@ public class DebugCommand extends Subcommand {
         }
         
         for (Game.VillagerData vd : DTC.game.villagers) {
-          vd.villager().remove();
+          Villager v = vd.villager();
+          v.setInvulnerable(false);
+          v.kill();
         }
         DTC.game.villagers.clear();
         

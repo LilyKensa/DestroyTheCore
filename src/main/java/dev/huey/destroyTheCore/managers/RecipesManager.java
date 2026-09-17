@@ -8,9 +8,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Tag;
+import org.bukkit.event.inventory.FurnaceBurnEvent;
 import org.bukkit.inventory.*;
 
 public class RecipesManager {
+  
+  static public int smeltSpeedUp = 10;
+  static public int smeltXpUp = 5;
+  static public int smeltFuelTimeUp = 2;
   
   public NamespacedKey getKey(String id) {
     return new NamespacedKey(DTC.instance, id);
@@ -31,8 +36,8 @@ public class RecipesManager {
       }
       if (recipe instanceof CookingRecipe<?> cr) {
         it.remove();
-        cr.setCookingTime(Math.ceilDiv(cr.getCookingTime(), 10));
-        cr.setExperience(cr.getExperience() * 5);
+        cr.setCookingTime(Math.ceilDiv(cr.getCookingTime(), smeltSpeedUp));
+        cr.setExperience(cr.getExperience() * smeltXpUp);
         recipesToAdd.add(cr);
       }
     }
@@ -54,5 +59,11 @@ public class RecipesManager {
     goldenCarrotRecipe.setIngredient('C', Material.CARROT);
     
     Bukkit.getServer().addRecipe(goldenCarrotRecipe);
+  }
+  
+  public void onFurnaceBurn(FurnaceBurnEvent ev) {
+    ev.setBurnTime(
+      Math.ceilDiv(ev.getBurnTime() * smeltFuelTimeUp, smeltSpeedUp)
+    );
   }
 }

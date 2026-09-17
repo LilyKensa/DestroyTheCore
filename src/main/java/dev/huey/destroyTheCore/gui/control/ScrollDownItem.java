@@ -3,6 +3,7 @@ package dev.huey.destroyTheCore.gui.control;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import java.util.List;
 import org.bukkit.Material;
+import org.bukkit.event.inventory.ClickType;
 import xyz.xenondevs.invui.gui.ScrollGui;
 import xyz.xenondevs.invui.item.BoundItem;
 import xyz.xenondevs.invui.item.ItemBuilder;
@@ -27,6 +28,7 @@ public class ScrollDownItem {
           )
       )
       .addClickHandler((item, gui, click) -> {
+        if (click.clickType() == ClickType.DOUBLE_CLICK) return;
         gui.setLine(gui.getLine() + offset);
       });
   }
