@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.gui.shop;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.GUIItem;
 import dev.huey.destroyTheCore.utils.TextUtils;
@@ -23,18 +23,21 @@ public class RenameShopItem extends GUIItem {
   
   @Override
   public ItemProvider getItemProvider() {
-    return new ItemBuilder(Material.NAME_TAG).setDisplayName(TextUtils.$r(
-      "gui.buttons.rename-shop.title")).addLoreLines(
-        TextUtils.$r(
-          "gui.buttons.rename-shop.desc",
-          List.of(Placeholder.unparsed("name", shop.name))
-        )
-      );
+    return new ItemBuilder(Material.NAME_TAG).setDisplayName(
+      TextUtils.$r(
+        "gui.buttons.rename-shop.title"
+      )
+    ).addLoreLines(
+      TextUtils.$r(
+        "gui.buttons.rename-shop.desc",
+        List.of(Placeholder.unparsed("name", shop.name))
+      )
+    );
   }
   
   @Override
   public void handleClick(ClickType click, Player pl, InventoryClickEvent ev) {
-    DestroyTheCore.guiManager.postClick = true;
-    DestroyTheCore.guiManager.openShopRenameEditor(pl, shop);
+    DTC.guiManager.postClick = true;
+    DTC.guiManager.openShopRenameEditor(pl, shop);
   }
 }

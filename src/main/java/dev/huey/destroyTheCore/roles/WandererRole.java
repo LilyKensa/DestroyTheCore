@@ -1,10 +1,11 @@
 package dev.huey.destroyTheCore.roles;
 
 import com.destroystokyo.paper.ParticleBuilder;
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.managers.RolesManager;
-import dev.huey.destroyTheCore.utils.LocationUtils;
+import dev.huey.destroyTheCore.utils.LocUtils;
+import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,13 +19,12 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Snowball;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 
 public class WandererRole extends Role {
   
-  public static class Elevator {
+  static public class Elevator {
     
     final double radius = 2.5;
     final double height = 10;
@@ -37,32 +37,51 @@ public class WandererRole extends Role {
     }
     
     public boolean contains(Location thatLoc) {
-      return (LocationUtils.isSameWorld(loc,
-        thatLoc) && thatLoc.getY() >= loc.getY() && thatLoc.getY() <= loc.getY() + height && new Vector(
+      return (LocUtils.isSameWorld(
+        loc,
+        thatLoc
+      ) &&
+        thatLoc.getY() >= loc.getY() &&
+        thatLoc.getY() <= loc
+          .getY() + height &&
+        new Vector(
           thatLoc.getX() - loc.getX(),
           0,
-          thatLoc.getZ() - loc.getZ()).lengthSquared() <= radius * radius);
+          thatLoc.getZ() - loc.getZ()
+        ).lengthSquared() <= radius * radius);
     }
   }
   
-  public static List<Elevator> elevators = new ArrayList<>();
+  static public List<Elevator> elevators = new ArrayList<>();
   
-  public static void onTick() {
+  static public void onTick() {
+    if (DTC.game.paused) return;
+    
     for (Elevator elevator : elevators) {
-      if (DestroyTheCore.ticksManager.isUpdateTick()) {
+      if (DTC.ticksManager.isUpdateTick()) {
         for (Player p : Bukkit.getOnlinePlayers()) {
           if (!elevator.contains(p.getLocation())) continue;
+          if (MoleRole.moleModeTime.containsKey(p.getUniqueId())) continue;
           
-          p.addPotionEffect(
-            new PotionEffect(PotionEffectType.LEVITATION, 20, 4, false, true)
+          PlayerUtils.addPassiveEffect(
+            p,
+            PotionEffectType.LEVITATION,
+            20,
+            5
           );
           
           if (!p.getLocation().add(0, -0.01, 0).getBlock().isCollidable()) {
-            p.addPotionEffect(
-              new PotionEffect(PotionEffectType.WEAKNESS, 20, 0, false, true)
+            PlayerUtils.addPassiveEffect(
+              p,
+              PotionEffectType.WEAKNESS,
+              20,
+              1
             );
-            p.addPotionEffect(
-              new PotionEffect(PotionEffectType.JUMP_BOOST, 20, 0, false, true)
+            PlayerUtils.addPassiveEffect(
+              p,
+              PotionEffectType.JUMP_BOOST,
+              20,
+              1
             );
           }
         }
@@ -73,7 +92,7 @@ public class WandererRole extends Role {
     elevators.removeIf(e -> e.duration <= 0);
   }
   
-  public static void onParticleTick() {
+  static public void onParticleTick() {
     for (Elevator elevator : elevators) {
       for (double y = 0; y < elevator.height; y += elevator.height / 10D) {
         double currentAngle = Math.toRadians(elevator.loc.getYaw()) + y * 5;
@@ -84,8 +103,11 @@ public class WandererRole extends Role {
         
         Location particleLoc = elevator.loc.clone().add(x, y, z);
         
-        new ParticleBuilder(Particle.END_ROD).allPlayers().location(
-          particleLoc).extra(0).spawn();
+        new ParticleBuilder(Particle.END_ROD)
+          .allPlayers()
+          .location(particleLoc)
+          .extra(0)
+          .spawn();
       }
       
       elevator.loc.addRotation(10, 0);
@@ -93,7 +115,7 @@ public class WandererRole extends Role {
   }
   
   public WandererRole() {
-    super(RolesManager.RoleKey.WANDERER);
+    super(RolesManager.RoleType.ATTACKING, RolesManager.RoleKey.WANDERER);
     addInfo(Material.IRON_SWORD);
     addFeature();
     addExclusiveItem(
@@ -103,34 +125,40 @@ public class WandererRole extends Role {
       }
     );
     addSkill(60 * 20);
+    addLevelReq(7);
   }
   
   @Override
   public void onTick(Player pl) {
-    if (DestroyTheCore.game.map.core == null) return;
+    if (DTC.game.map.core == null) return;
     
-    if (DestroyTheCore.ticksManager.isUpdateTick()) {
+    if (DTC.ticksManager.isUpdateTick()) {
       ItemStack offItem = pl.getInventory().getItemInOffHand();
       
       if (offItem.getType().name().endsWith("SWORD")) {
-        pl.addPotionEffect(
-          new PotionEffect(PotionEffectType.SPEED, 20, 0, true, false)
+        PlayerUtils.addPassiveEffect(
+          pl,
+          PotionEffectType.SPEED,
+          20,
+          1
         );
-        pl.addPotionEffect(
-          new PotionEffect(PotionEffectType.REGENERATION, 20, 0, true, false)
+        PlayerUtils.addPassiveEffect(
+          pl,
+          PotionEffectType.REGENERATION,
+          20,
+          1
         );
       }
       else {
-        pl.addPotionEffect(
-          new PotionEffect(PotionEffectType.SLOWNESS, 20, 0, true, false)
+        PlayerUtils.addPassiveEffect(
+          pl,
+          PotionEffectType.SLOWNESS,
+          20,
+          1
         );
       }
       
-      if (offItem.getType().equals(Material.SHIELD)) {
-        pl.getInventory().setItemInOffHand(ItemStack.empty());
-        pl.getWorld().dropItemNaturally(LocationUtils.hitboxCenter(pl),
-          offItem).setPickupDelay(20);
-        
+      if (PlayerUtils.banBothHandItem(pl, Material.SHIELD)) {
         pl.sendActionBar(TextUtils.$("roles.wanderer.no-shield"));
       }
     }
@@ -147,7 +175,7 @@ public class WandererRole extends Role {
     proj.addScoreboardTag("wanderer-elevator");
   }
   
-  public static void onProjectileHit(ProjectileHitEvent ev) {
+  static public void onProjectileHit(ProjectileHitEvent ev) {
     Projectile proj = ev.getEntity();
     if (!proj.getScoreboardTags().contains("wanderer-elevator")) return;
     

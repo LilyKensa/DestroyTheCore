@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.commands;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.Subcommand;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
@@ -13,7 +13,7 @@ public class EditCommand extends Subcommand {
     super("edit");
     addArgument(
       "tool-group",
-      () -> DestroyTheCore.toolsManager.kits.keySet().stream().toList()
+      () -> DTC.toolsManager.kits.keySet().stream().toList()
     );
   }
   
@@ -31,9 +31,9 @@ public class EditCommand extends Subcommand {
     
     String kitName = args.getFirst();
     
-    if (!DestroyTheCore.toolsManager.kits.containsKey(kitName)) return;
+    if (!DTC.toolsManager.kits.containsKey(kitName)) return;
     
-    DestroyTheCore.toolsManager.loadKit(pl, kitName);
+    DTC.toolsManager.loadKit(pl, kitName);
     PlayerUtils.prefixedSend(pl, TextUtils.$("commands.edit.loaded"));
   }
 }

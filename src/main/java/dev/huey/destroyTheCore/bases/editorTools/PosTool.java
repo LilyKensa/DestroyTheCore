@@ -1,63 +1,64 @@
 package dev.huey.destroyTheCore.bases.editorTools;
 
 import dev.huey.destroyTheCore.bases.EditorTool;
-import dev.huey.destroyTheCore.utils.LocationUtils;
+import dev.huey.destroyTheCore.records.Pos;
 import dev.huey.destroyTheCore.utils.ParticleUtils;
 import java.util.List;
 import org.bukkit.Color;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
-public class SingleLocationTool extends EditorTool {
+public class PosTool extends EditorTool {
   
-  Location loc;
+  Pos pos;
   Color col;
   
-  public SingleLocationTool(String id, Material iconType, Color col) {
+  public PosTool(String id, Material iconType, Color col) {
     super(id, iconType);
     this.col = col;
   }
   
   @Override
   public void refresh() {
-    loc = getLoc();
+    pos = getPos();
   }
   
   /** @implNote Required - To load the current location */
-  public Location getLoc() {
+  public Pos getPos() {
     return null;
   }
   
   /** @implNote Required - To update the current location */
-  public void setLoc(Location loc) {
+  public void setPos(Pos pos) {
   }
   
   @Override
   public void onParticleTick(Player pl) {
-    if (loc == null) return;
-    ParticleUtils.block(List.of(pl), loc, col);
+    if (pos == null) return;
+    ParticleUtils.block(List.of(pl), pos.toLoc(pl.getWorld()), col);
   }
   
-  void handleLoc(Location newLoc) {
-    loc = newLoc;
-    setLoc(loc);
+  void handleLoc(Pos pos) {
+    this.pos = pos;
+    setPos(pos);
   }
   
   @Override
   public void onRightClickAir(Player pl) {
-    handleLoc(pl.getLocation().toBlockLocation());
+    handleLoc(Pos.of(pl).floor());
   }
   
   @Override
   public void onRightClickBlock(Player pl, Block block) {
-    handleLoc(block.getLocation().setRotation(pl.getYaw(), pl.getPitch()));
+    handleLoc(
+      Pos.of(block.getLocation().setRotation(pl.getYaw(), pl.getPitch()))
+    );
   }
   
   @Override
   public void onBreakBlock(Player pl, Block block) {
-    if (LocationUtils.isSameBlock(block.getLocation(), loc)) {
+    if (Pos.of(block).isSameBlockAs(pos)) {
       handleLoc(null);
     }
   }

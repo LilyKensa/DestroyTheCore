@@ -1,25 +1,24 @@
 package dev.huey.destroyTheCore.tools;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
-import dev.huey.destroyTheCore.bases.editorTools.SingleLocationTool;
-import dev.huey.destroyTheCore.utils.LocationUtils;
+import dev.huey.destroyTheCore.DTC;
+import dev.huey.destroyTheCore.bases.editorTools.PosTool;
+import dev.huey.destroyTheCore.records.Pos;
 import org.bukkit.Color;
-import org.bukkit.Location;
 import org.bukkit.Material;
 
-public class LobbyTool extends SingleLocationTool {
+public class LobbyTool extends PosTool {
   
   public LobbyTool() {
     super("lobby", Material.BREEZE_ROD, Color.AQUA);
   }
   
   @Override
-  public Location getLoc() {
-    return DestroyTheCore.game.lobby.spawn;
+  public Pos getPos() {
+    return DTC.game.lobby.spawn;
   }
   
   @Override
-  public void setLoc(Location loc) {
-    DestroyTheCore.game.lobby.spawn = LocationUtils.toSpawnPoint(loc);
+  public void setPos(Pos pos) {
+    DTC.game.lobby.spawn = pos.spawnPoint();
   }
 }

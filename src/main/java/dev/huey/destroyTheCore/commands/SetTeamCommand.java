@@ -1,8 +1,11 @@
 package dev.huey.destroyTheCore.commands;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
+import dev.huey.destroyTheCore.bases.ItemGen;
 import dev.huey.destroyTheCore.bases.Subcommand;
+import dev.huey.destroyTheCore.utils.CoreUtils;
+import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import java.util.Arrays;
@@ -10,10 +13,13 @@ import java.util.List;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.persistence.PersistentDataType;
 
-public class JoinTeamCommand extends Subcommand {
+public class SetTeamCommand extends Subcommand {
   
-  public JoinTeamCommand() {
+  public SetTeamCommand() {
     super("team");
     addArgument(
       "team",
@@ -31,8 +37,11 @@ public class JoinTeamCommand extends Subcommand {
       PlayerUtils.prefixedSend(pl, TextUtils.$("commands.join.unclear"));
     }
     
-    Game.Side side = Arrays.stream(Game.Side.values()).filter(s -> s.id.equals(
-      args.getFirst())).findAny().orElse(null);
+    Game.Side side = Arrays.stream(Game.Side.values()).filter(
+      s -> s.id.equals(
+        args.getFirst()
+      )
+    ).findAny().orElse(null);
     if (side == null) {
       PlayerUtils.prefixedSend(pl, TextUtils.$("commands.join.side-not-found"));
       return;
@@ -67,8 +76,10 @@ public class JoinTeamCommand extends Subcommand {
     }
     else {
       if (
-        !PlayerUtils.isAdmin(pl) && DestroyTheCore.worldsManager.checkLiveWorld(
-          pl.getLocation())
+        !PlayerUtils.isAdmin(pl) &&
+          LocUtils.inLive(
+            pl.getLocation()
+          )
       ) {
         PlayerUtils.prefixedSend(pl, TextUtils.$("commands.join.only-lobby"));
         return;
@@ -86,12 +97,28 @@ public class JoinTeamCommand extends Subcommand {
       );
     }
     
-    DestroyTheCore.game.getPlayerData(target).join(side);
-    DestroyTheCore.game.enforceTeam(target);
+    DTC.game.getPlayerData(target).join(side);
+    DTC.game.enforceDisplay(target);
     
-    PlayerUtils.refreshSpectatorAbilities(target);
-    PlayerUtils.hideSpectators();
+    DTC.boardsManager.refresh(target);
     
-    DestroyTheCore.boardsManager.refresh(target);
+    if (LocUtils.inLive(target)) {
+      PlayerUtils.refreshSpectatorAbilities(target);
+      PlayerUtils.refreshAllSpectatorVisibilities();
+    }
+    
+    for (ItemStack item : target.getInventory().getContents()) {
+      if (item == null || item.getType().isAir()) continue;
+      if (!(item.getItemMeta() instanceof LeatherArmorMeta meta)) continue;
+      if (!DTC.itemsManager.isGen(item)) continue;
+      if (
+        !item.getPersistentDataContainer().get(
+          ItemGen.dataNamespace,
+          PersistentDataType.STRING
+        ).startsWith("STARTER")
+      ) continue;
+      
+      CoreUtils.dyeTeamColor(item, side);
+    }
   }
 }

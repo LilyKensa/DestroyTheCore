@@ -1,33 +1,35 @@
 package dev.huey.destroyTheCore.bases.editorTools;
 
 import dev.huey.destroyTheCore.bases.EditorTool;
+import dev.huey.destroyTheCore.records.Pos;
 import dev.huey.destroyTheCore.records.Region;
 import dev.huey.destroyTheCore.utils.ParticleUtils;
 import java.util.List;
 import org.bukkit.Color;
-import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 public class RegionTool extends EditorTool {
-  
-  Location loc1, loc2;
+  Pos first, second;
   Region region;
-  Color col1, col2;
+  Color firstColor, secondColor;
   
-  public RegionTool(String id, Material iconType, Color col1, Color col2) {
+  public RegionTool(
+    String id, Material iconType, Color firstColor, Color secondColor
+  ) {
     super(id, iconType);
-    this.col1 = col1;
-    this.col2 = col2;
+    this.firstColor = firstColor;
+    this.secondColor = secondColor;
   }
   
   @Override
   public void refresh() {
     region = getRegion();
     if (region != null) {
-      loc1 = region.loc1();
-      loc2 = region.loc2();
+      first = region.getFirst();
+      second = region.getSecond();
     }
   }
   
@@ -42,27 +44,36 @@ public class RegionTool extends EditorTool {
   
   @Override
   public void onParticleTick(Player pl) {
-    if (loc1 != null && loc2 != null) {
-      ParticleUtils.region(List.of(pl), loc1, loc2, Color.GRAY, col1, col2);
+    World world = pl.getWorld();
+    
+    if (first != null && second != null) {
+      ParticleUtils.region(
+        List.of(pl),
+        first.toLoc(world),
+        second.toLoc(world),
+        Color.GRAY,
+        firstColor,
+        secondColor
+      );
     }
-    else if (loc1 != null) {
-      ParticleUtils.block(List.of(pl), loc1, col1);
+    else if (first != null) {
+      ParticleUtils.block(List.of(pl), first.toLoc(world), firstColor);
     }
   }
   
-  void handleLoc(Location loc) {
-    if (loc1 == null) {
-      loc1 = loc;
+  void handlePos(Pos pos) {
+    if (first == null) {
+      first = pos;
     }
-    else if (loc2 == null) {
-      loc2 = loc;
+    else if (second == null) {
+      second = pos;
       
-      region = new Region(loc1, loc2);
+      region = new Region(first, second);
       setRegion(region);
     }
     else {
-      loc1 = loc;
-      loc2 = null;
+      first = pos;
+      second = null;
       
       region = null;
       setRegion(null);
@@ -71,19 +82,19 @@ public class RegionTool extends EditorTool {
   
   @Override
   public void onRightClickAir(Player pl) {
-    handleLoc(pl.getLocation().toBlockLocation());
+    handlePos(Pos.of(pl).floor());
   }
   
   @Override
   public void onRightClickBlock(Player pl, Block block) {
-    handleLoc(block.getLocation());
+    handlePos(Pos.of(block));
   }
   
   @Override
   public void onBreakBlock(Player pl, Block block) {
-    if (region != null && region.contains(block.getLocation())) {
-      loc1 = null;
-      loc2 = null;
+    if (region != null && region.contains(Pos.of(block))) {
+      first = null;
+      second = null;
       region = null;
       setRegion(null);
     }

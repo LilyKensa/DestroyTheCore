@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.tools;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.EditorTool;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -13,7 +13,7 @@ public class CancelTool extends EditorTool {
   }
   
   void leave(Player pl) {
-    DestroyTheCore.inventoriesManager.restoreHotbar(pl);
+    DTC.inventoriesManager.restoreHotbar(pl);
   }
   
   @Override

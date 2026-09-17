@@ -1,14 +1,13 @@
 package dev.huey.destroyTheCore.managers;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
-import dev.huey.destroyTheCore.roles.KekkaiMasterRole;
-import dev.huey.destroyTheCore.roles.RangerRole;
-import dev.huey.destroyTheCore.roles.WandererRole;
+import dev.huey.destroyTheCore.DTC;
+import dev.huey.destroyTheCore.roles.*;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class TicksManager {
   
-  public static final int particleRate = 4, updateRate = 10;
+  static public final int particleRate = 4, updateRate = 10,
+    tipRate = 5 * 60 * 20;
   
   /** Ticks elapsed from last game start */
   public int ticksCount = 0;
@@ -23,6 +22,11 @@ public class TicksManager {
     return ticksCount % updateRate == 0;
   }
   
+  /** Tip tick is every {@value #tipRate} ticks */
+  public boolean isTipTick() {
+    return ticksCount % tipRate == 0;
+  }
+  
   /** Second is every 20 ticks */
   public boolean isSeconds() {
     return ticksCount % 20 == 0;
@@ -30,34 +34,42 @@ public class TicksManager {
   
   /** The {@link BukkitRunnable} that runs every tick */
   public class TicksRunnable extends BukkitRunnable {
-    
     @Override
     public void run() {
       ticksCount++;
       
-      DestroyTheCore.game.onTick();
+      DTC.game.onTick();
       
-      DestroyTheCore.missionsManager.onTick();
+      DTC.missionsManager.onTick();
       KekkaiMasterRole.onTick();
       WandererRole.onTick();
       
       if (isParticleTick()) {
-        DestroyTheCore.toolsManager.onParticleTick();
-        DestroyTheCore.glowManager.onParticleTick();
+        DTC.toolsManager.onParticleTick();
+        DTC.glowManager.onParticleTick();
         
         KekkaiMasterRole.onParticleTick();
         RangerRole.onParticleTick();
         WandererRole.onParticleTick();
+        MoleRole.onParticleTick();
+        FairyRole.onTick();
         
-        DestroyTheCore.game.onParticleTick();
+        DTC.game.onParticleTick();
       }
       
       if (isUpdateTick()) {
-        DestroyTheCore.itemsManager.onUpdateTick();
+        DTC.itemsManager.onUpdateTick();
+        
+        RangerRole.onUpdateTick();
+        MoleRole.onUpdateTick();
+      }
+      
+      if (isTipTick()) {
+        DTC.tipsManager.onTipTick();
       }
       
       if (isSeconds()) {
-        DestroyTheCore.boardsManager.onUITick();
+        DTC.boardsManager.onUITick();
       }
     }
   }
@@ -66,6 +78,7 @@ public class TicksManager {
   TicksRunnable task;
   
   public void init() {
-    (task = new TicksRunnable()).runTaskTimer(DestroyTheCore.instance, 0, 1);
+    task = new TicksRunnable();
+    task.runTaskTimer(DTC.instance, 0, 1);
   }
 }

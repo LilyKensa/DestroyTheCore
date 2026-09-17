@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.missions;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.bases.missions.InstantMission;
 import dev.huey.destroyTheCore.managers.RolesManager;
@@ -20,12 +20,18 @@ public class RandomRoleMission extends InstantMission {
     if (pl == null) return;
     
     Role role = RandomUtils.pick(
-      DestroyTheCore.rolesManager.roles.values().stream().filter(
-        r -> r.id != RolesManager.RoleKey.DEFAULT).toList()
+      DTC.rolesManager.roles.values().stream()
+        .filter(
+          r -> r.id != RolesManager.RoleKey.DEFAULT
+//            && r.levelReq <= DestroyTheCore.game.stats.get(
+//              pl.getUniqueId()
+//            ).levels
+        )
+        .toList()
     );
     
-    DestroyTheCore.rolesManager.setRole(pl, role);
-    DestroyTheCore.game.enforceTeam(pl);
-    DestroyTheCore.boardsManager.refresh(pl);
+    DTC.rolesManager.setRole(pl, role);
+    DTC.game.enforceDisplay(pl);
+    DTC.boardsManager.refresh(pl);
   }
 }

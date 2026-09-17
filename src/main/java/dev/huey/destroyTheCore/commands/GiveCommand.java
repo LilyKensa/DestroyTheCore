@@ -1,7 +1,6 @@
 package dev.huey.destroyTheCore.commands;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
-import dev.huey.destroyTheCore.bases.ItemGen;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.Subcommand;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
@@ -10,13 +9,17 @@ import java.util.List;
 import org.bukkit.entity.Player;
 
 public class GiveCommand extends Subcommand {
-  
   public GiveCommand() {
     super("give");
     addArgument(
       "item",
-      () -> DestroyTheCore.itemsManager.gens.keySet().stream().map(
-        key -> key.name().toLowerCase()).toList()
+      () -> DTC.itemsManager.gens.keySet().stream().map(
+        key -> key.name().toLowerCase()
+      ).toList()
+    );
+    addArgument(
+      "amount",
+      () -> List.of("<amount>")
     );
   }
   
@@ -32,6 +35,15 @@ public class GiveCommand extends Subcommand {
       return;
     }
     
+    int amount = 1;
+    if (args.size() >= 2) {
+      try {
+        amount = Integer.parseInt(args.get(1));
+      }
+      catch (NumberFormatException ignored) {
+      }
+    }
+    
     ItemsManager.ItemKey key;
     try {
       key = ItemsManager.ItemKey.valueOf(args.getFirst().toUpperCase());
@@ -41,7 +53,6 @@ public class GiveCommand extends Subcommand {
       return;
     }
     
-    ItemGen ig = DestroyTheCore.itemsManager.gens.get(key);
-    pl.give(ig.getItem());
+    PlayerUtils.give(pl, key, amount);
   }
 }

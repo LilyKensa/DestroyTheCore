@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.bases;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.managers.TicksManager;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import net.kyori.adventure.text.Component;
@@ -21,7 +21,7 @@ public class EditorTool {
   
   /** Used to distinguish tools, stored data is {@link #id} */
   static final NamespacedKey dataNamespace = new NamespacedKey(
-    DestroyTheCore.instance,
+    DTC.instance,
     "editor-tool"
   );
   
@@ -41,14 +41,19 @@ public class EditorTool {
     ItemMeta meta = item.getItemMeta();
     
     meta.displayName(
-      toolPrefix.append(TextUtils.$("tools." + id).color(
-        NamedTextColor.GOLD)).decoration(TextDecoration.ITALIC, false)
+      toolPrefix.append(
+        TextUtils.$("tools." + id).color(
+          NamedTextColor.GOLD
+        )
+      ).decoration(TextDecoration.ITALIC, false)
     );
     meta.setEnchantmentGlintOverride(true);
     
-    meta.getPersistentDataContainer().set(dataNamespace,
+    meta.getPersistentDataContainer().set(
+      dataNamespace,
       PersistentDataType.STRING,
-      id);
+      id
+    );
     
     item.setItemMeta(meta);
     return item;

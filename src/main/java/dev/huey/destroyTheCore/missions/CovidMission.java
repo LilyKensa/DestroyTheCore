@@ -1,15 +1,14 @@
 package dev.huey.destroyTheCore.missions;
 
 import com.destroystokyo.paper.ParticleBuilder;
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.missions.TimedMission;
-import dev.huey.destroyTheCore.utils.LocationUtils;
+import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import java.util.HashSet;
 import java.util.Set;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class CovidMission extends TimedMission {
@@ -26,27 +25,35 @@ public class CovidMission extends TimedMission {
   
   @Override
   public void innerTick() {
-    if (DestroyTheCore.ticksManager.ticksCount % 25 == 0) { // Poison 0 = every 25 ticks
+    if (DTC.ticksManager.ticksCount % 25 == 0) { // Poison 0 = every 25 ticks
       isClose.clear();
       
       for (Player p : PlayerUtils.allGaming()) {
         if (
-          PlayerUtils.allGaming().stream().anyMatch(e -> !e.equals(
-            p) && LocationUtils.near(e, p, 5))
+          PlayerUtils.allGaming().stream().anyMatch(
+            e -> !e.equals(
+              p
+            ) && LocUtils.near(e, p, 5)
+          )
         ) {
           isClose.add(p);
         }
       }
       
       for (Player p : isClose) {
-        p.addPotionEffect(
-          new PotionEffect(PotionEffectType.POISON, 40, 0, true, false)
+        if (!PlayerUtils.shouldHandle(p)) continue;
+        
+        PlayerUtils.addPassiveEffect(
+          p,
+          PotionEffectType.POISON,
+          40,
+          1
         );
       }
       
       for (Player p : PlayerUtils.allGaming()) {
-        LocationUtils.ring(
-          LocationUtils.hitboxCenter(p),
+        LocUtils.ring(
+          LocUtils.hitboxCenter(p),
           5,
           loc -> {
             new ParticleBuilder(

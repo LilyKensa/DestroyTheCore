@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.records;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.managers.RolesManager;
@@ -9,23 +9,38 @@ import java.util.Map;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-public class PlayerData {
+public class PlayerData implements HasStats {
   
   /** Constants */
-  public static final int minRespawnTime = 5, maxRespawnTime = 180,
-    killPunishment = 2, corePunishment = 5,
-    shoutCooldownDuration = 10 * 20, rrtDuration = 5 * 20; // Reduce respawn time
+  static public final int minRespawnTime = 5, maxRespawnTime = 180;
+  static public final int killPunishment = 2, corePunishment = 5;
+  static public final int shoutCooldownDuration = 10 * 20;
+  static public final int rrtDuration = 5 * 20; // Reduce respawn time
   
   public Player owner;
   public Game.Side side = Game.Side.SPECTATOR;
-  public Role role = DestroyTheCore.rolesManager.roles.get(
+  public Role role = DTC.rolesManager.roles.get(
     RolesManager.RoleKey.DEFAULT
   );
   public boolean alive = false;
   
-  public int respawnTime = minRespawnTime, extraSkillReload = 0,
-    rrtProgress = -20, shoutCooldown = 0, quizQuota = 10,
-    lotteryShift = 0, killStreak = 0, kills = 0, deaths = 0, coreAttacks = 0;
+  public int respawnTime = minRespawnTime;
+  public int extraSkillReload = 0;
+  public int rrtProgress = -20;
+  public int shoutCooldown = 0;
+  public int quizQuota = 10;
+  public int lotteryShift = 0;
+  public int killStreak = 0;
+  public int respawnAt = -1;
+  public int attackedCoreAt = -1;
+  public int rightClickedAt = -1;
+  public boolean clearedInv = false;
+  public boolean skillReloadedMessage = true;
+  
+  public int kills = 0, deaths = 0;
+  public int coreAttacks = 0;
+  public int skills = 0;
+  public int extraExp = 0;
   public Map<Material, Integer> ores = new HashMap<>();
   
   public PlayerData(Player owner) {
@@ -48,7 +63,7 @@ public class PlayerData {
   
   public void setRespawnTime(int time) {
     this.respawnTime = Math.min(Math.max(minRespawnTime, time), maxRespawnTime);
-    DestroyTheCore.game.enforceRTScore(owner);
+    DTC.game.enforceRTScore(owner);
   }
   
   public void addRespawnTime(int plus) {
@@ -57,9 +72,21 @@ public class PlayerData {
   
   public void revive() {
     alive = true;
-    if (DestroyTheCore.game.phase != null) setRespawnTime(
-      DestroyTheCore.game.phase.minRespawnTime()
-    );
+    respawnAt = DTC.ticksManager.ticksCount;
+    
+    if (DTC.game.phase != null) {
+      setRespawnTime(
+        DTC.game.phase.minRespawnTime()
+      );
+    }
+  }
+  
+  public boolean isPostRespawn() {
+    return respawnAt >= 0 && DTC.ticksManager.ticksCount - respawnAt < 10 * 20;
+  }
+  
+  public void removePostRevive() {
+    respawnAt = -1;
   }
   
   public void kill() {
@@ -80,7 +107,12 @@ public class PlayerData {
   
   public void addCoreAttack() {
     coreAttacks++;
+    attackedCoreAt = DTC.ticksManager.ticksCount;
     addRespawnTime(corePunishment);
+  }
+  
+  public void addExtraExp(int amount) {
+    extraExp += amount;
   }
   
   public void addOre(Material type) {

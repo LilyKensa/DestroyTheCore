@@ -1,11 +1,11 @@
 package dev.huey.destroyTheCore.items.tokens;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.itemGens.UsableItemGen;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.records.PlayerData;
 import dev.huey.destroyTheCore.records.SideData;
-import dev.huey.destroyTheCore.utils.LocationUtils;
+import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import java.util.List;
@@ -22,26 +22,34 @@ public class IgnoreCoreInvulnGen extends UsableItemGen {
   }
   
   @Override
-  public void use(Player pl, Block block) {
-    if (DestroyTheCore.game.map.core == null) return;
-    
-    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
-    SideData oppositeSideData = DestroyTheCore.game.getSideData(
+  public boolean canUse(Player pl) {
+    PlayerData data = DTC.game.getPlayerData(pl);
+    SideData oppositeSideData = DTC.game.getSideData(
       data.side.opposite()
     );
     
     if (!oppositeSideData.isInvuln()) {
       pl.sendActionBar(TextUtils.$("items.ignore-core-invuln.no-effect"));
-      return;
+      return false;
     }
     
-    PlayerUtils.takeOneItemFromHand(pl);
+    return true;
+  }
+  
+  @Override
+  public void use(Player pl, Block block) {
+    if (DTC.game.map.core == null) return;
+    
+    PlayerData data = DTC.game.getPlayerData(pl);
+    SideData oppositeSideData = DTC.game.getSideData(
+      data.side.opposite()
+    );
     
     oppositeSideData.invulnTicks = 0;
-    DestroyTheCore.boardsManager.refresh();
+    DTC.boardsManager.refresh();
     
-    Location coreLoc = LocationUtils.live(
-      LocationUtils.selfSide(DestroyTheCore.game.map.core, data.side.opposite())
+    Location coreLoc = LocUtils.live(
+      LocUtils.selfSide(DTC.game.map.core, data.side.opposite())
     );
     coreLoc.getBlock().setType(Material.END_STONE);
     
@@ -54,5 +62,7 @@ public class IgnoreCoreInvulnGen extends UsableItemGen {
         )
       )
     );
+    
+    DTC.game.getPlayerData(pl).addExtraExp(25);
   }
 }

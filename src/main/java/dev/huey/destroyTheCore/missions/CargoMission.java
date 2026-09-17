@@ -1,43 +1,51 @@
 package dev.huey.destroyTheCore.missions;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.Mission;
-import dev.huey.destroyTheCore.utils.LocationUtils;
+import dev.huey.destroyTheCore.records.Pos;
+import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.RandomUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
+import java.util.ArrayList;
+import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class CargoMission extends Mission implements Listener {
   
-  public static final NamespacedKey dataNamespace = new NamespacedKey(
-    DestroyTheCore.instance,
+  static public final NamespacedKey dataNamespace = new NamespacedKey(
+    DTC.instance,
     "cargo-mission-package"
   );
   
-  public static ItemStack getItem() {
+  static public ItemStack getItem() {
     ItemStack item = new ItemStack(Material.VAULT);
     
     item.editMeta(meta -> {
       meta.displayName(TextUtils.$("missions.cargo.item"));
       
-      meta.getPersistentDataContainer().set(dataNamespace,
+      meta.getPersistentDataContainer().set(
+        dataNamespace,
         PersistentDataType.BOOLEAN,
-        true);
+        true
+      );
     });
     
     return item;
   }
   
-  public static boolean hasItem(Player pl) {
+  static public boolean hasItem(Player pl) {
     for (ItemStack item : pl.getInventory().getContents()) {
       if (item == null || item.isEmpty()) continue;
       if (!item.hasItemMeta()) continue;
@@ -50,47 +58,73 @@ public class CargoMission extends Mission implements Listener {
     return false;
   }
   
-  public CargoMission() {
-    super("cargo");
-  }
-  
   boolean draw = true;
   
-  public Player randomPlayer(Game.Side side) {
-    return RandomUtils.pick(PlayerUtils.getTeammates(side));
+  List<Item> itemEntities = new ArrayList<>();
+  
+  public CargoMission() {
+    super("cargo");
+    addResult();
   }
   
   @Override
   public void start() {
-    Player a = randomPlayer(Game.Side.RED), b = randomPlayer(Game.Side.GREEN);
-    if (a == null || b == null) return;
-    
-    for (Player pl : new Player[]{a, b}) {
-      if (pl == null) continue;
+    for (Game.Side side : Game.bothSide) {
+      Player pl = RandomUtils.pick(PlayerUtils.getTeammates(side));
       
-      pl.give(getItem());
+      if (pl == null) {
+        PlayerUtils.dropAtSpawn(side, getItem());
+      }
+      else {
+        pl.teleport(
+          LocUtils.live(
+            LocUtils.selfSide(DTC.game.map.core, pl)
+          )
+        );
+        PlayerUtils.give(pl, getItem());
+      }
+    }
+  }
+  
+  @EventHandler
+  public void onBlockPlace(BlockPlaceEvent ev) {
+    if (ev.getItemInHand().getPersistentDataContainer().has(dataNamespace)) {
+      ev.setCancelled(true);
+    }
+  }
+  
+  @EventHandler
+  public void onPlayerDropItem(PlayerDropItemEvent ev) {
+    if (
+      ev.getItemDrop().getItemStack().getPersistentDataContainer().has(
+        dataNamespace
+      )
+    ) {
+      itemEntities.add(ev.getItemDrop());
     }
   }
   
   @Override
   public void tick() {
-    if (DestroyTheCore.ticksManager.isUpdateTick()) {
+    if (DTC.ticksManager.isUpdateTick()) {
       for (Player p : PlayerUtils.allGaming()) {
         if (!hasItem(p)) continue;
         
-        p.addPotionEffect(
-          new PotionEffect(PotionEffectType.SLOWNESS, 20, 9, true, false)
-        );
-        p.addPotionEffect(
-          new PotionEffect(PotionEffectType.GLOWING, 20, 0, true, false)
+        PlayerUtils.glow(p, 20);
+        PlayerUtils.addPassiveEffect(
+          p,
+          PotionEffectType.SLOWNESS,
+          20,
+          10
         );
         
         if (
-          LocationUtils.near(
-            p.getLocation(),
-            LocationUtils.live(DestroyTheCore.game.map.mission),
-            5
-          )
+          LocUtils.inLive(p) &&
+            LocUtils.near(
+              Pos.of(p),
+              DTC.game.map.mission,
+              5
+            )
         ) {
           draw = false;
           declareWinner(p);
@@ -107,6 +141,12 @@ public class CargoMission extends Mission implements Listener {
     
     for (Player p : PlayerUtils.allGaming()) {
       p.getInventory().remove(Material.VAULT);
+    }
+    
+    for (Item entity : itemEntities) {
+      if (entity.isValid() && !entity.isDead()) {
+        entity.remove();
+      }
     }
   }
 }

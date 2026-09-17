@@ -9,7 +9,6 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class GiveSpeedGen extends UsableItemGen {
@@ -18,12 +17,12 @@ public class GiveSpeedGen extends UsableItemGen {
     super(ItemsManager.ItemKey.GIVE_SPEED, Material.FEATHER);
   }
   
-  public static final List<ItemsManager.ItemKey> group = List.of(
+  static public final List<ItemsManager.ItemKey> group = List.of(
     ItemsManager.ItemKey.GIVE_SPEED,
     ItemsManager.ItemKey.GIVE_JUMP_BOOST,
     ItemsManager.ItemKey.GIVE_STRENGTH
   );
-  public static final int cooldown = 180 * 20;
+  static public final int cooldown = 180 * 20;
   
   @Override
   public void use(Player pl, Block block) {
@@ -32,8 +31,11 @@ public class GiveSpeedGen extends UsableItemGen {
     
     PlayerUtils.takeOneItemFromHand(pl);
     
-    pl.addPotionEffect(
-      new PotionEffect(PotionEffectType.SPEED, 6 * 20, 9, false, true)
+    PlayerUtils.addEffect(
+      pl,
+      PotionEffectType.SPEED,
+      6 * 20,
+      10
     );
     
     PlayerUtils.broadcast(

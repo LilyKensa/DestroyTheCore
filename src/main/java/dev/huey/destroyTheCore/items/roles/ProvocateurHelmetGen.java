@@ -2,7 +2,7 @@ package dev.huey.destroyTheCore.items.roles;
 
 import dev.huey.destroyTheCore.bases.ItemGen;
 import dev.huey.destroyTheCore.managers.ItemsManager;
-import dev.huey.destroyTheCore.utils.AttributeUtils;
+import dev.huey.destroyTheCore.utils.AttrUtils;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -27,15 +27,12 @@ public class ProvocateurHelmetGen extends ItemGen {
     meta.setColor(Color.fromRGB(220, 175, 130));
     meta.addItemFlags(ItemFlag.HIDE_DYE);
     
-    meta.addEnchant(Enchantment.BINDING_CURSE, 1, true);
-    
-    //    meta.addAttributeModifier(
-    //      Attribute.ARMOR,
-    //      AttributeUtils.multiply("armor", EquipmentSlotGroup.HEAD, 0.8)
-    //    );
     meta.addAttributeModifier(
-      Attribute.ATTACK_DAMAGE,
-      AttributeUtils.multiply("damage", EquipmentSlotGroup.HEAD, 0.6)
+      Attribute.ARMOR,
+      AttrUtils.addition("protection", EquipmentSlotGroup.HEAD, 2)
     );
+    
+    meta.addEnchant(Enchantment.PROTECTION, 2, true);
+    meta.addEnchant(Enchantment.BINDING_CURSE, 1, true);
   }
 }

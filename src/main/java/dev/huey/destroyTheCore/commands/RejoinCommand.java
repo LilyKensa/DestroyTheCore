@@ -1,8 +1,9 @@
 package dev.huey.destroyTheCore.commands;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.Subcommand;
 import dev.huey.destroyTheCore.records.PlayerData;
+import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import java.util.List;
@@ -17,24 +18,24 @@ public class RejoinCommand extends Subcommand {
   
   @Override
   public void execute(Player pl, List<String> args) {
-    if (!PlayerUtils.inLobby(pl)) {
+    if (!LocUtils.inLobby(pl)) {
       PlayerUtils.prefixedSend(pl, TextUtils.$("commands.rejoin.wrong-world"));
       return;
     }
     
-    if (!DestroyTheCore.game.isPlaying) {
+    if (!DTC.game.isPlaying) {
       PlayerUtils.prefixedSend(pl, TextUtils.$("commands.rejoin.no-game"));
       return;
     }
     
-    PlayerUtils.broadcast(
+    PlayerUtils.prefixedBroadcast(
       TextUtils.$(
         "commands.rejoin.announce",
         List.of(Placeholder.component("player", PlayerUtils.getName(pl)))
       )
     );
     
-    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
+    PlayerData data = DTC.game.getPlayerData(pl);
     data.kill();
     
     if (PlayerUtils.shouldHandle(pl)) pl.getInventory().clear();

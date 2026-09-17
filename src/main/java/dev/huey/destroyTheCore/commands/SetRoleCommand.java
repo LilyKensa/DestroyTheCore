@@ -1,9 +1,10 @@
 package dev.huey.destroyTheCore.commands;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.bases.Subcommand;
 import dev.huey.destroyTheCore.managers.RolesManager;
+import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import java.util.List;
@@ -17,8 +18,9 @@ public class SetRoleCommand extends Subcommand {
     super("role");
     addArgument(
       "role",
-      () -> DestroyTheCore.rolesManager.roles.values().stream().map(
-        s -> s.id.name().toLowerCase()).toList()
+      () -> DTC.rolesManager.roles.values().stream().map(
+        s -> s.id.name().toLowerCase()
+      ).toList()
     );
     addArgument(
       "player",
@@ -30,6 +32,7 @@ public class SetRoleCommand extends Subcommand {
   public void execute(Player pl, List<String> args) {
     if (args.isEmpty()) {
       PlayerUtils.prefixedSend(pl, TextUtils.$("commands.role.unclear"));
+      return;
     }
     
     RolesManager.RoleKey key;
@@ -41,7 +44,7 @@ public class SetRoleCommand extends Subcommand {
       return;
     }
     
-    Role role = DestroyTheCore.rolesManager.roles.get(key);
+    Role role = DTC.rolesManager.roles.get(key);
     
     Player target;
     
@@ -72,8 +75,10 @@ public class SetRoleCommand extends Subcommand {
     }
     else {
       if (
-        !PlayerUtils.isAdmin(pl) && DestroyTheCore.worldsManager.checkLiveWorld(
-          pl.getLocation())
+        !PlayerUtils.isAdmin(pl) &&
+          LocUtils.inLive(
+            pl.getLocation()
+          )
       ) {
         PlayerUtils.prefixedSend(pl, TextUtils.$("commands.role.only-lobby"));
         return;
@@ -91,8 +96,8 @@ public class SetRoleCommand extends Subcommand {
       );
     }
     
-    DestroyTheCore.rolesManager.setRole(target, role);
-    DestroyTheCore.game.enforceTeam(target);
-    DestroyTheCore.boardsManager.refresh(target);
+    DTC.rolesManager.setRole(target, role);
+    DTC.game.enforceDisplay(target);
+    DTC.boardsManager.refresh(target);
   }
 }

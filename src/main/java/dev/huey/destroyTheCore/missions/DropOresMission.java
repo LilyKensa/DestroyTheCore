@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.missions;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.missions.InstantMission;
 import dev.huey.destroyTheCore.records.PlayerData;
@@ -16,11 +16,11 @@ public class DropOresMission extends InstantMission {
   @Override
   public void run() {
     for (Player p : Bukkit.getOnlinePlayers()) {
-      PlayerData d = DestroyTheCore.game.getPlayerData(p);
+      PlayerData d = DTC.game.getPlayerData(p);
       if (!d.alive) continue;
       if (d.side == Game.Side.SPECTATOR) continue;
       
-      DestroyTheCore.inventoriesManager.dropOres(p);
+      DTC.inventoriesManager.dropOres(p);
     }
   }
 }

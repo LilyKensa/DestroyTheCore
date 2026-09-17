@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.items.gadgets;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.itemGens.UsableItemGen;
 import dev.huey.destroyTheCore.managers.ItemsManager;
@@ -21,10 +21,10 @@ public class AddCoreHealthGen extends UsableItemGen {
   
   @Override
   public void use(Player pl, Block block) {
-    Game.Side side = DestroyTheCore.game.getPlayerData(pl).side;
+    Game.Side side = DTC.game.getPlayerData(pl).side;
     if (side.equals(Game.Side.SPECTATOR)) return;
     
-    SideData sideData = DestroyTheCore.game.getSideData(side);
+    SideData sideData = DTC.game.getSideData(side);
     
     if (sideData.coreHealth >= SideData.maxCoreHealth) {
       pl.sendActionBar(TextUtils.$("items.add-core-health.core-full"));
@@ -45,6 +45,6 @@ public class AddCoreHealthGen extends UsableItemGen {
       )
     );
     
-    DestroyTheCore.boardsManager.refresh();
+    DTC.boardsManager.refresh();
   }
 }

@@ -1,11 +1,13 @@
 package dev.huey.destroyTheCore.utils;
 
 import com.destroystokyo.paper.ParticleBuilder;
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
+import dev.huey.destroyTheCore.bases.ItemGen;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.managers.RolesManager;
 import dev.huey.destroyTheCore.records.PlayerData;
+import dev.huey.destroyTheCore.records.Pos;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,120 +15,167 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.title.Title;
 import net.kyori.adventure.title.TitlePart;
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.Openable;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scoreboard.Team;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 
 public class PlayerUtils {
-  
-  public static Player getPlayerByEntityId(int id) {
+  static public Player getPlayerByEntityId(int id) {
     return Bukkit.getOnlinePlayers().stream().filter(
-      p -> p.getEntityId() == id).findAny().orElse(null);
+      p -> p.getEntityId() == id
+    ).findAny().orElse(null);
   }
   
-  public static void send(Player pl, Component component) {
+  static public boolean wearingLeather(Player pl) {
+    Predicate<Material> isLeather = (
+      type
+    ) -> type == Material.LEATHER_HELMET ||
+      type == Material.LEATHER_CHESTPLATE ||
+      type == Material.LEATHER_LEGGINGS ||
+      type == Material.LEATHER_BOOTS;
+    
+    for (ItemStack item : pl.getInventory().getArmorContents()) {
+      if (item != null && isLeather.test(item.getType())) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
+  static public boolean isUnderSky(Player pl) {
+    int emptyCount = 0;
+    
+    for (int dx = -1; dx <= 1; ++dx) {
+      horizontalLoop: for (int dz = -1; dz <= 1; ++dz) {
+        for (int dy = 0; dy <= 8; ++dy) {
+          if (pl.getLocation().add(dx, dy, dz).getBlock().isCollidable())
+            continue horizontalLoop;
+        }
+        
+        emptyCount++;
+      }
+    }
+    
+    return emptyCount > 4;
+  }
+  
+  static public void send(Player pl, Component component) {
     pl.sendMessage(component.colorIfAbsent(NamedTextColor.GRAY));
   }
   
-  public static void send(Player pl, String text, TextColor color) {
+  static public void send(Player pl, String text, TextColor color) {
     send(pl, Component.text(text).color(color));
   }
   
-  public static void send(Player pl, String text) {
+  static public void send(Player pl, String text) {
     send(pl, text, NamedTextColor.GRAY);
   }
   
-  /** {@link #send} with {@link DestroyTheCore#prefix} */
-  public static void prefixedSend(Player pl, Component component) {
-    send(pl, DestroyTheCore.prefix.append(component));
+  /** {@link #send} with {@link DTC#prefix} */
+  static public void prefixedSend(Player pl, Component component) {
+    if (DTC.prefix == null) return;
+    send(pl, DTC.prefix.append(component));
   }
   
-  public static void prefixedSend(Player pl, String text, TextColor color) {
+  static public void prefixedSend(Player pl, String text, TextColor color) {
     prefixedSend(pl, Component.text(text).color(color));
   }
   
-  public static void prefixedSend(Player pl, String text) {
+  static public void prefixedSend(Player pl, String text) {
     prefixedSend(pl, text, NamedTextColor.GRAY);
   }
   
+  static public void notice(Component comp) {
+    for (Player p : Bukkit.getOnlinePlayers()) {
+      if (isAdmin(p)) {
+        send(p, comp);
+      }
+    }
+  }
+  
   /** Broadcast to admins */
-  public static void prefixedNotice(Component comp) {
-    for (Player p : Bukkit.getOnlinePlayers()) if (
-      PlayerUtils.isAdmin(p)
-    ) PlayerUtils.prefixedSend(p, comp);
+  static public void prefixedNotice(Component comp) {
+    if (DTC.prefix == null) return;
+    notice(DTC.prefix.append(comp));
   }
   
   /** Broadcast to everyone */
-  public static void broadcast(Component comp) {
-    for (Player pl : Bukkit.getOnlinePlayers()) send(pl, comp);
+  static public void broadcast(Component comp) {
+    for (Player pl : Bukkit.getOnlinePlayers()) {
+      send(pl, comp);
+    }
   }
   
   /** Broadcast to nearby players */
-  public static void auraBroadcast(
-                                   Location center, double dist, Component comp
+  static public void auraBroadcast(
+    Location center, double dist, Component comp
   ) {
-    for (Player pl : Bukkit.getOnlinePlayers()) if (
-      LocationUtils.near(pl.getLocation(), center, dist)
-    ) send(pl, comp);
+    for (Player pl : center.getWorld().getPlayers()) {
+      if (LocUtils.near(Pos.of(pl), Pos.of(center), dist)) {
+        send(pl, comp);
+      }
+    }
   }
   
-  /** {@link #broadcast} with {@link DestroyTheCore#prefix} */
-  public static void prefixedBroadcast(Component comp) {
-    for (Player pl : Bukkit.getOnlinePlayers()) prefixedSend(pl, comp);
+  /** {@link #broadcast} with {@link DTC#prefix} */
+  static public void prefixedBroadcast(Component comp) {
+    for (Player pl : Bukkit.getOnlinePlayers()) {
+      prefixedSend(pl, comp);
+    }
   }
   
-  public static void prefixedBroadcast(String text, TextColor color) {
+  static public void prefixedBroadcast(String text, TextColor color) {
     prefixedBroadcast(Component.text(text).color(color));
   }
   
-  public static void prefixedBroadcast(String text) {
+  static public void prefixedBroadcast(String text) {
     prefixedBroadcast(text, NamedTextColor.GRAY);
   }
   
-  public static List<Player> all() {
+  static public List<Player> all() {
     return new ArrayList<>(Bukkit.getOnlinePlayers());
   }
   
-  public static List<Player> allGaming() {
-    return all().stream().filter(p -> DestroyTheCore.game.getPlayerData(
-      p).isGaming()).toList();
+  static public List<Player> allGaming() {
+    return all().stream().filter(
+      p -> DTC.game.getPlayerData(p).isGaming()
+    ).toList();
   }
   
-  public static Component getName(Player pl) {
-    Team team = Bukkit.getScoreboardManager().getMainScoreboard().getPlayerTeam(
-      pl);
+  static public Component getName(Player pl) {
+    PlayerData data = DTC.game.getPlayerData(pl);
     
-    TextComponent.Builder builder = Component.text();
-    if (team != null) builder.append(team.prefix());
-    builder.append(pl.displayName());
-    if (team != null) builder.append(team.suffix());
-    if (team != null) builder.color(team.color());
-    
-    return builder.build();
+    return Component.text(
+      "[%s] %s".formatted(
+        data.side == Game.Side.SPECTATOR
+          ? data.side.pureTitle()
+          : data.role.name,
+        pl.getName()
+      )
+    ).color(data.side.color);
   }
   
   /** Send 1.5 + 0.25 title duration */
-  public static void normalTitleTimes(Player pl) {
+  static public void normalTitleTimes(Player pl) {
     pl.sendTitlePart(
       TitlePart.TIMES,
       Title.Times.times(
@@ -138,7 +187,7 @@ public class PlayerUtils {
   }
   
   /** Send 3 + 1 title duration */
-  public static void longTitleTimes(Player pl) {
+  static public void longTitleTimes(Player pl) {
     pl.sendTitlePart(
       TitlePart.TIMES,
       Title.Times.times(
@@ -152,23 +201,26 @@ public class PlayerUtils {
   /**
    * If that block has right click functionalities, and shouldn't be canceled
    */
-  public static boolean checkUsingBlock(Player pl, Block block) {
-    return (block != null && block.getBlockData() instanceof Openable && !pl.isSneaking());
+  static public boolean checkUsingBlock(Player pl, Block block) {
+    return (block != null &&
+      block.getBlockData() instanceof Openable &&
+      !pl
+        .isSneaking());
   }
   
-  public static ItemStack getHandItem(Player pl) {
+  static public ItemStack getHandItem(Player pl) {
     return pl.getInventory().getItemInMainHand();
   }
   
-  public static void setHandCooldown(Player pl, int ticks) {
+  static public void setHandCooldown(Player pl, int ticks) {
     pl.setCooldown(getHandItem(pl).getType(), ticks);
   }
   
-  public static int getHandCooldown(Player pl) {
+  static public int getHandCooldown(Player pl) {
     return pl.getCooldown(getHandItem(pl).getType());
   }
   
-  public static boolean checkHandCooldown(Player pl, int offset) {
+  static public boolean checkHandCooldown(Player pl, int offset) {
     if (!shouldHandle(pl)) return true;
     
     int cooldown = getHandCooldown(pl) - offset;
@@ -187,31 +239,31 @@ public class PlayerUtils {
     return true;
   }
   
-  public static boolean checkHandCooldown(Player pl) {
+  static public boolean checkHandCooldown(Player pl) {
     return checkHandCooldown(pl, 0);
   }
   
-  public static void setGroupCooldown(
-                                      Player pl, List<ItemsManager.ItemKey> keys, int ticks
+  static public void setGroupCooldown(
+    Player pl, List<ItemsManager.ItemKey> keys, int ticks
   ) {
     for (ItemsManager.ItemKey key : keys) {
       pl.setCooldown(
-        DestroyTheCore.itemsManager.gens.get(key).getItem().getType(),
+        DTC.itemsManager.gens.get(key).getItem().getType(),
         ticks
       );
     }
   }
   
-  public static int getGroupCooldown(
-                                     Player pl, List<ItemsManager.ItemKey> keys
+  static public int getGroupCooldown(
+    Player pl, List<ItemsManager.ItemKey> keys
   ) {
     return pl.getCooldown(
-      DestroyTheCore.itemsManager.gens.get(keys.getFirst()).getItem().getType()
+      DTC.itemsManager.gens.get(keys.getFirst()).getItem().getType()
     );
   }
   
-  public static boolean checkGroupCooldown(
-                                           Player pl, List<ItemsManager.ItemKey> keys
+  static public boolean checkGroupCooldown(
+    Player pl, List<ItemsManager.ItemKey> keys
   ) {
     if (!shouldHandle(pl)) return true;
     
@@ -231,7 +283,12 @@ public class PlayerUtils {
     return true;
   }
   
-  public static void takeOneItemFromHand(Player pl) {
+  static public void setSkillCooldown(Player pl, int ticks) {
+    pl.setCooldown(Material.KNOWLEDGE_BOOK, ticks);
+    DTC.game.getPlayerData(pl).extraSkillReload = 0;
+  }
+  
+  static public void takeOneItemFromHand(Player pl) {
     if (pl.getGameMode().equals(GameMode.CREATIVE)) return;
     
     ItemStack item = pl.getInventory().getItemInMainHand();
@@ -239,7 +296,7 @@ public class PlayerUtils {
     pl.getInventory().setItemInMainHand(item);
   }
   
-  public static void damageHandItem(Player pl) {
+  static public void damageHandItem(Player pl) {
     ItemStack item = getHandItem(pl);
     if (item.isEmpty()) return;
     if (item.getType().getMaxDurability() <= 0) return;
@@ -248,118 +305,109 @@ public class PlayerUtils {
     if (meta != null) {
       if (meta.isUnbreakable()) return;
       if (
-        meta.hasEnchant(Enchantment.UNBREAKING) && RandomUtils.hit(
-          1D / (meta.getEnchantLevel(Enchantment.UNBREAKING) + 1))
+        meta.hasEnchant(Enchantment.UNBREAKING) &&
+          RandomUtils.hit(
+            1D / (meta.getEnchantLevel(Enchantment.UNBREAKING) + 1)
+          )
       ) return;
     }
     
     pl.damageItemStack(EquipmentSlot.HAND, 1);
   }
   
+  /** Replaces an item, but drop the old one on the ground */
+  static public void softReplaceItem(
+    Player pl, EquipmentSlot slot, ItemStack item
+  ) {
+    PlayerInventory inv = pl.getInventory();
+    ItemStack oldItem = inv.getItem(slot);
+    
+    if (!oldItem.isEmpty() && !DTC.itemsManager.isTrash(oldItem)) {
+      pl.getWorld()
+        .dropItemNaturally(LocUtils.hitboxCenter(pl), oldItem)
+        .setPickupDelay(20);
+    }
+    
+    inv.setItem(slot, item);
+  }
+  
   /** Skip players in creative mode */
-  public static boolean shouldHandle(Player pl) {
+  static public boolean shouldHandle(Player pl) {
     return !pl.getGameMode().equals(GameMode.CREATIVE);
   }
   
-  public static boolean isAdmin(Player pl) {
+  static public boolean isAdmin(Player pl) {
     return pl.hasPermission("dtc.admin");
   }
   
-  public static void reportNoPerm(Player pl) {
+  static public void reportNoPerm(Player pl) {
     prefixedSend(pl, TextUtils.$("player.no-perm"));
   }
   
-  public static void kickAntiCheat(Player pl, String path) {
-    pl.kick(
-      TextUtils.$("anti-cheat.prefix").append(TextUtils.$("anti-cheat." + path))
-    );
-  }
-  
-  public static boolean inLobby(Player pl) {
-    if (DestroyTheCore.worldsManager.lobby == null) return false;
-    
-    return LocationUtils.isSameWorld(
-      pl.getWorld(),
-      DestroyTheCore.worldsManager.lobby
-    );
-  }
-  
-  public static void backToLobby(Player pl) {
-    if (DestroyTheCore.game.lobby.spawn == null) return;
+  static public void backToLobby(Player pl) {
+    if (DTC.game.lobby.spawn == null) return;
     
     pl.setGameMode(GameMode.SURVIVAL);
     fullyHeal(pl);
-    pl.teleport(DestroyTheCore.game.lobby.spawn);
+    pl.teleport(LocUtils.lobby(DTC.game.lobby.spawn));
   }
   
-  public static void teleportToRestArea(Player pl) {
-    if (DestroyTheCore.game.map.restArea == null) return;
+  static public void teleportToRestArea(Player pl) {
+    if (DTC.game.map.restArea == null) return;
     
     if (
-      DestroyTheCore.game.getPlayerData(pl).side.equals(Game.Side.SPECTATOR)
+      DTC.game.getPlayerData(pl).side.equals(Game.Side.SPECTATOR)
     ) {
-      Location centerLoc = LocationUtils.live(DestroyTheCore.game.map.restArea);
+      Location centerLoc = LocUtils.live(DTC.game.map.restArea);
       centerLoc.setYaw(0);
       centerLoc.setX(0);
       pl.teleport(centerLoc);
     }
     else {
       pl.teleport(
-        LocationUtils.selfSide(
-          LocationUtils.live(DestroyTheCore.game.map.restArea),
-          pl
+        LocUtils.live(
+          LocUtils.selfSide(
+            DTC.game.map.restArea,
+            pl
+          )
         )
       );
     }
   }
   
-  public static void teleportToSpawnPoint(Player pl) {
+  static public void teleportToSpawnPoint(Player pl) {
     pl.teleport(
-      LocationUtils.live(
-        LocationUtils.selfSide(
-          LocationUtils.toSpawnPoint(
-            RandomUtils.pick(DestroyTheCore.game.map.spawnpoints)
-          ),
+      LocUtils.live(
+        LocUtils.selfSide(
+          RandomUtils.pick(DTC.game.map.spawnpoints)
+            .spawnPoint(),
           pl
         )
       )
     );
   }
   
-  public static void resetHunger(Player pl) {
+  static public void resetHunger(Player pl) {
     pl.setFoodLevel(20);
     pl.setSaturation(7);
   }
   
-  public static void fullyHeal(Player pl) {
+  static public void fullyHeal(Player pl) {
     resetHunger(pl);
-    pl.setHealth(20);
+    pl.setHealth(AttrUtils.get(pl, Attribute.MAX_HEALTH));
     pl.setFireTicks(0);
     pl.setFreezeTicks(0);
     pl.setFallDistance(0);
   }
   
-  /** Grant invulnerabilities */
-  public static void protect(Player pl, int ticks) {
-    pl.addPotionEffect(
-      new PotionEffect(PotionEffectType.RESISTANCE, ticks, 9, true, false)
-    );
-    pl.addPotionEffect(
-      new PotionEffect(PotionEffectType.FIRE_RESISTANCE, ticks, 9, true, false)
-    );
-  }
-  
   /** Refresh night vision effect based on their preference */
-  public static void enforceNightVision(Player pl) {
-    if (DestroyTheCore.game.stats.get(pl.getUniqueId()).nightVision) {
-      pl.addPotionEffect(
-        new PotionEffect(
-          PotionEffectType.NIGHT_VISION,
-          PotionEffect.INFINITE_DURATION,
-          0,
-          true,
-          false
-        )
+  static public void enforceNightVision(Player pl) {
+    if (DTC.game.getStats(pl).nightVision) {
+      addPassiveEffect(
+        pl,
+        PotionEffectType.NIGHT_VISION,
+        PotionEffect.INFINITE_DURATION,
+        1
       );
     }
     else {
@@ -367,84 +415,135 @@ public class PlayerUtils {
     }
   }
   
-  /** Remove spectators from {@code viewer}'s pov world */
-  public static void hideSpectators(Player viewer) {
-    for (Player s : Bukkit.getOnlinePlayers()) {
-      if (DestroyTheCore.game.getPlayerData(s).side == Game.Side.SPECTATOR) {
-        viewer.hidePlayer(DestroyTheCore.instance, s);
-      }
-      else {
-        viewer.showPlayer(DestroyTheCore.instance, s);
-      }
+  static public void refreshSpectatorVisibility(Player target, Player viewer) {
+    if (
+      DTC.game.isPlaying &&
+        DTC.game.getPlayerData(
+          target
+        ).side == Game.Side.SPECTATOR
+    ) {
+      viewer.hidePlayer(DTC.instance, target);
+    }
+    else {
+      viewer.showPlayer(DTC.instance, target);
     }
   }
   
-  public static void hideSpectators() {
-    if (!DestroyTheCore.game.isPlaying) {
-      showAllPlayers();
-      return;
-    }
-    
-    for (Player p : Bukkit.getOnlinePlayers()) {
-      hideSpectators(p);
+  static public void refreshAllSpectatorVisibilitiesFor(Player pl) {
+    for (Player target : Bukkit.getOnlinePlayers()) {
+      refreshSpectatorVisibility(target, pl);
     }
   }
   
-  /** Add spectators back from {@code viewer}'s pov world */
-  public static void showAllPlayers(Player viewer) {
-    for (Player s : Bukkit.getOnlinePlayers()) {
-      viewer.showPlayer(DestroyTheCore.instance, s);
-    }
-  }
-  
-  public static void showAllPlayers() {
-    for (Player p : Bukkit.getOnlinePlayers()) {
-      showAllPlayers(p);
+  static public void refreshAllSpectatorVisibilities() {
+    for (Player pl : Bukkit.getOnlinePlayers()) {
+      refreshAllSpectatorVisibilitiesFor(pl);
     }
   }
   
   /** Set the player as a spectator */
-  public static void refreshSpectatorAbilities(Player pl, boolean state) {
-    if (!DestroyTheCore.game.isPlaying) state = false;
+  static public void refreshSpectatorAbilities(Player pl, boolean state) {
+    if (!DTC.game.isPlaying) state = false;
     
-    boolean creativeAbility = state || List.of(GameMode.CREATIVE,
-      GameMode.SPECTATOR).contains(pl.getGameMode());
+    boolean creativeAbility = state ||
+      List.of(
+        GameMode.CREATIVE,
+        GameMode.SPECTATOR
+      ).contains(pl.getGameMode());
     
     pl.setInvisible(state);
-    pl.setInvulnerable(creativeAbility);
+    pl.setInvulnerable(state);
     pl.setAllowFlight(creativeAbility);
     
-    ItemStack teleporterItem = DestroyTheCore.itemsManager.gens.get(
-      ItemsManager.ItemKey.SPECTATOR_TELEPORTER).getItem();
+    ItemStack teleporterItem = DTC.itemsManager.gens.get(
+      ItemsManager.ItemKey.SPECTATOR_TELEPORTER
+    ).getItem();
     
     if (state) {
-      DestroyTheCore.inventoriesManager.store(pl);
+      DTC.inventoriesManager.store(pl);
       pl.getInventory().setItem(4, teleporterItem);
     }
     else {
       pl.getInventory().remove(Material.ENDER_EYE);
-      DestroyTheCore.inventoriesManager.restore(pl);
+      DTC.inventoriesManager.restore(pl);
     }
   }
   
-  public static void refreshSpectatorAbilities(Player pl) {
+  static public void refreshSpectatorAbilities(Player pl) {
     refreshSpectatorAbilities(
       pl,
-      DestroyTheCore.game.getPlayerData(pl).side.equals(Game.Side.SPECTATOR)
+      DTC.game.getPlayerData(pl).side.equals(Game.Side.SPECTATOR)
     );
   }
   
+  /** Apply potion effect, level is 1-based */
+  static public void addEffect(
+    LivingEntity pl, PotionEffectType type, int ticks, int level,
+    boolean beacon, boolean particles
+  ) {
+    if (level <= 0) return;
+    
+    pl.addPotionEffect(
+      new PotionEffect(type, ticks, level - 1, beacon, particles)
+    );
+  }
+  
+  static public void addEffect(
+    LivingEntity pl, PotionEffectType type, int ticks, int level
+  ) {
+    addEffect(pl, type, ticks, level, false, true);
+  }
+  
+  static public void addPassiveEffect(
+    LivingEntity pl, PotionEffectType type, int ticks, int level
+  ) {
+    addEffect(pl, type, ticks, level, true, false);
+  }
+  
+  static public void setEffect(
+    LivingEntity pl, PotionEffectType type, int ticks, int level,
+    boolean beacon, boolean particles
+  ) {
+    pl.removePotionEffect(type);
+    addEffect(pl, type, ticks, level - 1, beacon, particles);
+  }
+  
+  static public void setEffect(
+    LivingEntity pl, PotionEffectType type, int ticks, int level
+  ) {
+    setEffect(pl, type, ticks, level, false, true);
+  }
+  
+  static public void extendEffect(
+    LivingEntity pl, PotionEffectType type, int ticks, int level,
+    boolean beacon, boolean particles
+  ) {
+    int duration = ticks;
+    if (pl.hasPotionEffect(type))
+      duration += pl.getPotionEffect(type).getDuration();
+    setEffect(pl, type, duration, level, beacon, particles);
+  }
+  
+  static public void extendEffect(
+    LivingEntity pl, PotionEffectType type, int ticks, int level
+  ) {
+    extendEffect(pl, type, ticks, level, false, true);
+  }
+  
+  static public void glow(LivingEntity pl, int ticks) {
+    addEffect(pl, PotionEffectType.GLOWING, ticks, 1, true, false);
+  }
+  
   /** Reduce respawn time process */
-  public static void rrt(Player pl) {
-    PlayerData d = DestroyTheCore.game.getPlayerData(pl);
+  static public void rrt(Player pl) {
+    PlayerData d = DTC.game.getPlayerData(pl);
     if (
-      pl.isSneaking() && LocationUtils.near(
-        pl.getLocation(),
-        LocationUtils.live(
-          LocationUtils.selfSide(DestroyTheCore.game.map.core, d.side)
-        ),
-        3
-      )
+      pl.isSneaking() &&
+        LocUtils.near(
+          Pos.of(pl),
+          LocUtils.selfSide(DTC.game.map.core, d.side),
+          5
+        )
     ) {
       if (d.respawnTime <= PlayerData.minRespawnTime) {
         pl.sendActionBar(TextUtils.$("game.reduce-respawn-time.no-more"));
@@ -468,9 +567,13 @@ public class PlayerUtils {
         pl.giveExp(xp);
         d.addRespawnTime(-1);
         
-        DestroyTheCore.boardsManager.refresh(pl);
+        DTC.boardsManager.refresh(pl);
         
         pl.sendActionBar(TextUtils.$("game.reduce-respawn-time.done"));
+        
+        if (d.role.id == RolesManager.RoleKey.HACKER) {
+          give(pl, Material.IRON_INGOT);
+        }
         
         pl.playSound(
           pl.getLocation(),
@@ -478,8 +581,11 @@ public class PlayerUtils {
           1, // Volume
           1.5f // Pitch
         );
-        new ParticleBuilder(Particle.HAPPY_VILLAGER).location(
-          pl.getEyeLocation()).offset(0.2, 0.2, 0.2).count(3).spawn();
+        new ParticleBuilder(Particle.HAPPY_VILLAGER)
+          .location(pl.getEyeLocation())
+          .offset(0.2, 0.2, 0.2)
+          .count(3)
+          .spawn();
       }
       else if (d.rrtProgress >= 0 && d.rrtProgress % 20 == 0) {
         pl.giveExp(xp);
@@ -490,7 +596,7 @@ public class PlayerUtils {
             List.of(
               Placeholder.component(
                 "progress",
-                Component.text(d.rrtProgress / 20 + 1)
+                Component.text(d.rrtProgress / 20)
               )
             )
           )
@@ -518,35 +624,50 @@ public class PlayerUtils {
     }
   }
   
-  public static void respawn(Player pl) {
-    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
+  static public void respawn(Player pl) {
+    PlayerData data = DTC.game.getPlayerData(pl);
     data.revive();
     
     refreshSpectatorAbilities(pl);
+    refreshAllSpectatorVisibilities();
     if (data.side.equals(Game.Side.SPECTATOR)) return;
     
-    pl.setCooldown(Material.KNOWLEDGE_BOOK, 0);
-    DestroyTheCore.inventoriesManager.restore(pl);
+    pl.setCooldown(
+      Material.KNOWLEDGE_BOOK,
+      Math.max(
+        pl.getCooldown(Material.KNOWLEDGE_BOOK) - data.extraSkillReload,
+        0
+      ) / 2
+    );
+    data.extraSkillReload = 0;
+    
+    DTC.inventoriesManager.restore(pl);
     CoreUtils.setTickOut(() -> giveEssentials(pl));
     
     pl.setGameMode(GameMode.SURVIVAL);
     fullyHeal(pl);
-    protect(pl, 400);
+    
     teleportToSpawnPoint(pl);
+    LocUtils.breakNearbyBlocks(pl.getLocation(), 1, 3);
   }
   
-  public static void scheduleRespawn(Player pl) {
-    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
+  static public void scheduleRespawn(Player pl) {
+    PlayerData data = DTC.game.getPlayerData(pl);
     
-    DestroyTheCore.quizManager.start(pl);
+    DTC.quizManager.start(pl);
     
     new BukkitRunnable() {
       int waitTicks = data.respawnTime * 20;
       
       @Override
       public void run() {
+        if (!pl.isOnline()) {
+          cancel();
+          return;
+        }
+        
         if (data.alive) {
-          DestroyTheCore.quizManager.discard(pl);
+          DTC.quizManager.discard(pl);
           
           cancel();
           return;
@@ -554,19 +675,26 @@ public class PlayerUtils {
         
         boolean updateTitle = waitTicks % 20 == 0;
         
-        if (DestroyTheCore.quizManager.isEnded(pl)) {
+        if (DTC.quizManager.isEnded(pl)) {
           updateTitle = true;
           
-          if (DestroyTheCore.quizManager.isCorrect(pl)) waitTicks -= 10 * 20;
+          if (DTC.quizManager.isCorrect(pl)) {
+            waitTicks -= 10 * 20;
+          }
           
-          if (waitTicks > 0) DestroyTheCore.quizManager.start(pl);
+          if (data.quizQuota <= 0) {
+            DTC.quizManager.discard(pl);
+          }
+          else if (waitTicks > 0) {
+            DTC.quizManager.start(pl);
+          }
         }
         
         if (waitTicks <= 0) {
           respawn(pl);
-          DestroyTheCore.quizManager.discard(pl);
+          DTC.quizManager.discard(pl);
           
-          PlayerUtils.normalTitleTimes(pl);
+          normalTitleTimes(pl);
           pl.sendTitlePart(TitlePart.TITLE, TextUtils.$("player.respawned"));
           pl.sendTitlePart(TitlePart.SUBTITLE, Component.empty());
           
@@ -575,17 +703,21 @@ public class PlayerUtils {
         }
         
         if (updateTitle) {
+          int secs = waitTicks / 20;
+          
+          data.respawnTime = secs;
+          DTC.game.enforceRTScore(pl);
+          
           if (waitTicks <= 60) {
-            PlayerUtils.normalTitleTimes(pl);
+            normalTitleTimes(pl);
             pl.sendTitlePart(
               TitlePart.TITLE,
-              Component.text(waitTicks / 20).color(NamedTextColor.GOLD)
+              Component.text(secs).color(NamedTextColor.GOLD)
             );
             pl.sendTitlePart(TitlePart.SUBTITLE, Component.empty());
           }
           else {
-            int secs = waitTicks / 20;
-            PlayerUtils.normalTitleTimes(pl);
+            normalTitleTimes(pl);
             pl.sendTitlePart(TitlePart.TITLE, Component.empty());
             pl.sendTitlePart(
               TitlePart.SUBTITLE,
@@ -594,9 +726,13 @@ public class PlayerUtils {
                 List.of(
                   Placeholder.component(
                     "seconds",
-                    secs > 60 ? CoreUtils.formatTimeComp(secs,
-                      NamedTextColor.GOLD) : Component.text(secs).color(
-                        NamedTextColor.GOLD)
+                    secs > 60 ? CoreUtils.formatTimeComp(
+                      secs,
+                      NamedTextColor.GOLD
+                    )
+                      : Component.text(secs).color(
+                        NamedTextColor.GOLD
+                      )
                   )
                 )
               )
@@ -609,18 +745,96 @@ public class PlayerUtils {
           waitTicks--;
         }
       }
-    }.runTaskTimer(DestroyTheCore.instance, 0, 1);
+    }.runTaskTimer(DTC.instance, 0, 1);
   }
   
-  /** Safely give a player an item, will not crash if item's empty */
-  public static void give(Player pl, ItemStack item) {
-    if (item == null || item.isEmpty()) return;
-    pl.give(item);
+  static public boolean isTeammate(Player a, Player b) {
+    return DTC.game.getPlayerData(a).side == DTC.game
+      .getPlayerData(b).side;
   }
+  
+  /** Drop an item at spawnpoint */
+  static public void dropAtSpawn(Game.Side side, ItemStack item) {
+    DTC.worldsManager.live.dropItemNaturally(
+      LocUtils.live(
+        LocUtils.selfSide(
+          RandomUtils.pick(DTC.game.map.spawnpoints)
+            .spawnPoint(),
+          side
+        )
+      ),
+      item
+    ).setPickupDelay(20);
+  }
+  
+  static public void dropAtSpawn(Player pl, ItemStack item) {
+    dropAtSpawn(DTC.game.getPlayerData(pl).side, item);
+  }
+  
+  /** Give a player an item, or send to their spawn if they're dead */
+  static public void give(Player pl, ItemStack item) {
+    if (item == null || item.isEmpty()) return;
+    
+    PlayerData data = DTC.game.getPlayerData(pl);
+    
+    if (!DTC.game.isPlaying || data.alive) {
+      pl.give(item);
+    }
+    else {
+      dropAtSpawn(data.side, item);
+      
+      pl.sendActionBar(TextUtils.$("player.item-sent-to-spawn"));
+    }
+  }
+  
+  static public void give(Player pl, Material type, int count) {
+    int maxCount = type.getMaxStackSize();
+    if (count > maxCount * 9) {
+      count = maxCount * 9;
+    }
+    
+    if (count > maxCount) {
+      give(pl, type, maxCount);
+      give(pl, type, count - maxCount);
+      return;
+    }
+    
+    give(pl, new ItemStack(type, count));
+  }
+  
+  static public void give(Player pl, Material type) {
+    give(pl, type, 1);
+  }
+  
+  static public void give(Player pl, ItemsManager.ItemKey key, int count) {
+    ItemGen gen = DTC.itemsManager.gens.get(key);
+    
+    int maxCount = gen.iconType.getMaxStackSize();
+    if (count > maxCount * 9) {
+      count = maxCount * 9;
+    }
+    
+    if (count > maxCount) {
+      give(pl, key, maxCount);
+      give(pl, key, count - maxCount);
+      return;
+    }
+    
+    give(pl, gen.getItem(count));
+  }
+  
+  static public void give(Player pl, ItemsManager.ItemKey key) {
+    give(pl, key, 1);
+  }
+  
+  static final Pattern weaponSuffix = Pattern.compile(
+    "_(sword|axe)",
+    Pattern.CASE_INSENSITIVE
+  );
   
   /** Give a player basic armors, weapons & skill books */
-  public static void giveEssentials(Player pl) {
-    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
+  static public void giveEssentials(Player pl) {
+    PlayerData data = DTC.game.getPlayerData(pl);
     PlayerInventory inv = pl.getInventory();
     
     Consumer<EquipmentSlot> defaultEquipment = slot -> {
@@ -631,30 +845,37 @@ public class PlayerUtils {
         case LEGS -> key = data.role.defLeggings();
         case FEET -> key = data.role.defBoots();
       }
-      ItemStack item = DestroyTheCore.itemsManager.gens.get(key).getItem();
+      ItemStack item = DTC.itemsManager.gens.get(key).getItem();
       
-      if (key.name().startsWith("STARTER")) item.editMeta(uncastedMeta -> {
-        LeatherArmorMeta meta = (LeatherArmorMeta) uncastedMeta;
-        
-        meta.setColor(data.side.dyeColor);
-        meta.addItemFlags(ItemFlag.HIDE_DYE);
-      });
+      if (key.name().startsWith("STARTER")) {
+        CoreUtils.dyeTeamColor(item, data.side);
+      }
       
       inv.setItem(slot, item);
     };
     
-    for (EquipmentSlot slot : new EquipmentSlot[]{EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET,
-    }) {
+    for (
+      EquipmentSlot slot : new EquipmentSlot[]{
+        EquipmentSlot.HEAD,
+        EquipmentSlot.CHEST,
+        EquipmentSlot.LEGS,
+        EquipmentSlot.FEET,
+      }
+    ) {
       ItemStack item = inv.getItem(slot);
       if (item.isEmpty() && data.role.id != RolesManager.RoleKey.ASSASSIN) {
         defaultEquipment.accept(slot);
       }
     }
     
-    Predicate<ItemStack> isWeapon = item -> Pattern.compile("_(sword|axe)",
-      Pattern.CASE_INSENSITIVE).matcher(item.getType().name()).find();
+    Predicate<ItemStack> isWeapon = item -> weaponSuffix.matcher(
+      item.getType().name()
+    ).find();
     
-    boolean hasFood = false, hasAnyWeapon = false, hasRoleItem = false;
+    boolean hasFood = false;
+    boolean hasAnyWeapon = false;
+    boolean hasRoleItem = false;
+    boolean hasPickaxe = false;
     
     ItemStack roleItem = data.role.getExclusiveItem();
     
@@ -668,22 +889,32 @@ public class PlayerUtils {
         }
       }
       
-      if (!hasAnyWeapon) pl.give(
-        DestroyTheCore.itemsManager.gens.get(
-          ItemsManager.ItemKey.STARTER_SWORD).getItem()
-      );
+      if (!hasAnyWeapon) {
+        give(pl, ItemsManager.ItemKey.STARTER_SWORD);
+      }
     }
     
     for (ItemStack item : inv.getContents()) {
       if (item == null) continue;
       
-      if (DestroyTheCore.rolesManager.isExclusiveItem(item)) {
+      if (DTC.rolesManager.isExclusiveItem(item)) {
         hasRoleItem = true;
         break;
       }
     }
     
-    if (!hasRoleItem) give(pl, roleItem);
+    if (!hasRoleItem) {
+      if (
+        roleItem.getType() == Material.SHIELD &&
+          inv.getItemInOffHand()
+            .isEmpty()
+      ) {
+        softReplaceItem(pl, EquipmentSlot.OFF_HAND, roleItem);
+      }
+      else {
+        give(pl, roleItem);
+      }
+    }
     
     for (ItemStack item : inv.getContents()) {
       if (item != null && item.getType().isEdible()) {
@@ -692,20 +923,95 @@ public class PlayerUtils {
       }
     }
     
-    if (!hasFood) give(pl, new ItemStack(Material.BREAD, 8));
+    if (!hasFood) give(pl, Material.BREAD, 8);
     
     if (!inv.contains(Material.KNOWLEDGE_BOOK)) {
-      pl.give(data.role.getSkillItem());
+      give(pl, data.role.getSkillItem());
+    }
+    
+    for (ItemStack item : inv.getContents()) {
+      if (item != null && item.getType() == Material.GOLDEN_PICKAXE) {
+        hasPickaxe = true;
+        break;
+      }
+    }
+    
+    if (!hasPickaxe) give(pl, Material.GOLDEN_PICKAXE);
+  }
+  
+  static public boolean banBothHandItem(Player pl, Material type) {
+    boolean found = false;
+    
+    for (
+      EquipmentSlot slot : new EquipmentSlot[]{
+        EquipmentSlot.HAND,
+        EquipmentSlot.OFF_HAND
+      }
+    ) {
+      ItemStack item = pl.getInventory().getItem(slot);
+      
+      if (item.getType().equals(type)) {
+        softReplaceItem(pl, slot, ItemStack.empty());
+        found = true;
+      }
+    }
+    
+    return found;
+  }
+  
+  static public void growNearbyCrops(Player pl, double chance) {
+    if (!LocUtils.inLive(pl)) return;
+    
+    final int radius = 6, outerRadius = radius + 1;
+    
+    boolean grown = false;
+    
+    for (int x = -outerRadius; x <= outerRadius; x++) {
+      for (int y = -outerRadius; y <= outerRadius; y++) {
+        for (int z = -outerRadius; z <= outerRadius; z++) {
+          Block block = pl.getLocation().add(x, y, z).getBlock();
+          Location centerLoc = block.getLocation().add(0.5, 0.1, 0.5);
+          if (pl.getLocation().distanceSquared(centerLoc) > radius * radius)
+            continue;
+          
+          if (!(block.getBlockData() instanceof Ageable ageable)) continue;
+          if (ageable.getAge() >= ageable.getMaximumAge()) continue;
+          
+          if (RandomUtils.nextDouble() < chance) {
+            ageable.setAge(ageable.getAge() + 1);
+            block.setBlockData(ageable);
+            
+            new ParticleBuilder(Particle.HAPPY_VILLAGER)
+              .allPlayers()
+              .location(centerLoc)
+              .offset(0.4, 0.2, 0.4)
+              .extra(0)
+              .count(5)
+              .spawn();
+            
+            grown = true;
+          }
+        }
+      }
+    }
+    
+    if (grown) {
+      pl.giveExp(RandomUtils.range(3, 5));
     }
   }
   
   /** Use a particle trial to delay assign a task between 2 players */
-  public static void delayAssign(
-                                 Player from, Player to, Particle particle, Runnable task
+  static public void delayAssign(
+    Player from, Player to, Particle particle, Runnable task
   ) {
     new BukkitRunnable() {
-      int duration = 100;
-      Location pos = LocationUtils.hitboxCenter(from);
+      int duration = 60;
+      Location pos = LocUtils.hitboxCenter(from);
+      
+      void apply() {
+        task.run();
+        cancel();
+      }
       
       @Override
       public void run() {
@@ -713,71 +1019,85 @@ public class PlayerUtils {
           cancel();
           return;
         }
-        if (!LocationUtils.isSameWorld(from, to)) {
-          task.run();
-          cancel();
+        if (!LocUtils.isSameWorld(from, to)) {
+          apply();
           return;
         }
         
         duration--;
         if (duration < 0) {
-          task.run();
-          cancel();
+          apply();
           return;
         }
         
-        Vector offset = LocationUtils.hitboxCenter(to).subtract(pos).toVector();
-        double dist = offset.length();
+        Vector vel = LocUtils.hitboxCenter(to).subtract(pos).toVector();
+        double dist = vel.length();
         
-        if (dist < 0.3) {
-          task.run();
-          cancel();
+        if (dist < 0.25) {
+          apply();
           return;
         }
         
-        if (dist < 5) offset = offset.multiply(5 / dist);
-        if (dist > 20) offset = offset.multiply(20 / dist);
+        if (dist < 3) vel.multiply(3 / dist);
+        if (dist > 120) vel.multiply(120 / dist);
         
-        pos.add(offset.multiply(0.1));
+        vel.multiply(0.2);
         
-        new ParticleBuilder(particle).allPlayers().location(pos).extra(
-          0).spawn();
+        if (vel.length() >= dist) {
+          apply();
+          return;
+        }
+        
+        pos.add(vel);
+        
+        if (
+          !to.isInvisible() &&
+            !to.hasPotionEffect(
+              PotionEffectType.INVISIBILITY
+            )
+        ) {
+          new ParticleBuilder(particle)
+            .allPlayers()
+            .location(pos)
+            .extra(0)
+            .spawn();
+        }
       }
-    }.runTaskTimer(DestroyTheCore.instance, 0, 1);
+    }.runTaskTimer(DTC.instance, 0, 1);
   }
   
-  public static List<Player> getTeammates(Game.Side side) {
+  static public List<Player> getTeammates(Game.Side side) {
     return all().stream().filter(p -> {
-      PlayerData data = DestroyTheCore.game.getPlayerData(p);
+      PlayerData data = DTC.game.getPlayerData(p);
       return data.alive && data.side.equals(side);
     }).toList();
   }
   
-  public static List<Player> getTeammates(Player pl) {
-    return getTeammates(DestroyTheCore.game.getPlayerData(pl).side);
+  static public List<Player> getTeammates(Player pl) {
+    return getTeammates(DTC.game.getPlayerData(pl).side);
   }
   
-  public static List<Player> getEnemies(Game.Side side) {
+  static public List<Player> getEnemies(Game.Side side) {
     return getTeammates(side.opposite());
   }
   
-  public static List<Player> getEnemies(Player pl) {
-    return getEnemies(DestroyTheCore.game.getPlayerData(pl).side);
+  static public List<Player> getEnemies(Player pl) {
+    return getEnemies(DTC.game.getPlayerData(pl).side);
   }
   
   /** Including teammates & spectators */
-  public static List<Player> getNonEnemies(Game.Side side) {
+  static public List<Player> getNonEnemies(Game.Side side) {
     return all().stream().filter(p -> {
-      PlayerData data = DestroyTheCore.game.getPlayerData(p);
+      PlayerData data = DTC.game.getPlayerData(p);
       return (!shouldHandle(p) || (!data.side.equals(side.opposite())));
     }).toList();
   }
   
-  public static List<Player> getNonEnemies(Player pl) {
-    return getNonEnemies(DestroyTheCore.game.getPlayerData(pl).side);
+  static public List<Player> getNonEnemies(Player pl) {
+    return getNonEnemies(DTC.game.getPlayerData(pl).side);
   }
   
-  public static Player getTargetPlayer(Player pl, double maxDistance) {
+  static public Player getTargetPlayer(Player pl, double maxDistance) {
     Location eyeLocation = pl.getEyeLocation();
     Vector origin = eyeLocation.toVector();
     Vector direction = eyeLocation.getDirection().normalize();
@@ -787,8 +1107,12 @@ public class PlayerUtils {
     
     for (Player other : getEnemies(pl)) {
       if (
-        other.equals(pl) || !LocationUtils.isSameWorld(other,
-          pl) || !pl.hasLineOfSight(other)
+        other.equals(pl) ||
+          !LocUtils.isSameWorld(
+            other,
+            pl
+          ) ||
+          !pl.hasLineOfSight(other)
       ) continue;
       
       BoundingBox box = other.getBoundingBox().clone().expand(0.2, 0.2, 0.2);
@@ -805,15 +1129,31 @@ public class PlayerUtils {
   
   /** Pure math, by Gemini */
   static Double rayIntersectsBox(
-                                 Vector origin, Vector dir, double maxDist, BoundingBox box
+    Vector origin, Vector dir, double maxDist, BoundingBox box
   ) {
     double tmin = 0.0;
     double tmax = maxDist;
     
-    double[] mins = {box.getMinX(), box.getMinY(), box.getMinZ()};
-    double[] maxs = {box.getMaxX(), box.getMaxY(), box.getMaxZ()};
-    double[] origins = {origin.getX(), origin.getY(), origin.getZ()};
-    double[] dirs = {dir.getX(), dir.getY(), dir.getZ()};
+    double[] mins = {
+      box.getMinX(),
+      box.getMinY(),
+      box.getMinZ()
+    };
+    double[] maxs = {
+      box.getMaxX(),
+      box.getMaxY(),
+      box.getMaxZ()
+    };
+    double[] origins = {
+      origin.getX(),
+      origin.getY(),
+      origin.getZ()
+    };
+    double[] dirs = {
+      dir.getX(),
+      dir.getY(),
+      dir.getZ()
+    };
     for (int i = 0; i < 3; i++) {
       double min = mins[i], max = maxs[i], o = origins[i], d = dirs[i];
       

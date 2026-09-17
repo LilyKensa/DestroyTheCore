@@ -9,12 +9,12 @@ import org.bukkit.entity.Player;
 public class SkillCooldownResult extends Mission.Result {
   
   public SkillCooldownResult() {
-    super("skill-cooldown");
+    super("skill-cooldown", false);
   }
   
   @Override
   public void forLoser(Game.Side side) {
-    announce(side);
+    outro(side);
     
     for (Player p : PlayerUtils.getTeammates(side)) {
       p.setCooldown(

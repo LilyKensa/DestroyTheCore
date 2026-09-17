@@ -1,6 +1,9 @@
 package dev.huey.destroyTheCore.utils;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
+import dev.huey.destroyTheCore.Game;
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -11,70 +14,73 @@ import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.util.Vector;
 
 public class CoreUtils {
   
   /** if {@code value} is null, return {@code defValue} */
-  public static <T> T def(Object value, T defValue) {
-    return value == null ? defValue : (T) value;
+  static public <T> T def(T value, T defValue) {
+    return value == null ? defValue : value;
   }
   
   /** Fix numbers to specific after point */
-  public static String toFixed(double value, int pow) {
+  static public String toFixed(double value, int pow) {
     return String.format("%." + pow + "f", value);
   }
   
-  public static String toFixed(double value) {
+  static public String toFixed(double value) {
     return toFixed(value, 2);
   }
   
   /** Snap an angle to its nearest n-th slice */
-  public static double snapAngle(double angle, int slices) {
+  static public double snapAngle(double angle, int slices) {
     double sliceSize = 360D / slices;
     double normalized = ((angle % 360) + 360) % 360;
     double nearestSlice = Math.round(normalized / sliceSize) * sliceSize;
     return nearestSlice % 360;
   }
   
-  public static double snapAngle(double angle) {
+  static public double snapAngle(double angle) {
     return snapAngle(angle, 8);
   }
   
-  public static float snapAngle(float angle, int slices) {
+  static public float snapAngle(float angle, int slices) {
     return (float) snapAngle((double) angle, slices);
   }
   
-  public static float snapAngle(float angle) {
+  static public float snapAngle(float angle) {
     return (float) snapAngle((double) angle);
   }
   
-  public static String capitalize(String str) {
+  static public String capitalize(String str) {
     return (str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase());
   }
   
   /**
    * This uses legacy color codes, for components, use {@link #formatTimeComp}
    */
-  public static String formatTime(int totalSeconds, String color) {
+  static public String formatTime(int totalSeconds, String color) {
     int minutes = totalSeconds / 60;
     int seconds = totalSeconds % 60;
     return "%s%d§7:%s%02d§r".formatted(color, minutes, color, seconds);
   }
   
-  /** Remove legacy color codes from a string */
-  public static String stripColor(String text) {
-    return text.replaceAll("§[0-9a-fklmnor]", "");
-  }
-  
   /** Randomly add drops count */
-  public static int applyFortune(int levels) {
-    if (levels <= 0) return 1;
-    return (Math.floorMod(RandomUtils.nextInt(), Math.min(levels + 1, 64)) + 1);
+  static public int applyFortune(int levels) {
+    int result = 1;
+    
+    for (int i = 0; i < levels; ++i) {
+      if (RandomUtils.nextDouble() < 0.5) break;
+      result++;
+    }
+    
+    return result;
   }
   
-  public static Component formatTimeComp(int totalSeconds, TextColor color) {
+  static public Component formatTimeComp(int totalSeconds, TextColor color) {
     int minutes = totalSeconds / 60;
     int seconds = totalSeconds % 60;
     return Component.join(
@@ -86,7 +92,7 @@ public class CoreUtils {
   }
   
   /** Empty item for GUIs */
-  public static ItemStack emptyGuiItem() {
+  static public ItemStack emptyGuiItem() {
     ItemStack item = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
     item.editMeta(meta -> {
       meta.setHideTooltip(true);
@@ -94,8 +100,17 @@ public class CoreUtils {
     return item;
   }
   
+  static public void dyeTeamColor(ItemStack item, Game.Side side) {
+    item.editMeta(uncastedMeta -> {
+      LeatherArmorMeta meta = (LeatherArmorMeta) uncastedMeta;
+      
+      meta.setColor(side.dyeColor);
+      meta.addItemFlags(ItemFlag.HIDE_DYE);
+    });
+  }
+  
   @SuppressWarnings("unchecked")
-  public static <T> Function<Object, List<T>> listLoader(Class<T> elementType) {
+  static public <T> Function<Object, List<T>> listLoader(Class<T> elementType) {
     return unknown -> {
       List<T> result = new ArrayList<>();
       
@@ -110,29 +125,29 @@ public class CoreUtils {
     };
   }
   
-  public static void setTickOut(Runnable task, int ticks) {
-    Bukkit.getScheduler().runTaskLater(DestroyTheCore.instance, task, ticks);
+  static public void setTickOut(Runnable task, int ticks) {
+    Bukkit.getScheduler().runTaskLater(DTC.instance, task, ticks);
   }
   
-  public static void setTickOut(Runnable task) {
+  static public void setTickOut(Runnable task) {
     setTickOut(task, 1);
   }
   
-  public static void log(String text) {
-    DestroyTheCore.instance.getLogger().info(text);
+  static public void log(String text) {
+    DTC.instance.getLogger().info(text);
   }
   
-  public static void log(Object any) {
+  static public void log(Object any) {
     log(any == null ? "null" : any.toString());
   }
   
-  public static void error(String text) {
-    DestroyTheCore.instance.getLogger().severe(text);
+  static public void error(String text) {
+    DTC.instance.getLogger().severe(text);
   }
   
   /** Pure math, by Gemini */
-  public static Vector calculateBounce(
-                                       Location center, Location pos, Vector speed, double restitution
+  static public Vector calculateBounce(
+    Location center, Location pos, Vector speed, double restitution
   ) {
     Vector normal = pos.toVector().subtract(center.toVector());
     Vector unitNormal = normal.normalize();
@@ -143,9 +158,18 @@ public class CoreUtils {
     return reflectedSpeed.multiply(restitution);
   }
   
-  public static Vector calculateBounce(
-                                       Location center, Location pos, Vector speed
+  static public Vector calculateBounce(
+    Location center, Location pos, Vector speed
   ) {
     return calculateBounce(center, pos, speed, 0.6);
+  }
+  
+  static public boolean isSpecialDate(Month month, int date) {
+    LocalDate today = LocalDate.now();
+    return today.getMonth() == month && today.getDayOfMonth() == date;
+  }
+  
+  static public boolean isSpecialDate(int month, int date) {
+    return isSpecialDate(Month.of(month), date);
   }
 }

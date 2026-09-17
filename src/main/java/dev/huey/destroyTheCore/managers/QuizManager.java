@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.managers;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.records.PlayerData;
 import dev.huey.destroyTheCore.utils.CoreUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
@@ -18,7 +18,7 @@ import org.bukkit.entity.Player;
 
 public class QuizManager {
   
-  public static class Quiz {
+  static public class Quiz {
     
     Player pl;
     int startTime;
@@ -30,7 +30,7 @@ public class QuizManager {
     
     public Quiz(Player pl) {
       this.pl = pl;
-      this.startTime = DestroyTheCore.ticksManager.ticksCount;
+      this.startTime = DTC.ticksManager.ticksCount;
       send(
         pl,
         TextUtils.$(
@@ -50,17 +50,28 @@ public class QuizManager {
     public void update(int attempt) {
       if (ended) return;
       
-      if (DestroyTheCore.ticksManager.ticksCount - startTime < 10) {
-        PlayerUtils.kickAntiCheat(pl, "reaction-time");
-        return;
-      }
-      
       ended = true;
       correct = check(attempt);
       
-      PlayerData data = DestroyTheCore.game.getPlayerData(pl);
+      PlayerData data = DTC.game.getPlayerData(pl);
       
-      if (correct) data.quizQuota--;
+      if (correct) {
+        data.quizQuota--;
+        
+        if (DTC.ticksManager.ticksCount - startTime < 10) {
+          DTC.antiCheatManager.track(pl, AntiCheatManager.Cheat.QUIZ_SPEED, 50);
+        }
+        else if (DTC.ticksManager.ticksCount - startTime < 40) {
+          DTC.antiCheatManager.track(pl, AntiCheatManager.Cheat.QUIZ_SPEED, 20);
+        }
+        else {
+          DTC.antiCheatManager.track(
+            pl,
+            AntiCheatManager.Cheat.QUIZ_SPEED,
+            -40
+          );
+        }
+      }
       
       send(
         pl,
@@ -75,16 +86,17 @@ public class QuizManager {
       
       pl.playSound(
         pl.getLocation(),
-        correct ? Sound.ENTITY_EXPERIENCE_ORB_PICKUP : Sound.ENTITY_ZOMBIE_HORSE_HURT,
+        correct ? Sound.ENTITY_EXPERIENCE_ORB_PICKUP
+          : Sound.ENTITY_ZOMBIE_HORSE_HURT,
         1, // Volume
         1 // Pitch
       );
     }
   }
   
-  public static Component prefix;
+  static public Component prefix;
   
-  public static void send(Player pl, Component message) {
+  static public void send(Player pl, Component message) {
     if (prefix == null) prefix = TextUtils.$("quiz.prefix");
     PlayerUtils.send(pl, prefix.append(message));
   }
@@ -92,8 +104,6 @@ public class QuizManager {
   Map<UUID, Quiz> quizzes = new HashMap<>();
   
   public void start(Player pl) {
-    if (DestroyTheCore.game.getPlayerData(pl).quizQuota <= 0) return;
-    
     quizzes.put(pl.getUniqueId(), new Quiz(pl));
   }
   
@@ -107,7 +117,8 @@ public class QuizManager {
     if (!quizzes.containsKey(id)) return;
     if (!content.matches("^\\d+$")) return;
     
-    CoreUtils.setTickOut(() -> quizzes.get(id).update(Integer.parseInt(content))
+    CoreUtils.setTickOut(
+      () -> quizzes.get(id).update(Integer.parseInt(content))
     );
   }
   

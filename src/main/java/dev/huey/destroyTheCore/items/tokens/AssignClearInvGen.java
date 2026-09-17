@@ -1,9 +1,10 @@
 package dev.huey.destroyTheCore.items.tokens;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.itemGens.UsableItemGen;
 import dev.huey.destroyTheCore.managers.ItemsManager;
+import dev.huey.destroyTheCore.records.PlayerData;
 import dev.huey.destroyTheCore.records.SideData;
 import dev.huey.destroyTheCore.utils.*;
 import java.util.List;
@@ -20,18 +21,22 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class AssignClearInvGen extends UsableItemGen {
   
+  static final int cooldown = 10 * 60 * 20;
+  
   public AssignClearInvGen() {
     super(ItemsManager.ItemKey.ASSIGN_CLEAR_INV, Material.BAMBOO_SIGN, true);
   }
   
   public Allay summonAllayWithItem(Location location, ItemStack item) {
-    Allay allay = (Allay) location.getWorld().spawnEntity(location,
-      EntityType.ALLAY);
+    Allay allay = (Allay) location.getWorld().spawnEntity(
+      location,
+      EntityType.ALLAY
+    );
     
     allay.customName(TextUtils.$("items.assign-clear-inv.allay"));
     
-    allay.getAttribute(Attribute.SCALE).setBaseValue(1.2);
-    allay.getAttribute(Attribute.MAX_HEALTH).setBaseValue(1);
+    AttrUtils.set(allay, Attribute.SCALE, 1.2);
+    AttrUtils.set(allay, Attribute.MAX_HEALTH, 1);
     allay.setHealth(1);
     
     allay.getEquipment().setItemInMainHand(item);
@@ -41,10 +46,9 @@ public class AssignClearInvGen extends UsableItemGen {
   }
   
   @Override
-  public void use(Player pl, Block block) {
-    Game.Side side = DestroyTheCore.game.getPlayerData(pl).side;
-    SideData sideData = DestroyTheCore.game.getSideData(side);
-    if (side.equals(Game.Side.SPECTATOR)) return;
+  public boolean canUse(Player pl) {
+    PlayerData data = DTC.game.getPlayerData(pl);
+    SideData sideData = DTC.game.getSideData(data.side);
     
     if (sideData.clearInvCooldown > 0) {
       pl.sendActionBar(
@@ -58,18 +62,46 @@ public class AssignClearInvGen extends UsableItemGen {
           )
         )
       );
-      return;
+      return false;
     }
     
-    Player target = RandomUtils.pick(PlayerUtils.getEnemies(side));
-    if (target == null) {
+    if (
+      PlayerUtils.getEnemies(data.side).stream()
+        .noneMatch(p -> {
+          PlayerData d = DTC.game.getPlayerData(p);
+          return d.alive && !d.clearedInv;
+        })
+    ) {
       pl.sendActionBar(TextUtils.$("items.assign-clear-inv.not-found"));
-      return;
+      return false;
     }
     
-    PlayerUtils.takeOneItemFromHand(pl);
+    return true;
+  }
+  
+  @Override
+  public void use(Player pl, Block block) {
+    PlayerData data = DTC.game.getPlayerData(pl);
+    SideData sideData = DTC.game.getSideData(data.side);
+    if (data.side.equals(Game.Side.SPECTATOR)) return;
     
-    sideData.clearInvCooldown = 10 * 60 * 20;
+    sideData.clearInvCooldown = cooldown;
+    
+    for (Player p : PlayerUtils.getTeammates(pl)) {
+      p.setCooldown(iconType, cooldown);
+    }
+    
+    Player target = RandomUtils.pick(
+      PlayerUtils.getEnemies(data.side).stream()
+        .filter(p -> {
+          PlayerData d = DTC.game.getPlayerData(p);
+          return d.alive && !d.clearedInv;
+        })
+        .toList()
+    );
+    if (target == null) return;
+    
+    DTC.game.getPlayerData(target).clearedInv = true;
     
     PlayerUtils.delayAssign(
       pl,
@@ -79,7 +111,6 @@ public class AssignClearInvGen extends UsableItemGen {
         PlayerInventory inv = target.getInventory();
         
         ItemStack[] items = inv.getContents();
-        inv.clear();
         
         new BukkitRunnable() {
           int index = 0;
@@ -94,13 +125,23 @@ public class AssignClearInvGen extends UsableItemGen {
                 return;
               }
               
-              summonAllayWithItem(
-                LocationUtils.hitboxCenter(target),
-                items[index]
-              );
+              ItemStack item = items[index];
+              
+              if (
+                item == null ||
+                  item.isEmpty() ||
+                  item.getType() == Material.KNOWLEDGE_BOOK ||
+                  DTC.rolesManager.isExclusiveItem(item)
+              ) continue;
+              
+              inv.setItem(index, ItemStack.empty());
+              
+              if (!DTC.itemsManager.isTrash(item)) {
+                summonAllayWithItem(LocUtils.hitboxCenter(target), item);
+              }
             }
           }
-        }.runTaskTimer(DestroyTheCore.instance, 0, 2);
+        }.runTaskTimer(DTC.instance, 0, 2);
         
         for (Player p : Bukkit.getOnlinePlayers()) p.playSound(
           p.getLocation(),
@@ -111,7 +152,7 @@ public class AssignClearInvGen extends UsableItemGen {
         
         ParticleUtils.ring(
           PlayerUtils.all(),
-          LocationUtils.hitboxCenter(target),
+          LocUtils.hitboxCenter(target),
           1.2,
           Color.ORANGE
         );
@@ -139,5 +180,7 @@ public class AssignClearInvGen extends UsableItemGen {
         );
       }
     );
+    
+    data.addExtraExp(25);
   }
 }

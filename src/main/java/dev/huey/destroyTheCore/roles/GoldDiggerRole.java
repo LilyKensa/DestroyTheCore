@@ -1,10 +1,10 @@
 package dev.huey.destroyTheCore.roles;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.managers.RolesManager;
-import dev.huey.destroyTheCore.utils.LocationUtils;
+import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import java.util.List;
@@ -12,19 +12,19 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class GoldDiggerRole extends Role {
   
   public GoldDiggerRole() {
-    super(RolesManager.RoleKey.GOLD_DIGGER);
+    super(RolesManager.RoleType.WORKING, RolesManager.RoleKey.GOLD_DIGGER);
     addInfo(Material.GOLDEN_PICKAXE);
     addFeature();
     addExclusiveItem(
       Material.IRON_PICKAXE,
       meta -> {
-        meta.addEnchant(Enchantment.EFFICIENCY, 3, true);
+        meta.addEnchant(Enchantment.EFFICIENCY, 5, true);
+        meta.addEnchant(Enchantment.FORTUNE, 3, true);
       }
     );
     addSkill(120 * 20);
@@ -37,20 +37,24 @@ public class GoldDiggerRole extends Role {
   
   @Override
   public void onTick(Player pl) {
-    if (DestroyTheCore.ticksManager.isSeconds()) {
-      pl.addPotionEffect(
-        new PotionEffect(PotionEffectType.GLOWING, 30, 0, true, false)
-      );
-      pl.addPotionEffect(
-        new PotionEffect(PotionEffectType.SLOWNESS, 30, 0, true, false)
+    if (DTC.ticksManager.isSeconds()) {
+      PlayerUtils.glow(pl, 30);
+      PlayerUtils.addPassiveEffect(
+        pl,
+        PotionEffectType.SLOWNESS,
+        30,
+        1
       );
       
       for (Player p : PlayerUtils.getTeammates(pl)) {
         if (p.equals(pl)) continue;
-        if (!LocationUtils.near(p, pl, 10)) continue;
+        if (!LocUtils.near(p, pl, 10)) continue;
         
-        p.addPotionEffect(
-          new PotionEffect(PotionEffectType.HASTE, 30, 0, true, false)
+        PlayerUtils.addPassiveEffect(
+          p,
+          PotionEffectType.HASTE,
+          30,
+          1
         );
       }
     }
@@ -60,8 +64,11 @@ public class GoldDiggerRole extends Role {
   public void useSkill(Player pl) {
     skillFeedback(pl);
     
-    pl.addPotionEffect(
-      new PotionEffect(PotionEffectType.LUCK, 15 * 20, 2, false, true)
+    PlayerUtils.addEffect(
+      pl,
+      PotionEffectType.LUCK,
+      15 * 20,
+      2
     );
     
     PlayerUtils.auraBroadcast(

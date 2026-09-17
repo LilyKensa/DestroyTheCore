@@ -11,7 +11,7 @@ import dev.huey.destroyTheCore.items.assistance.SkillCooldownAssistGen;
 import dev.huey.destroyTheCore.items.fragments.PlaceholderGen;
 import dev.huey.destroyTheCore.items.fragments.SoulGen;
 import dev.huey.destroyTheCore.items.gadgets.*;
-import dev.huey.destroyTheCore.items.gui.ChooseRoleGen;
+import dev.huey.destroyTheCore.items.gui.RoleSelectorGen;
 import dev.huey.destroyTheCore.items.gui.SpectatorTeleporterGen;
 import dev.huey.destroyTheCore.items.misc.AbsorptionPotionGen;
 import dev.huey.destroyTheCore.items.misc.InvisPotionGen;
@@ -21,6 +21,7 @@ import dev.huey.destroyTheCore.items.projectiles.IceArrowGen;
 import dev.huey.destroyTheCore.items.projectiles.PoisonArrowGen;
 import dev.huey.destroyTheCore.items.projectiles.WeaknessArrowGen;
 import dev.huey.destroyTheCore.items.roles.*;
+import dev.huey.destroyTheCore.items.starter.*;
 import dev.huey.destroyTheCore.items.tokens.*;
 import dev.huey.destroyTheCore.items.wands.LeviStickGen;
 import dev.huey.destroyTheCore.items.weapons.*;
@@ -33,6 +34,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -44,35 +46,85 @@ public class ItemsManager {
   /** Every item-gen's unique key */
   public enum ItemKey {
     // Armors
-    ELYTRA, STARTER_HELMET, STARTER_CHESTPLATE, STARTER_LEGGINGS, STARTER_BOOTS, GOD_HELMET, GOD_CHESTPLATE, GOD_LEGGINGS, GOD_BOOTS, ABSORPTION_HELMET, SHAME_CHESTPLATE,
+    ELYTRA,
+    STARTER_HELMET,
+    STARTER_CHESTPLATE,
+    STARTER_LEGGINGS,
+    STARTER_BOOTS,
+    GOD_HELMET,
+    GOD_CHESTPLATE,
+    GOD_LEGGINGS,
+    GOD_BOOTS,
+    ABSORPTION_HELMET,
+    SHAME_CHESTPLATE,
     // Weapons
-    TRIDENT, NETHERITE_SWORD, NETHERITE_AXE, STARTER_SWORD, KB_STICK,
+    TRIDENT,
+    NETHERITE_SWORD,
+    NETHERITE_AXE,
+    STARTER_SWORD,
+    KB_STICK,
     // Assists,
-    DAMAGE_ASSIST, INK_ASSIST, SKILL_COOLDOWN_ASSIST,
+    DAMAGE_ASSIST,
+    INK_ASSIST,
+    SKILL_COOLDOWN_ASSIST,
     // Gadgets
-    ASSIGN_RESPAWN_TIME, ADD_CORE_HEALTH, BRIDGE_HELPER, GIVE_SPEED, GIVE_JUMP_BOOST, GIVE_STRENGTH, GRENADE, RANDOM_ROLE,
+    ASSIGN_RESPAWN_TIME,
+    ADD_CORE_HEALTH,
+    BRIDGE_HELPER,
+    GIVE_SPEED,
+    GIVE_JUMP_BOOST,
+    GIVE_STRENGTH,
+    GRENADE,
+    RANDOM_ROLE,
+    CHOOSE_ROLE,
     // Wands
     LEVI_STICK,
     // Tokens
-    ASSIGN_CLEAR_INV, ENEMY_GLOW, CORE_INVULN, IGNORE_CORE_INVULN, ASSIGN_MORE_RESPAWN_TIME, LAST_DITCH, RESPAWN_TEAMMATES, TRUCE,
+    ASSIGN_CLEAR_INV,
+    ENEMY_GLOW,
+    CORE_INVULN,
+    IGNORE_CORE_INVULN,
+    ASSIGN_MORE_RESPAWN_TIME,
+    LAST_DITCH,
+    RESPAWN_TEAMMATES,
+    TRUCE,
     // Projectiles
-    ICE_ARROW, WEAKNESS_ARROW, POISON_ARROW,
+    ICE_ARROW,
+    WEAKNESS_ARROW,
+    POISON_ARROW,
     // Misc
-    ABSORPTION_POTION, INVIS_POTION, LOTTERY, WITCHCRAFT,
+    ABSORPTION_POTION,
+    INVIS_POTION,
+    LOTTERY,
+    WITCHCRAFT,
     // Fragments
-    PLACEHOLDER, SOUL,
+    PLACEHOLDER,
+    SOUL,
     // GUI
-    CHOOSE_ROLE, SPECTATOR_TELEPORTER,
+    ROLE_SELECTOR,
+    SPECTATOR_TELEPORTER,
     // Roles
-    GOLD_DIGGER_CHESTPLATE, RANGER_HELMET, KEKKAI_MASTER_LEGGINGS, CONSTRUCTOR_HELMET, PROVOCATEUR_HELMET, NOBLE_HELMET
+GOLD_DIGGER_CHESTPLATE,
+RANGER_HELMET,
+KEKKAI_MASTER_LEGGINGS,
+CONSTRUCTOR_HELMET,
+PROVOCATEUR_HELMET,
+MOLE_BOOTS,
+ROYAL_HELMET,
+FAIRY_ELYTRA,
+DARKBRINGER_BOOTS,
+NOBLE_HELMET
   }
   
   /** Filter item-gens by type */
   <T extends ItemGen> Map<ItemKey, T> filterGens(Class<T> clazz) {
-    return gens.entrySet().stream().filter(e -> clazz.isInstance(
-      e.getValue())).collect(
-        Collectors.toMap(Map.Entry::getKey, e -> clazz.cast(e.getValue()))
-      );
+    return gens.entrySet().stream().filter(
+      e -> clazz.isInstance(
+        e.getValue()
+      )
+    ).collect(
+      Collectors.toMap(Map.Entry::getKey, e -> clazz.cast(e.getValue()))
+    );
   }
   
   public Map<ItemKey, ItemGen> gens;
@@ -113,6 +165,7 @@ public class ItemsManager {
       new GiveStrengthGen(),
       new GrenadeGen(),
       new RandomRoleGen(),
+      new ChooseRoleGen(),
       // Wands
       new LeviStickGen(),
       // Tokens
@@ -137,7 +190,7 @@ public class ItemsManager {
       new PlaceholderGen(),
       new SoulGen(),
       // GUI
-      new ChooseRoleGen(),
+      new RoleSelectorGen(),
       new SpectatorTeleporterGen(),
       // Roles
       new GoldDiggerChestplateGen(),
@@ -145,7 +198,11 @@ public class ItemsManager {
       new KekkaiMasterLeggingsGen(),
       new ConstructorHelmetGen(),
       new ProvocateurHelmetGen(),
-      new NobleHelmetGen()
+new NobleHelmetGen(),
+new MoleBootsGen(),
+new RoyalHelmetGen(),
+new FairyElytra(),
+new DarkbringerBoots()
     ).collect(Collectors.toMap(ci -> ci.id, ci -> ci));
     
     usableGens = filterGens(UsableItemGen.class);
@@ -154,16 +211,27 @@ public class ItemsManager {
   }
   
   public boolean isGen(ItemStack item) {
-    return (item != null && item.hasItemMeta() && item.getItemMeta().getPersistentDataContainer().has(
-      ItemGen.dataNamespace));
+    return (item != null &&
+      item.hasItemMeta() &&
+      item.getItemMeta()
+        .getPersistentDataContainer().has(
+          ItemGen.dataNamespace
+        ));
   }
   
   /** Check if the item stack is an instance of the specific item-gen */
   public boolean checkGen(ItemStack item, ItemKey key) {
-    return (isGen(item) && key.name().equals(
-      item.getItemMeta().getPersistentDataContainer().get(ItemGen.dataNamespace,
-        PersistentDataType.STRING)
-    ));
+    return (isGen(item) &&
+      key.name().equals(
+        item.getItemMeta().getPersistentDataContainer().get(
+          ItemGen.dataNamespace,
+          PersistentDataType.STRING
+        )
+      ));
+  }
+  
+  public boolean isTrash(ItemStack item) {
+    return isGen(item) && getGen(item).isTrash();
   }
   
   /** Get an instance of a item-gen */
@@ -172,7 +240,8 @@ public class ItemsManager {
     
     String id = item.getItemMeta().getPersistentDataContainer().get(
       ItemGen.dataNamespace,
-      PersistentDataType.STRING);
+      PersistentDataType.STRING
+    );
     return gens.get(ItemKey.valueOf(id));
   }
   
@@ -187,21 +256,33 @@ public class ItemsManager {
     }
   }
   
-  public void onPlayerDamage(Player attacker, Player victim) {
+  public void onPlayerDamage(
+    Player attacker, Player victim, EntityDamageEvent.DamageCause cause
+  ) {
     if (
       !PlayerUtils.shouldHandle(attacker) || !PlayerUtils.shouldHandle(victim)
     ) return;
     
     ItemStack item = victim.getInventory().getItemInOffHand();
     
-    for (AssistItemGen ig : assistGens.values()) {
-      if (ig.checkItem(item)) ig.onAttack(victim, attacker);
+    switch (cause) {
+      case THORNS, MAGIC -> {
+      }
+      default -> {
+        for (AssistItemGen ig : assistGens.values()) {
+          if (ig.checkItem(item)) ig.onAttack(victim, attacker);
+        }
+      }
     }
   }
   
   public void onPlayerInteract(PlayerInteractEvent ev) {
     if (
-      ev.getHand() != EquipmentSlot.HAND || !(ev.getAction() == Action.RIGHT_CLICK_AIR || ev.getAction() == Action.RIGHT_CLICK_BLOCK)
+      ev.getHand() != EquipmentSlot.HAND ||
+        !(ev
+          .getAction() == Action.RIGHT_CLICK_AIR ||
+          ev
+            .getAction() == Action.RIGHT_CLICK_BLOCK)
     ) return;
     
     Player pl = ev.getPlayer();

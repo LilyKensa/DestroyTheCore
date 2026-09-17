@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.managers;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.utils.CoreUtils;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -19,16 +19,18 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 public class TranslationsManager {
   
-  public static final Key key = Key.key("destroy-the-core:translations");
+  static public final Key key = Key.key("destroy-the-core:translations");
   
-  public static final List<Locale> availableLocales = List.of(
+  static public final List<Locale> availableLocales = List.of(
     Locale.US,
     Locale.TAIWAN
   );
-  public static final List<String> availableLocaleTags = availableLocales.stream().map(
-    locale -> locale.toLanguageTag().toLowerCase()).toList();
+  static public final List<String> availableLocaleTags = availableLocales
+    .stream().map(
+      locale -> locale.toLanguageTag().toLowerCase()
+    ).toList();
   
-  public static class Translator {
+  static public class Translator {
     
     public MiniMessage mm = MiniMessage.miniMessage();
     
@@ -45,8 +47,10 @@ public class TranslationsManager {
     }
     
     public String get(Locale locale, String key) {
-      String notFound = "%s:%s".formatted(locale.toLanguageTag().toLowerCase(),
-        key);
+      String notFound = "%s:%s".formatted(
+        locale.toLanguageTag().toLowerCase(),
+        key
+      );
       if (!store.containsKey(locale)) return notFound;
       Map<String, String> map = store.get(locale);
       if (!map.containsKey(key)) return notFound;
@@ -54,7 +58,7 @@ public class TranslationsManager {
     }
     
     public Component translate(
-                               Locale locale, String key, List<TagResolver> placeholders
+      Locale locale, String key, List<TagResolver> placeholders
     ) {
       return mm.deserialize(
         get(locale, key),
@@ -67,14 +71,16 @@ public class TranslationsManager {
   public Translator translator = new Translator();
   
   public void init() {
-    for (Locale locale : availableLocales) loadTranslations(locale);
+    for (Locale locale : availableLocales) {
+      loadTranslations(locale);
+    }
   }
   
   void loadTranslations(Locale locale) {
     String tag = locale.toLanguageTag().toLowerCase();
     String path = "lang/%s.yml".formatted(tag);
     
-    InputStream stream = DestroyTheCore.instance.getResource(path);
+    InputStream stream = DTC.instance.getResource(path);
     if (stream == null) {
       CoreUtils.error("Could not load translation " + tag);
       return;
@@ -99,13 +105,16 @@ public class TranslationsManager {
     return translator.has(currentLocale, key);
   }
   
-  public String getRaw(String key) {
+  public String unparsed(String key) {
     return translator.get(currentLocale, key);
   }
   
   public Component get(String key, List<TagResolver> placeholders) {
     return translator.translate(currentLocale, key, placeholders).colorIfAbsent(
-      NamedTextColor.GRAY).decorationIfAbsent(TextDecoration.ITALIC,
-        TextDecoration.State.FALSE);
+      NamedTextColor.GRAY
+    ).decorationIfAbsent(
+      TextDecoration.ITALIC,
+      TextDecoration.State.FALSE
+    );
   }
 }

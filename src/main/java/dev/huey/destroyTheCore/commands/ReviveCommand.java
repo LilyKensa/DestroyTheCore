@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.commands;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.Subcommand;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
@@ -26,7 +26,7 @@ public class ReviveCommand extends Subcommand {
       return;
     }
     
-    if (!DestroyTheCore.game.isPlaying) {
+    if (!DTC.game.isPlaying) {
       PlayerUtils.prefixedSend(pl, TextUtils.$("commands.revive.no-game"));
       return;
     }

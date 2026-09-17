@@ -1,71 +1,88 @@
 package dev.huey.destroyTheCore.roles;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import com.destroystokyo.paper.ParticleBuilder;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.managers.RolesManager;
-import dev.huey.destroyTheCore.utils.PlayerUtils;
-import dev.huey.destroyTheCore.utils.TextUtils;
+import dev.huey.destroyTheCore.records.PlayerData;
+import dev.huey.destroyTheCore.utils.*;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.AbstractArrow;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityShootBowEvent;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class AssassinRole extends Role {
   
-  public static final int threshold = 2 * 20;
+  static public final int threshold = 2 * 20;
   
   static Map<UUID, Integer> standingTicks = new HashMap<>();
   
-  public static void addStanding(Player pl) {
+  static public void addStanding(Player pl) {
     standingTicks.put(
       pl.getUniqueId(),
       Math.min(standingTicks.getOrDefault(pl.getUniqueId(), 0) + 1, threshold)
     );
   }
   
-  public static void resetStanding(Player pl) {
+  static public void resetStanding(Player pl) {
     standingTicks.put(pl.getUniqueId(), 0);
   }
   
-  public static boolean isStanding(Player pl) {
+  static public boolean isStanding(Player pl) {
     return (standingTicks.getOrDefault(pl.getUniqueId(), 0) >= threshold);
   }
   
-  public static void onPlayerMove(Player pl) {
+  static public void onPlayerMove(Player pl) {
     resetStanding(pl);
   }
   
-  public static void onPlayerShootBow(Player pl, EntityShootBowEvent ev) {
+  static public void onPlayerShootBow(Player pl, EntityShootBowEvent ev) {
     if (!PlayerUtils.shouldHandle(pl)) return;
     
     if (
-      DestroyTheCore.game.getPlayerData(
-        pl).role.id == RolesManager.RoleKey.ASSASSIN
-    ) {
-      if (ev.getConsumable() != null) {
-        Item itemEntity = pl.getWorld().dropItem(pl.getEyeLocation(),
-          ev.getConsumable());
-        itemEntity.setPickupDelay(20);
-        itemEntity.setVelocity(ev.getProjectile().getVelocity());
-      }
+      DTC.game.getPlayerData(
+        pl
+      ).role.id != RolesManager.RoleKey.ASSASSIN
+    ) return;
+    
+    if (ev.getConsumable() != null) {
+      Item itemEntity = pl.getWorld().dropItem(
+        pl.getEyeLocation(),
+        ev.getConsumable()
+      );
       
-      pl.sendActionBar(TextUtils.$("roles.assassin.no-bow"));
-      ev.setCancelled(true);
+      itemEntity.setPickupDelay(20);
+      itemEntity.setVelocity(ev.getProjectile().getVelocity());
+      
+      if (
+        ev.getProjectile() instanceof Arrow arrow &&
+          arrow
+            .getPickupStatus() != AbstractArrow.PickupStatus.ALLOWED
+      ) {
+        itemEntity.setCanPlayerPickup(false);
+        itemEntity.setCanMobPickup(false);
+      }
     }
+    
+    pl.sendActionBar(TextUtils.$("roles.assassin.no-bow"));
+    ev.setCancelled(true);
   }
   
   public AssassinRole() {
-    super(RolesManager.RoleKey.ASSASSIN);
+    super(RolesManager.RoleType.ATTACKING, RolesManager.RoleKey.ASSASSIN);
     addInfo(Material.ENDER_PEARL);
     addFeature();
     addExclusiveItem(
@@ -75,68 +92,133 @@ public class AssassinRole extends Role {
       }
     );
     addSkill(180 * 20);
+    addLevelReq(5);
   }
   
   @Override
   public void onTick(Player pl) {
-    if (!DestroyTheCore.game.getPlayerData(pl).alive) return;
+    if (!DTC.game.getPlayerData(pl).alive) return;
     
     addStanding(pl);
     
     if (isStanding(pl)) {
-      pl.addPotionEffect(
-        new PotionEffect(PotionEffectType.INVISIBILITY, 5, 0, true, false)
+      if (!pl.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
+        ParticleUtils.cloud(LocUtils.hitboxCenter(pl));
+      }
+      
+      PlayerUtils.addPassiveEffect(
+        pl,
+        PotionEffectType.INVISIBILITY,
+        5,
+        1
       );
     }
     else if (
-      pl.getHealth() >= pl.getAttribute(
-        Attribute.MAX_HEALTH).getValue() && DestroyTheCore.game.phase != null && DestroyTheCore.game.phase.isAfter(
-          Game.Phase.DoubleDamage)
+      pl.getHealth() >= AttrUtils.get(
+        pl,
+        Attribute.MAX_HEALTH
+      ) &&
+        DTC.game.phase != null &&
+        DTC.game.phase.isAfter(
+          Game.Phase.DoubleDamage
+        )
     ) {
-      pl.addPotionEffect(
-        new PotionEffect(PotionEffectType.INVISIBILITY, 5, 0, true, true)
+      PlayerUtils.addEffect(
+        pl,
+        PotionEffectType.INVISIBILITY,
+        5,
+        1,
+        true,
+        true
       );
     }
     
     if (pl.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
-      pl.addPotionEffect(
-        new PotionEffect(PotionEffectType.STRENGTH, 10, 0, true, false)
+      PlayerUtils.addPassiveEffect(
+        pl,
+        PotionEffectType.STRENGTH,
+        10,
+        1
       );
     }
   }
   
   @Override
   public void useSkill(Player pl) {
+    PlayerData data = DTC.game.getPlayerData(pl);
+    
     if (!pl.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
-      pl.setCooldown(Material.KNOWLEDGE_BOOK, 0);
+      PlayerUtils.setSkillCooldown(pl, 10);
+      data.skillReloadedMessage = true;
+      
       pl.sendActionBar(TextUtils.$("roles.assassin.skill.not-invis"));
       return;
     }
     
-    Player nearest = Bukkit.getOnlinePlayers().stream().filter(p -> !p.equals(
-      pl) && p.getWorld().equals(pl.getWorld()) && PlayerUtils.shouldHandle(
-        p) && DestroyTheCore.game.getPlayerData(p).isGaming()
+    Player nearest = Bukkit.getOnlinePlayers().stream().filter(
+      p -> !p.equals(
+        pl
+      ) &&
+        p.getWorld().equals(pl.getWorld()) &&
+        PlayerUtils.shouldHandle(
+          p
+        ) &&
+        DTC.game.getPlayerData(p).isGaming()
     ).min(
-      Comparator.comparingDouble(p -> p.getLocation().distanceSquared(
-        pl.getLocation())
+      Comparator.comparingDouble(
+        p -> p.getLocation().distanceSquared(
+          pl.getLocation()
+        )
       )
     ).orElse(null);
     
     if (nearest == null) {
-      pl.setCooldown(Material.KNOWLEDGE_BOOK, 0);
+      PlayerUtils.setSkillCooldown(pl, 10);
+      data.skillReloadedMessage = true;
+      
       pl.sendActionBar(TextUtils.$("roles.assassin.skill.no-target"));
       return;
     }
     
     skillFeedback(pl);
     
-    pl.teleport(nearest);
+    nearest.playSound(
+      nearest.getLocation(),
+      Sound.ENTITY_PHANTOM_DEATH,
+      1, // Volume
+      1 // Pitch
+    );
     
-    pl.addPotionEffect(
-      new PotionEffect(PotionEffectType.INVISIBILITY, 4 * 20, 0, true, false)
-    );
-    pl.addPotionEffect(
-      new PotionEffect(PotionEffectType.STRENGTH, 4 * 20, 1, true, false)
-    );
+    CoreUtils.setTickOut(() -> {
+      new ParticleBuilder(Particle.REVERSE_PORTAL)
+        .allPlayers()
+        .location(pl.getLocation())
+        .offset(0.2, 0.3, 0.2)
+        .extra(5)
+        .count(20)
+        .spawn();
+      
+      pl.teleport(nearest);
+      
+      pl.playSound(
+        nearest.getLocation(),
+        Sound.ENTITY_PLAYER_TELEPORT,
+        1, // Volume
+        1 // Pitch
+      );
+      
+      PlayerUtils.addEffect(
+        pl,
+        PotionEffectType.INVISIBILITY,
+        4 * 20,
+        1
+      );
+      PlayerUtils.addEffect(
+        pl,
+        PotionEffectType.STRENGTH,
+        4 * 20,
+        2
+      );
+    }, 10);
   }
 }

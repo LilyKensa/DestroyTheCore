@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.commands;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.Subcommand;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
@@ -20,11 +20,11 @@ public class ShopCommand extends Subcommand {
       return;
     }
     
-    if (DestroyTheCore.guiManager.isEditingShop()) {
+    if (DTC.guiManager.isEditingShop()) {
       PlayerUtils.prefixedSend(pl, TextUtils.$("gui.in-use"));
       return;
     }
     
-    DestroyTheCore.guiManager.openShopListEditor(pl);
+    DTC.guiManager.openShopListEditor(pl);
   }
 }

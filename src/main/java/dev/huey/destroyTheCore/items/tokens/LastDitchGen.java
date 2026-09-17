@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.items.tokens;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.itemGens.UsableItemGen;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.records.PlayerData;
@@ -13,7 +13,6 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class LastDitchGen extends UsableItemGen {
@@ -23,32 +22,45 @@ public class LastDitchGen extends UsableItemGen {
   }
   
   @Override
-  public void use(Player pl, Block block) {
-    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
-    SideData self = DestroyTheCore.game.getSideData(data.side),
-      enemy = DestroyTheCore.game.getSideData(data.side.opposite());
+  public boolean canUse(Player pl) {
+    PlayerData data = DTC.game.getPlayerData(pl);
+    SideData self = DTC.game.getSideData(data.side),
+      enemy = DTC.game.getSideData(data.side.opposite());
     
     if (self.coreHealth > enemy.coreHealth - 30) {
       pl.sendActionBar(TextUtils.$("items.last-ditch.health-too-high"));
-      return;
+      return false;
     }
     
-    enemy.extraDamageTicks += 120 * 20;
+    return true;
+  }
+  
+  @Override
+  public void use(Player pl, Block block) {
+    PlayerData data = DTC.game.getPlayerData(pl);
+    SideData enemy = DTC.game.getSideData(data.side.opposite());
     
-    PlayerUtils.takeOneItemFromHand(pl);
+    enemy.addExtraDamage(
+      SideData.ExtraDamage.Reason.LAST_DITCH,
+      null,
+      120 * 20
+    );
     
     for (Player p : PlayerUtils.getTeammates(data.side)) {
       PlayerUtils.fullyHeal(p);
       
       BiConsumer<PotionEffectType, Integer> effectAdder = (type, amplifier) -> {
-        p.addPotionEffect(
-          new PotionEffect(type, 120 * 20, amplifier, true, true)
+        PlayerUtils.addEffect(
+          p,
+          type,
+          120 * 20,
+          amplifier
         );
       };
       
-      effectAdder.accept(PotionEffectType.SPEED, 1);
-      effectAdder.accept(PotionEffectType.STRENGTH, 0);
-      effectAdder.accept(PotionEffectType.REGENERATION, 0);
+      effectAdder.accept(PotionEffectType.SPEED, 2);
+      effectAdder.accept(PotionEffectType.STRENGTH, 1);
+      effectAdder.accept(PotionEffectType.REGENERATION, 1);
     }
     
     PlayerUtils.broadcast(
@@ -60,5 +72,7 @@ public class LastDitchGen extends UsableItemGen {
         )
       )
     );
+    
+    DTC.game.getPlayerData(pl).addExtraExp(25);
   }
 }

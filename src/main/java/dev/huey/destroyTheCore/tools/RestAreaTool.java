@@ -1,25 +1,24 @@
 package dev.huey.destroyTheCore.tools;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
-import dev.huey.destroyTheCore.bases.editorTools.SingleLocationTool;
-import dev.huey.destroyTheCore.utils.LocationUtils;
+import dev.huey.destroyTheCore.DTC;
+import dev.huey.destroyTheCore.bases.editorTools.PosTool;
+import dev.huey.destroyTheCore.records.Pos;
 import org.bukkit.Color;
-import org.bukkit.Location;
 import org.bukkit.Material;
 
-public class RestAreaTool extends SingleLocationTool {
+public class RestAreaTool extends PosTool {
   
   public RestAreaTool() {
     super("rest-area", Material.STONE_SWORD, Color.GRAY);
   }
   
   @Override
-  public Location getLoc() {
-    return DestroyTheCore.game.map.restArea;
+  public Pos getPos() {
+    return DTC.game.map.restArea;
   }
   
   @Override
-  public void setLoc(Location loc) {
-    DestroyTheCore.game.map.restArea = LocationUtils.toSpawnPoint(loc);
+  public void setPos(Pos pos) {
+    DTC.game.map.restArea = pos.spawnPoint();
   }
 }

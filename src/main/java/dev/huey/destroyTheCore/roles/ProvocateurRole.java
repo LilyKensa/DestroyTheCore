@@ -4,7 +4,8 @@ import com.destroystokyo.paper.ParticleBuilder;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.managers.RolesManager;
-import dev.huey.destroyTheCore.utils.LocationUtils;
+import dev.huey.destroyTheCore.utils.CoreUtils;
+import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import java.util.List;
@@ -13,14 +14,20 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class ProvocateurRole extends Role {
   
+  static public final double damageRatio = 0.9;
+  
+  static public double getTransferRatio(Player pl) {
+    return pl.hasPotionEffect(PotionEffectType.ABSORPTION) ? 0.9 : 0.6;
+  }
+  
   public ProvocateurRole() {
-    super(RolesManager.RoleKey.PROVOCATEUR);
+    super(RolesManager.RoleType.ASSISTANCE, RolesManager.RoleKey.PROVOCATEUR);
     addInfo(Material.HEAVY_CORE);
+    addFeature();
     addExclusiveItem(
       Material.PUMPKIN_PIE,
       meta -> {
@@ -28,6 +35,7 @@ public class ProvocateurRole extends Role {
       }
     );
     addSkill(180 * 20);
+    addLevelReq(3);
   }
   
   @Override
@@ -37,22 +45,18 @@ public class ProvocateurRole extends Role {
   
   @Override
   public void onTick(Player pl) {
-    //    if (DestroyTheCore.ticksManager.isSeconds()) {
-    //      pl.addPotionEffect(new PotionEffect(
-    //        PotionEffectType.WEAKNESS,
-    //        30,
-    //        0,
-    //        true,
-    //        false
-    //      ));
-    //    }
-    
     if (
-      PlayerUtils.getTeammates(pl).stream().anyMatch(p -> !p.equals(
-        pl) && LocationUtils.near(p, pl, 10))
+      PlayerUtils.getTeammates(pl).stream().anyMatch(
+        p -> !p.equals(
+          pl
+        ) && LocUtils.near(p, pl, 10)
+      )
     ) {
-      new ParticleBuilder(Particle.PORTAL).allPlayers().location(
-        LocationUtils.hitboxCenter(pl)).extra(2).spawn();
+      new ParticleBuilder(Particle.PORTAL)
+        .allPlayers()
+        .location(LocUtils.hitboxCenter(pl))
+        .extra(2)
+        .spawn();
     }
   }
   
@@ -60,14 +64,28 @@ public class ProvocateurRole extends Role {
   public void useSkill(Player pl) {
     skillFeedback(pl);
     
-    pl.addPotionEffect(
-      new PotionEffect(PotionEffectType.ABSORPTION, 10 * 20, 9, false, true)
+    if (CoreUtils.isSpecialDate(4, 1)) {
+      PlayerUtils.setHandCooldown(pl, skillCooldown / 2);
+    }
+    
+    PlayerUtils.glow(pl, 10 * 20);
+    PlayerUtils.addEffect(
+      pl,
+      PotionEffectType.ABSORPTION,
+      10 * 20,
+      10
     );
-    pl.addPotionEffect(
-      new PotionEffect(PotionEffectType.RESISTANCE, 10 * 20, 2, false, true)
+    PlayerUtils.addEffect(
+      pl,
+      PotionEffectType.RESISTANCE,
+      10 * 20,
+      3
     );
-    pl.addPotionEffect(
-      new PotionEffect(PotionEffectType.WEAKNESS, 30 * 20, 9, false, true)
+    PlayerUtils.addEffect(
+      pl,
+      PotionEffectType.WEAKNESS,
+      10 * 20,
+      1
     );
     
     PlayerUtils.auraBroadcast(

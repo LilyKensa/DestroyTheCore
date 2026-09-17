@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.gui.role;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.GUIItem;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.managers.RolesManager;
@@ -10,6 +10,7 @@ import dev.huey.destroyTheCore.utils.TextUtils;
 import java.util.List;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -20,15 +21,23 @@ public class RandomRoleItem extends GUIItem {
   
   @Override
   public ItemProvider getItemProvider() {
-    return new ItemBuilder(Material.REDSTONE).setDisplayName(TextUtils.$r(
-      "gui.buttons.pick-random.title"));
+    return new ItemBuilder(Material.REDSTONE).setDisplayName(
+      TextUtils.$r(
+        "gui.buttons.pick-random.title"
+      )
+    );
   }
   
   @Override
   public void handleClick(ClickType click, Player pl, InventoryClickEvent ev) {
     Role role = RandomUtils.pick(
-      DestroyTheCore.rolesManager.roles.values().stream().filter(
-        r -> r.id != RolesManager.RoleKey.DEFAULT).toList()
+      DTC.rolesManager.roles.values().stream().filter(
+        r -> r.id != RolesManager.RoleKey.DEFAULT &&
+          r.levelReq <= DTC.game.stats
+            .get(
+              pl.getUniqueId()
+            ).levels
+      ).toList()
     );
     
     PlayerUtils.prefixedBroadcast(
@@ -40,10 +49,16 @@ public class RandomRoleItem extends GUIItem {
         )
       )
     );
+    pl.playSound(
+      pl.getLocation(),
+      Sound.ENTITY_EXPERIENCE_ORB_PICKUP,
+      1, // Volume
+      1 // Pitch
+    );
     
-    DestroyTheCore.rolesManager.setRole(pl, role);
-    DestroyTheCore.game.enforceTeam(pl);
-    DestroyTheCore.boardsManager.refresh(pl);
+    DTC.rolesManager.setRole(pl, role);
+    DTC.game.enforceDisplay(pl);
+    DTC.boardsManager.refresh(pl);
     
     closeWindow(pl);
   }

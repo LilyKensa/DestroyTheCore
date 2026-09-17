@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.tools;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.editorTools.RegionTool;
 import dev.huey.destroyTheCore.records.Region;
 import org.bukkit.Color;
@@ -14,11 +14,11 @@ public class JoinSpectatorTool extends RegionTool {
   
   @Override
   public Region getRegion() {
-    return DestroyTheCore.game.lobby.joinSpectator;
+    return DTC.game.lobby.joinSpectator;
   }
   
   @Override
   public void setRegion(Region region) {
-    DestroyTheCore.game.lobby.joinSpectator = region;
+    DTC.game.lobby.joinSpectator = region;
   }
 }

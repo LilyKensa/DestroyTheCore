@@ -16,7 +16,7 @@ public class UsableItemGen extends ItemGen {
   boolean instantUse;
   
   public UsableItemGen(
-                       ItemsManager.ItemKey id, Material iconType, boolean instantUse
+    ItemsManager.ItemKey id, Material iconType, boolean instantUse
   ) {
     super(id, iconType);
     this.instantUse = instantUse;
@@ -33,14 +33,27 @@ public class UsableItemGen extends ItemGen {
   
   void addLore() {
     if (
-      !lore.isEmpty() && (lore.getLast() instanceof TextComponent lastLore) && !lastLore.content().startsWith(
-        "-")
+      !lore.isEmpty() &&
+        (lore
+          .getLast() instanceof TextComponent lastLore) &&
+        !lastLore.content()
+          .startsWith(
+            "-"
+          )
     ) lore.add(Component.empty());
     lore.add(
       TextUtils.$(
         "item-gen." + (instantUse ? "instant-use" : "right-click-to-use")
       )
     );
+  }
+  
+  /**
+   * @implNote Optional - If item is instant-use, will check first so that
+   *           emerald don't get taken away
+   */
+  public boolean canUse(Player pl) {
+    return true;
   }
   
   /** @implNote Required - The functionality when right clicked */

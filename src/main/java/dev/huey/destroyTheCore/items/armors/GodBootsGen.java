@@ -2,7 +2,7 @@ package dev.huey.destroyTheCore.items.armors;
 
 import dev.huey.destroyTheCore.bases.ItemGen;
 import dev.huey.destroyTheCore.managers.ItemsManager;
-import dev.huey.destroyTheCore.utils.AttributeUtils;
+import dev.huey.destroyTheCore.utils.AttrUtils;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
@@ -21,11 +21,11 @@ public class GodBootsGen extends ItemGen {
     
     meta.addAttributeModifier(
       Attribute.ARMOR,
-      AttributeUtils.addition("protection", EquipmentSlotGroup.FEET, 2)
+      AttrUtils.addition("protection", EquipmentSlotGroup.FEET, 2)
     );
     meta.addAttributeModifier(
       Attribute.MOVEMENT_SPEED,
-      AttributeUtils.multiply("movement-speed", EquipmentSlotGroup.FEET, 1.4)
+      AttrUtils.multiply("movement-speed", EquipmentSlotGroup.FEET, 1.4)
     );
   }
 }

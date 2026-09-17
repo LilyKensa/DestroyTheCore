@@ -43,8 +43,12 @@ public class ProjItemGen extends ItemGen {
     onProjectileHit(ev);
     
     if (victim == null) {
-      new ParticleBuilder(Particle.WHITE_SMOKE).allPlayers().location(
-        ev.getEntity().getLocation()).count(5).extra(0).spawn();
+      new ParticleBuilder(Particle.WHITE_SMOKE)
+        .allPlayers()
+        .location(ev.getEntity().getLocation())
+        .count(5)
+        .extra(0)
+        .spawn();
       
       proj.remove();
     }

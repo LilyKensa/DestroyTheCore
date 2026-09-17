@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.items.tokens;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.itemGens.UsableItemGen;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.records.PlayerData;
@@ -12,7 +12,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class RespawnTeammatesGen extends UsableItemGen {
@@ -23,18 +22,20 @@ public class RespawnTeammatesGen extends UsableItemGen {
   
   @Override
   public void use(Player pl, Block block) {
-    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
-    PlayerUtils.takeOneItemFromHand(pl);
+    PlayerData data = DTC.game.getPlayerData(pl);
     
     for (Player p : Bukkit.getOnlinePlayers()) {
-      PlayerData d = DestroyTheCore.game.getPlayerData(p);
+      PlayerData d = DTC.game.getPlayerData(p);
       if (!d.side.equals(data.side)) continue;
       
       if (!d.alive) PlayerUtils.respawn(p);
       
       PlayerUtils.fullyHeal(p);
-      p.addPotionEffect(
-        new PotionEffect(PotionEffectType.ABSORPTION, 120 * 20, 4, true, true)
+      PlayerUtils.addEffect(
+        p,
+        PotionEffectType.ABSORPTION,
+        120 * 20,
+        5
       );
     }
     
@@ -47,5 +48,7 @@ public class RespawnTeammatesGen extends UsableItemGen {
         )
       )
     );
+    
+    DTC.game.getPlayerData(pl).addExtraExp(25);
   }
 }

@@ -1,10 +1,12 @@
 package dev.huey.destroyTheCore.items.tokens;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.itemGens.UsableItemGen;
 import dev.huey.destroyTheCore.managers.ItemsManager;
+import dev.huey.destroyTheCore.records.Pos;
 import dev.huey.destroyTheCore.records.SideData;
+import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import java.util.List;
@@ -20,22 +22,38 @@ public class TruceGen extends UsableItemGen {
   }
   
   @Override
-  public void use(Player pl, Block block) {
-    if (DestroyTheCore.game.phase.isAfter(Game.Phase.DoubleDamage)) {
-      pl.sendActionBar(TextUtils.$("items.truce.too-late"));
-      return;
-    }
+  public boolean canUse(Player pl) {
+    SideData sideData = DTC.game.getSideData(pl);
     
-    SideData sideData = DestroyTheCore.game.getSideData(pl);
     if (sideData.usedTruce) {
       pl.sendActionBar(TextUtils.$("items.truce.duped-usage"));
-      return;
+      return false;
     }
     
-    PlayerUtils.takeOneItemFromHand(pl);
+    if (DTC.game.phase.isAfter(Game.Phase.DoubleDamage)) {
+      pl.sendActionBar(TextUtils.$("items.truce.too-late"));
+      return false;
+    }
+    
+    Pos enemyCore = LocUtils.enemySide(DTC.game.map.core, pl).center();
+    
+    for (Player p : PlayerUtils.getTeammates(pl)) {
+      if (LocUtils.near(Pos.of(p), enemyCore, 20)) {
+        pl.sendActionBar(TextUtils.$("items.truce.enemy-core"));
+        return false;
+      }
+    }
+    
+    return true;
+  }
+  
+  @Override
+  public void use(Player pl, Block block) {
+    SideData sideData = DTC.game.getSideData(pl);
+    
     sideData.usedTruce = true;
     
-    DestroyTheCore.game.truceTimer += 5 * 60 * 20;
+    DTC.game.truceTimer += 5 * 60 * 20;
     
     PlayerUtils.broadcast(
       TextUtils.$(
@@ -46,5 +64,7 @@ public class TruceGen extends UsableItemGen {
         )
       )
     );
+    
+    DTC.game.getPlayerData(pl).addExtraExp(25);
   }
 }

@@ -5,20 +5,19 @@ import dev.huey.destroyTheCore.bases.Mission;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 public class GiveEmeraldResult extends Mission.Result {
   
   public GiveEmeraldResult() {
-    super("give-emerald");
+    super("give-emerald", true);
   }
   
   @Override
   public void forWinner(Game.Side side) {
-    announce(side);
+    outro(side);
     
     for (Player p : PlayerUtils.getTeammates(side)) {
-      p.give(new ItemStack(Material.EMERALD));
+      PlayerUtils.give(p, Material.EMERALD, 5);
     }
   }
 }

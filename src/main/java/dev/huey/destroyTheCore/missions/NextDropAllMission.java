@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.missions;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.missions.InstantMission;
 
 public class NextDropAllMission extends InstantMission {
@@ -11,6 +11,6 @@ public class NextDropAllMission extends InstantMission {
   
   @Override
   public void run() {
-    DestroyTheCore.game.nextPlayerDropAll = true;
+    DTC.game.nextPlayerDropAll = true;
   }
 }

@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.tools;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.editorTools.RegionTool;
 import dev.huey.destroyTheCore.records.Region;
 import org.bukkit.Color;
@@ -14,11 +14,11 @@ public class JoinRedTool extends RegionTool {
   
   @Override
   public Region getRegion() {
-    return DestroyTheCore.game.lobby.joinRed;
+    return DTC.game.lobby.joinRed;
   }
   
   @Override
   public void setRegion(Region region) {
-    DestroyTheCore.game.lobby.joinRed = region;
+    DTC.game.lobby.joinRed = region;
   }
 }

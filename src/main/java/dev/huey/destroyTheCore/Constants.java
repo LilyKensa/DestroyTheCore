@@ -2,31 +2,104 @@ package dev.huey.destroyTheCore;
 
 import java.util.List;
 import java.util.Map;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Villager;
 
 public class Constants {
   
   public record OreData(
-                        Material dropType,
-                        long cooldownSeconds,
-                        int minXp,
-                        int maxXp
+    Material blockType,
+    Material dropType,
+    NamedTextColor textColor,
+    int cooldownSeconds,
+    int minXp,
+    int maxXp
   ) {
   }
   
-  public static final Map<Material, OreData> ores = Map.ofEntries(
-    Map.entry(Material.COAL_ORE, new OreData(Material.COAL, 5, 5, 10)),
-    Map.entry(Material.IRON_ORE, new OreData(Material.RAW_IRON, 7, 0, 0)),
-    Map.entry(Material.GOLD_ORE, new OreData(Material.RAW_GOLD, 8, 0, 0)),
-    Map.entry(Material.REDSTONE_ORE, new OreData(Material.REDSTONE, 5, 2, 6)),
-    Map.entry(Material.LAPIS_ORE, new OreData(Material.LAPIS_LAZULI, 10, 2, 6)),
-    Map.entry(Material.EMERALD_ORE, new OreData(Material.EMERALD, 13, 3, 8)),
-    Map.entry(Material.DIAMOND_ORE, new OreData(Material.DIAMOND, 60, 3, 12))
+  static public final Map<Material, OreData> ores = Map.ofEntries(
+    Map.entry(
+      Material.COAL_ORE,
+      new OreData(
+        Material.COAL_ORE,
+        Material.COAL,
+        NamedTextColor.GRAY,
+        10,
+        3,
+        9
+      )
+    ),
+    Map.entry(
+      Material.IRON_ORE,
+      new OreData(
+        Material.IRON_ORE,
+        Material.RAW_IRON,
+        NamedTextColor.WHITE,
+        10,
+        0,
+        0
+      )
+    ),
+    Map.entry(
+      Material.GOLD_ORE,
+      new OreData(
+        Material.GOLD_ORE,
+        Material.RAW_GOLD,
+        NamedTextColor.YELLOW,
+        10,
+        0,
+        0
+      )
+    ),
+    Map.entry(
+      Material.REDSTONE_ORE,
+      new OreData(
+        Material.REDSTONE_ORE,
+        Material.REDSTONE,
+        NamedTextColor.RED,
+        10,
+        1,
+        2
+      )
+    ),
+    Map.entry(
+      Material.LAPIS_ORE,
+      new OreData(
+        Material.LAPIS_ORE,
+        Material.LAPIS_LAZULI,
+        NamedTextColor.BLUE,
+        10,
+        1,
+        4
+      )
+    ),
+    Map.entry(
+      Material.EMERALD_ORE,
+      new OreData(
+        Material.EMERALD_ORE,
+        Material.EMERALD,
+        NamedTextColor.GREEN,
+        15,
+        2,
+        4
+      )
+    ),
+    Map.entry(
+      Material.DIAMOND_ORE,
+      new OreData(
+        Material.DIAMOND_ORE,
+        Material.DIAMOND,
+        NamedTextColor.AQUA,
+        60,
+        4,
+        30
+      )
+    )
   );
   
   /** To be dropped when needed */
-  public static final List<Material> oreItems = List.of(
+  static public final List<Material> oreItems = List.of(
     Material.COAL,
     Material.LAPIS_LAZULI,
     Material.DIAMOND,
@@ -35,34 +108,48 @@ public class Constants {
     Material.IRON_INGOT,
     Material.GOLD_INGOT,
     Material.RAW_IRON,
-    Material.RAW_GOLD
+    Material.RAW_GOLD,
+    Material.IRON_NUGGET,
+    Material.GOLD_NUGGET,
+    Material.COAL_BLOCK,
+    Material.LAPIS_BLOCK,
+    Material.DIAMOND_BLOCK,
+    Material.EMERALD_BLOCK,
+    Material.REDSTONE_BLOCK,
+    Material.IRON_BLOCK,
+    Material.GOLD_BLOCK,
+    Material.RAW_IRON_BLOCK,
+    Material.RAW_GOLD_BLOCK,
+    Material.WOODEN_HOE // Easter Egg :)
   );
   
-  public static final Map<Villager.Type, Material> villagerIcons = Map.ofEntries(
-    Map.entry(Villager.Type.PLAINS, Material.GRASS_BLOCK),
-    Map.entry(Villager.Type.DESERT, Material.CHISELED_SANDSTONE),
-    Map.entry(Villager.Type.TAIGA, Material.PODZOL),
-    Map.entry(Villager.Type.SAVANNA, Material.ACACIA_LOG),
-    Map.entry(Villager.Type.JUNGLE, Material.JUNGLE_LEAVES),
-    Map.entry(Villager.Type.SNOW, Material.SNOW_BLOCK),
-    Map.entry(Villager.Type.SWAMP, Material.MANGROVE_ROOTS)
-  );
+  static public final Map<Villager.Type, Material> villagerIcons = Map
+    .ofEntries(
+      Map.entry(Villager.Type.PLAINS, Material.GRASS_BLOCK),
+      Map.entry(Villager.Type.DESERT, Material.CHISELED_SANDSTONE),
+      Map.entry(Villager.Type.TAIGA, Material.PODZOL),
+      Map.entry(Villager.Type.SAVANNA, Material.ACACIA_LOG),
+      Map.entry(Villager.Type.JUNGLE, Material.JUNGLE_LEAVES),
+      Map.entry(Villager.Type.SNOW, Material.SNOW_BLOCK),
+      Map.entry(Villager.Type.SWAMP, Material.MANGROVE_ROOTS)
+    );
   
-  public static final Map<Villager.Profession, Material> villagerJobSites = Map.ofEntries(
-    Map.entry(Villager.Profession.ARMORER, Material.BLAST_FURNACE),
-    Map.entry(Villager.Profession.BUTCHER, Material.SMOKER),
-    Map.entry(Villager.Profession.CARTOGRAPHER, Material.CARTOGRAPHY_TABLE),
-    Map.entry(Villager.Profession.CLERIC, Material.BREWING_STAND),
-    Map.entry(Villager.Profession.FARMER, Material.COMPOSTER),
-    Map.entry(Villager.Profession.FISHERMAN, Material.BARREL),
-    Map.entry(Villager.Profession.FLETCHER, Material.FLETCHING_TABLE),
-    Map.entry(Villager.Profession.LEATHERWORKER, Material.CAULDRON),
-    Map.entry(Villager.Profession.LIBRARIAN, Material.LECTERN),
-    Map.entry(Villager.Profession.MASON, Material.STONECUTTER),
-    Map.entry(Villager.Profession.SHEPHERD, Material.LOOM),
-    Map.entry(Villager.Profession.TOOLSMITH, Material.SMITHING_TABLE),
-    Map.entry(Villager.Profession.WEAPONSMITH, Material.GRINDSTONE),
-    Map.entry(Villager.Profession.NITWIT, Material.RED_BED),
-    Map.entry(Villager.Profession.NONE, Material.GRASS_BLOCK)
-  );
+  static public final Map<Villager.Profession, Material> villagerJobSites = Map
+    .ofEntries(
+      Map.entry(Villager.Profession.ARMORER, Material.BLAST_FURNACE),
+      Map.entry(Villager.Profession.BUTCHER, Material.SMOKER),
+      Map.entry(Villager.Profession.CARTOGRAPHER, Material.CARTOGRAPHY_TABLE),
+      Map.entry(Villager.Profession.CLERIC, Material.BREWING_STAND),
+      Map.entry(Villager.Profession.FARMER, Material.COMPOSTER),
+      Map.entry(Villager.Profession.FISHERMAN, Material.BARREL),
+      Map.entry(Villager.Profession.FLETCHER, Material.FLETCHING_TABLE),
+      Map.entry(Villager.Profession.LEATHERWORKER, Material.CAULDRON),
+      Map.entry(Villager.Profession.LIBRARIAN, Material.LECTERN),
+      Map.entry(Villager.Profession.MASON, Material.STONECUTTER),
+      Map.entry(Villager.Profession.SHEPHERD, Material.LOOM),
+      Map.entry(Villager.Profession.TOOLSMITH, Material.SMITHING_TABLE),
+      Map.entry(Villager.Profession.WEAPONSMITH, Material.GRINDSTONE),
+      Map.entry(Villager.Profession.NITWIT, Material.RED_BED),
+      Map.entry(Villager.Profession.NONE, Material.GRASS_BLOCK)
+    );
 }

@@ -1,7 +1,7 @@
 package dev.huey.destroyTheCore.roles;
 
 import com.destroystokyo.paper.ParticleBuilder;
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.managers.ItemsManager;
@@ -21,35 +21,73 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class KekkaiMasterRole extends Role {
   
-  public static class Kekkai {
+  static public class Kekkai {
     
     public enum Type {
-      SPEED(Material.IRON_INGOT, Particle.WAX_OFF), HEALING(Material.GOLD_INGOT,
-        Particle.HAPPY_VILLAGER), BULLET_PROOF(Material.REDSTONE,
-          Particle.WITCH), RESISTANCE(Material.EMERALD,
-            Particle.CRIT), FAST_ORES(Material.LAPIS_LAZULI,
-              Particle.END_ROD), STRENGTH(Material.DIAMOND,
-                Particle.WAX_ON), SPEED_PLUS(Material.IRON_BLOCK,
-                  Particle.WAX_OFF,
-                  180), SATURATION(Material.GOLD_BLOCK,
-                    Particle.FLAME,
-                    10), BULLET_PROOF_PLUS(Material.REDSTONE_BLOCK,
-                      Particle.WITCH,
-                      180), RESISTANCE_PLUS(Material.EMERALD_BLOCK,
-                        Particle.CRIT,
-                        30), FAST_ORES_PLUS(Material.LAPIS_BLOCK,
-                          Particle.END_ROD,
-                          180), STRENGTH_PLUS(Material.DIAMOND_BLOCK,
-                            Particle.WAX_ON,
-                            180), CHAOS(Material.BARRIER,
-                              Particle.DRAGON_BREATH,
-                              10), SOUL(Material.BARRIER,
-                                Particle.SOUL_FIRE_FLAME);
+      SPEED(Material.IRON_INGOT, Particle.WAX_OFF),
+      HEALING(
+        Material.GOLD_INGOT,
+        Particle.HAPPY_VILLAGER
+      ),
+      BULLET_PROOF(
+        Material.REDSTONE,
+        Particle.WITCH
+      ),
+      RESISTANCE(
+        Material.EMERALD,
+        Particle.CRIT
+      ),
+      FAST_ORES(
+        Material.LAPIS_LAZULI,
+        Particle.END_ROD
+      ),
+      STRENGTH(
+        Material.DIAMOND,
+        Particle.WAX_ON
+      ),
+      SPEED_PLUS(
+        Material.IRON_BLOCK,
+        Particle.WAX_OFF,
+        180
+      ),
+      SATURATION(
+        Material.GOLD_BLOCK,
+        Particle.FLAME,
+        10
+      ),
+      BULLET_PROOF_PLUS(
+        Material.REDSTONE_BLOCK,
+        Particle.WITCH,
+        180
+      ),
+      RESISTANCE_PLUS(
+        Material.EMERALD_BLOCK,
+        Particle.CRIT,
+        30
+      ),
+      FAST_ORES_PLUS(
+        Material.LAPIS_BLOCK,
+        Particle.END_ROD,
+        180
+      ),
+      STRENGTH_PLUS(
+        Material.DIAMOND_BLOCK,
+        Particle.WAX_ON,
+        180
+      ),
+      CHAOS(
+        Material.BARRIER,
+        Particle.DRAGON_BREATH,
+        10
+      ),
+      SOUL(
+        Material.BARRIER,
+        Particle.SOUL_FIRE_FLAME
+      );
       
       public final Material sourceMaterial;
       public final Particle particle;
@@ -74,7 +112,7 @@ public class KekkaiMasterRole extends Role {
       }
     }
     
-    int size = 15;
+    double size = 15;
     int duration;
     public Type type;
     public Location loc;
@@ -102,7 +140,7 @@ public class KekkaiMasterRole extends Role {
         }
         case RESISTANCE_PLUS -> {
           effectType = PotionEffectType.RESISTANCE;
-          effectLevel = 4;
+          effectLevel = 3;
         }
         case STRENGTH -> {
           effectType = PotionEffectType.STRENGTH;
@@ -135,16 +173,21 @@ public class KekkaiMasterRole extends Role {
       this.duration = type.duration;
       this.loc = loc;
       this.ownerId = owner.getUniqueId();
-      this.side = DestroyTheCore.game.getPlayerData(owner).side;
+      this.side = DTC.game.getPlayerData(owner).side;
       
       int health = type.name().endsWith("PLUS") ? 30 : 10;
       applyEffect();
       
-      center = (Slime) loc.getWorld().spawnEntity(loc.add(0, -0.25, 0),
-        EntityType.SLIME);
+      center = (Slime) loc.getWorld().spawnEntity(
+        loc.add(0, -0.25, 0),
+        EntityType.SLIME
+      );
       
       center.setAI(false);
       center.setSize(0);
+      
+      DTC.game.teams.get(side).addEntity(center);
+      center.setGlowing(true);
       
       center.customName(
         Component.join(
@@ -154,11 +197,14 @@ public class KekkaiMasterRole extends Role {
         ).color(side.color).decoration(TextDecoration.ITALIC, false)
       );
       
-      center.getAttribute(Attribute.MAX_HEALTH).setBaseValue(health);
+      AttrUtils.set(center, Attribute.MAX_HEALTH, health);
       center.setHealth(health);
       
-      center.addPotionEffect(
-        new PotionEffect(PotionEffectType.RESISTANCE, 5 * 20, 9, true, false)
+      PlayerUtils.addPassiveEffect(
+        center,
+        PotionEffectType.RESISTANCE,
+        5 * 20,
+        10
       );
     }
     
@@ -180,9 +226,9 @@ public class KekkaiMasterRole extends Role {
     }
   }
   
-  public static List<Kekkai> kekkais = new ArrayList<>();
+  static public List<Kekkai> kekkais = new ArrayList<>();
   
-  public static boolean checkFastOres(Location oreLoc) {
+  static public boolean checkFastOres(Location oreLoc) {
     for (Kekkai kekkai : kekkais) {
       if (!kekkai.isFastOres()) continue;
       if (!kekkai.contains(oreLoc)) continue;
@@ -193,13 +239,13 @@ public class KekkaiMasterRole extends Role {
     return false;
   }
   
-  public static void onEntityDeath(EntityDeathEvent ev) {
+  static public void onEntityDeath(EntityDeathEvent ev) {
     for (Kekkai kekkai : kekkais) {
       if (kekkai.center.equals(ev.getEntity())) {
         ev.getDrops().clear();
         ev.setDroppedExp(5);
         
-        kekkai.duration = -1;
+        kekkai.size = 0;
         
         for (Player p : Bukkit.getOnlinePlayers()) p.playSound(
           kekkai.loc,
@@ -212,13 +258,17 @@ public class KekkaiMasterRole extends Role {
     kekkais.removeIf(k -> k.duration <= 0);
   }
   
-  public static void onTick() {
+  static public void onTick() {
+    if (DTC.game.paused) return;
+    
     for (Kekkai kekkai : kekkais) {
       if (kekkai.isBulletProof()) {
-        for (Projectile proj : kekkai.loc.getNearbyEntitiesByType(
-          Projectile.class,
-          kekkai.size + 1
-        )) {
+        for (
+          Projectile proj : kekkai.loc.getNearbyEntitiesByType(
+            Projectile.class,
+            kekkai.size + 1
+          )
+        ) {
           if (proj.isOnGround()) continue;
           if (
             proj instanceof Trident trident && trident.hasDealtDamage()
@@ -234,27 +284,32 @@ public class KekkaiMasterRole extends Role {
             )
           );
           
-          new ParticleBuilder(Particle.WHITE_SMOKE).allPlayers().location(
-            proj.getLocation()).count(3).extra(0).spawn();
+          new ParticleBuilder(Particle.WHITE_SMOKE)
+            .allPlayers()
+            .location(proj.getLocation())
+            .count(3)
+            .extra(0)
+            .spawn();
         }
       }
       
-      if (DestroyTheCore.ticksManager.isUpdateTick()) {
+      if (DTC.ticksManager.isUpdateTick()) {
         for (Player p : kekkai.loc.getNearbyPlayers(kekkai.size + 1)) {
-          PlayerData d = DestroyTheCore.game.getPlayerData(p);
+          PlayerData d = DTC.game.getPlayerData(p);
           
           if (d.side != kekkai.side) continue;
           if (!kekkai.contains(p.getLocation())) continue;
           
-          if (kekkai.effectType != null) p.addPotionEffect(
-            new PotionEffect(
+          if (kekkai.effectType != null) {
+            PlayerUtils.addEffect(
+              p,
               kekkai.effectType,
               30,
-              kekkai.effectLevel - 1,
+              kekkai.effectLevel,
               true,
               true
-            )
-          );
+            );
+          }
           
           if (kekkai.type == Kekkai.Type.SATURATION) {
             if (p.getFoodLevel() < 20) p.setFoodLevel(p.getFoodLevel() + 2);
@@ -262,38 +317,53 @@ public class KekkaiMasterRole extends Role {
           }
           
           if (kekkai.type == Kekkai.Type.SOUL) {
-            p.addPotionEffect(
-              new PotionEffect(PotionEffectType.SPEED, 30, 1, true, true)
+            PlayerUtils.addEffect(
+              p,
+              PotionEffectType.SPEED,
+              30,
+              2,
+              true,
+              true
             );
-            p.addPotionEffect(
-              new PotionEffect(PotionEffectType.RESISTANCE, 30, 1, true, true)
+            PlayerUtils.addEffect(
+              p,
+              PotionEffectType.RESISTANCE,
+              30,
+              2,
+              true,
+              true
             );
-            p.addPotionEffect(
-              new PotionEffect(PotionEffectType.STRENGTH, 30, 1, true, true)
+            PlayerUtils.addEffect(
+              p,
+              PotionEffectType.STRENGTH,
+              30,
+              2,
+              true,
+              true
             );
             
             d.addRespawnTime(1);
-            DestroyTheCore.boardsManager.refresh(p);
+            DTC.boardsManager.refresh(p);
           }
         }
       }
       
-      kekkai.centerYaw += 5;
+      kekkai.centerYaw += 20;
       if (kekkai.centerYaw >= 360) kekkai.centerYaw -= 360;
       kekkai.center.setRotation(kekkai.centerYaw, 0);
       
-      if (DestroyTheCore.ticksManager.ticksCount % 12 == 0) {
+      if (DTC.ticksManager.ticksCount % 12 == 0) {
         kekkai.loc.addRotation(1, 0);
       }
       
       if (kekkai.duration <= 10 * 20 && kekkai.duration % 20 == 0) {
         for (Player p : kekkai.loc.getNearbyPlayers(kekkai.size + 1)) {
-          PlayerData d = DestroyTheCore.game.getPlayerData(p);
+          PlayerData d = DTC.game.getPlayerData(p);
           if (d.role.id != RolesManager.RoleKey.KEKKAI_MASTER) continue;
           if (d.side != kekkai.side) continue;
           if (!kekkai.contains(p.getLocation())) continue;
           if (
-            DestroyTheCore.rolesManager.isExclusiveItem(
+            DTC.rolesManager.isExclusiveItem(
               p.getInventory().getItemInMainHand()
             )
           ) continue;
@@ -312,7 +382,9 @@ public class KekkaiMasterRole extends Role {
         }
       }
       
-      kekkai.duration--;
+      if (kekkai.duration > 0) {
+        kekkai.duration--;
+      }
       if (kekkai.duration <= 0) {
         CoreUtils.setTickOut(() -> kekkai.center.remove());
       }
@@ -321,14 +393,14 @@ public class KekkaiMasterRole extends Role {
     kekkais.removeIf(k -> k.duration <= 0);
   }
   
-  public static void onParticleTick() {
+  static public void onParticleTick() {
     for (Kekkai kekkai : kekkais) {
       ParticleUtils.spiralSphere(kekkai.loc, kekkai.size, kekkai.type.particle);
     }
   }
   
   public KekkaiMasterRole() {
-    super(RolesManager.RoleKey.KEKKAI_MASTER);
+    super(RolesManager.RoleType.ASSISTANCE, RolesManager.RoleKey.KEKKAI_MASTER);
     addInfo(Material.BEACON);
     addFeature();
     addExclusiveItem(
@@ -338,6 +410,7 @@ public class KekkaiMasterRole extends Role {
       }
     );
     addSkill(30 * 20);
+    addLevelReq(4);
   }
   
   @Override
@@ -347,31 +420,40 @@ public class KekkaiMasterRole extends Role {
   
   @Override
   public void onTick(Player pl) {
-    if (DestroyTheCore.ticksManager.isUpdateTick()) {
+    if (DTC.ticksManager.isUpdateTick()) {
       for (Kekkai kekkai : kekkais) {
-        if (DestroyTheCore.game.getPlayerData(pl).side != kekkai.side) continue;
+        if (DTC.game.getPlayerData(pl).side != kekkai.side) continue;
         
         if (
-          kekkai.type != Kekkai.Type.CHAOS && DestroyTheCore.rolesManager.isExclusiveItem(
-            pl.getInventory().getItemInMainHand()
-          ) && kekkai.contains(pl.getLocation())
+          kekkai.type != Kekkai.Type.CHAOS &&
+            DTC.rolesManager.isExclusiveItem(
+              pl.getInventory().getItemInMainHand()
+            ) &&
+            kekkai.contains(pl.getLocation())
         ) {
           kekkai.duration += 10;
         }
       }
     }
     
-    if (DestroyTheCore.ticksManager.isSeconds()) {
-      pl.addPotionEffect(
-        new PotionEffect(PotionEffectType.FIRE_RESISTANCE, 30, 0, true, false)
+    if (DTC.ticksManager.isSeconds()) {
+      PlayerUtils.addPassiveEffect(
+        pl,
+        PotionEffectType.FIRE_RESISTANCE,
+        30,
+        1
       );
     }
   }
   
   @Override
   public void useSkill(Player pl) {
+    PlayerData data = DTC.game.getPlayerData(pl);
+    
     int replacedWarning = 0;
     for (Kekkai kekkai : kekkais) {
+      if (DTC.game.playerData.get(kekkai.ownerId).side != data.side)
+        continue;
       if (!kekkai.contains(pl.getLocation())) continue;
       
       if (pl.isSneaking()) {
@@ -382,7 +464,9 @@ public class KekkaiMasterRole extends Role {
       }
     }
     if (replacedWarning > 0) {
-      pl.setCooldown(Material.KNOWLEDGE_BOOK, 0);
+      PlayerUtils.setSkillCooldown(pl, 10);
+      
+      data.skillReloadedMessage = true;
       pl.sendActionBar(
         TextUtils.$(
           "roles.kekkai-master.skill.inside-kekkai",
@@ -398,25 +482,29 @@ public class KekkaiMasterRole extends Role {
     ItemStack offhandItem = pl.getInventory().getItemInOffHand();
     
     Kekkai.Type type = null;
-    for (Kekkai.Type t : Kekkai.Type.values()) if (
-      offhandItem.getType().equals(t.sourceMaterial)
-    ) type = t;
+    for (Kekkai.Type t : Kekkai.Type.values()) {
+      if (offhandItem.getType().equals(t.sourceMaterial)) {
+        type = t;
+      }
+    }
     
     if (
-      DestroyTheCore.itemsManager.checkGen(
+      DTC.itemsManager.checkGen(
         offhandItem,
         ItemsManager.ItemKey.PLACEHOLDER
       )
     ) type = Kekkai.Type.CHAOS;
     if (
-      DestroyTheCore.itemsManager.checkGen(
+      DTC.itemsManager.checkGen(
         offhandItem,
         ItemsManager.ItemKey.SOUL
       )
     ) type = Kekkai.Type.SOUL;
     
     if (type == null) {
-      pl.setCooldown(Material.KNOWLEDGE_BOOK, 0);
+      PlayerUtils.setSkillCooldown(pl, 10);
+      
+      data.skillReloadedMessage = true;
       pl.sendActionBar(TextUtils.$("roles.kekkai-master.skill.no-material"));
       return;
     }
@@ -426,12 +514,14 @@ public class KekkaiMasterRole extends Role {
       pl.getInventory().setItemInOffHand(offhandItem);
     }
     
-    if (type.name().endsWith("PLUS")) pl.setCooldown(
-      Material.KNOWLEDGE_BOOK,
-      180 * 20
-    );
+    if (type.name().endsWith("PLUS")) {
+      pl.setCooldown(
+        Material.KNOWLEDGE_BOOK,
+        6 * skillCooldown
+      );
+    }
     
-    kekkais.add(new Kekkai(type, LocationUtils.hitboxCenter(pl), pl));
+    kekkais.add(new Kekkai(type, LocUtils.hitboxCenter(pl), pl));
     
     PlayerUtils.auraBroadcast(
       pl.getLocation(),

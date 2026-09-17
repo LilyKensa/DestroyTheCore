@@ -1,8 +1,9 @@
 package dev.huey.destroyTheCore.missions;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.Mission;
+import dev.huey.destroyTheCore.utils.AttrUtils;
 import dev.huey.destroyTheCore.utils.RandomUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import java.util.HashMap;
@@ -35,16 +36,21 @@ public class ChickenMission extends Mission implements Listener {
   }
   
   void addScore(Player pl, double amount) {
-    addScore(DestroyTheCore.game.getPlayerData(pl).side, amount);
+    addScore(DTC.game.getPlayerData(pl).side, amount);
   }
   
   public ChickenMission() {
     super("chicken");
+    addResult();
   }
   
   public void move() {
     chicken.getPathfinder().moveTo(
-      loc.clone().add(RandomUtils.aroundZero(30), 0, RandomUtils.aroundZero(30))
+      centerLoc.clone().add(
+        RandomUtils.aroundZero(30),
+        0,
+        RandomUtils.aroundZero(30)
+      )
     );
   }
   
@@ -58,21 +64,24 @@ public class ChickenMission extends Mission implements Listener {
     );
     for (Player p : Bukkit.getOnlinePlayers()) healthBar.addViewer(p);
     
-    chicken = (Chicken) loc.getWorld().spawnEntity(loc, EntityType.CHICKEN);
+    chicken = (Chicken) centerLoc.getWorld().spawnEntity(
+      centerLoc,
+      EntityType.CHICKEN
+    );
     chicken.customName(TextUtils.$("missions.chicken.chicken"));
     chicken.setCustomNameVisible(true);
     chicken.setGlowing(true);
-    chicken.getAttribute(Attribute.MOVEMENT_SPEED).setBaseValue(2);
-    chicken.getAttribute(Attribute.WATER_MOVEMENT_EFFICIENCY).setBaseValue(1);
-    chicken.getAttribute(Attribute.KNOCKBACK_RESISTANCE).setBaseValue(1);
-    chicken.getAttribute(Attribute.MAX_HEALTH).setBaseValue(50);
+    AttrUtils.set(chicken, Attribute.MOVEMENT_SPEED, 2);
+    AttrUtils.set(chicken, Attribute.WATER_MOVEMENT_EFFICIENCY, 1);
+    AttrUtils.set(chicken, Attribute.KNOCKBACK_RESISTANCE, 1);
+    AttrUtils.set(chicken, Attribute.MAX_HEALTH, 50);
     chicken.setHealth(50);
     
     chicken.getPathfinder().setCanFloat(true);
     
     move();
     
-    DestroyTheCore.missionsManager.team.addEntity(chicken);
+    DTC.missionsManager.team.addEntity(chicken);
   }
   
   @EventHandler
@@ -81,8 +90,10 @@ public class ChickenMission extends Mission implements Listener {
     if (ev.getEntity().getUniqueId() != chicken.getUniqueId()) return;
     
     healthBar.progress(
-      (float) (chicken.getHealth() / chicken.getAttribute(
-        Attribute.MAX_HEALTH).getValue())
+      (float) (chicken.getHealth() / AttrUtils.get(
+        chicken,
+        Attribute.MAX_HEALTH
+      ))
     );
     
     addScore(pl, ev.getFinalDamage());
@@ -100,12 +111,14 @@ public class ChickenMission extends Mission implements Listener {
   
   @Override
   public void tick() {
-    if (DestroyTheCore.ticksManager.isSeconds()) {
+    if (DTC.ticksManager.isSeconds()) {
       if (RandomUtils.hit(0.5)) {
         chicken.getPathfinder().moveTo(
-          loc.clone().add(RandomUtils.aroundZero(30),
+          centerLoc.clone().add(
+            RandomUtils.aroundZero(30),
             0,
-            RandomUtils.aroundZero(30))
+            RandomUtils.aroundZero(30)
+          )
         );
       }
     }

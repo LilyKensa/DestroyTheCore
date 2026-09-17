@@ -2,7 +2,7 @@ package dev.huey.destroyTheCore.items.armors;
 
 import dev.huey.destroyTheCore.bases.ItemGen;
 import dev.huey.destroyTheCore.managers.ItemsManager;
-import dev.huey.destroyTheCore.utils.AttributeUtils;
+import dev.huey.destroyTheCore.utils.AttrUtils;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
@@ -21,11 +21,11 @@ public class GodLeggingsGen extends ItemGen {
     
     meta.addAttributeModifier(
       Attribute.ARMOR,
-      AttributeUtils.addition("protection", EquipmentSlotGroup.LEGS, 5)
+      AttrUtils.addition("protection", EquipmentSlotGroup.LEGS, 5)
     );
     meta.addAttributeModifier(
       Attribute.ATTACK_DAMAGE,
-      AttributeUtils.addition("attack-damage", EquipmentSlotGroup.LEGS, 4)
+      AttrUtils.addition("attack-damage", EquipmentSlotGroup.LEGS, 4)
     );
   }
 }

@@ -1,19 +1,19 @@
 package dev.huey.destroyTheCore.roles;
 
 import com.destroystokyo.paper.ParticleBuilder;
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.managers.RolesManager;
-import dev.huey.destroyTheCore.records.PlayerData;
-import dev.huey.destroyTheCore.utils.LocationUtils;
+import dev.huey.destroyTheCore.managers.TicksManager;
+import dev.huey.destroyTheCore.records.Pos;
+import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.RandomUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -23,15 +23,14 @@ import org.bukkit.damage.DamageSource;
 import org.bukkit.damage.DamageType;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class RangerRole extends Role {
-  
-  public static class Mine {
+  static public class Mine {
+    final double radius = 1.2;
     
     boolean active = true;
+    int prepareTicks = 3 * 20;
     public Location loc;
     public UUID ownerId;
     public Game.Side side;
@@ -39,32 +38,55 @@ public class RangerRole extends Role {
     public Mine(Location loc, Player owner) {
       this.loc = loc;
       this.ownerId = owner.getUniqueId();
-      this.side = DestroyTheCore.game.getPlayerData(owner).side;
+      this.side = DTC.game.getPlayerData(owner).side;
     }
   }
   
-  public static List<Mine> mines = new ArrayList<>();
+  static public Set<Mine> mines = new HashSet<>();
   
-  public static void onPlayerMove(Player pl) {
+  static public final int maxMinesCount = 3;
+  
+  static public Map<UUID, List<Mine>> minesOwned = new HashMap<>();
+  
+  static public void onPlayerMove(Player pl) {
+    boolean updatedMines = false;
+    
     for (Mine mine : mines) {
+      if (mine.prepareTicks > 0) continue;
+      
+      if (!LocUtils.isSameWorld(mine.loc, pl.getLocation())) continue;
       if (
-        !DestroyTheCore.game.getPlayerData(pl).side.equals(mine.side.opposite())
+        !DTC.game.getPlayerData(pl).side
+          .equals(mine.side.opposite())
       ) continue;
+      if (MoleRole.moleModeTime.containsKey(pl.getUniqueId())) continue;
       
-      if (!LocationUtils.near(pl.getLocation(), mine.loc, 1.5)) continue;
+      if (!LocUtils.near(Pos.of(pl), Pos.of(mine.loc), mine.radius)) continue;
       
-      new ParticleBuilder(Particle.LAVA).allPlayers().location(mine.loc).count(
-        25).extra(0).spawn();
+      minesOwned.get(mine.ownerId).remove(mine);
+      
+      new ParticleBuilder(Particle.LAVA)
+        .allPlayers()
+        .location(mine.loc)
+        .count(25)
+        .extra(0)
+        .spawn();
       
       Player owner = Bukkit.getPlayer(mine.ownerId);
       
-      if (owner != null) pl.damage(
-        1,
-        DamageSource.builder(DamageType.ARROW).withDamageLocation(
-          mine.loc).withDirectEntity(owner).withCausingEntity(owner).build()
-      );
-      pl.addPotionEffect(
-        new PotionEffect(PotionEffectType.POISON, 10 * 20, 9, false, true)
+      if (owner != null) {
+        pl.damage(
+          1,
+          DamageSource.builder(DamageType.MAGIC).withDamageLocation(
+            mine.loc
+          ).withDirectEntity(owner).withCausingEntity(owner).build()
+        );
+      }
+      PlayerUtils.addEffect(
+        pl,
+        PotionEffectType.POISON,
+        5 * 20,
+        10
       );
       
       if (owner == null) {
@@ -91,33 +113,54 @@ public class RangerRole extends Role {
       }
       
       mine.active = false;
+      updatedMines = true;
     }
     
-    mines.removeIf(m -> !m.active);
+    if (updatedMines)
+      mines.removeIf(m -> !m.active);
   }
   
-  public static void onParticleTick() {
+  static public void onUpdateTick() {
+    if (DTC.game.paused) return;
+    
     for (Mine mine : mines) {
-      LocationUtils.ring(
-        mine.loc,
-        1.5,
-        loc -> {
-          new ParticleBuilder(Particle.SMALL_FLAME).receivers(
-            PlayerUtils.getNonEnemies(mine.side)).location(loc).extra(
-              0).spawn();
-        }
-      );
+      if (mine.prepareTicks > 0) {
+        mine.prepareTicks -= TicksManager.updateRate;
+      }
+    }
+  }
+  
+  static public void onParticleTick() {
+    for (Mine mine : mines) {
+      if (mine.prepareTicks > 0 || RandomUtils.hit(0.05)) {
+        new ParticleBuilder(Particle.LAVA)
+          .allPlayers()
+          .location(mine.loc)
+          .count(RandomUtils.range(3) + 1)
+          .extra(0)
+          .spawn();
+      }
       
-      if (RandomUtils.hit(0.01))
-        new ParticleBuilder(Particle.LAVA).allPlayers().location(
-          mine.loc).count(RandomUtils.range(3) + 1).extra(0).spawn();
+      if (mine.prepareTicks <= 0) {
+        LocUtils.ring(
+          mine.loc,
+          mine.radius,
+          loc -> {
+            new ParticleBuilder(Particle.SMALL_FLAME)
+              .receivers(PlayerUtils.getNonEnemies(mine.side))
+              .location(loc)
+              .extra(0)
+              .spawn();
+          }
+        );
+      }
       
       mine.loc.addRotation(1, 0);
     }
   }
   
   public RangerRole() {
-    super(RolesManager.RoleKey.RANGER);
+    super(RolesManager.RoleType.ATTACKING, RolesManager.RoleKey.RANGER);
     addInfo(Material.CROSSBOW);
     addFeature();
     addExclusiveItem(
@@ -127,6 +170,7 @@ public class RangerRole extends Role {
       }
     );
     addSkill(150 * 20);
+    addLevelReq(6);
   }
   
   @Override
@@ -136,45 +180,56 @@ public class RangerRole extends Role {
   
   @Override
   public void onTick(Player pl) {
-    if (DestroyTheCore.ticksManager.isSeconds()) {
+    if (DTC.ticksManager.isUpdateTick()) {
       if (
         pl.getInventory().getItemInMainHand().getType().equals(
-          Material.CROSSBOW)
-      ) pl.addPotionEffect(
-        new PotionEffect(PotionEffectType.RESISTANCE, 30, 0, true, false)
-      );
+          Material.CROSSBOW
+        )
+      ) {
+        PlayerUtils.addPassiveEffect(
+          pl,
+          PotionEffectType.RESISTANCE,
+          15,
+          1
+        );
+      }
     }
   }
   
   @Override
   public void onPhaseChange(Game.Phase phase, Player pl) {
-    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
-    
-    ItemStack item = new ItemStack(Material.ARROW, 20);
-    
-    if (data.alive) {
-      pl.give(item);
-    }
-    else {
-      pl.getWorld().dropItemNaturally(
-        LocationUtils.live(
-          LocationUtils.selfSide(
-            LocationUtils.toSpawnPoint(
-              RandomUtils.pick(DestroyTheCore.game.map.spawnpoints)
-            ),
-            data.side
-          )
-        ),
-        item
-      ).setPickupDelay(20);
-    }
+    PlayerUtils.give(pl, Material.ARROW, 20);
   }
   
   @Override
   public void useSkill(Player pl) {
+    UUID id = pl.getUniqueId();
+    
+    if (PlayerUtils.shouldHandle(pl) && minesOwned.containsKey(id)) {
+      List<Mine> owned = minesOwned.get(id);
+      if (owned.size() >= maxMinesCount) {
+        mines.remove(owned.getFirst());
+        owned.removeFirst();
+        
+        pl.sendActionBar(
+          TextUtils.$(
+            "roles.ranger.skill.too-many",
+            List.of(
+              Placeholder.component("amount", Component.text(maxMinesCount))
+            )
+          )
+        );
+      }
+    }
+    
     skillFeedback(pl);
     
-    mines.add(new Mine(pl.getLocation().add(0, 0.1, 0), pl));
+    Mine mine = new Mine(pl.getLocation().add(0, 0.1, 0), pl);
+    mines.add(mine);
+    
+    if (!minesOwned.containsKey(id))
+      minesOwned.put(id, new ArrayList<>());
+    minesOwned.get(id).add(mine);
     
     PlayerUtils.auraBroadcast(
       pl.getLocation(),

@@ -1,11 +1,11 @@
 package dev.huey.destroyTheCore.roles;
 
 import com.destroystokyo.paper.ParticleBuilder;
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.managers.RolesManager;
-import dev.huey.destroyTheCore.utils.AttributeUtils;
-import dev.huey.destroyTheCore.utils.LocationUtils;
+import dev.huey.destroyTheCore.records.Pos;
+import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import java.util.List;
@@ -13,34 +13,34 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.EquipmentSlotGroup;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 public class GuardRole extends Role {
   
-  public static void onEnchant(Player pl) {
+  static public void onEnchant(Player pl) {
     for (Player e : PlayerUtils.getEnemies(pl)) {
       if (
-        DestroyTheCore.game.getPlayerData(
-          e).role.id == RolesManager.RoleKey.GUARD
-      ) send(e, TextUtils.$("roles.guard.enchanting-alarm"));
+        DTC.game.getPlayerData(
+          e
+        ).role.id == RolesManager.RoleKey.GUARD
+      ) {
+        send(e, TextUtils.$("roles.guard.enchanting-alarm"));
+      }
     }
   }
   
   public GuardRole() {
-    super(RolesManager.RoleKey.GUARD);
+    super(RolesManager.RoleType.DEFENSE, RolesManager.RoleKey.GUARD);
     addInfo(Material.SHIELD);
     addFeature();
     addExclusiveItem(
       Material.SHIELD,
       meta -> {
-        meta.addAttributeModifier(
-          Attribute.MAX_HEALTH,
-          AttributeUtils.addition("max-health", EquipmentSlotGroup.OFFHAND, 10)
-        );
+        // meta.addAttributeModifier(
+        //   Attribute.MAX_HEALTH,
+        //   AttributeUtils.addition("max-health", EquipmentSlotGroup.OFFHAND, 10)
+        // );
       }
     );
     addSkill(300 * 20);
@@ -48,28 +48,31 @@ public class GuardRole extends Role {
   
   @Override
   public void onTick(Player pl) {
-    if (DestroyTheCore.game.map.core == null) return;
+    if (DTC.game.map.core == null) return;
+    if (!LocUtils.inLive(pl)) return;
     
     if (
-      LocationUtils.near(
-        pl.getLocation(),
-        LocationUtils.live(
-          LocationUtils.selfSide(DestroyTheCore.game.map.core, pl)
-        ),
+      LocUtils.near(
+        Pos.of(pl),
+        LocUtils.selfSide(DTC.game.map.core, pl),
         15
       )
     ) {
-      if (DestroyTheCore.ticksManager.ticksCount % 25 == 0) pl.addPotionEffect(
-        new PotionEffect(PotionEffectType.REGENERATION, 50, 1, true, false)
-      ); // Regen 2 = every 25 ticks
+      if (DTC.ticksManager.ticksCount % 25 == 0) {
+        
+        PlayerUtils.addPassiveEffect(
+          pl,
+          PotionEffectType.REGENERATION,
+          50,
+          2
+        ); // Regen 2 = every 25 ticks
+      }
     }
     
     if (
-      LocationUtils.near(
-        pl.getLocation(),
-        LocationUtils.live(
-          LocationUtils.enemySide(DestroyTheCore.game.map.core, pl)
-        ),
+      LocUtils.near(
+        Pos.of(pl),
+        LocUtils.enemySide(DTC.game.map.core, pl),
         15
       )
     ) {
@@ -79,9 +82,14 @@ public class GuardRole extends Role {
           List.of(Placeholder.unparsed("role", name))
         )
       );
-      if (DestroyTheCore.ticksManager.isUpdateTick()) pl.addPotionEffect(
-        new PotionEffect(PotionEffectType.WITHER, 60, 2, true, false)
-      ); // Wither 3 = every 10 ticks
+      if (DTC.ticksManager.isUpdateTick()) {
+        PlayerUtils.addEffect(
+          pl,
+          PotionEffectType.WITHER,
+          60,
+          3
+        ); // Wither 3 = every 10 ticks
+      }
     }
   }
   
@@ -89,8 +97,11 @@ public class GuardRole extends Role {
   public void useSkill(Player pl) {
     skillFeedback(pl);
     
-    pl.addPotionEffect(
-      new PotionEffect(PotionEffectType.STRENGTH, 5 * 20, 0, false, true)
+    PlayerUtils.addEffect(
+      pl,
+      PotionEffectType.STRENGTH,
+      5 * 20,
+      1
     );
     PlayerUtils.auraBroadcast(
       pl.getLocation(),
@@ -104,16 +115,16 @@ public class GuardRole extends Role {
       )
     );
     
-    if (DestroyTheCore.game.map.core == null) return;
+    if (DTC.game.map.core == null) return;
     
     boolean found = false;
     for (Player e : PlayerUtils.getEnemies(pl)) {
+      if (!LocUtils.inLive(e)) continue;
+      
       if (
-        LocationUtils.near(
-          e.getLocation(),
-          LocationUtils.live(
-            LocationUtils.selfSide(DestroyTheCore.game.map.core, pl)
-          ),
+        LocUtils.near(
+          Pos.of(e),
+          LocUtils.selfSide(DTC.game.map.core, pl),
           15
         )
       ) {
@@ -139,47 +150,38 @@ public class GuardRole extends Role {
           e,
           Particle.ENCHANTED_HIT,
           () -> {
-            e.addPotionEffect(
-              new PotionEffect(
-                PotionEffectType.GLOWING,
-                60 * 20,
-                0,
-                true,
-                false
-              )
+            PlayerUtils.glow(e, 60 * 20);
+            PlayerUtils.addPassiveEffect(
+              e,
+              PotionEffectType.SLOWNESS,
+              5 * 20,
+              5
             );
-            e.addPotionEffect(
-              new PotionEffect(
-                PotionEffectType.SLOWNESS,
-                5 * 20,
-                4,
-                true,
-                false
-              )
-            );
-            e.addPotionEffect(
-              new PotionEffect(
-                PotionEffectType.MINING_FATIGUE,
-                5 * 20,
-                4,
-                true,
-                false
-              )
+            PlayerUtils.addPassiveEffect(
+              e,
+              PotionEffectType.MINING_FATIGUE,
+              5 * 20,
+              5
             );
             
-            new ParticleBuilder(Particle.ELDER_GUARDIAN).receivers(e).location(
-              e.getLocation()).spawn();
+            new ParticleBuilder(Particle.ELDER_GUARDIAN)
+              .receivers(e)
+              .location(e.getLocation())
+              .spawn();
             e.playSound(
               e.getLocation(),
               Sound.ENTITY_ELDER_GUARDIAN_CURSE,
-              1,
-              1
+              1, // Volume
+              1 // Pitch
             );
           }
         );
       }
     }
     
-    if (!found) send(pl, TextUtils.$("roles.guard.skill.found-enemy.none"));
+    if (!found) {
+      PlayerUtils.setHandCooldown(pl, skillCooldown / 2);
+      send(pl, TextUtils.$("roles.guard.skill.found-enemy.none"));
+    }
   }
 }

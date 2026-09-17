@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.bases;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.managers.InventoriesManager;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.utils.TextUtils;
@@ -18,8 +18,8 @@ import org.bukkit.persistence.PersistentDataType;
 public class ItemGen {
   
   /** Used to distinguish item-gens, stored data is the name of {@link #id} */
-  public static final NamespacedKey dataNamespace = new NamespacedKey(
-    DestroyTheCore.instance,
+  static public final NamespacedKey dataNamespace = new NamespacedKey(
+    DTC.instance,
     "custom-item"
   );
   
@@ -42,7 +42,7 @@ public class ItemGen {
     for (int i = 1; true; ++i) {
       key = "items.%s.desc".formatted(translationName) + "-" + i;
       
-      if (DestroyTheCore.translationsManager.has(key)) lore.add(
+      if (DTC.translationsManager.has(key)) lore.add(
         TextUtils.$(key)
       );
       else break;
@@ -57,14 +57,18 @@ public class ItemGen {
       meta.displayName(name.decoration(TextDecoration.ITALIC, false));
       meta.lore(lore);
       
-      if (item.getType().getMaxDurability() > 0) meta.setUnbreakable(true);
+      if (item.getType().getMaxDurability() > 0) {
+        meta.setUnbreakable(true);
+      }
       meta.setEnchantmentGlintOverride(true);
       
       computeMeta(meta);
       
-      meta.getPersistentDataContainer().set(dataNamespace,
+      meta.getPersistentDataContainer().set(
+        dataNamespace,
         PersistentDataType.STRING,
-        id.name());
+        id.name()
+      );
     });
     
     return item;
@@ -91,8 +95,12 @@ public class ItemGen {
     
     PersistentDataContainer container = meta.getPersistentDataContainer();
     if (!container.has(dataNamespace)) return false;
-    return this.id.name().equals(container.get(dataNamespace,
-      PersistentDataType.STRING));
+    return this.id.name().equals(
+      container.get(
+        dataNamespace,
+        PersistentDataType.STRING
+      )
+    );
   }
   
   /**

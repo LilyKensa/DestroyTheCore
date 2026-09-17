@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.commands;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.Subcommand;
 import dev.huey.destroyTheCore.managers.TranslationsManager;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
@@ -22,7 +22,8 @@ public class LanguageCommand extends Subcommand {
     if (args.isEmpty()) {
       PlayerUtils.prefixedSend(
         pl,
-        "Current locale is " + DestroyTheCore.translationsManager.currentLocale.toLanguageTag().toLowerCase(),
+        "Current locale is " + DTC.translationsManager.currentLocale
+          .toLanguageTag().toLowerCase(),
         NamedTextColor.AQUA
       );
       return;
@@ -43,14 +44,15 @@ public class LanguageCommand extends Subcommand {
     Locale locale = Locale.forLanguageTag(tag);
     if (locale == null) return;
     
-    DestroyTheCore.translationsManager.currentLocale = locale;
+    DTC.translationsManager.currentLocale = locale;
     
     PlayerUtils.prefixedNotice(
       Component.text("Set language to " + tag).color(NamedTextColor.GREEN)
     );
     PlayerUtils.prefixedNotice(
       Component.text("We recommend restarting the server!").color(
-        NamedTextColor.AQUA)
+        NamedTextColor.AQUA
+      )
     );
   }
 }

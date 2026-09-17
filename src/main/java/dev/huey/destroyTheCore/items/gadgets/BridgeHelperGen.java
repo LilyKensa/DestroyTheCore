@@ -1,9 +1,9 @@
 package dev.huey.destroyTheCore.items.gadgets;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.itemGens.UsableItemGen;
 import dev.huey.destroyTheCore.managers.ItemsManager;
-import dev.huey.destroyTheCore.utils.LocationUtils;
+import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.ParticleUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
@@ -22,7 +22,7 @@ public class BridgeHelperGen extends UsableItemGen {
     super(ItemsManager.ItemKey.BRIDGE_HELPER, Material.BRICK);
   }
   
-  public static boolean growPillar(Location loc) {
+  static public boolean growPillar(Location loc) {
     Block centerBlock = loc.getBlock();
     
     Set<BlockFace> faces = Set.of(
@@ -33,7 +33,11 @@ public class BridgeHelperGen extends UsableItemGen {
     );
     
     if (
-      !centerBlock.getType().isAir() || centerBlock.getY() < centerBlock.getWorld().getMinHeight() || centerBlock.getY() > centerBlock.getWorld().getMaxHeight()
+      !centerBlock.getType().isAir() ||
+        centerBlock.getY() < centerBlock
+          .getWorld().getMinHeight() ||
+        centerBlock.getY() > centerBlock
+          .getWorld().getMaxHeight()
     ) {
       return false;
     }
@@ -80,13 +84,12 @@ public class BridgeHelperGen extends UsableItemGen {
         }
         
         ParticleUtils.cloud(
-          PlayerUtils.all(),
-          LocationUtils.toBlockCenter(loc).add(0, -0.5, 0)
+          LocUtils.toBlockCenter(loc).add(0, -0.5, 0)
         );
         
         duration--;
         if (duration <= 0) cancel();
       }
-    }.runTaskTimer(DestroyTheCore.instance, 0, 2);
+    }.runTaskTimer(DTC.instance, 0, 2);
   }
 }

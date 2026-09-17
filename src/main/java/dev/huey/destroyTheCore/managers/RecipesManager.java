@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.managers;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -12,7 +12,7 @@ import org.bukkit.inventory.*;
 public class RecipesManager {
   
   public NamespacedKey getKey(String id) {
-    return new NamespacedKey(DestroyTheCore.instance, id);
+    return new NamespacedKey(DTC.instance, id);
   }
   
   public void init() {
@@ -28,11 +28,14 @@ public class RecipesManager {
       if (recipe instanceof CookingRecipe<?> cr) {
         it.remove();
         cr.setCookingTime(Math.ceilDiv(cr.getCookingTime(), 10));
+        cr.setExperience(cr.getExperience() * 5);
         recipesToAdd.add(cr);
       }
     }
     
-    for (Recipe r : recipesToAdd) Bukkit.getServer().addRecipe(r);
+    for (Recipe r : recipesToAdd) {
+      Bukkit.getServer().addRecipe(r);
+    }
     
     ShapedRecipe goldenCarrotRecipe = new ShapedRecipe(
       getKey("expensive_golden_carrot"),

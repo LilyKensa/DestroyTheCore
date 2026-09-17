@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.items.gadgets;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.bases.itemGens.UsableItemGen;
 import dev.huey.destroyTheCore.managers.ItemsManager;
@@ -26,7 +26,7 @@ public class RandomRoleGen extends UsableItemGen {
   public void computeMeta(ItemMeta uncastedMeta) {
     BookMeta meta = (BookMeta) uncastedMeta;
     
-    meta.setGeneration(null);
+    meta.addItemFlags(org.bukkit.inventory.ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
   }
   
   @Override
@@ -39,8 +39,13 @@ public class RandomRoleGen extends UsableItemGen {
     PlayerUtils.takeOneItemFromHand(pl);
     
     Role role = RandomUtils.pick(
-      DestroyTheCore.rolesManager.roles.values().stream().filter(
-        r -> r.id != RolesManager.RoleKey.DEFAULT).toList()
+      DTC.rolesManager.roles.values().stream()
+        .filter(r -> r.id != RolesManager.RoleKey.DEFAULT
+//            && r.levelReq <= DestroyTheCore.game.stats.get(
+//              pl.getUniqueId()
+//            ).levels
+        )
+        .toList()
     );
     
     PlayerUtils.broadcast(
@@ -54,8 +59,8 @@ public class RandomRoleGen extends UsableItemGen {
       )
     );
     
-    DestroyTheCore.rolesManager.setRole(pl, role);
-    DestroyTheCore.game.enforceTeam(pl);
-    DestroyTheCore.boardsManager.refresh(pl);
+    DTC.rolesManager.setRole(pl, role);
+    DTC.game.enforceDisplay(pl);
+    DTC.boardsManager.refresh(pl);
   }
 }

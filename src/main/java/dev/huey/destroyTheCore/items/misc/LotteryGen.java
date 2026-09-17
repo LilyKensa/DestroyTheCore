@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.items.misc;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.itemGens.UsableItemGen;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.records.PlayerData;
@@ -19,7 +19,6 @@ import org.bukkit.damage.DamageSource;
 import org.bukkit.damage.DamageType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -31,16 +30,27 @@ public class LotteryGen extends UsableItemGen {
   
   @Override
   public void use(Player pl, Block block) {
-    PlayerData data = DestroyTheCore.game.getPlayerData(pl);
+    PlayerData data = DTC.game.getPlayerData(pl);
     
     if (!PlayerUtils.checkHandCooldown(pl)) return;
     PlayerUtils.setHandCooldown(pl, 20);
     
     PlayerUtils.takeOneItemFromHand(pl);
     
+    AdvUtils.grant(
+      pl,
+      DTC.advancementsManager.usedLotteryAdv
+    );
+    AdvUtils.progress(
+      pl,
+      DTC.advancementsManager.usedManyLotteriesAdv
+    );
+    
     final Location centerLoc = pl.getLocation().add(0, 0.1, 0);
-    final int percentage = Math.floorMod(RandomUtils.nextInt(),
-      100) + data.lotteryShift;
+    final int percentage = Math.floorMod(
+      RandomUtils.nextInt(),
+      100
+    ) + data.lotteryShift;
     new BukkitRunnable() {
       int age = 0;
       Color color = Color.GRAY;
@@ -49,12 +59,12 @@ public class LotteryGen extends UsableItemGen {
       public void run() {
         if (age == 20) {
           int totalChance = 0;
-          if (percentage < (totalChance += 15)) {
+          if (percentage < (totalChance += 30)) {
             data.lotteryShift += 2;
             giveTreasure(pl);
             color = Color.ORANGE;
           }
-          else if (percentage < (totalChance += 35)) {
+          else if (percentage < (totalChance += 40)) {
             data.lotteryShift += 1;
             giveNormal(pl);
             color = Color.FUCHSIA;
@@ -99,7 +109,7 @@ public class LotteryGen extends UsableItemGen {
         age++;
         centerLoc.addRotation(5, 0);
       }
-    }.runTaskTimer(DestroyTheCore.instance, 0, 1);
+    }.runTaskTimer(DTC.instance, 0, 1);
   }
   
   static final Component prefix = TextUtils.$("items.lottery.prefix");
@@ -121,9 +131,12 @@ public class LotteryGen extends UsableItemGen {
     
     item.editMeta(meta -> {
       if (
-        !DestroyTheCore.itemsManager.isGen(
-          item) || DestroyTheCore.itemsManager.gens.get(
-            ItemsManager.ItemKey.PLACEHOLDER).checkItem(item)
+        !DTC.itemsManager.isGen(
+          item
+        ) ||
+          DTC.itemsManager.gens.get(
+            ItemsManager.ItemKey.PLACEHOLDER
+          ).checkItem(item)
       ) return;
       
       List<Component> lore = meta.lore();
@@ -132,31 +145,20 @@ public class LotteryGen extends UsableItemGen {
       }
       
       if (
-        !lore.isEmpty() && (lore.getLast() instanceof TextComponent lastLore) && !lastLore.content().startsWith(
-          "-")
+        !lore.isEmpty() &&
+          (lore
+            .getLast() instanceof TextComponent lastLore) &&
+          !lastLore.content()
+            .startsWith(
+              "-"
+            )
       ) lore.add(Component.empty());
       lore.add(TextUtils.$("items.lottery.item-lore"));
       
       meta.lore(lore);
     });
     
-    if (DestroyTheCore.game.getPlayerData(pl).alive) {
-      pl.give(item);
-    }
-    else if (DestroyTheCore.game.map.spawnpoints != null) {
-      pl.sendActionBar(TextUtils.$("items.lottery.sent-to-spawn"));
-      pl.getWorld().dropItemNaturally(
-        LocationUtils.live(
-          LocationUtils.selfSide(
-            LocationUtils.toSpawnPoint(
-              RandomUtils.pick(DestroyTheCore.game.map.spawnpoints)
-            ),
-            pl
-          )
-        ),
-        item
-      );
-    }
+    PlayerUtils.give(pl, item);
     
     Consumer<Component> announcer = comp -> {
       if (big) {
@@ -175,7 +177,8 @@ public class LotteryGen extends UsableItemGen {
           Placeholder.component(
             "item",
             item.effectiveName().colorIfAbsent(
-              item.getItemMeta().hasRarity() ? item.getItemMeta().getRarity().color() : NamedTextColor.WHITE
+              item.getItemMeta().hasRarity() ? item.getItemMeta().getRarity()
+                .color() : NamedTextColor.WHITE
             )
           ),
           Placeholder.component("amount", Component.text(item.getAmount()))
@@ -197,7 +200,7 @@ public class LotteryGen extends UsableItemGen {
   }
   
   ItemStack getCustomItem(ItemsManager.ItemKey key, int amount) {
-    ItemStack item = DestroyTheCore.itemsManager.gens.get(key).getItem();
+    ItemStack item = DTC.itemsManager.gens.get(key).getItem();
     item.setAmount(amount);
     return item;
   }
@@ -226,8 +229,10 @@ public class LotteryGen extends UsableItemGen {
         getCustomItem(ItemsManager.ItemKey.ASSIGN_RESPAWN_TIME, 3),
         new ItemStack(Material.ENCHANTED_GOLDEN_APPLE),
         new ItemStack(Material.EXPERIENCE_BOTTLE, 64),
-        getCustomItem(ItemsManager.ItemKey.NETHERITE_SWORD),
-        getCustomItem(ItemsManager.ItemKey.NETHERITE_AXE),
+        // getCustomItem(ItemsManager.ItemKey.NETHERITE_SWORD),
+        // getCustomItem(ItemsManager.ItemKey.NETHERITE_AXE),
+        new ItemStack(Material.NETHERITE_SWORD, 1),
+        new ItemStack(Material.NETHERITE_AXE, 1),
         new ItemStack(Material.GOLDEN_APPLE, 10),
         new ItemStack(Material.COBWEB, 5),
         new ItemStack(Material.VEX_SPAWN_EGG, 3),
@@ -237,9 +242,11 @@ public class LotteryGen extends UsableItemGen {
       true
     );
     
-    pl.give(
-      DestroyTheCore.itemsManager.gens.get(
-        ItemsManager.ItemKey.RANDOM_ROLE).getItem()
+    PlayerUtils.give(
+      pl,
+      DTC.itemsManager.gens.get(
+        ItemsManager.ItemKey.RANDOM_ROLE
+      ).getItem()
     );
   }
   
@@ -280,8 +287,11 @@ public class LotteryGen extends UsableItemGen {
       30,
       pl -> {
         for (Player p : PlayerUtils.getTeammates(pl)) {
-          p.addPotionEffect(
-            new PotionEffect(PotionEffectType.POISON, 5 * 20, 255, false, true)
+          PlayerUtils.addEffect(
+            p,
+            PotionEffectType.POISON,
+            5 * 20,
+            256
           );
         }
         
@@ -292,7 +302,7 @@ public class LotteryGen extends UsableItemGen {
               Placeholder.component("player", PlayerUtils.getName(pl)),
               Placeholder.component(
                 "side",
-                DestroyTheCore.game.getPlayerData(pl).side.titleComp()
+                DTC.game.getPlayerData(pl).side.titleComp()
               )
             )
           )
@@ -331,8 +341,10 @@ public class LotteryGen extends UsableItemGen {
     Pair.of(
       2,
       pl -> {
-        for (int i = 0; i < 9; ++i) pl.getInventory().setItem(i,
-          new ItemStack(Material.ROTTEN_FLESH));
+        for (int i = 0; i < 9; ++i) pl.getInventory().setItem(
+          i,
+          new ItemStack(Material.ROTTEN_FLESH)
+        );
         
         announce(
           TextUtils.$(
@@ -348,13 +360,14 @@ public class LotteryGen extends UsableItemGen {
         List<? extends Player> teammates = PlayerUtils.getTeammates(pl);
         
         // Offset the sin value of killing teammates
-        DestroyTheCore.game.getPlayerData(pl).addRespawnTime(
-          -PlayerData.killPunishment * teammates.size());
+        DTC.game.getPlayerData(pl).addRespawnTime(
+          -PlayerData.killPunishment * teammates.size()
+        );
         
         for (Player p : teammates) {
           if (!PlayerUtils.shouldHandle(p)) continue;
           
-          DestroyTheCore.damageManager.addDamage(pl, p, Double.MAX_VALUE);
+          DTC.damageManager.addDamage(pl, p, Double.MAX_VALUE);
           p.damage(
             Double.MAX_VALUE,
             DamageSource.builder(DamageType.MAGIC).build()
@@ -372,12 +385,13 @@ public class LotteryGen extends UsableItemGen {
                     "action",
                     RandomUtils.pick(
                       TextUtils.translateRaw(
-                        "items.lottery.announce.kill-actions").split("\\|")
+                        "items.lottery.announce.kill-actions"
+                      ).split("\\|")
                     )
                   ),
                   Placeholder.component(
                     "side",
-                    DestroyTheCore.game.getPlayerData(pl).side.titleComp()
+                    DTC.game.getPlayerData(pl).side.titleComp()
                   )
                 )
               )
@@ -405,7 +419,7 @@ public class LotteryGen extends UsableItemGen {
                   Placeholder.component("player", PlayerUtils.getName(pl)),
                   Placeholder.component(
                     "side",
-                    DestroyTheCore.game.getPlayerData(pl).side.titleComp()
+                    DTC.game.getPlayerData(pl).side.titleComp()
                   )
                 )
               )
@@ -418,22 +432,29 @@ public class LotteryGen extends UsableItemGen {
     Pair.of(
       1,
       pl -> {
-        for (PotionEffectType type : List.of(
-          PotionEffectType.WITHER,
-          PotionEffectType.REGENERATION,
-          PotionEffectType.STRENGTH,
-          PotionEffectType.WEAKNESS,
-          PotionEffectType.SPEED,
-          PotionEffectType.SLOWNESS,
-          PotionEffectType.HASTE,
-          PotionEffectType.MINING_FATIGUE,
-          PotionEffectType.DARKNESS,
-          PotionEffectType.HUNGER,
-          PotionEffectType.DOLPHINS_GRACE,
-          PotionEffectType.JUMP_BOOST,
-          PotionEffectType.SLOW_FALLING
-        )) {
-          pl.addPotionEffect(new PotionEffect(type, 10 * 20, 9, true, true));
+        for (
+          PotionEffectType type : List.of(
+            PotionEffectType.WITHER,
+            PotionEffectType.REGENERATION,
+            PotionEffectType.STRENGTH,
+            PotionEffectType.WEAKNESS,
+            PotionEffectType.SPEED,
+            PotionEffectType.SLOWNESS,
+            PotionEffectType.HASTE,
+            PotionEffectType.MINING_FATIGUE,
+            PotionEffectType.DARKNESS,
+            PotionEffectType.HUNGER,
+            PotionEffectType.DOLPHINS_GRACE,
+            PotionEffectType.JUMP_BOOST,
+            PotionEffectType.SLOW_FALLING
+          )
+        ) {
+          PlayerUtils.addEffect(
+            pl,
+            type,
+            10 * 20,
+            10
+          );
         }
         
         announce(

@@ -1,6 +1,6 @@
 package dev.huey.destroyTheCore.commands;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.Subcommand;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
@@ -44,11 +44,11 @@ public class ShuffleTeamCommand extends Subcommand {
     
     int i = 0;
     for (Player p : players) {
-      DestroyTheCore.game.getPlayerData(p).join(randomSides.get(i));
-      DestroyTheCore.game.enforceTeam(p);
+      DTC.game.getPlayerData(p).join(randomSides.get(i));
+      DTC.game.enforceDisplay(p);
       i++;
     }
-    DestroyTheCore.boardsManager.refresh();
+    DTC.boardsManager.refresh();
     
     PlayerUtils.prefixedBroadcast(
       TextUtils.$(

@@ -2,7 +2,7 @@ package dev.huey.destroyTheCore.items.armors;
 
 import dev.huey.destroyTheCore.bases.ItemGen;
 import dev.huey.destroyTheCore.managers.ItemsManager;
-import dev.huey.destroyTheCore.utils.AttributeUtils;
+import dev.huey.destroyTheCore.utils.AttrUtils;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
@@ -22,11 +22,11 @@ public class AbsorptionHelmetGen extends ItemGen {
     
     meta.addAttributeModifier(
       Attribute.ARMOR,
-      AttributeUtils.multiply("protection", EquipmentSlotGroup.HEAD, 0)
+      AttrUtils.multiply("protection", EquipmentSlotGroup.HEAD, 0)
     );
     meta.addAttributeModifier(
       Attribute.MAX_HEALTH,
-      AttributeUtils.addition("max-health", EquipmentSlotGroup.HEAD, 40)
+      AttrUtils.addition("max-health", EquipmentSlotGroup.HEAD, 40)
     );
   }
 }

@@ -2,11 +2,13 @@ package dev.huey.destroyTheCore.missions.results;
 
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.Mission;
+import dev.huey.destroyTheCore.utils.AttrUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.enchantments.Enchantment;
@@ -20,28 +22,36 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 public class SummonPigResult extends Mission.Result {
   
+  Component pigName;
+  
   public SummonPigResult() {
-    super("summon-pig");
+    super("summon-pig", false);
+    pigName = TextUtils.$("mission.results.pig-name").color(null);
+  }
+  
+  @Override
+  public List<TagResolver> getExtraPlaceholers() {
+    return List.of(Placeholder.component("name", pigName));
   }
   
   @Override
   public void forLoser(Game.Side side) {
-    Component name = TextUtils.$("mission.results.pig-name").color(null);
-    
-    announce(side, List.of(Placeholder.component("name", name)));
+    outro(side);
     
     for (Player p : PlayerUtils.getTeammates(side)) {
-      PigZombie piggy = (PigZombie) p.getWorld().spawnEntity(p.getLocation(),
-        EntityType.ZOMBIFIED_PIGLIN);
+      PigZombie piggy = (PigZombie) p.getWorld().spawnEntity(
+        p.getLocation(),
+        EntityType.ZOMBIFIED_PIGLIN
+      );
       
       piggy.setBaby();
       
-      piggy.customName(name.color(side.color));
+      piggy.customName(pigName.color(side.color));
       piggy.setCustomNameVisible(true);
       
-      piggy.getAttribute(Attribute.MOVEMENT_SPEED).setBaseValue(0.32);
-      piggy.getAttribute(Attribute.ATTACK_DAMAGE).setBaseValue(0.1);
-      piggy.getAttribute(Attribute.MAX_HEALTH).setBaseValue(50);
+      AttrUtils.set(piggy, Attribute.MOVEMENT_SPEED, 0.32);
+      AttrUtils.set(piggy, Attribute.ATTACK_DAMAGE, 0.1);
+      AttrUtils.set(piggy, Attribute.MAX_HEALTH, 50);
       piggy.setHealth(50);
       
       ItemStack helmet = new ItemStack(Material.LEATHER_HELMET);
@@ -49,7 +59,9 @@ public class SummonPigResult extends Mission.Result {
         LeatherArmorMeta meta = (LeatherArmorMeta) uncastedMeta;
         
         meta.setColor(side.dyeColor);
-        meta.displayName(name.append(Component.text(" ☠")).color(side.color));
+        meta.displayName(
+          pigName.append(Component.text(" ☠")).color(side.color)
+        );
         meta.setUnbreakable(true);
         meta.addEnchant(Enchantment.PROTECTION, 2, true);
       });

@@ -1,10 +1,10 @@
 package dev.huey.destroyTheCore.items.tokens;
 
-import dev.huey.destroyTheCore.DestroyTheCore;
+import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.itemGens.UsableItemGen;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.records.SideData;
-import dev.huey.destroyTheCore.utils.LocationUtils;
+import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import java.util.List;
@@ -21,16 +21,14 @@ public class CoreInvulnGen extends UsableItemGen {
   
   @Override
   public void use(Player pl, Block block) {
-    if (DestroyTheCore.game.map.core == null) return;
+    if (DTC.game.map.core == null) return;
     
-    PlayerUtils.takeOneItemFromHand(pl);
-    
-    SideData sideData = DestroyTheCore.game.getSideData(pl);
+    SideData sideData = DTC.game.getSideData(pl);
     sideData.invulnTicks += 60 * 20;
-    DestroyTheCore.boardsManager.refresh();
+    DTC.boardsManager.refresh();
     
-    LocationUtils.setLiveBlock(
-      LocationUtils.selfSide(DestroyTheCore.game.map.core, pl),
+    LocUtils.setLiveBlock(
+      LocUtils.selfSide(DTC.game.map.core, pl),
       Material.BEDROCK
     );
     
@@ -43,5 +41,7 @@ public class CoreInvulnGen extends UsableItemGen {
         )
       )
     );
+    
+    DTC.game.getPlayerData(pl).addExtraExp(25);
   }
 }
