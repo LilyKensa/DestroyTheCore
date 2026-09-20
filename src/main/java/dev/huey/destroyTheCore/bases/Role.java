@@ -426,7 +426,7 @@ public class Role {
         )
       );
       
-      DTC.rolesManager.setRole(pl, this);
+      DTC.rolesManager.setRole(pl, this, false);
       DTC.game.enforceDisplay(pl);
       DTC.boardsManager.refresh(pl);
       return;
@@ -443,7 +443,7 @@ public class Role {
         1 // Pitch
       );
       
-      DTC.rolesManager.setRole(pl, this);
+      DTC.rolesManager.setRole(pl, this, false);
     }
     else {
       pl.playSound(

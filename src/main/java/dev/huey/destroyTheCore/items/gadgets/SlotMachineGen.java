@@ -3,7 +3,6 @@ package dev.huey.destroyTheCore.items.gadgets;
 import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.itemGens.UsableItemGen;
 import dev.huey.destroyTheCore.managers.ItemsManager;
-import dev.huey.destroyTheCore.records.PlayerData;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.RandomUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
@@ -60,7 +59,7 @@ public class SlotMachineGen extends UsableItemGen {
   @Override
   public void use(Player pl, Block block) {
     if (!PlayerUtils.checkHandCooldown(pl)) return;
-
+    
     ItemStack offhandItem = pl.getInventory().getItemInOffHand();
     Material type = offhandItem.getType();
     int amount = offhandItem.getAmount();

@@ -32,6 +32,9 @@ player:
   respawning: "Respawning in <seconds>"
   respawned: "<yellow>Respawned</yellow>"
   item-sent-to-spawn: "<green>You were given some item, but as you're dead, it was sent to your spawn!</green>"
+  role-changed:
+    title: "<yellow>Role Changed</yellow>"
+    subtitle: "<from> → <to>"
 
 quiz:
   prefix: "[<light_purple>Quiz</light_purple>] "
@@ -556,6 +559,7 @@ items:
       attack-core-3: "<player> reduced <enemy> team's core health by 3!"
       slowness: "<player> applied Slowness II (30s) to all <enemy> team members!"
       mining-fatigue: "<player> applied Mining Fatigue I (30s) to all <enemy> team members!"
+      shuffle-hotbar: "<player> shuffled <target>'s hotbar"
   gold-digger-chestplate:
     name: "<aqua>Luminous Warning Shirt</aqua>"
     desc-1: "- <red>Bound item for Gold Diggers</red>"

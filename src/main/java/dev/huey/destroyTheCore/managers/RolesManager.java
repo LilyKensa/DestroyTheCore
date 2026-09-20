@@ -7,11 +7,15 @@ import dev.huey.destroyTheCore.records.PlayerData;
 import dev.huey.destroyTheCore.roles.*;
 import dev.huey.destroyTheCore.utils.CoreUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
+import dev.huey.destroyTheCore.utils.TextUtils;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.title.TitlePart;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -85,7 +89,28 @@ public class RolesManager {
   }
   
   public void setRole(Player pl, Role role) {
+    setRole(pl, role, true);
+  }
+  
+  public void setRole(Player pl, Role role, boolean sendTitle) {
     PlayerData data = DTC.game.getPlayerData(pl);
+    
+    if (sendTitle) {
+      pl.sendTitlePart(
+        TitlePart.TITLE,
+        TextUtils.$("player.role-changed.title")
+      );
+      pl.sendTitlePart(
+        TitlePart.SUBTITLE,
+        TextUtils.$(
+          "player.role-changed.subtitle",
+          List.of(
+            Placeholder.component("from", data.role.name),
+            Placeholder.component("to", role.name)
+          )
+        )
+      );
+    }
     
     data.setRole(role);
     

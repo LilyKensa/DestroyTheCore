@@ -72,6 +72,9 @@ player:
   respawning: "在 <seconds> 秒後重生"
   respawned: "<yellow>已重生</yellow>"
   item-sent-to-spawn: "<green>你被給予某樣物品, 但因為你正在等待重生, 已改為送至你的重生點!</green>"
+  role-changed:
+    title: "<yellow>職業變更</yellow>"
+    subtitle: "<from> → <to>"
 
 quiz:
   prefix: "[<light_purple>問題</light_purple>] "
@@ -596,6 +599,7 @@ items:
       attack-core-3: "<player> 使<enemy>核心扣 3 點血!"
       slowness: "<player> 使<enemy>全部成員獲得緩速 II (30s)!"
       mining-fatigue: "<player> 使<enemy>全部成員獲得挖掘疲勞 I (30s)!"
+      shuffle-hotbar: "<player> 使 <target> 快捷欄隨機換位"
   gold-digger-chestplate:
     name: "<aqua>反光警示衣</aqua>"
     desc-1: "- <red>淘金者綁定物品</red>"

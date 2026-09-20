@@ -11,6 +11,8 @@ import dev.huey.destroyTheCore.records.SideData;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.RandomUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -20,6 +22,8 @@ import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffectType;
 
@@ -47,7 +51,7 @@ public class WitchcraftGen extends UsableItemGen {
     
     PlayerUtils.takeOneItemFromHand(pl);
     
-    switch (RandomUtils.range(12)) {
+    switch (RandomUtils.range(13)) {
       case 0 -> {
         for (Player e : PlayerUtils.getEnemies(data.side)) {
           PlayerUtils.delayAssign(
@@ -331,6 +335,44 @@ public class WitchcraftGen extends UsableItemGen {
               Placeholder.component("enemy", oppSide.title())
             )
           )
+        );
+      }
+      case 12 -> {
+        List<Player> enemies = PlayerUtils.getEnemies(data.side);
+        if (enemies.isEmpty()) break;
+        
+        Player e = RandomUtils.pick(enemies);
+        
+        PlayerUtils.delayAssign(
+          pl,
+          e,
+          Particle.WITCH,
+          () -> {
+            announce(
+              TextUtils.$(
+                "items.witchcraft.announce.shuffle-hotbar",
+                List.of(
+                  Placeholder.component("player", PlayerUtils.getName(pl)),
+                  Placeholder.component("target", PlayerUtils.getName(e))
+                )
+              )
+            );
+            
+            PlayerInventory inv = e.getInventory();
+            
+            List<ItemStack> hotbar = new ArrayList<>(9);
+            for (int slot = 0; slot < 9; slot++) {
+              hotbar.add(inv.getItem(slot));
+            }
+            
+            Collections.shuffle(hotbar);
+            
+            for (int slot = 0; slot < 9; slot++) {
+              inv.setItem(slot, hotbar.get(slot));
+            }
+            
+            e.updateInventory();
+          }
         );
       }
     }
