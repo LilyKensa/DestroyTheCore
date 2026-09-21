@@ -106,6 +106,7 @@ public class Role {
   public Material itemType;
   public Component itemName;
   public Component itemDesc;
+  public Consumer<ItemStack> itemEditor;
   public Consumer<ItemMeta> itemMetaEditor;
   
   public Component skillName;
@@ -126,11 +127,19 @@ public class Role {
       .map(c -> c.color(null)).toList();
   }
   
-  public void addExclusiveItem(Material type, Consumer<ItemMeta> editor) {
+  public void addExclusiveItem(
+    Material type, Consumer<ItemMeta> metaEditor, Consumer<ItemStack> editor
+  ) {
     itemType = type;
     itemName = $("roles.%s.item.name").color(null);
     itemDesc = $("roles.%s.item.detail").color(null);
-    itemMetaEditor = editor;
+    itemEditor = editor;
+    itemMetaEditor = metaEditor;
+  }
+  
+  public void addExclusiveItem(Material type, Consumer<ItemMeta> metaEditor) {
+    addExclusiveItem(type, metaEditor, item -> {
+    });
   }
   
   public void addExclusiveItem(Material type) {
@@ -234,14 +243,17 @@ public class Role {
         )
       );
       
-      itemMetaEditor.accept(meta);
-      
       meta.getPersistentDataContainer().set(
         exclusiveItemNamespace,
         PersistentDataType.STRING,
         id.name()
       );
+      
+      itemMetaEditor.accept(meta);
     });
+    
+    itemEditor.accept(item);
+    
     return item;
   }
   

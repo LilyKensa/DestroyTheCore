@@ -113,7 +113,7 @@ public class FairyRole extends Role {
   
   static Queue<Sprinkle> queue = new ArrayDeque<>();
   
-  static public void onTick() {
+  static public void onParticleTick() {
     for (Sprinkle s : queue) {
       s.onTick();
     }

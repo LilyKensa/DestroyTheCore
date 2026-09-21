@@ -52,7 +52,7 @@ public class TicksManager {
         RangerRole.onParticleTick();
         WandererRole.onParticleTick();
         MoleRole.onParticleTick();
-        FairyRole.onTick();
+        FairyRole.onParticleTick();
         
         DTC.game.onParticleTick();
       }

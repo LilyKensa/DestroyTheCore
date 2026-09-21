@@ -8,6 +8,7 @@ import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.managers.RolesManager;
 import dev.huey.destroyTheCore.records.PlayerData;
 import dev.huey.destroyTheCore.records.Pos;
+import io.papermc.paper.datacomponent.DataComponentTypes;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -219,18 +220,10 @@ public class PlayerUtils {
     return pl.getInventory().getItemInMainHand();
   }
   
-  static public void setHandCooldown(Player pl, int ticks) {
-    pl.setCooldown(getHandItem(pl).getType(), ticks);
-  }
-  
-  static public int getHandCooldown(Player pl) {
-    return pl.getCooldown(getHandItem(pl).getType());
-  }
-  
-  static public boolean checkHandCooldown(Player pl, int offset) {
+  static public boolean checkCooldown(Player pl, Material type, int offset) {
     if (!shouldHandle(pl)) return true;
     
-    int cooldown = getHandCooldown(pl) - offset;
+    int cooldown = pl.getCooldown(type) - offset;
     if (cooldown > 0) {
       pl.sendActionBar(
         TextUtils.$(
@@ -244,6 +237,22 @@ public class PlayerUtils {
     }
     
     return true;
+  }
+  
+  static public boolean checkCooldown(Player pl, Material type) {
+    return checkCooldown(pl, type, 0);
+  }
+  
+  static public void setHandCooldown(Player pl, int ticks) {
+    pl.setCooldown(getHandItem(pl).getType(), ticks);
+  }
+  
+  static public int getHandCooldown(Player pl) {
+    return pl.getCooldown(getHandItem(pl).getType());
+  }
+  
+  static public boolean checkHandCooldown(Player pl, int offset) {
+    return checkCooldown(pl, getHandItem(pl).getType(), offset);
   }
   
   static public boolean checkHandCooldown(Player pl) {
@@ -839,6 +848,11 @@ public class PlayerUtils {
     Pattern.CASE_INSENSITIVE
   );
   
+  static final int breadNutrition = Material.BREAD.getDefaultData(
+    DataComponentTypes.FOOD
+  ).nutrition();
+  static final int respawnNutrition = 8 * breadNutrition;
+  
   /** Give a player basic armors, weapons & skill books */
   static public void giveEssentials(Player pl) {
     PlayerData data = DTC.game.getPlayerData(pl);
@@ -879,7 +893,7 @@ public class PlayerUtils {
       item.getType().name()
     ).find();
     
-    boolean hasFood = false;
+    int totalFood = 0;
     boolean hasAnyWeapon = false;
     boolean hasRoleItem = false;
     boolean hasPickaxe = false;
@@ -925,12 +939,18 @@ public class PlayerUtils {
     
     for (ItemStack item : inv.getContents()) {
       if (item != null && item.getType().isEdible()) {
-        hasFood = true;
-        break;
+        int nutritionPerItem = item.getType().getDefaultData(
+          DataComponentTypes.FOOD
+        ).nutrition();
+        totalFood += nutritionPerItem * item.getAmount();
       }
     }
     
-    if (!hasFood) give(pl, Material.BREAD, 8);
+    int needed = respawnNutrition - totalFood;
+    if (needed > 0) {
+      int amount = Math.ceilDiv(needed, breadNutrition);
+      give(pl, Material.BREAD, amount);
+    }
     
     if (!inv.contains(Material.KNOWLEDGE_BOOK)) {
       give(pl, data.role.getSkillItem());

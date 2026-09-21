@@ -32,7 +32,8 @@ public class WitchcraftGen extends UsableItemGen {
   public WitchcraftGen() {
     super(
       ItemsManager.ItemKey.WITCHCRAFT,
-      Material.SPIRE_ARMOR_TRIM_SMITHING_TEMPLATE
+      Material.SPIRE_ARMOR_TRIM_SMITHING_TEMPLATE,
+      true
     );
   }
   
@@ -42,14 +43,16 @@ public class WitchcraftGen extends UsableItemGen {
   }
   
   @Override
+  public boolean canUse(Player pl) {
+    return PlayerUtils.checkCooldown(pl, iconType);
+  }
+  
+  @Override
   public void use(Player pl, Block block) {
     PlayerData data = DTC.game.getPlayerData(pl);
     Game.Side oppSide = data.side.opposite();
     
-    if (!PlayerUtils.checkHandCooldown(pl)) return;
-    PlayerUtils.setHandCooldown(pl, 60);
-    
-    PlayerUtils.takeOneItemFromHand(pl);
+    pl.setCooldown(iconType, 60);
     
     switch (RandomUtils.range(13)) {
       case 0 -> {

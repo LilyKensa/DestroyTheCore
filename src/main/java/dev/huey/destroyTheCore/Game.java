@@ -16,6 +16,7 @@ import dev.huey.destroyTheCore.managers.TicksManager;
 import dev.huey.destroyTheCore.missions.InfiniteOresMission;
 import dev.huey.destroyTheCore.records.*;
 import dev.huey.destroyTheCore.roles.FairyRole;
+import dev.huey.destroyTheCore.roles.GluttonRole;
 import dev.huey.destroyTheCore.roles.KekkaiMasterRole;
 import dev.huey.destroyTheCore.roles.ProvocateurRole;
 import dev.huey.destroyTheCore.utils.*;
@@ -1113,20 +1114,12 @@ public class Game {
   ) {
     PlayerData data = getPlayerData(pl);
     
-    if (
-      item.getType().isEdible() &&
-        item
-          .getType() != Material.POTION &&
-        data.role.id == RolesManager.RoleKey.GLUTTON
-    ) {
-      pl.sendActionBar(TextUtils.$("roles.glutton.eat-warning"));
-      ev.setCancelled(true);
-      return;
+    if (data.role instanceof GluttonRole glutton) {
+      glutton.onConsume(pl, item, ev);
     }
     
     if (
-      item
-        .getType() == Material.POTION &&
+      item.getType() == Material.POTION &&
         data.role.id == RolesManager.RoleKey.HACKER
     ) {
       pl.sendActionBar(TextUtils.$("roles.hacker.potion-warning"));
