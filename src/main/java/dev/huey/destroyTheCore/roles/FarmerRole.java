@@ -31,6 +31,7 @@ public class FarmerRole extends Role {
       }
     );
     addSkill(90 * 20, 10);
+    addLevelReq(2);
   }
   
   @Override

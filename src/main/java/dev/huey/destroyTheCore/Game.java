@@ -2645,7 +2645,7 @@ public class Game {
           enemyCore = LocUtils.enemySide(map.core, pl).center();
         
         if (enemyCore.distSq(Pos.of(pl)) < selfCore.distSq(Pos.of(pl))) {
-          data.removePostRevive();
+          data.removePostRespawn();
           
           if (isInTruce()) {
             if (LocUtils.near(Pos.of(pl), enemyCore, 30)) {
@@ -2979,8 +2979,8 @@ public class Game {
       PlayerUtils.refreshSpectatorAbilities(pl);
       PlayerUtils.respawn(pl);
       
-      PlayerUtils.addPassiveEffect(pl, PotionEffectType.SPEED, 30 * 20, 2);
-      PlayerUtils.addPassiveEffect(pl, PotionEffectType.HASTE, 30 * 20, 2);
+      PlayerUtils.addPassiveEffect(pl, PotionEffectType.SPEED, 5 * 20, 2);
+      PlayerUtils.addPassiveEffect(pl, PotionEffectType.HASTE, 20 * 20, 2);
     }
     DTC.boardsManager.refresh();
     

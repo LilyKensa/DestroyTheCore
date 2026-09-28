@@ -15,8 +15,9 @@ public class PlayerData implements HasStats {
   static public int minRespawnTime = 5, maxRespawnTime = 180,
     respawnTimeIncrement = 3;
   static public int killPunishment = 2, corePunishment = 5;
-  static public final int shoutCooldownDuration = 10 * 20;
-  static public final int rrtDuration = 5 * 20; // Reduce respawn time
+  static public int respawnInvulnDuration = 10 * 20;
+  static public int shoutCooldownDuration = 10 * 20;
+  static public int rrtDuration = 5 * 20; // Reduce respawn time
   
   public Player owner;
   public Game.Side side = Game.Side.SPECTATOR;
@@ -83,10 +84,10 @@ public class PlayerData implements HasStats {
   }
   
   public boolean isPostRespawn() {
-    return respawnAt >= 0 && DTC.ticksManager.ticksCount - respawnAt < 10 * 20;
+    return respawnAt >= 0 && DTC.ticksManager.ticksCount - respawnAt <= respawnInvulnDuration;
   }
   
-  public void removePostRevive() {
+  public void removePostRespawn() {
     respawnAt = -1;
   }
   

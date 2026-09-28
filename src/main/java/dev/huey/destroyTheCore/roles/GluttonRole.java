@@ -25,6 +25,7 @@ import org.bukkit.potion.PotionEffectType;
 public class GluttonRole extends Role {
   
   static public final int duration = 10 * 20;
+  static public final float eatSpeed = 0.2f;
   static public final int maxDrain = 3;
   static public final int keepFood = 5;
   
@@ -39,7 +40,7 @@ public class GluttonRole extends Role {
       meta.addEnchant(Enchantment.RESPIRATION, 1, true);
     }, item -> {
       Consumable consumable = Consumable.consumable()
-        .consumeSeconds(0.5f)
+        .consumeSeconds(eatSpeed)
         .animation(ItemUseAnimation.DRINK)
         .hasConsumeParticles(false)
         .build();
@@ -103,13 +104,13 @@ public class GluttonRole extends Role {
     }
     
     boolean next = true;
-    float drained = 0;
+    float totalDrained = 0;
     
     distributionLoop: while (next) {
       next = false;
       
       for (Player p : targets) {
-        if (drained >= maxDrain) break distributionLoop;
+        if (totalDrained >= maxDrain) break distributionLoop;
         
         int currentFood = virtualFood.get(p);
         float currentSatu = virtualSatu.get(p);
@@ -117,11 +118,11 @@ public class GluttonRole extends Role {
         if (currentSatu > 0.01) {
           float drain = Math.min(2, currentSatu);
           virtualSatu.put(p, currentSatu - drain);
-          drained += drain;
+          totalDrained += drain;
         }
         else if (currentFood > keepFood) {
           virtualFood.put(p, currentFood - 1);
-          drained++;
+          totalDrained++;
         }
         else {
           continue;
@@ -131,49 +132,68 @@ public class GluttonRole extends Role {
       }
     }
     
-    if (drained <= 0) {
+    if (totalDrained <= 0) {
       pl.sendActionBar(TextUtils.$("roles.glutton.skill.no-target"));
       return;
     }
     
+    final int finalResistance = resistance;
+    final int finalSpeed = speed;
+    
     for (Player p : targets) {
-      p.setFoodLevel(virtualFood.get(p));
-      p.setSaturation(virtualSatu.get(p));
+      int food = virtualFood.get(p);
+      float satu = virtualSatu.get(p);
+      int foodGap = p.getFoodLevel() - food;
+      float satuGap = p.getSaturation() - satu;
       
-      p.sendActionBar(
-        TextUtils.$(
-          "roles.glutton.skill.stolen",
-          List.of(Placeholder.component("player", PlayerUtils.getName(pl)))
-        )
+      PlayerUtils.delayAssign(
+        pl,
+        p,
+        Particle.WITCH,
+        () -> {
+          p.setFoodLevel(food);
+          p.setSaturation(satu);
+          
+          p.sendActionBar(
+            TextUtils.$(
+              "roles.glutton.skill.stolen",
+              List.of(Placeholder.component("player", PlayerUtils.getName(pl)))
+            )
+          );
+          
+          float drained = foodGap + satuGap;
+          
+          int foodRestore = (int) Math.ceil(
+            Math.min(drained, 20 - pl.getFoodLevel())
+          );
+          drained -= foodRestore;
+          float satuRestore = Math.min(drained, 20 - pl.getSaturation());
+          
+          pl.setFoodLevel(pl.getFoodLevel() + foodRestore);
+          pl.setSaturation(pl.getSaturation() + satuRestore);
+          
+          PlayerUtils.addEffect(
+            pl,
+            PotionEffectType.RESISTANCE,
+            (1 + finalResistance) * 20,
+            finalResistance
+          );
+          PlayerUtils.addEffect(
+            pl,
+            PotionEffectType.SPEED,
+            (1 + finalSpeed) * 20,
+            finalSpeed
+          );
+          
+          PlayerUtils.addEffect(
+            pl,
+            PotionEffectType.WEAKNESS,
+            10 * 20,
+            2
+          );
+        }
       );
     }
-    
-    int food = (int) Math.min(drained, 20 - pl.getFoodLevel());
-    drained -= food;
-    float satu = Math.min(drained, 20 - pl.getSaturation());
-    
-    pl.setFoodLevel(pl.getFoodLevel() + food);
-    pl.setSaturation(pl.getSaturation() + satu);
-    
-    PlayerUtils.addEffect(
-      pl,
-      PotionEffectType.RESISTANCE,
-      (1 + resistance) * 20,
-      resistance
-    );
-    PlayerUtils.addEffect(
-      pl,
-      PotionEffectType.SPEED,
-      (1 + speed) * 20,
-      speed
-    );
-    
-    PlayerUtils.addEffect(
-      pl,
-      PotionEffectType.WEAKNESS,
-      10 * 20,
-      2
-    );
   }
   
   @Override

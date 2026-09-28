@@ -6,6 +6,7 @@ import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.records.PlayerData;
 import dev.huey.destroyTheCore.roles.*;
 import dev.huey.destroyTheCore.utils.CoreUtils;
+import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import java.util.LinkedHashMap;
@@ -117,7 +118,7 @@ public class RolesManager {
     DTC.game.enforceDisplay(pl);
     DTC.boardsManager.refresh(pl);
     
-    if (!DTC.game.isPlaying) return;
+    if (!LocUtils.inLive(pl)) return;
     
     PlayerInventory inv = pl.getInventory();
     
