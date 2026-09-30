@@ -357,6 +357,8 @@ commands:
   debug:
     no-game: "<red>There's not a match right now!</red>"
     good: "<green>Debug succeeded!</green>"
+  start:
+    bad-time: "<red>遊戲已經開始了!</red>"
   ping:
     result: "你的延遲是 <value> 毫秒"
   suicide:

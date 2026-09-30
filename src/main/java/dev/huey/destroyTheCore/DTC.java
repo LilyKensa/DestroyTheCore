@@ -88,7 +88,7 @@ public final class DTC extends JavaPlugin {
         "stats",
         "pause",
         "suicide",
-        "ping"
+        "start"
       }
     ) {
       PluginCommand command = getCommand(commandName);

@@ -50,7 +50,8 @@ public class CommandsManager implements TabCompleter, CommandExecutor {
       new PingCommand(),
       new CooldownCommand(),
       new SettingsCommand(),
-      new DebugCommand()
+      new DebugCommand(),
+      new StartCommand()
     );
   }
   

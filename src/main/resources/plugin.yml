@@ -1,9 +1,12 @@
 name: DestroyTheCore
+description: "A minecraft mini-game plugin"
 version: '${project.version}'
+authors: [ _hueeey_ ]
+
 main: dev.huey.destroyTheCore.DTC
 api-version: '26.2'
-authors: [ _hueeey_ ]
 depend: [ ProtocolLib, UltimateAdvancementAPI ]
+
 commands:
   dtc:
     description: Main command of Destroy the Core 3
@@ -37,6 +40,9 @@ commands:
     description: Please don't
   ping:
     description: Get your ping value
+  start:
+    description: Alternative way to start the game
+
 permissions:
   dtc.admin:
     description: The admin permission

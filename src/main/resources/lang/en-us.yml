@@ -317,6 +317,8 @@ commands:
   debug:
     no-game: "<red>There's not a match right now!</red>"
     good: "<green>Debug succeeded!</green>"
+  start:
+    bad-time: "<red>There's already a game!</red>"
   ping:
     result: "Your ping is <value>ms"
   suicide:
