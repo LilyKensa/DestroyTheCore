@@ -711,6 +711,7 @@ public class PlayerUtils {
         if (waitTicks <= 0) {
           respawn(pl);
           DTC.quizManager.discard(pl);
+          DTC.boardsManager.refresh(pl);
           
           normalTitleTimes(pl);
           pl.sendTitlePart(TitlePart.TITLE, TextUtils.$("player.respawned"));
@@ -725,6 +726,7 @@ public class PlayerUtils {
           
           data.respawnTime = secs;
           DTC.game.enforceRTScore(pl);
+          DTC.boardsManager.refresh(pl);
           
           if (waitTicks <= 60) {
             normalTitleTimes(pl);
@@ -1118,7 +1120,7 @@ public class PlayerUtils {
   static public List<Player> getNonEnemies(Game.Side side) {
     return all().stream().filter(p -> {
       PlayerData data = DTC.game.getPlayerData(p);
-      return (!shouldHandle(p) || (!data.side.equals(side.opposite())));
+      return (!shouldHandle(p) || !data.side.equals(side.opposite()));
     }).toList();
   }
   

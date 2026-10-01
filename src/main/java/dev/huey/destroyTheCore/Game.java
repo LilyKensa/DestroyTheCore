@@ -372,7 +372,7 @@ public class Game {
       NamedTextColor.GREEN,
       Color.LIME
     ),
-    SPECTATOR("spectator", NamedTextColor.GRAY, Color.GRAY);
+    SPECTATOR("spectator", NamedTextColor.DARK_AQUA, Color.TEAL);
     
     public final String id;
     public final String translateKey;
@@ -526,18 +526,23 @@ public class Game {
     teams.clear();
     
     itemsTeam = board.registerNewTeam("items");
-    itemsTeam.color(NamedTextColor.AQUA);
-    itemsTeam.displayName(TextUtils.$("game.sides.items"));
     
     for (Side side : Side.values()) {
       Team team = board.registerNewTeam(side.id);
+      teams.put(side, team);
+    }
+    
+    editTeams();
+  }
+  
+  public void editTeams() {
+    for (Side side : Side.values()) {
+      Team team = teams.get(side);
       
       team.color(side.color);
       team.displayName(side.title());
       
       team.setCanSeeFriendlyInvisibles(true);
-      
-      teams.put(side, team);
     }
     
     Team spectatorTeam = teams.get(Side.SPECTATOR);
@@ -545,6 +550,9 @@ public class Game {
       Team.Option.COLLISION_RULE,
       Team.OptionStatus.NEVER
     );
+    
+    itemsTeam.color(NamedTextColor.AQUA);
+    itemsTeam.displayName(TextUtils.$("game.sides.items"));
   }
   
   Objective respawnTimeBoard, healthBoard, pingBoard, levelBoard;
@@ -1352,12 +1360,7 @@ public class Game {
             block
           ).isSameBlockAs(lobby.startButton)
       ) {
-        if (startingTask == null || startingTask.isCancelled()) {
-          scheduleStart();
-        }
-        else {
-          cancelScheduleStart();
-        }
+        toggleScheduleStart();
         return;
       }
       else if (PlayerUtils.shouldHandle(pl)) {
@@ -2716,6 +2719,10 @@ public class Game {
     }
   }
   
+  public void onLangaugeChange() {
+    editTeams();
+  }
+  
   public void init() {
     sideData = new HashMap<>(
       Map.ofEntries(
@@ -2898,6 +2905,15 @@ public class Game {
     for (Player p : Bukkit.getOnlinePlayers()) {
       PlayerUtils.normalTitleTimes(p);
       p.sendTitlePart(TitlePart.TITLE, TextUtils.$("game.start-canceled"));
+    }
+  }
+  
+  public void toggleScheduleStart() {
+    if (startingTask == null || startingTask.isCancelled()) {
+      scheduleStart();
+    }
+    else {
+      cancelScheduleStart();
     }
   }
   
@@ -3609,7 +3625,7 @@ public class Game {
         ParticleUtils.dust(
           PlayerUtils.all(),
           p.getEyeLocation().add(0, 0.6, 0),
-          Color.YELLOW
+          Color.LIME
         );
       }
     }

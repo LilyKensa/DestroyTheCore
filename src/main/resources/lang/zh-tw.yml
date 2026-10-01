@@ -1,7 +1,7 @@
 general:
   title: "<white>殲滅攻城戰 III</white>"
-  subtitle: "原作: <gold>Hageeshow</gold> / 第三版: <gold>_hueeey_</gold>"
-  plugin-prefix: "[<red>殲滅</red><white>攻城</white><yellow>戰</yellow>] "
+  subtitle: "原作: <gold>Hageeshow</gold> / 第三版: <gold>zHueyz</gold>"
+  plugin-prefix: "[<green>殲</green><red>滅</red><white>攻城</white><yellow>戰</yellow>] "
 
 chat:
   format: "<player>: <white><message></white>"
@@ -106,7 +106,7 @@ game:
   sides:
     red: "<red>紅隊</red>"
     green: "<green>綠隊</green>"
-    spectator: "<gray>旁觀者</gray>"
+    spectator: "<dark_aqua>旁觀者</dark_aqua>"
     items: "<aqua>物品</aqua>"
   prompt-rejoin: "用 <aqua>/rejoin</aqua> 以重新加入遊戲"
   banned:
@@ -202,7 +202,7 @@ game:
     top-dyers: "+--------------- <light_purple>死神的常客</light_purple> ---------------+"
     top-miners: "+--------------- <light_purple>最優質礦工</light_purple> ---------------+"
     thanks: "<gold>感謝您的遊玩!</gold>"
-    sign: "- 插件製作人, <yellow>_hueeey_</yellow>"
+    sign: "- 插件製作人, <yellow>zHueyz</yellow>"
   bars:
     no-ores: "<white>礦區封鎖: <time></white>"
     no-shop: "<white>商店封鎖: <time></white>"
@@ -326,7 +326,7 @@ gui:
     swamp: "沼澤"
 
 board:
-  title: "<red>殲滅</red><white>攻城</white><yellow>戰</yellow>"
+  title: "<green>殲</green><red>滅</red><white>攻城</white><yellow>戰</yellow>"
   team: "<white>隊伍</white>: <side>"
   role: "<white>職業</white>: <yellow><role></yellow>"
   phase: "<white>階段</white> <green><index></green> - <aqua><title></aqua>"
@@ -537,13 +537,14 @@ items:
   random-role:
     name: "<light_purple>轉職書</light_purple>"
     desc-1: "經過菩薩加持!"
-    desc-2: "使用後可以<yellow>隨機</yellow>轉換職業"
+    desc-2: "使用後可以轉換至<yellow>隨機</yellow>職業"
     confirm: "<yellow>蹲下以確認!</yellow>"
-    announce: "<player> 使用了<item>, 轉職成<yellow><role></yellow>"
+    announce: "<player> 使用了<item>, 隨機轉職成<yellow><role></yellow>"
   choose-role:
     name: "<light_purple>轉職書</light_purple>"
     desc-1: "經過菩薩加持!"
     desc-2: "使用後可以轉換至<yellow>指定</yellow>職業"
+    confirm: "<yellow>蹲下以確認!</yellow>"
     announce: "<player> 使用了<item>, 轉職成<yellow><role></yellow>"
   role-selector:
     name: "<aqua>選擇職業</aqua>"
@@ -849,6 +850,13 @@ missions:
     title: "<yellow>贖罪時間</yellow>"
     desc: "回到核心附近可以每秒回復 1 點最惡值!"
     bar: "<yellow>快速贖罪: <time></yellow>"
+  kill-target:
+    title: "<yellow>選定你了</yellow>"
+    desc: "每隊有一個目標, 但隊友不知道是誰, 先殺死目標的隊伍獲勝!"
+    announce: "你們的目標是 <player>"
+  free-lottery:
+    title: "<yellow>抽獎節快樂</yellow>"
+    desc: "每人發放 8 個抽獎核心"
 
 roles:
   default:

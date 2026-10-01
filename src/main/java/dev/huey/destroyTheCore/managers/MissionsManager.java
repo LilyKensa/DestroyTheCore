@@ -34,6 +34,10 @@ public class MissionsManager {
   BossBar waitingBar;
   public Team team;
   
+  public void send(Player pl, Component comp) {
+    PlayerUtils.send(pl, prefix().append(comp));
+  }
+  
   public void broadcast(Component comp) {
     PlayerUtils.broadcast(prefix().append(comp));
   }
@@ -78,7 +82,8 @@ public class MissionsManager {
         // new GoOutsideMission(),
         // new FindSkullMission(),
         new FastRRTMission(),
-        new KillTargetMission()
+        new KillTargetMission(),
+        new FreeLotteryMission()
       )
     );
   }

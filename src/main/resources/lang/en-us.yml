@@ -1,7 +1,7 @@
 general:
   title: "<white>Destroy the Core III</white>"
-  subtitle: "Original by <gold>Hageeshow</gold> / v3 by <gold>_hueeey_</gold>"
-  plugin-prefix: "[<red>Destroy</red><white>The</white><yellow>Core</yellow>] "
+  subtitle: "Original by <gold>Hageeshow</gold> / v3 by <gold>zHueyz</gold>"
+  plugin-prefix: "[<green>Des</green><red>troy</red><white>The</white><yellow>Core</yellow>] "
 
 chat:
   format: "<player>: <white><message></white>"
@@ -66,7 +66,7 @@ game:
   sides:
     red: "<red>Red</red>"
     green: "<green>Green</green>"
-    spectator: "<gray>Spectator</gray>"
+    spectator: "<dark_aqua>Spectator</dark_aqua>"
     items: "<aqua>Items</aqua>"
   prompt-rejoin: "Use <aqua>/rejoin</aqua> to go back to the game"
   banned:
@@ -162,7 +162,7 @@ game:
     top-dyers: "+-------------- <light_purple>Top Dyers</light_purple> --------------+"
     top-miners: "+-------------- <light_purple>Top Miners</light_purple> --------------+"
     thanks: "<gold>Thanks for playing!</gold>"
-    sign: "- Plugin creator, <yellow>_hueeey_</yellow>"
+    sign: "- Plugin creator, <yellow>zHueyz</yellow>"
   bars:
     no-ores: "<white>Ores Banned: <time></white>"
     no-shop: "<white>Shop Banned: <time></white>"
@@ -286,7 +286,7 @@ gui:
     swamp: "Swamp"
 
 board:
-  title: "<red>Destroy</red><white>The</white><yellow>Core</yellow>"
+  title: "<green>Des</green><red>troy</red><white>The</white><yellow>Core</yellow>"
   team: "<white>Team</white>: <side>"
   role: "<white>Role</white>: <yellow><role></yellow>"
   phase: "<white>Phase</white> <green><index></green> - <aqua><title></aqua>"
@@ -325,7 +325,7 @@ commands:
     bad-time: "<red>You can't suicide right now!</red>"
     already-dead: "<red>You're already dead!</red>"
     announce: "<player> <action>!"
-    actions: "suicided (This part is supposed to be some funny random message, but I'm too lazy at this moment, if you see this, please contact @._hueeey_. on Discord and tell him to move his lazy ass)"
+    actions: "suicided (This part is supposed to be some funny random message, but I'm too lazy at this moment, if you see this, please contact @.zHueyz. on Discord and tell him to move his lazy ass)"
   pause:
     true: "<green>Game paused by <player></green>"
     false: "<green>Game resumed <player></green>"
@@ -499,11 +499,12 @@ items:
     desc-1: "After the blessing of the great bodhisattva!"
     desc-2: "By using this, you will be <yellow>randomly</yellow> assigned to another role"
     confirm: "<yellow>Crouch to confirm!</yellow>"
-    announce: "<player> used <item>, became <yellow><role></yellow>"
+    announce: "<player> used <item>, randomly became <yellow><role></yellow>"
   choose-role:
     name: "<light_purple>Job Changing Book</light_purple>"
     desc-1: "After the blessing of the great bodhisattva!"
     desc-2: "By using this, you can choose a <yellow>specific</yellow> role"
+    confirm: "<yellow>Crouch to confirm!</yellow>"
     announce: "<player> used <item>, became <yellow><role></yellow>"
   role-selector:
     name: "<aqua>Role Selection</aqua>"
@@ -809,6 +810,13 @@ missions:
     title: "<yellow>Atonement Time</yellow>"
     desc: "Go back to the core to reduce 1 sin per second!"
     bar: "<yellow>Fast Atonement: <time></yellow>"
+  kill-target:
+    title: "<yellow>Target Locked</yellow>"
+    desc: "Each team has a target to kill, but teammates don't know who it is!"
+    announce: "Your target is <player>"
+  free-lottery:
+    title: "<yellow>Happy Lottery Day</yellow>"
+    desc: "Free 8 lottery cores for each player"
 
 roles:
   default:
@@ -1187,3 +1195,35 @@ roles:
       announce: "<player> used <yellow><role></yellow>'s skill, fed teammates!"
       no-material: "<red>Invalid off-hand item!</red>"
       all-full: "<red>All your teammates are full!</red>"
+
+advancement:
+  tab: "Destroy The Core"
+
+advancements:
+  root:
+    title: "<white>Destroy The Core</white>"
+    desc-1: "<green>Join the big family of DTC</green>"
+  chose-role:
+    title: "<white>Spoiled for Choice</white>"
+    desc-1: "<green>Open the role menu</green>"
+  played-role:
+    title: "<white>Destined <role></white>"
+    desc-1: "<green>Select <role> at the start of the game</green>"
+  played:
+    title: "<white>First Steps</white>"
+    desc-1: "<green>Participate in a game</green>"
+  played-spectator:
+    title: "<white>Silent Spectator</white>"
+    desc-1: "<green>Become a spectator</green>"
+  used-skill:
+    title: "<white>Testing the Waters</white>"
+    desc-1: "<green>Use a skill</green>"
+  used-many-skills:
+    title: "<white>Specialist</white>"
+    desc-1: "<green>Master your skills</green>"
+  used-lottery:
+    title: "<white>Take a Gamble</white>"
+    desc-1: "<green>Use the lottery</green>"
+  used-many-lotteries:
+    title: "<white>High Roller</white>"
+    desc-1: "<green>Go crazy with the lottery</green>"

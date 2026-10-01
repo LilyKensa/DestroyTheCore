@@ -25,6 +25,6 @@ public class StartCommand extends Subcommand {
       return;
     }
     
-    DTC.game.start();
+    DTC.game.toggleScheduleStart();
   }
 }

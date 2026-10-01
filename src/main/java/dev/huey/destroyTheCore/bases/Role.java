@@ -448,13 +448,18 @@ public class Role {
     ItemStack handItem = pl.getInventory().getItemInMainHand();
     ItemGen gen = DTC.itemsManager.getGen(handItem);
     
-    if (gen != null && gen.id == ItemsManager.ItemKey.CHOOSE_ROLE) {
+    if (LocUtils.inLive(pl)) {
       PlayerUtils.broadcast(
         TextUtils.$(
           "items.choose-role.announce",
           List.of(
             Placeholder.component("player", PlayerUtils.getName(pl)),
-            Placeholder.component("item", gen.getItem().effectiveName()),
+            Placeholder.component(
+              "item",
+              DTC.itemsManager.gens
+                .get(ItemsManager.ItemKey.CHOOSE_ROLE)
+                .getItem().effectiveName()
+            ),
             Placeholder.component("role", name)
           )
         )

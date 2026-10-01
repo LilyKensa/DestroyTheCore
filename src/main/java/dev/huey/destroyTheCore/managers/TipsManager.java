@@ -28,7 +28,9 @@ public class TipsManager {
   
   List<Tip> tips = new ArrayList<>();
   
-  public void init() {
+  public void loadTips() {
+    tips.clear();
+    
     int index = 1;
     Component title;
     List<Component> contents = new ArrayList<>();
@@ -60,6 +62,10 @@ public class TipsManager {
     }
   }
   
+  public void init() {
+    loadTips();
+  }
+  
   void send(Player pl, Component comp) {
     PlayerUtils.send(pl, prefix().append(comp));
   }
@@ -88,5 +94,9 @@ public class TipsManager {
     if (DTC.game.isPlaying) return;
     
     sendRandomToAll();
+  }
+  
+  public void onLangaugeChange() {
+    loadTips();
   }
 }

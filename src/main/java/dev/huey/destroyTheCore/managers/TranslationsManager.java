@@ -124,5 +124,8 @@ public class TranslationsManager {
     DTC.itemsManager.onLanguageChange();
     DTC.rolesManager.onLanguageChange();
     DTC.boardsManager.onLanguageChange();
+    DTC.tipsManager.onLangaugeChange();
+    
+    DTC.game.onLangaugeChange();
   }
 }

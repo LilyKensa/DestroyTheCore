@@ -1,7 +1,9 @@
 name: DestroyTheCore
 description: "A minecraft mini-game plugin"
 version: "${project.version}"
-authors: [ _hueeey_ ]
+authors:
+  - zHueyz
+  - ItzYoyo
 
 main: dev.huey.destroyTheCore.DTC
 api-version: "26.2"
