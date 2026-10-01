@@ -34,7 +34,7 @@ public class GluttonRole extends Role {
   
   public GluttonRole() {
     super(RolesManager.RoleType.ASSISTANCE, RolesManager.RoleKey.GLUTTON);
-    addInfo(Material.COOKED_SALMON);
+    addIcon(Material.COOKED_SALMON);
     addFeature();
     addExclusiveItem(Material.BREEZE_ROD, meta -> {
       meta.addEnchant(Enchantment.RESPIRATION, 1, true);

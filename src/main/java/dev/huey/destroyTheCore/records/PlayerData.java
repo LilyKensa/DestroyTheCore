@@ -84,7 +84,8 @@ public class PlayerData implements HasStats {
   }
   
   public boolean isPostRespawn() {
-    return respawnAt >= 0 && DTC.ticksManager.ticksCount - respawnAt <= respawnInvulnDuration;
+    return respawnAt >= 0 &&
+      DTC.ticksManager.ticksCount - respawnAt <= respawnInvulnDuration;
   }
   
   public void removePostRespawn() {

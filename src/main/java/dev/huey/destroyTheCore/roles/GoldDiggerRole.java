@@ -18,7 +18,7 @@ public class GoldDiggerRole extends Role {
   
   public GoldDiggerRole() {
     super(RolesManager.RoleType.WORKING, RolesManager.RoleKey.GOLD_DIGGER);
-    addInfo(Material.GOLDEN_PICKAXE);
+    addIcon(Material.GOLDEN_PICKAXE);
     addFeature();
     addExclusiveItem(
       Material.IRON_PICKAXE,

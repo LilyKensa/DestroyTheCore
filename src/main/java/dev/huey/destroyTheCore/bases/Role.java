@@ -14,7 +14,9 @@ import dev.huey.destroyTheCore.records.Stats;
 import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
+import io.papermc.paper.datacomponent.DataComponentTypes;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.function.Consumer;
 import net.kyori.adventure.text.Component;
@@ -63,7 +65,7 @@ public class Role {
   
   /**
    * Add extra settings using:<br>
-   * - {@link #addInfo}<br>
+   * - {@link #addIcon}<br>
    * - {@link #addFeature}<br>
    * - {@link #addExclusiveItem}<br>
    * - {@link #addSkill}
@@ -72,6 +74,7 @@ public class Role {
   public Role(RolesManager.RoleType type, RolesManager.RoleKey id) {
     this.type = type;
     this.id = id;
+    
     this.translationName = id.name().toLowerCase().replace('_', '-');
   }
   
@@ -97,6 +100,34 @@ public class Role {
     return list;
   }
   
+  enum TranslationFlags {
+    FEATURE,
+    ITEM,
+    SKILL
+  }
+  
+  EnumSet<TranslationFlags> translationFlags = EnumSet.noneOf(
+    TranslationFlags.class
+  );
+  
+  public void loadTranslations() {
+    this.name = $("roles.%s.name").color(null);
+    this.lore = $a("roles.%s.desc");
+    
+    if (translationFlags.contains(TranslationFlags.FEATURE)) {
+      featureDesc = $a("roles.%s.feature").stream()
+        .map(c -> c.color(null)).toList();
+    }
+    if (translationFlags.contains(TranslationFlags.ITEM)) {
+      itemName = $("roles.%s.item.name").color(null);
+      itemDesc = $("roles.%s.item.detail").color(null);
+    }
+    if (translationFlags.contains(TranslationFlags.SKILL)) {
+      skillName = $("roles.%s.skill.name").color(null);
+      skillDesc = $a("roles.%s.skill.desc");
+    }
+  }
+  
   public Material iconType;
   public Component name;
   public List<Component> lore;
@@ -116,25 +147,21 @@ public class Role {
   
   public int levelReq;
   
-  public void addInfo(Material iconType) {
+  public void addIcon(Material iconType) {
     this.iconType = iconType;
-    this.name = $("roles.%s.name").color(null);
-    this.lore = $a("roles.%s.desc");
   }
   
   public void addFeature() {
-    featureDesc = $a("roles.%s.feature").stream()
-      .map(c -> c.color(null)).toList();
+    translationFlags.add(TranslationFlags.FEATURE);
   }
   
   public void addExclusiveItem(
     Material type, Consumer<ItemMeta> metaEditor, Consumer<ItemStack> editor
   ) {
     itemType = type;
-    itemName = $("roles.%s.item.name").color(null);
-    itemDesc = $("roles.%s.item.detail").color(null);
     itemEditor = editor;
     itemMetaEditor = metaEditor;
+    translationFlags.add(TranslationFlags.ITEM);
   }
   
   public void addExclusiveItem(Material type, Consumer<ItemMeta> metaEditor) {
@@ -148,10 +175,9 @@ public class Role {
   }
   
   public void addSkill(int cd, double radius) {
-    skillName = $("roles.%s.skill.name").color(null);
-    skillDesc = $a("roles.%s.skill.desc");
     skillCooldown = cd;
     skillRadius = radius;
+    translationFlags.add(TranslationFlags.SKILL);
   }
   
   public void addSkill(int cd) {
@@ -394,7 +420,7 @@ public class Role {
     
     Stats stat = DTC.game.getStats(pl);
     
-    return new ItemBuilder(iconType)
+    return new ItemBuilder(Material.NETHERITE_SWORD)
       .setCustomName(
         TextUtils.$(
           "role.name" + (stat.levels >= levelReq ? "" : "-locked"),
@@ -405,11 +431,7 @@ public class Role {
         )
       )
       .addModifier(item -> {
-        item.addItemFlags(
-          ItemFlag.HIDE_ARMOR_TRIM,
-          ItemFlag.HIDE_ATTRIBUTES,
-          ItemFlag.HIDE_DYE
-        );
+        item.setData(DataComponentTypes.ITEM_MODEL, iconType.key());
         return item;
       })
       .addLoreLines(

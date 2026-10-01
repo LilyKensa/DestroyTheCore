@@ -14,7 +14,9 @@ public final class DTC extends JavaPlugin {
   static public DTC instance;
   static public String version;
   
-  static public Component prefix;
+  static public Component prefix() {
+    return TextUtils.$("general.plugin-prefix");
+  }
   
   static public TranslationsManager translationsManager;
   static public ConfigManager configManager;
@@ -115,12 +117,9 @@ public final class DTC extends JavaPlugin {
     guiManager.init();
     tipsManager.init();
     advancementsManager.init();
-    antiCheatManager.init();
     ticksManager.init();
     
     game.init();
-    
-    prefix = TextUtils.$("general.plugin-prefix");
     
     notEvenStarted = false;
     CoreUtils.log("Enabled");

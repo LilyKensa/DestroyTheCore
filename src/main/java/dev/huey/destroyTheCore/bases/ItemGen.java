@@ -35,16 +35,20 @@ public class ItemGen {
     this.iconType = iconType;
     
     translationName = id.name().toLowerCase().replace('_', '-');
-    
+    loadTranslation();
+  }
+  
+  public void loadTranslation() {
     name = TextUtils.$("items.%s.name".formatted(translationName));
+    lore.clear();
     
     String key;
     for (int i = 1; true; ++i) {
       key = "items.%s.desc".formatted(translationName) + "-" + i;
       
-      if (DTC.translationsManager.has(key)) lore.add(
-        TextUtils.$(key)
-      );
+      if (DTC.translationsManager.has(key)) {
+        lore.add(TextUtils.$(key));
+      }
       else break;
     }
   }

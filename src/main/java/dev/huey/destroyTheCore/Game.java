@@ -66,6 +66,7 @@ import org.bukkit.scoreboard.*;
 import org.bukkit.util.Vector;
 
 public class Game {
+  
   public boolean isPlaying = false;
   public boolean paused = false;
   
@@ -905,7 +906,9 @@ public class Game {
     DTC.itemsManager.onPlayerDamage(attacker, victim, ev.getCause());
   }
   
-  static public Component bountyPrefix;
+  static public Component bountyPrefix() {
+    return TextUtils.$("game.bounty.prefix");
+  }
   
   public boolean nextPlayerDropAll = false;
   
@@ -1029,7 +1032,7 @@ public class Game {
         );
         
         PlayerUtils.broadcast(
-          bountyPrefix.append(
+          bountyPrefix().append(
             TextUtils.$(
               "game.bounty.reward",
               List.of(
@@ -1043,7 +1046,7 @@ public class Game {
       
       if (killerData.killStreak == 10) {
         PlayerUtils.broadcast(
-          bountyPrefix.append(
+          bountyPrefix().append(
             TextUtils.$(
               "game.bounty.appear",
               List.of(
@@ -2714,8 +2717,6 @@ public class Game {
   }
   
   public void init() {
-    bountyPrefix = TextUtils.$("game.bounty.prefix");
-    
     sideData = new HashMap<>(
       Map.ofEntries(
         Map.entry(Side.RED, new SideData()),
@@ -3349,6 +3350,8 @@ public class Game {
     }
   }
   
+  public int rrtDuration = PlayerData.rrtDuration;
+  
   public void onTick() {
     if (DTC.ticksManager.isSeconds()) {
       for (Player p : Bukkit.getOnlinePlayers()) {
@@ -3559,7 +3562,7 @@ public class Game {
     
     if (map.core != null) {
       for (Player p : DTC.worldsManager.live.getPlayers()) {
-        PlayerUtils.rrt(p);
+        PlayerUtils.rrt(p, rrtDuration);
       }
     }
     

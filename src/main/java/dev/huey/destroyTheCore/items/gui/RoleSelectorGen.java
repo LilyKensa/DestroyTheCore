@@ -14,7 +14,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 public class RoleSelectorGen extends UsableItemGen {
   
   public RoleSelectorGen() {
-    super(ItemsManager.ItemKey.ROLE_SELECTOR, Material.ENDER_CHEST);
+    super(ItemsManager.ItemKey.ROLE_SELECTOR, Material.NETHER_STAR);
     setBound();
   }
   

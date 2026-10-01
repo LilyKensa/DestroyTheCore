@@ -94,8 +94,7 @@ public class PlayerUtils {
   
   /** {@link #send} with {@link DTC#prefix} */
   static public void prefixedSend(Player pl, Component component) {
-    if (DTC.prefix == null) return;
-    send(pl, DTC.prefix.append(component));
+    send(pl, DTC.prefix().append(component));
   }
   
   static public void prefixedSend(Player pl, String text, TextColor color) {
@@ -116,8 +115,7 @@ public class PlayerUtils {
   
   /** Broadcast to admins */
   static public void prefixedNotice(Component comp) {
-    if (DTC.prefix == null) return;
-    notice(DTC.prefix.append(comp));
+    notice(DTC.prefix().append(comp));
   }
   
   /** Broadcast to everyone */
@@ -551,7 +549,7 @@ public class PlayerUtils {
   }
   
   /** Reduce respawn time process */
-  static public void rrt(Player pl) {
+  static public void rrt(Player pl, int duration) {
     PlayerData d = DTC.game.getPlayerData(pl);
     if (
       pl.isSneaking() &&
@@ -577,7 +575,7 @@ public class PlayerUtils {
         );
       }
       
-      if (d.rrtProgress >= PlayerData.rrtDuration) {
+      if (d.rrtProgress >= duration) {
         d.rrtProgress = 0;
         
         pl.giveExp(xp);
@@ -613,6 +611,10 @@ public class PlayerUtils {
               Placeholder.component(
                 "progress",
                 Component.text(d.rrtProgress / 20)
+              ),
+              Placeholder.component(
+                "max",
+                Component.text(duration / 20)
               )
             )
           )

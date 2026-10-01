@@ -94,11 +94,12 @@ public class QuizManager {
     }
   }
   
-  static public Component prefix;
+  static public Component prefix() {
+    return TextUtils.$("quiz.prefix");
+  }
   
   static public void send(Player pl, Component message) {
-    if (prefix == null) prefix = TextUtils.$("quiz.prefix");
-    PlayerUtils.send(pl, prefix.append(message));
+    PlayerUtils.send(pl, prefix().append(message));
   }
   
   Map<UUID, Quiz> quizzes = new HashMap<>();

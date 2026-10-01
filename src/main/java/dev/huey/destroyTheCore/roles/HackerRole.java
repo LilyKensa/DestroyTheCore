@@ -18,7 +18,7 @@ import org.bukkit.potion.PotionEffectType;
 public class HackerRole extends Role {
   public HackerRole() {
     super(RolesManager.RoleType.ASSISTANCE, RolesManager.RoleKey.HACKER);
-    addInfo(Material.MUSIC_DISC_5);
+    addIcon(Material.MUSIC_DISC_5);
     addFeature();
     addExclusiveItem(Material.SPYGLASS, meta -> {
       meta.addEnchant(Enchantment.BANE_OF_ARTHROPODS, 5, true);

@@ -56,7 +56,7 @@ public class RandomRoleItem {
       1 // Pitch
     );
     
-    DTC.rolesManager.setRole(pl, role);
+    DTC.rolesManager.setRole(pl, role, false);
     DTC.game.enforceDisplay(pl);
     DTC.boardsManager.refresh(pl);
   }

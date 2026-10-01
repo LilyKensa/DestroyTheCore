@@ -44,15 +44,10 @@ public class LanguageCommand extends Subcommand {
     Locale locale = Locale.forLanguageTag(tag);
     if (locale == null) return;
     
-    DTC.translationsManager.currentLocale = locale;
+    DTC.translationsManager.setLocale(locale);
     
     PlayerUtils.prefixedNotice(
       Component.text("Set language to " + tag).color(NamedTextColor.GREEN)
-    );
-    PlayerUtils.prefixedNotice(
-      Component.text("We recommend restarting the server!").color(
-        NamedTextColor.AQUA
-      )
     );
   }
 }

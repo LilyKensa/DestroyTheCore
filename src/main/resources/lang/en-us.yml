@@ -34,7 +34,7 @@ player:
   item-sent-to-spawn: "<green>You were given some item, but as you're dead, it was sent to your spawn!</green>"
   role-changed:
     title: "<yellow>Role Changed</yellow>"
-    subtitle: "<from> → <to>"
+    subtitle: "<white><from></white> → <white><to></white>"
 
 quiz:
   prefix: "[<light_purple>Quiz</light_purple>] "
@@ -141,7 +141,7 @@ game:
       more-health: "<side> team has more health"
       destroyed: "<side> team destroyed the core"
   reduce-respawn-time:
-    progress: "<aqua>You're atoning: <progress>/5</aqua>"
+    progress: "<aqua>You're atoning: <progress>/<max></aqua>"
     done: "<green>Atoning complete! Sin reduced by 1</green>"
     no-more: "<red>Your sin is too low!</red>"
   ores:
@@ -800,6 +800,15 @@ missions:
     title: "<yellow>Go Outside</yellow>"
     desc: "It's a beautiful day, you shouldn't stay indoors!"
     bar: "<yellow>Go Outside: <time></yellow>"
+  find-skull:
+    title: "<yellow>Find Skull</yellow>"
+    desc: "Find your own skull to get treasures!"
+    complete: "<player> found their skull, got <item> × <dark_aqua><amount></dark_aqua>"
+    bar: "<yellow>Find Skull: <time></yellow>"
+  fast-rrt:
+    title: "<yellow>Atonement Time</yellow>"
+    desc: "Go back to the core to reduce 1 sin per second!"
+    bar: "<yellow>Fast Atonement: <time></yellow>"
 
 roles:
   default:

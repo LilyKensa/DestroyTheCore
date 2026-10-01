@@ -87,6 +87,14 @@ public class RolesManager {
     ).collect(
       Collectors.toMap(r -> r.id, r -> r, (e, n) -> e, LinkedHashMap::new)
     );
+    
+    loadTranslations();
+  }
+  
+  public void loadTranslations() {
+    for (Role role : roles.values()) {
+      role.loadTranslations();
+    }
   }
   
   public void setRole(Player pl, Role role) {
@@ -216,5 +224,9 @@ public class RolesManager {
         .getPersistentDataContainer().has(
           Role.skillNamespace
         ));
+  }
+  
+  public void onLanguageChange() {
+    loadTranslations();
   }
 }

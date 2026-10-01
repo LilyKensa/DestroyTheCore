@@ -161,7 +161,7 @@ public class RangerRole extends Role {
   
   public RangerRole() {
     super(RolesManager.RoleType.ATTACKING, RolesManager.RoleKey.RANGER);
-    addInfo(Material.CROSSBOW);
+    addIcon(Material.CROSSBOW);
     addFeature();
     addExclusiveItem(
       Material.CROSSBOW,

@@ -429,7 +429,7 @@ public class KekkaiMasterRole extends Role {
   
   public KekkaiMasterRole() {
     super(RolesManager.RoleType.ASSISTANCE, RolesManager.RoleKey.KEKKAI_MASTER);
-    addInfo(Material.BEACON);
+    addIcon(Material.BEACON);
     addFeature();
     addExclusiveItem(
       Material.FISHING_ROD,

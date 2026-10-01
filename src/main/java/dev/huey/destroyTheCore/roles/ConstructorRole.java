@@ -60,7 +60,7 @@ public class ConstructorRole extends Role {
   
   public ConstructorRole() {
     super(RolesManager.RoleType.WORKING, RolesManager.RoleKey.CONSTRUCTOR);
-    addInfo(Material.STONE_AXE);
+    addIcon(Material.STONE_AXE);
     addFeature();
     addExclusiveItem(
       Material.STONE_AXE,

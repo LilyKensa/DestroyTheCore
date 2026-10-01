@@ -381,11 +381,13 @@ public class WitchcraftGen extends UsableItemGen {
     }
   }
   
-  static final Component prefix = TextUtils.$("items.witchcraft.prefix");
+  static Component prefix() {
+    return TextUtils.$("items.witchcraft.prefix");
+  }
   
   void announce(Component comp) {
     for (Player p : Bukkit.getOnlinePlayers()) {
-      PlayerUtils.send(p, prefix.append(comp));
+      PlayerUtils.send(p, prefix().append(comp));
     }
   }
 }

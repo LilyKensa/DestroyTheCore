@@ -22,8 +22,11 @@ import org.bukkit.scoreboard.Team;
 
 public class MissionsManager {
   
-  static public Component prefix;
   static public final int waitingTicks = 60 * 20;
+  
+  static public Component prefix() {
+    return TextUtils.$("mission.prefix");
+  }
   
   public boolean active = false;
   public Mission mission;
@@ -32,7 +35,7 @@ public class MissionsManager {
   public Team team;
   
   public void broadcast(Component comp) {
-    PlayerUtils.broadcast(prefix.append(comp));
+    PlayerUtils.broadcast(prefix().append(comp));
   }
   
   Set<Mission> pool = new HashSet<>();
@@ -40,47 +43,47 @@ public class MissionsManager {
   void initializePool() {
     pool = new HashSet<>(
       List.of(
-        new ChickenMission(),
-        new RollCallMission(),
-        new CollectStarsMission(),
-        new OccupyCenterMission(),
-        new OresMission(),
-        new NoJumpMission(),
-        new TeleportCoreMission(),
-        new HungryMission(),
-        new EarthquakeCowMission(),
-        new NextDropAllMission(),
-        new JumpMission(),
-        new EatCakeMission(),
-        new DiscountTraderMission(),
-        new FreeMoneyMission(),
-        new DropOresMission(),
-        new AntiGravityMission(),
-        new XpFountainMission(),
-        new AngryBeesMission(),
-        new SwapPosMission(),
-        // new SwapAllPosMission(),
-        new CovidMission(),
-        new RandomRoleMission(),
-        new FreeSoupMission(),
-        new HeroMission(),
-        new SneakWalkMission(),
-        new InvisMission(),
-        new CargoMission(),
-        new ExplodeMission(),
-        new InfiniteOresMission(),
-        new RocketMission(),
-        new ColdMission(),
-        new CursedItemMission(),
-        new GoOutsideMission(),
-        new FindSkullMission()
+        // new ChickenMission(),
+        // new RollCallMission(),
+        // new CollectStarsMission(),
+        // new OccupyCenterMission(),
+        // new OresMission(),
+        // new NoJumpMission(),
+        // new TeleportCoreMission(),
+        // new HungryMission(),
+        // new EarthquakeCowMission(),
+        // new NextDropAllMission(),
+        // new JumpMission(),
+        // new EatCakeMission(),
+        // new DiscountTraderMission(),
+        // new FreeMoneyMission(),
+        // new DropOresMission(),
+        // new AntiGravityMission(),
+        // new XpFountainMission(),
+        // new AngryBeesMission(),
+        // new SwapPosMission(),
+        // // new SwapAllPosMission(),
+        // new CovidMission(),
+        // new RandomRoleMission(),
+        // new FreeSoupMission(),
+        // new HeroMission(),
+        // new SneakWalkMission(),
+        // new InvisMission(),
+        // new CargoMission(),
+        // new ExplodeMission(),
+        // new InfiniteOresMission(),
+        // new RocketMission(),
+        // new ColdMission(),
+        // new CursedItemMission(),
+        // new GoOutsideMission(),
+        // new FindSkullMission(),
+        new FastRRTMission(),
+        new KillTargetMission()
       )
     );
   }
   
   public void start() {
-    prefix = TextUtils.$("mission.prefix");
-    
     Mission.centerLoc = LocUtils.live(DTC.game.map.mission.center());
     
     Scoreboard board = Bukkit.getServer().getScoreboardManager()
@@ -89,7 +92,9 @@ public class MissionsManager {
     if (team == null) team = board.registerNewTeam("mission");
     team.color(NamedTextColor.YELLOW);
     team.prefix(
-      Component.text(PlainTextComponentSerializer.plainText().serialize(prefix))
+      Component.text(
+        PlainTextComponentSerializer.plainText().serialize(prefix())
+      )
     );
     
     restart();

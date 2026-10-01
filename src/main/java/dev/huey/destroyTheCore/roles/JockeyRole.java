@@ -23,7 +23,7 @@ import org.bukkit.potion.PotionEffectType;
 public class JockeyRole extends Role {
   public JockeyRole() {
     super(RolesManager.RoleType.ATTACKING, RolesManager.RoleKey.JOCKEY);
-    addInfo(Material.DIAMOND_HORSE_ARMOR);
+    addIcon(Material.DIAMOND_HORSE_ARMOR);
     addFeature();
     addExclusiveItem(Material.LEAD, meta -> {
       meta.addEnchant(Enchantment.KNOCKBACK, 1, true);

@@ -39,6 +39,7 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.persistence.PersistentDataType;
 
 public class ItemsManager {
@@ -317,6 +318,26 @@ public class ItemsManager {
         ev.setCancelled(true);
         return;
       }
+    }
+  }
+  
+  public void onLanguageChange() {
+    for (ItemGen gen : gens.values()) {
+      gen.loadTranslation();
+    }
+    
+    for (Player p : PlayerUtils.all()) {
+      PlayerInventory inv = p.getInventory();
+      ItemStack[] list = inv.getContents();
+      for (int i = 0; i < list.length; ++i) {
+        ItemStack item = list[i];
+        if (item == null || !isGen(item)) continue;
+        
+        ItemStack replacement = getGen(item).getItem(item.getAmount());
+        inv.setItem(i, replacement);
+      }
+      
+      p.updateInventory();
     }
   }
 }

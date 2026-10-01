@@ -1,11 +1,12 @@
 name: DestroyTheCore
 description: "A minecraft mini-game plugin"
-version: '${project.version}'
+version: "${project.version}"
 authors: [ _hueeey_ ]
 
 main: dev.huey.destroyTheCore.DTC
-api-version: '26.2'
-depend: [ ProtocolLib, UltimateAdvancementAPI ]
+api-version: "26.2"
+depend:
+- ProtocolLib
 
 commands:
   dtc:
@@ -31,13 +32,13 @@ commands:
   revive:
     description: Revive somebody
   stats:
-    description: See other player's stats
+    description: See other player"s stats
   broadcast:
     description: Broadcast message
   pause:
     description: Pause the game
   suicide:
-    description: Please don't
+    description: Please don"t
   ping:
     description: Get your ping value
   start:

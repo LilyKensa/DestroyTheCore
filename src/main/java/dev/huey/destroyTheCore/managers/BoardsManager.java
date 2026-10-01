@@ -7,6 +7,7 @@ import dev.huey.destroyTheCore.records.SideData;
 import dev.huey.destroyTheCore.records.Stats;
 import dev.huey.destroyTheCore.utils.CoreUtils;
 import dev.huey.destroyTheCore.utils.LocUtils;
+import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
 import fr.mrmicky.fastboard.FastBoard;
 import java.util.*;
@@ -261,12 +262,16 @@ public class BoardsManager {
   }
   
   public void refresh() {
-    for (Player p : Bukkit.getOnlinePlayers()) refresh(p);
+    for (Player p : Bukkit.getOnlinePlayers()) {
+      refresh(p);
+    }
   }
   
   public void onUITick() {
     for (Player pl : Bukkit.getOnlinePlayers()) {
-      if (boards.containsKey(pl.getUniqueId())) refresh(pl);
+      if (boards.containsKey(pl.getUniqueId())) {
+        refresh(pl);
+      }
     }
   }
   
@@ -291,5 +296,15 @@ public class BoardsManager {
   
   public void onPlayerQuit(PlayerQuitEvent ev) {
     hide(ev.getPlayer());
+  }
+  
+  public void onLanguageChange() {
+    for (Player p : PlayerUtils.all()) {
+      FastBoard board = boards.get(p.getUniqueId());
+      if (board == null) continue;
+      
+      board.updateTitle(TextUtils.$r("board.title"));
+      refresh(p);
+    }
   }
 }

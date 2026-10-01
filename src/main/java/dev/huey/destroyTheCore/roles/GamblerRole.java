@@ -26,7 +26,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class GamblerRole extends Role {
   public GamblerRole() {
     super(RolesManager.RoleType.WORKING, RolesManager.RoleKey.GAMBLER);
-    addInfo(Material.BROWN_BUNDLE);
+    addIcon(Material.BROWN_BUNDLE);
     addFeature();
     addExclusiveItem(Material.NAME_TAG, meta -> {
       meta.addEnchant(Enchantment.LURE, 3, true);

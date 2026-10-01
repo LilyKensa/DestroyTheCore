@@ -12,7 +12,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class TipsManager {
-  static Component prefix;
+  static Component prefix() {
+    return TextUtils.$("tips.prefix");
+  }
   
   static class Tip {
     Component title;
@@ -27,8 +29,6 @@ public class TipsManager {
   List<Tip> tips = new ArrayList<>();
   
   public void init() {
-    prefix = TextUtils.$("tips.prefix");
-    
     int index = 1;
     Component title;
     List<Component> contents = new ArrayList<>();
@@ -61,7 +61,7 @@ public class TipsManager {
   }
   
   void send(Player pl, Component comp) {
-    PlayerUtils.send(pl, prefix.append(comp));
+    PlayerUtils.send(pl, prefix().append(comp));
   }
   
   void sendTip(Player pl, Tip tip) {

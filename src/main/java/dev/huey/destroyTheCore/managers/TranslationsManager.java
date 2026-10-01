@@ -117,4 +117,12 @@ public class TranslationsManager {
       TextDecoration.State.FALSE
     );
   }
+  
+  public void setLocale(Locale locale) {
+    currentLocale = locale;
+    
+    DTC.itemsManager.onLanguageChange();
+    DTC.rolesManager.onLanguageChange();
+    DTC.boardsManager.onLanguageChange();
+  }
 }

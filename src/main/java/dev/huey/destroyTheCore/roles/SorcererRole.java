@@ -198,7 +198,7 @@ public class SorcererRole extends Role {
   
   public SorcererRole() {
     super(RolesManager.RoleType.ASSISTANCE, RolesManager.RoleKey.SORCERER);
-    addInfo(Material.FLOW_POTTERY_SHERD);
+    addIcon(Material.FLOW_POTTERY_SHERD);
     addFeature();
     addExclusiveItem(
       Material.DIAMOND_HOE,

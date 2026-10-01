@@ -18,7 +18,7 @@ import org.bukkit.potion.PotionEffectType;
 public class RoyalRole extends Role {
   public RoyalRole() {
     super(RolesManager.RoleType.ASSISTANCE, RolesManager.RoleKey.ROYAL);
-    addInfo(Material.GOLDEN_HELMET);
+    addIcon(Material.GOLDEN_HELMET);
     addFeature();
     addExclusiveItem(Material.GOLDEN_SWORD, meta -> {
       meta.addEnchant(Enchantment.FIRE_ASPECT, 1, true);

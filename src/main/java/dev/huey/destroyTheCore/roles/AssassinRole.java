@@ -82,7 +82,7 @@ public class AssassinRole extends Role {
   
   public AssassinRole() {
     super(RolesManager.RoleType.ATTACKING, RolesManager.RoleKey.ASSASSIN);
-    addInfo(Material.ENDER_PEARL);
+    addIcon(Material.ENDER_PEARL);
     addFeature();
     addExclusiveItem(
       Material.STONE_SWORD,

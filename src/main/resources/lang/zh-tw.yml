@@ -74,7 +74,7 @@ player:
   item-sent-to-spawn: "<green>你被給予某樣物品, 但因為你正在等待重生, 已改為送至你的重生點!</green>"
   role-changed:
     title: "<yellow>職業變更</yellow>"
-    subtitle: "<from> → <to>"
+    subtitle: "<white><from></white> → <white><to></white>"
 
 quiz:
   prefix: "[<light_purple>問題</light_purple>] "
@@ -181,7 +181,7 @@ game:
       more-health: "<side>有更多血"
       destroyed: "<side>摧毀了敵方核心"
   reduce-respawn-time:
-    progress: "<aqua>你正在贖罪: <progress>/5</aqua>"
+    progress: "<aqua>你正在贖罪: <progress>/<max></aqua>"
     done: "<green>贖罪成功! 罪惡值減少 1 點</green>"
     no-more: "<red>你的罪惡值太低不能贖罪!</red>"
   ores:
@@ -845,6 +845,10 @@ missions:
     desc: "找到自己的頭顱便可獲得隨機寶藏!"
     complete: "<player> 找到了自己的頭顱, 獲得 <item> × <dark_aqua><amount></dark_aqua>"
     bar: "<yellow>找頭顱: <time></yellow>"
+  fast-rrt:
+    title: "<yellow>贖罪時間</yellow>"
+    desc: "回到核心附近可以每秒回復 1 點最惡值!"
+    bar: "<yellow>快速贖罪: <time></yellow>"
 
 roles:
   default:

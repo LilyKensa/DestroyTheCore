@@ -112,17 +112,19 @@ public class LotteryGen extends UsableItemGen {
     }.runTaskTimer(DTC.instance, 0, 1);
   }
   
-  static final Component prefix = TextUtils.$("items.lottery.prefix");
+  static Component prefix() {
+    return TextUtils.$("items.lottery.prefix");
+  }
   
   void announce(Component comp) {
     for (Player p : Bukkit.getOnlinePlayers()) {
-      PlayerUtils.send(p, prefix.append(comp));
+      PlayerUtils.send(p, prefix().append(comp));
     }
   }
   
   void teamAnnounce(Player pl, Component comp) {
     for (Player p : PlayerUtils.getTeammates(pl)) {
-      PlayerUtils.send(p, prefix.append(comp));
+      PlayerUtils.send(p, prefix().append(comp));
     }
   }
   

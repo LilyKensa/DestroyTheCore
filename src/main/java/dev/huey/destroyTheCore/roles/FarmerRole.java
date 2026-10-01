@@ -22,7 +22,7 @@ public class FarmerRole extends Role {
   
   public FarmerRole() {
     super(RolesManager.RoleType.WORKING, RolesManager.RoleKey.FARMER);
-    addInfo(Material.CARROT);
+    addIcon(Material.CARROT);
     addFeature();
     addExclusiveItem(
       Material.IRON_HOE,
