@@ -1,7 +1,7 @@
 general:
   title: "<white>Destroy the Core III</white>"
-  subtitle: "Original by <gold>Hageeshow</gold> / v3 by <gold>_hueeey_</gold>"
-  plugin-prefix: "[<red>Destroy</red><white>The</white><yellow>Core</yellow>] "
+  subtitle: "Original by <gold>Hageeshow</gold> / v3 by <gold>zHueyz</gold>"
+  plugin-prefix: "[<green>Des</green><red>troy</red><white>The</white><yellow>Core</yellow>] "
 
 chat:
   format: "<player>: <white><message></white>"
@@ -32,6 +32,9 @@ player:
   respawning: "Respawning in <seconds>"
   respawned: "<yellow>Respawned</yellow>"
   item-sent-to-spawn: "<green>You were given some item, but as you're dead, it was sent to your spawn!</green>"
+  role-changed:
+    title: "<yellow>Role Changed</yellow>"
+    subtitle: "<white><from></white> → <white><to></white>"
 
 quiz:
   prefix: "[<light_purple>Quiz</light_purple>] "
@@ -63,7 +66,7 @@ game:
   sides:
     red: "<red>Red</red>"
     green: "<green>Green</green>"
-    spectator: "<gray>Spectator</gray>"
+    spectator: "<dark_aqua>Spectator</dark_aqua>"
     items: "<aqua>Items</aqua>"
   prompt-rejoin: "Use <aqua>/rejoin</aqua> to go back to the game"
   banned:
@@ -138,12 +141,22 @@ game:
       more-health: "<side> team has more health"
       destroyed: "<side> team destroyed the core"
   reduce-respawn-time:
-    progress: "<aqua>You're atoning: <progress>/5</aqua>"
+    progress: "<aqua>You're atoning: <progress>/<max></aqua>"
     done: "<green>Atoning complete! Sin reduced by 1</green>"
     no-more: "<red>Your sin is too low!</red>"
   ores:
     luck: "<aqua>You're lucky! Ore drops ×<amount>"
     bad-luck: "<red>You're unlucky... No ore drops</red>"
+  opening:
+    title: "<white>Destroy the Core III</white> - <yellow>Game Start</yellow>"
+    desc: "Destroy the opposite team's core while protecting yours!"
+    player-list:
+      side: "<list> on <side> team"
+      nobody: "<light_purple>Nobody</light_purple>"
+      separator:
+        normal: ", "
+        last: " & "
+    team-chat-hint: "Default chat channel is <aqua>team chat</aqua>, use <click:suggest_command:'/shout'><u><white>/shout</white></u></click> for global chat"
   credits:
     title: "<white>Destroy the Core III</white> - <yellow>Game Over</yellow>"
     time: "Time: <time>"
@@ -159,7 +172,7 @@ game:
     top-dyers: "+-------------- <light_purple>Top Dyers</light_purple> --------------+"
     top-miners: "+-------------- <light_purple>Top Miners</light_purple> --------------+"
     thanks: "<gold>Thanks for playing!</gold>"
-    sign: "- Plugin creator, <yellow>_hueeey_</yellow>"
+    sign: "- Plugin creator, <yellow>zHueyz</yellow>"
   bars:
     no-ores: "<white>Ores Banned: <time></white>"
     no-shop: "<white>Shop Banned: <time></white>"
@@ -283,7 +296,7 @@ gui:
     swamp: "Swamp"
 
 board:
-  title: "<red>Destroy</red><white>The</white><yellow>Core</yellow>"
+  title: "<green>Des</green><red>troy</red><white>The</white><yellow>Core</yellow>"
   team: "<white>Team</white>: <side>"
   role: "<white>Role</white>: <yellow><role></yellow>"
   phase: "<white>Phase</white> <green><index></green> - <aqua><title></aqua>"
@@ -310,17 +323,19 @@ world:
 
 commands:
   root:
-    github: "Go to <click:open_url:'https://github.com/LilyKensa/DestroyTheCore'><u>https://github.com/LilyKensa/DestroyTheCore</u></click> for help"
+    github: "Visit <click:open_url:'https://github.com/LilyKensa/DestroyTheCore'><u><white>our GitHub page</white></u></click> for directions"
   debug:
     no-game: "<red>There's not a match right now!</red>"
     good: "<green>Debug succeeded!</green>"
+  start:
+    bad-time: "<red>There's already a game!</red>"
   ping:
     result: "Your ping is <value>ms"
   suicide:
     bad-time: "<red>You can't suicide right now!</red>"
     already-dead: "<red>You're already dead!</red>"
     announce: "<player> <action>!"
-    actions: "suicided (This part is supposed to be some funny random message, but I'm too lazy at this moment, if you see this, please contact @._hueeey_. on Discord and tell him to move his lazy ass)"
+    actions: "suicided (This part is supposed to be some funny random message, but I'm too lazy at this moment, if you see this, please contact @.zHueyz. on Discord and tell him to move his lazy ass)"
   pause:
     true: "<green>Game paused by <player></green>"
     false: "<green>Game resumed <player></green>"
@@ -488,17 +503,29 @@ items:
     announce: "<player> used <item>"
   grenade:
     name: "<aqua>Grenade</aqua>"
-    desc-1: "Boom!"
+    desc-1: "Throwable object that damages players in range"
+  sensor:
+    name: "<aqua>Point Sensor</aqua>"
+    desc-1: "Throwable object that marks enemies within 3 blocks"
+  glue:
+    name: "<aqua>Instant Glue</aqua>"
+    desc-1: "Throwable object that generates honey blocks within 2 blocks"
+    desc-2: "The generated honey blocks won't drop upon breaking"
+  mower:
+    name: "<yellow>Mower</yellow>"
+    desc-1: "Destroys plants within 5 blocks"
+    desc-2: "Can be used up to 25 times"
   random-role:
     name: "<light_purple>Job Changing Book</light_purple>"
     desc-1: "After the blessing of the great bodhisattva!"
     desc-2: "By using this, you will be <yellow>randomly</yellow> assigned to another role"
     confirm: "<yellow>Crouch to confirm!</yellow>"
-    announce: "<player> used <item>, became <yellow><role></yellow>"
+    announce: "<player> used <item>, randomly became <yellow><role></yellow>"
   choose-role:
     name: "<light_purple>Job Changing Book</light_purple>"
     desc-1: "After the blessing of the great bodhisattva!"
     desc-2: "By using this, you can choose a <yellow>specific</yellow> role"
+    confirm: "<yellow>Crouch to confirm!</yellow>"
     announce: "<player> used <item>, became <yellow><role></yellow>"
   role-selector:
     name: "<aqua>Role Selection</aqua>"
@@ -506,6 +533,10 @@ items:
     locked: "<red>You haven't unlocked this role yet!</red>"
   spectator-teleporter:
     name: "<aqua>Spectator Teleporter</aqua>"
+  cosmetics-entry:
+    name: "<aqua>Cosmetics</aqua>"
+  preview-map-entry:
+    name: "<aqua>Preview Map</aqua>"
   absorption-potion:
     name: "<aqua>Guard Potion +</aqua>"
     desc-1: "Holy water blessed by the guardian deity"
@@ -556,6 +587,7 @@ items:
       attack-core-3: "<player> reduced <enemy> team's core health by 3!"
       slowness: "<player> applied Slowness II (30s) to all <enemy> team members!"
       mining-fatigue: "<player> applied Mining Fatigue I (30s) to all <enemy> team members!"
+      shuffle-hotbar: "<player> shuffled <target>'s hotbar"
   gold-digger-chestplate:
     name: "<aqua>Luminous Warning Shirt</aqua>"
     desc-1: "- <red>Bound item for Gold Diggers</red>"
@@ -794,6 +826,22 @@ missions:
     title: "<yellow>Go Outside</yellow>"
     desc: "It's a beautiful day, you shouldn't stay indoors!"
     bar: "<yellow>Go Outside: <time></yellow>"
+  find-skull:
+    title: "<yellow>Find Skull</yellow>"
+    desc: "Find your own skull to get treasures!"
+    complete: "<player> found their skull, got <item> × <dark_aqua><amount></dark_aqua>"
+    bar: "<yellow>Find Skull: <time></yellow>"
+  fast-rrt:
+    title: "<yellow>Atonement Time</yellow>"
+    desc: "Go back to the core to reduce 1 sin per second!"
+    bar: "<yellow>Fast Atonement: <time></yellow>"
+  kill-target:
+    title: "<yellow>Target Locked</yellow>"
+    desc: "Each team has a target to kill, but teammates don't know who it is!"
+    announce: "Your target is <player>"
+  free-lottery:
+    title: "<yellow>Happy Lottery Day</yellow>"
+    desc: "Free 8 lottery cores for each player"
 
 roles:
   default:
@@ -1029,19 +1077,20 @@ roles:
     feature-1: "Unable to eat on their own, they must use skills to fill their saturation"
     feature-2: "Slowness III when poisoned"
     item:
-      name: "<aqua>Sharp Fish</aqua>"
-      detail: "Sharpness II cooked salmon"
+      name: "<aqua>Straw</aqua>"
+      detail: "Respiration I breeze rod"
     skill:
-      name: "Binge Eating"
+      name: "Hunger Stealing"
       desc-1: "<dark_purple>Steal food level from players within 5 blocks</dark_purple>"
       desc-2: "<dark_purple>Gains Regeneration IV (2s) & Weakness II (10s)</dark_purple>"
       desc-3: "<dark_purple>Gains extra effect based on absorbed players count:</dark_purple>"
       desc-4: "<dark_purple>- For each teammate: 5s Resistance (Max: IV)</dark_purple>"
       desc-5: "<dark_purple>- For each enemy: 5s Speed (Max: IV)</dark_purple>"
-      announce: "<player> used <yellow><role></yellow>'s skill, absorbed <aqua><amount></aqua> players' saturation!"
+      announce: "<player> used <yellow><role></yellow>'s skill, started absorbing food levels!"
       not-hungry: "<red>You're full right now!</red>"
       no-target: "<red>No absorb target!</red>"
       stolen: "<red>Your saturation is stolen by <player>!</red>"
+      bossbar: "<light_purple>You have <time>s left to absorb food levels</light_purple>"
     eat-warning: "<red>You can't eat food!</red>"
   hacker:
     name: "Hacker"
@@ -1171,3 +1220,35 @@ roles:
       announce: "<player> used <yellow><role></yellow>'s skill, fed teammates!"
       no-material: "<red>Invalid off-hand item!</red>"
       all-full: "<red>All your teammates are full!</red>"
+
+advancement:
+  tab: "Destroy The Core"
+
+advancements:
+  root:
+    title: "<white>Destroy The Core</white>"
+    desc-1: "<green>Join the big family of DTC</green>"
+  chose-role:
+    title: "<white>Spoiled for Choice</white>"
+    desc-1: "<green>Open the role menu</green>"
+  played-role:
+    title: "<white>Destined <role></white>"
+    desc-1: "<green>Select <role> at the start of the game</green>"
+  played:
+    title: "<white>First Steps</white>"
+    desc-1: "<green>Participate in a game</green>"
+  played-spectator:
+    title: "<white>Silent Spectator</white>"
+    desc-1: "<green>Become a spectator</green>"
+  used-skill:
+    title: "<white>Testing the Waters</white>"
+    desc-1: "<green>Use a skill</green>"
+  used-many-skills:
+    title: "<white>Specialist</white>"
+    desc-1: "<green>Master your skills</green>"
+  used-lottery:
+    title: "<white>Take a Gamble</white>"
+    desc-1: "<green>Use the lottery</green>"
+  used-many-lotteries:
+    title: "<white>High Roller</white>"
+    desc-1: "<green>Go crazy with the lottery</green>"

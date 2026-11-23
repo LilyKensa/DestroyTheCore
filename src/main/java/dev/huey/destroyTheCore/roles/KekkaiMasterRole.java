@@ -252,8 +252,8 @@ public class KekkaiMasterRole extends Role {
         for (Player p : Bukkit.getOnlinePlayers()) p.playSound(
           kekkai.loc,
           Sound.ENTITY_BOGGED_DEATH,
-          1, // Volume
-          1 // Pitch
+          1,
+          1
         );
       }
     }
@@ -429,7 +429,7 @@ public class KekkaiMasterRole extends Role {
   
   public KekkaiMasterRole() {
     super(RolesManager.RoleType.ASSISTANCE, RolesManager.RoleKey.KEKKAI_MASTER);
-    addInfo(Material.BEACON);
+    addIcon(Material.BEACON);
     addFeature();
     addExclusiveItem(
       Material.FISHING_ROD,

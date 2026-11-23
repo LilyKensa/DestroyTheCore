@@ -1,14 +1,17 @@
 package dev.huey.destroyTheCore.managers;
 
+import com.fren_gor.ultimateAdvancementAPI.AdvancementMain;
 import com.fren_gor.ultimateAdvancementAPI.AdvancementTab;
 import com.fren_gor.ultimateAdvancementAPI.UltimateAdvancementAPI;
 import com.fren_gor.ultimateAdvancementAPI.advancement.BaseAdvancement;
 import com.fren_gor.ultimateAdvancementAPI.advancement.RootAdvancement;
 import com.fren_gor.ultimateAdvancementAPI.advancement.display.AdvancementDisplay;
 import com.fren_gor.ultimateAdvancementAPI.advancement.display.AdvancementDisplayBuilder;
+import com.fren_gor.ultimateAdvancementAPI.database.impl.SQLite;
 import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.utils.TextUtils;
+import java.io.File;
 import java.util.*;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
@@ -17,6 +20,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 public class AdvancementsManager {
+  
+  private static AdvancementMain advMain;
   UltimateAdvancementAPI api;
   
   AdvancementTab advancementTab;
@@ -65,8 +70,18 @@ public class AdvancementsManager {
   }
   
   public void init() {
-    api = UltimateAdvancementAPI.getInstance(DTC.instance);
+    advMain = new AdvancementMain(DTC.instance);
+    advMain.load();
+    advMain.enable(() -> {
+      File databaseFile = new File(
+        DTC.instance.getDataFolder(),
+        "internal/advancements.db"
+      );
+      databaseFile.getParentFile().mkdirs();
+      return new SQLite(advMain, databaseFile);
+    });
     
+    api = UltimateAdvancementAPI.getInstance(DTC.instance);
     api.disableVanillaAdvancements();
     
     advancementTab = api.createAdvancementTab("dtc");

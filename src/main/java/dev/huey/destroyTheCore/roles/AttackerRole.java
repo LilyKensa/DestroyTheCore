@@ -15,7 +15,7 @@ public class AttackerRole extends Role {
   
   public AttackerRole() {
     super(RolesManager.RoleType.ATTACKING, RolesManager.RoleKey.ATTACKER);
-    addInfo(Material.WOODEN_SWORD);
+    addIcon(Material.WOODEN_SWORD);
     addFeature();
     addExclusiveItem(
       Material.WOODEN_SWORD,

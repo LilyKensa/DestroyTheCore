@@ -26,7 +26,7 @@ public class ProvocateurRole extends Role {
   
   public ProvocateurRole() {
     super(RolesManager.RoleType.ASSISTANCE, RolesManager.RoleKey.PROVOCATEUR);
-    addInfo(Material.HEAVY_CORE);
+    addIcon(Material.HEAVY_CORE);
     addFeature();
     addExclusiveItem(
       Material.PUMPKIN_PIE,

@@ -6,6 +6,7 @@ import dev.huey.destroyTheCore.utils.TextUtils;
 import java.util.List;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
@@ -15,7 +16,8 @@ public class WorldCommand extends Subcommand {
     super("world");
     addArgument(
       "world",
-      () -> Bukkit.getWorlds().stream().map(World::getName).toList()
+      () -> Bukkit.getWorlds().stream().map(world -> world.getKey().asString())
+        .toList()
     );
   }
   
@@ -37,8 +39,8 @@ public class WorldCommand extends Subcommand {
       return;
     }
     
-    World world = Bukkit.getWorld(args.getFirst());
-    
+    NamespacedKey key = NamespacedKey.fromString(args.getFirst());
+    World world = key == null ? null : Bukkit.getWorld(key);
     if (world == null) {
       PlayerUtils.prefixedSend(pl, TextUtils.$("commands.world.not-found"));
       return;

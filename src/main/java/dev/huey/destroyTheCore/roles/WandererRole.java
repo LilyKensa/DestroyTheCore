@@ -116,7 +116,7 @@ public class WandererRole extends Role {
   
   public WandererRole() {
     super(RolesManager.RoleType.ATTACKING, RolesManager.RoleKey.WANDERER);
-    addInfo(Material.IRON_SWORD);
+    addIcon(Material.IRON_SWORD);
     addFeature();
     addExclusiveItem(
       Material.IRON_SWORD,

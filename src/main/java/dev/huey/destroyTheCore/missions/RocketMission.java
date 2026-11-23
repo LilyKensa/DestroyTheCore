@@ -61,8 +61,8 @@ public class RocketMission extends TimedMission {
       pl.playSound(
         pl.getLocation(),
         Sound.ENTITY_FIREWORK_ROCKET_LAUNCH,
-        1, // Volume
-        1 // Pitch
+        1,
+        1
       );
     }
   }

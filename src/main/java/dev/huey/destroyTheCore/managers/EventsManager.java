@@ -3,7 +3,9 @@ package dev.huey.destroyTheCore.managers;
 import com.destroystokyo.paper.event.player.PlayerJumpEvent;
 import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.itemGens.ProjItemGen;
+import dev.huey.destroyTheCore.items.gadgets.GlueGen;
 import dev.huey.destroyTheCore.items.gadgets.GrenadeGen;
+import dev.huey.destroyTheCore.items.gadgets.SensorGen;
 import dev.huey.destroyTheCore.roles.*;
 import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
@@ -85,6 +87,11 @@ public class EventsManager implements Listener {
     DTC.toolsManager.onBlockBreak(ev);
     
     DTC.game.handleBlockBreak(ev);
+  }
+  
+  @EventHandler
+  public void onBlockDropItem(BlockDropItemEvent ev) {
+    GlueGen.onBlockDropItems(ev);
   }
   
   @EventHandler
@@ -326,6 +333,8 @@ public class EventsManager implements Listener {
   public void onProjectileHit(ProjectileHitEvent ev) {
     WandererRole.onProjectileHit(ev);
     GrenadeGen.onProjectileHit(ev);
+    SensorGen.onProjectileHit(ev);
+    GlueGen.onProjectileHit(ev);
     
     for (ProjItemGen g : DTC.itemsManager.projGens.values()) {
       g.outerOnProjectileHit(

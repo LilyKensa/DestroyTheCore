@@ -18,11 +18,16 @@ public abstract class UsableItemGen extends ItemGen {
   ) {
     super(id, iconType);
     this.instantUse = instantUse;
-    addLore();
   }
   
   public UsableItemGen(ItemsManager.ItemKey id, Material iconType) {
     this(id, iconType, false);
+  }
+  
+  @Override
+  public void loadTranslation() {
+    super.loadTranslation();
+    addLore();
   }
   
   public boolean isInstantUse() {

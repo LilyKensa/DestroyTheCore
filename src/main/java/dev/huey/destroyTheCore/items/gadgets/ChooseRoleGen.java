@@ -4,6 +4,7 @@ import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.bases.itemGens.UsableItemGen;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
+import dev.huey.destroyTheCore.utils.TextUtils;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -26,6 +27,11 @@ public class ChooseRoleGen extends UsableItemGen {
   
   @Override
   public void use(Player pl, Block block) {
+    if (!pl.isSneaking()) {
+      pl.sendActionBar(TextUtils.$("items.choose-role.confirm"));
+      return;
+    }
+    
     PlayerUtils.takeOneItemFromHand(pl);
     
     DTC.guiManager.openRoleSelection(pl);

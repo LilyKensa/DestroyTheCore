@@ -1,9 +1,15 @@
 name: DestroyTheCore
-version: '${project.version}'
+description: "A minecraft mini-game plugin"
+version: "${project.version}"
+authors:
+  - zHueyz
+  - ItzYoyo
+
 main: dev.huey.destroyTheCore.DTC
-api-version: '26.2'
-authors: [ _hueeey_ ]
-depend: [ ProtocolLib, UltimateAdvancementAPI ]
+api-version: "26.2"
+depend:
+- ProtocolLib
+
 commands:
   dtc:
     description: Main command of Destroy the Core 3
@@ -28,15 +34,18 @@ commands:
   revive:
     description: Revive somebody
   stats:
-    description: See other player's stats
+    description: See other player"s stats
   broadcast:
     description: Broadcast message
   pause:
     description: Pause the game
   suicide:
-    description: Please don't
+    description: Please don"t
   ping:
     description: Get your ping value
+  start:
+    description: Alternative way to start the game
+
 permissions:
   dtc.admin:
     description: The admin permission

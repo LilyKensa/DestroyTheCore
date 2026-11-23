@@ -96,7 +96,7 @@ public class SetRoleCommand extends Subcommand {
       );
     }
     
-    DTC.rolesManager.setRole(target, role);
+    DTC.rolesManager.setRole(target, role, false);
     DTC.game.enforceDisplay(target);
     DTC.boardsManager.refresh(target);
   }

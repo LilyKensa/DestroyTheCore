@@ -11,7 +11,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 public class SpectatorTeleporterGen extends UsableItemGen {
   
   public SpectatorTeleporterGen() {
-    super(ItemsManager.ItemKey.SPECTATOR_TELEPORTER, Material.ENDER_EYE);
+    super(ItemsManager.ItemKey.SPECTATOR_TELEPORTER, Material.ENDER_PEARL);
     setBound();
   }
   

@@ -11,6 +11,8 @@ import dev.huey.destroyTheCore.records.SideData;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.RandomUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -19,7 +21,8 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffectType;
 
@@ -28,13 +31,20 @@ public class WitchcraftGen extends UsableItemGen {
   public WitchcraftGen() {
     super(
       ItemsManager.ItemKey.WITCHCRAFT,
-      Material.SPIRE_ARMOR_TRIM_SMITHING_TEMPLATE
+      Material.PAPER,
+      true
     );
   }
   
   @Override
   public void computeMeta(ItemMeta meta) {
-    meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+    meta.setItemModel(Material.SPIRE_ARMOR_TRIM_SMITHING_TEMPLATE.getKey());
+    meta.setMaxStackSize(16);
+  }
+  
+  @Override
+  public boolean canUse(Player pl) {
+    return PlayerUtils.checkCooldown(pl, iconType);
   }
   
   @Override
@@ -42,12 +52,9 @@ public class WitchcraftGen extends UsableItemGen {
     PlayerData data = DTC.game.getPlayerData(pl);
     Game.Side oppSide = data.side.opposite();
     
-    if (!PlayerUtils.checkHandCooldown(pl)) return;
-    PlayerUtils.setHandCooldown(pl, 60);
+    pl.setCooldown(iconType, 60);
     
-    PlayerUtils.takeOneItemFromHand(pl);
-    
-    switch (RandomUtils.range(12)) {
+    switch (RandomUtils.range(13)) {
       case 0 -> {
         for (Player e : PlayerUtils.getEnemies(data.side)) {
           PlayerUtils.delayAssign(
@@ -333,14 +340,54 @@ public class WitchcraftGen extends UsableItemGen {
           )
         );
       }
+      case 12 -> {
+        List<Player> enemies = PlayerUtils.getEnemies(data.side);
+        if (enemies.isEmpty()) break;
+        
+        Player e = RandomUtils.pick(enemies);
+        
+        PlayerUtils.delayAssign(
+          pl,
+          e,
+          Particle.WITCH,
+          () -> {
+            announce(
+              TextUtils.$(
+                "items.witchcraft.announce.shuffle-hotbar",
+                List.of(
+                  Placeholder.component("player", PlayerUtils.getName(pl)),
+                  Placeholder.component("target", PlayerUtils.getName(e))
+                )
+              )
+            );
+            
+            PlayerInventory inv = e.getInventory();
+            
+            List<ItemStack> hotbar = new ArrayList<>(9);
+            for (int slot = 0; slot < 9; slot++) {
+              hotbar.add(inv.getItem(slot));
+            }
+            
+            Collections.shuffle(hotbar);
+            
+            for (int slot = 0; slot < 9; slot++) {
+              inv.setItem(slot, hotbar.get(slot));
+            }
+            
+            e.updateInventory();
+          }
+        );
+      }
     }
   }
   
-  static final Component prefix = TextUtils.$("items.witchcraft.prefix");
+  static Component prefix() {
+    return TextUtils.$("items.witchcraft.prefix");
+  }
   
   void announce(Component comp) {
     for (Player p : Bukkit.getOnlinePlayers()) {
-      PlayerUtils.send(p, prefix.append(comp));
+      PlayerUtils.send(p, prefix().append(comp));
     }
   }
 }

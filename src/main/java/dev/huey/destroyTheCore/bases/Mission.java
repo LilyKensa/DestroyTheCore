@@ -105,6 +105,11 @@ public abstract class Mission implements Listener {
   /** How long it waits until the mission is automatically ended */
   static public final int clockDuration = 60 * 20;
   
+  /** Prefixed send */
+  static public void send(Player pl, Component comp) {
+    DTC.missionsManager.send(pl, comp);
+  }
+  
   /** Prefixed broadcast */
   static public void broadcast(Component comp) {
     DTC.missionsManager.broadcast(comp);

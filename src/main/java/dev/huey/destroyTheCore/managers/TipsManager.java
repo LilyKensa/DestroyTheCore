@@ -12,7 +12,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class TipsManager {
-  static Component prefix;
+  static Component prefix() {
+    return TextUtils.$("tips.prefix");
+  }
   
   static class Tip {
     Component title;
@@ -26,8 +28,8 @@ public class TipsManager {
   
   List<Tip> tips = new ArrayList<>();
   
-  public void init() {
-    prefix = TextUtils.$("tips.prefix");
+  public void loadTips() {
+    tips.clear();
     
     int index = 1;
     Component title;
@@ -60,8 +62,12 @@ public class TipsManager {
     }
   }
   
+  public void init() {
+    loadTips();
+  }
+  
   void send(Player pl, Component comp) {
-    PlayerUtils.send(pl, prefix.append(comp));
+    PlayerUtils.send(pl, prefix().append(comp));
   }
   
   void sendTip(Player pl, Tip tip) {
@@ -88,5 +94,9 @@ public class TipsManager {
     if (DTC.game.isPlaying) return;
     
     sendRandomToAll();
+  }
+  
+  public void onLangaugeChange() {
+    loadTips();
   }
 }

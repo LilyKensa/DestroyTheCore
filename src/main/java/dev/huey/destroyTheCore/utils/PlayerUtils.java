@@ -8,6 +8,7 @@ import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.managers.RolesManager;
 import dev.huey.destroyTheCore.records.PlayerData;
 import dev.huey.destroyTheCore.records.Pos;
+import io.papermc.paper.datacomponent.DataComponentTypes;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,13 +27,12 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.Openable;
-import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -44,6 +44,12 @@ public class PlayerUtils {
     return Bukkit.getOnlinePlayers().stream().filter(
       p -> p.getEntityId() == id
     ).findAny().orElse(null);
+  }
+  
+  static public void hideEntityForAll(Entity e) {
+    for (Player p : Bukkit.getOnlinePlayers()) {
+      p.hideEntity(DTC.instance, e);
+    }
   }
   
   static public boolean wearingLeather(Player pl) {
@@ -93,8 +99,7 @@ public class PlayerUtils {
   
   /** {@link #send} with {@link DTC#prefix} */
   static public void prefixedSend(Player pl, Component component) {
-    if (DTC.prefix == null) return;
-    send(pl, DTC.prefix.append(component));
+    send(pl, DTC.prefix().append(component));
   }
   
   static public void prefixedSend(Player pl, String text, TextColor color) {
@@ -115,8 +120,7 @@ public class PlayerUtils {
   
   /** Broadcast to admins */
   static public void prefixedNotice(Component comp) {
-    if (DTC.prefix == null) return;
-    notice(DTC.prefix.append(comp));
+    notice(DTC.prefix().append(comp));
   }
   
   /** Broadcast to everyone */
@@ -219,18 +223,10 @@ public class PlayerUtils {
     return pl.getInventory().getItemInMainHand();
   }
   
-  static public void setHandCooldown(Player pl, int ticks) {
-    pl.setCooldown(getHandItem(pl).getType(), ticks);
-  }
-  
-  static public int getHandCooldown(Player pl) {
-    return pl.getCooldown(getHandItem(pl).getType());
-  }
-  
-  static public boolean checkHandCooldown(Player pl, int offset) {
+  static public boolean checkCooldown(Player pl, Material type, int offset) {
     if (!shouldHandle(pl)) return true;
     
-    int cooldown = getHandCooldown(pl) - offset;
+    int cooldown = pl.getCooldown(type) - offset;
     if (cooldown > 0) {
       pl.sendActionBar(
         TextUtils.$(
@@ -244,6 +240,22 @@ public class PlayerUtils {
     }
     
     return true;
+  }
+  
+  static public boolean checkCooldown(Player pl, Material type) {
+    return checkCooldown(pl, type, 0);
+  }
+  
+  static public void setHandCooldown(Player pl, int ticks) {
+    pl.setCooldown(getHandItem(pl).getType(), ticks);
+  }
+  
+  static public int getHandCooldown(Player pl) {
+    return pl.getCooldown(getHandItem(pl).getType());
+  }
+  
+  static public boolean checkHandCooldown(Player pl, int offset) {
+    return checkCooldown(pl, getHandItem(pl).getType(), offset);
   }
   
   static public boolean checkHandCooldown(Player pl) {
@@ -301,25 +313,6 @@ public class PlayerUtils {
     ItemStack item = pl.getInventory().getItemInMainHand();
     item.setAmount(item.getAmount() - 1);
     pl.getInventory().setItemInMainHand(item);
-  }
-  
-  static public void damageHandItem(Player pl) {
-    ItemStack item = getHandItem(pl);
-    if (item.isEmpty()) return;
-    if (item.getType().getMaxDurability() <= 0) return;
-    
-    ItemMeta meta = item.getItemMeta();
-    if (meta != null) {
-      if (meta.isUnbreakable()) return;
-      if (
-        meta.hasEnchant(Enchantment.UNBREAKING) &&
-          RandomUtils.hit(
-            1D / (meta.getEnchantLevel(Enchantment.UNBREAKING) + 1)
-          )
-      ) return;
-    }
-    
-    pl.damageItemStack(EquipmentSlot.HAND, 1);
   }
   
   /** Replaces an item, but drop the old one on the ground */
@@ -501,10 +494,22 @@ public class PlayerUtils {
     addEffect(pl, type, ticks, level, false, true);
   }
   
+  static public void addEffect(
+    LivingEntity pl, PotionEffectType type, int ticks
+  ) {
+    addEffect(pl, type, ticks, 1);
+  }
+  
   static public void addPassiveEffect(
     LivingEntity pl, PotionEffectType type, int ticks, int level
   ) {
     addEffect(pl, type, ticks, level, true, false);
+  }
+  
+  static public void addPassiveEffect(
+    LivingEntity pl, PotionEffectType type, int ticks
+  ) {
+    addPassiveEffect(pl, type, ticks, 1);
   }
   
   static public void setEffect(
@@ -542,7 +547,7 @@ public class PlayerUtils {
   }
   
   /** Reduce respawn time process */
-  static public void rrt(Player pl) {
+  static public void rrt(Player pl, int duration) {
     PlayerData d = DTC.game.getPlayerData(pl);
     if (
       pl.isSneaking() &&
@@ -563,12 +568,12 @@ public class PlayerUtils {
         pl.playSound(
           pl.getLocation(),
           Sound.BLOCK_PISTON_EXTEND,
-          1F, // Volume
-          1.5f // Pitch
+          1F,
+          1.5f
         );
       }
       
-      if (d.rrtProgress >= PlayerData.rrtDuration) {
+      if (d.rrtProgress >= duration) {
         d.rrtProgress = 0;
         
         pl.giveExp(xp);
@@ -585,8 +590,8 @@ public class PlayerUtils {
         pl.playSound(
           pl.getLocation(),
           Sound.BLOCK_BEACON_POWER_SELECT,
-          1, // Volume
-          1.5f // Pitch
+          1,
+          1.5f
         );
         new ParticleBuilder(Particle.HAPPY_VILLAGER)
           .location(pl.getEyeLocation())
@@ -604,6 +609,10 @@ public class PlayerUtils {
               Placeholder.component(
                 "progress",
                 Component.text(d.rrtProgress / 20)
+              ),
+              Placeholder.component(
+                "max",
+                Component.text(duration / 20)
               )
             )
           )
@@ -611,8 +620,8 @@ public class PlayerUtils {
         pl.playSound(
           pl.getLocation(),
           Sound.BLOCK_WOODEN_BUTTON_CLICK_OFF,
-          0.5F, // Volume
-          1.5f // Pitch
+          0.5F,
+          1.5f
         );
       }
       
@@ -624,8 +633,8 @@ public class PlayerUtils {
         pl.playSound(
           pl.getLocation(),
           Sound.BLOCK_PISTON_EXTEND,
-          1F, // Volume
-          1.5f // Pitch
+          1F,
+          1.5f
         );
       }
     }
@@ -700,6 +709,7 @@ public class PlayerUtils {
         if (waitTicks <= 0) {
           respawn(pl);
           DTC.quizManager.discard(pl);
+          DTC.boardsManager.refresh(pl);
           
           normalTitleTimes(pl);
           pl.sendTitlePart(TitlePart.TITLE, TextUtils.$("player.respawned"));
@@ -714,6 +724,7 @@ public class PlayerUtils {
           
           data.respawnTime = secs;
           DTC.game.enforceRTScore(pl);
+          DTC.boardsManager.refresh(pl);
           
           if (waitTicks <= 60) {
             normalTitleTimes(pl);
@@ -816,7 +827,7 @@ public class PlayerUtils {
   static public void give(Player pl, ItemsManager.ItemKey key, int count) {
     ItemGen gen = DTC.itemsManager.gens.get(key);
     
-    int maxCount = gen.iconType.getMaxStackSize();
+    int maxCount = gen.getItem().getMaxStackSize();
     if (count > maxCount * 9) {
       count = maxCount * 9;
     }
@@ -834,10 +845,36 @@ public class PlayerUtils {
     give(pl, key, 1);
   }
   
+  static public void giveLobbyItems(Player pl) {
+    pl.getInventory().setItem(
+      2,
+      DTC.itemsManager.gens.get(
+        ItemsManager.ItemKey.COSMETICS_ENTRY
+      ).getItem()
+    );
+    pl.getInventory().setItem(
+      4,
+      DTC.itemsManager.gens.get(
+        ItemsManager.ItemKey.ROLE_SELECTOR
+      ).getItem()
+    );
+    pl.getInventory().setItem(
+      6,
+      DTC.itemsManager.gens.get(
+        ItemsManager.ItemKey.PREVIEW_MAP_ENTRY
+      ).getItem()
+    );
+  }
+  
   static final Pattern weaponSuffix = Pattern.compile(
     "_(sword|axe)",
     Pattern.CASE_INSENSITIVE
   );
+  
+  static final int breadNutrition = Material.BREAD.getDefaultData(
+    DataComponentTypes.FOOD
+  ).nutrition();
+  static final int respawnNutrition = 8 * breadNutrition;
   
   /** Give a player basic armors, weapons & skill books */
   static public void giveEssentials(Player pl) {
@@ -879,7 +916,7 @@ public class PlayerUtils {
       item.getType().name()
     ).find();
     
-    boolean hasFood = false;
+    int totalFood = 0;
     boolean hasAnyWeapon = false;
     boolean hasRoleItem = false;
     boolean hasPickaxe = false;
@@ -925,12 +962,18 @@ public class PlayerUtils {
     
     for (ItemStack item : inv.getContents()) {
       if (item != null && item.getType().isEdible()) {
-        hasFood = true;
-        break;
+        int nutritionPerItem = item.getType().getDefaultData(
+          DataComponentTypes.FOOD
+        ).nutrition();
+        totalFood += nutritionPerItem * item.getAmount();
       }
     }
     
-    if (!hasFood) give(pl, Material.BREAD, 8);
+    int needed = respawnNutrition - totalFood;
+    if (needed > 0) {
+      int amount = Math.ceilDiv(needed, breadNutrition);
+      give(pl, Material.BREAD, amount);
+    }
     
     if (!inv.contains(Material.KNOWLEDGE_BOOK)) {
       give(pl, data.role.getSkillItem());
@@ -1096,7 +1139,7 @@ public class PlayerUtils {
   static public List<Player> getNonEnemies(Game.Side side) {
     return all().stream().filter(p -> {
       PlayerData data = DTC.game.getPlayerData(p);
-      return (!shouldHandle(p) || (!data.side.equals(side.opposite())));
+      return (!shouldHandle(p) || !data.side.equals(side.opposite()));
     }).toList();
   }
   

@@ -70,8 +70,8 @@ public class MoleRole extends Role {
       p.playSound(
         pl,
         Sound.ENTITY_GENERIC_EXPLODE,
-        1, // Volume
-        1 // Pitch
+        1,
+        1
       );
     }
     
@@ -224,7 +224,7 @@ public class MoleRole extends Role {
   
   public MoleRole() {
     super(RolesManager.RoleType.ATTACKING, RolesManager.RoleKey.MOLE);
-    addInfo(Material.RABBIT_HIDE);
+    addIcon(Material.RABBIT_HIDE);
     addFeature();
     addExclusiveItem(
       Material.PRISMARINE_SHARD,

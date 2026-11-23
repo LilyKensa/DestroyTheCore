@@ -88,17 +88,18 @@ public class QuizManager {
         pl.getLocation(),
         correct ? Sound.ENTITY_EXPERIENCE_ORB_PICKUP
           : Sound.ENTITY_ZOMBIE_HORSE_HURT,
-        1, // Volume
-        1 // Pitch
+        1,
+        1
       );
     }
   }
   
-  static public Component prefix;
+  static public Component prefix() {
+    return TextUtils.$("quiz.prefix");
+  }
   
   static public void send(Player pl, Component message) {
-    if (prefix == null) prefix = TextUtils.$("quiz.prefix");
-    PlayerUtils.send(pl, prefix.append(message));
+    PlayerUtils.send(pl, prefix().append(message));
   }
   
   Map<UUID, Quiz> quizzes = new HashMap<>();

@@ -10,7 +10,9 @@ import org.bukkit.entity.Player;
 
 public class AntiCheatManager {
   
-  static public Component prefix;
+  static public Component prefix() {
+    return TextUtils.$("anti-cheat.prefix");
+  }
   
   public enum Cheat {
     QUIZ_SPEED("reaction-time", 40),
@@ -32,13 +34,9 @@ public class AntiCheatManager {
     
     public void kick(Player pl) {
       pl.kick(
-        prefix.append(getMessage())
+        prefix().append(getMessage())
       );
     }
-  }
-  
-  public void init() {
-    prefix = TextUtils.$("anti-cheat.prefix");
   }
   
   TextColor getYellowToRed(int value) {
@@ -64,7 +62,7 @@ public class AntiCheatManager {
     
     if (offset > 0 && score > cheat.reportThreshold) {
       PlayerUtils.notice(
-        prefix.append(
+        prefix().append(
           TextUtils.$(
             "anti-cheat.admin-notice",
             List.of(

@@ -113,7 +113,7 @@ public class FairyRole extends Role {
   
   static Queue<Sprinkle> queue = new ArrayDeque<>();
   
-  static public void onTick() {
+  static public void onParticleTick() {
     for (Sprinkle s : queue) {
       s.onTick();
     }
@@ -183,7 +183,7 @@ public class FairyRole extends Role {
   
   public FairyRole() {
     super(RolesManager.RoleType.ASSISTANCE, RolesManager.RoleKey.FAIRY);
-    addInfo(Material.ELYTRA);
+    addIcon(Material.ELYTRA);
     addFeature();
     addExclusiveItem(Material.BOW, meta -> {
       meta.addEnchant(Enchantment.PUNCH, 1, true);

@@ -13,7 +13,7 @@ public class DefaultRole extends Role {
   
   public DefaultRole() {
     super(RolesManager.RoleType.USELESS, RolesManager.RoleKey.DEFAULT);
-    addInfo(Material.VILLAGER_SPAWN_EGG);
+    addIcon(Material.VILLAGER_SPAWN_EGG);
     addSkill(30 * 20);
   }
   

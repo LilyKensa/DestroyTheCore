@@ -82,7 +82,7 @@ public class AssassinRole extends Role {
   
   public AssassinRole() {
     super(RolesManager.RoleType.ATTACKING, RolesManager.RoleKey.ASSASSIN);
-    addInfo(Material.ENDER_PEARL);
+    addIcon(Material.ENDER_PEARL);
     addFeature();
     addExclusiveItem(
       Material.STONE_SWORD,
@@ -178,8 +178,8 @@ public class AssassinRole extends Role {
     nearest.playSound(
       nearest.getLocation(),
       Sound.ENTITY_PHANTOM_DEATH,
-      1, // Volume
-      1 // Pitch
+      1,
+      1
     );
     
     CoreUtils.setTickOut(() -> {
@@ -196,8 +196,8 @@ public class AssassinRole extends Role {
       pl.playSound(
         nearest.getLocation(),
         Sound.ENTITY_PLAYER_TELEPORT,
-        1, // Volume
-        1 // Pitch
+        1,
+        1
       );
       
       PlayerUtils.addEffect(

@@ -92,8 +92,8 @@ public class GuiManager {
       pl.playSound(
         pl,
         Sound.BLOCK_ENDER_CHEST_OPEN,
-        1, // Volume
-        1 // Pitch
+        1,
+        1
       );
       
       window.addCloseHandler((reason) -> {
@@ -101,8 +101,8 @@ public class GuiManager {
         pl.playSound(
           pl,
           Sound.BLOCK_ENDER_CHEST_CLOSE,
-          1, // Volume
-          1 // Pitch
+          1,
+          1
         );
       });
     }

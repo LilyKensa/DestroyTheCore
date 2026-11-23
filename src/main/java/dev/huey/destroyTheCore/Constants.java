@@ -41,6 +41,17 @@ public class Constants {
       )
     ),
     Map.entry(
+      Material.COPPER_ORE,
+      new OreData(
+        Material.COPPER_ORE,
+        Material.RAW_COPPER,
+        NamedTextColor.GOLD,
+        6,
+        0,
+        0
+      )
+    ),
+    Map.entry(
       Material.IRON_ORE,
       new OreData(
         Material.IRON_ORE,

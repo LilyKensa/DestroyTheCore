@@ -52,11 +52,11 @@ public class RandomRoleItem {
     pl.playSound(
       pl.getLocation(),
       Sound.ENTITY_EXPERIENCE_ORB_PICKUP,
-      1, // Volume
-      1 // Pitch
+      1,
+      1
     );
     
-    DTC.rolesManager.setRole(pl, role);
+    DTC.rolesManager.setRole(pl, role, false);
     DTC.game.enforceDisplay(pl);
     DTC.boardsManager.refresh(pl);
   }

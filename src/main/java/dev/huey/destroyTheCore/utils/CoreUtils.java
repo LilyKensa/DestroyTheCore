@@ -1,7 +1,9 @@
 package dev.huey.destroyTheCore.utils;
 
+import com.destroystokyo.paper.ParticleBuilder;
 import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
+import dev.huey.destroyTheCore.items.gadgets.GlueGen;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
@@ -11,8 +13,8 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
+import org.bukkit.*;
+import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
@@ -161,5 +163,38 @@ public class CoreUtils {
   
   static public boolean isSpecialDate(int month, int date) {
     return isSpecialDate(Month.of(month), date);
+  }
+  
+  static public void breakBlock(Block block, boolean dropItem) {
+    if (block.getType().isAir()) return;
+    
+    Location loc = block.getLocation().toCenterLocation();
+    World world = block.getWorld();
+    
+    boolean containedGlue = GlueGen.blockSet.remove(block.getLocation());
+    if (dropItem && !containedGlue) {
+      block.breakNaturally();
+    }
+    else {
+      new ParticleBuilder(Particle.BLOCK)
+        .data(block.getBlockData())
+        .location(loc)
+        .count(30)
+        .offset(0.25, 0.25, 0.25)
+        .extra(0.05)
+        .spawn();
+      world.playSound(
+        loc,
+        block.getBlockData().getSoundGroup().getBreakSound(),
+        1,
+        1
+      );
+      
+      block.setType(Material.AIR);
+    }
+  }
+  
+  static public void breakBlock(Block block) {
+    breakBlock(block, true);
   }
 }

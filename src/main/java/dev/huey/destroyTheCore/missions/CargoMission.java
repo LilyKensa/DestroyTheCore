@@ -96,9 +96,8 @@ public class CargoMission extends Mission implements Listener {
   @EventHandler
   public void onPlayerDropItem(PlayerDropItemEvent ev) {
     if (
-      ev.getItemDrop().getItemStack().getPersistentDataContainer().has(
-        dataNamespace
-      )
+      ev.getItemDrop().getItemStack()
+        .getPersistentDataContainer().has(dataNamespace)
     ) {
       itemEntities.add(ev.getItemDrop());
     }

@@ -82,7 +82,7 @@ public class DarkbringerRole extends Role {
   
   public DarkbringerRole() {
     super(RolesManager.RoleType.ASSISTANCE, RolesManager.RoleKey.DARKBRINGER);
-    addInfo(Material.WARDEN_SPAWN_EGG);
+    addIcon(Material.WARDEN_SPAWN_EGG);
     addFeature();
     addExclusiveItem(
       Material.ECHO_SHARD,

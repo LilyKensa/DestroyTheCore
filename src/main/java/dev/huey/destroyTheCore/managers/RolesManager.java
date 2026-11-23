@@ -6,12 +6,17 @@ import dev.huey.destroyTheCore.bases.Role;
 import dev.huey.destroyTheCore.records.PlayerData;
 import dev.huey.destroyTheCore.roles.*;
 import dev.huey.destroyTheCore.utils.CoreUtils;
+import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
+import dev.huey.destroyTheCore.utils.TextUtils;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.title.TitlePart;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -82,17 +87,46 @@ public class RolesManager {
     ).collect(
       Collectors.toMap(r -> r.id, r -> r, (e, n) -> e, LinkedHashMap::new)
     );
+    
+    loadTranslations();
+  }
+  
+  public void loadTranslations() {
+    for (Role role : roles.values()) {
+      role.loadTranslations();
+    }
   }
   
   public void setRole(Player pl, Role role) {
+    setRole(pl, role, true);
+  }
+  
+  public void setRole(Player pl, Role role, boolean sendTitle) {
     PlayerData data = DTC.game.getPlayerData(pl);
+    
+    if (sendTitle) {
+      pl.sendTitlePart(
+        TitlePart.TITLE,
+        TextUtils.$("player.role-changed.title")
+      );
+      pl.sendTitlePart(
+        TitlePart.SUBTITLE,
+        TextUtils.$(
+          "player.role-changed.subtitle",
+          List.of(
+            Placeholder.component("from", data.role.name),
+            Placeholder.component("to", role.name)
+          )
+        )
+      );
+    }
     
     data.setRole(role);
     
     DTC.game.enforceDisplay(pl);
     DTC.boardsManager.refresh(pl);
     
-    if (!DTC.game.isPlaying) return;
+    if (!LocUtils.inLive(pl)) return;
     
     PlayerInventory inv = pl.getInventory();
     
@@ -190,5 +224,9 @@ public class RolesManager {
         .getPersistentDataContainer().has(
           Role.skillNamespace
         ));
+  }
+  
+  public void onLanguageChange() {
+    loadTranslations();
   }
 }

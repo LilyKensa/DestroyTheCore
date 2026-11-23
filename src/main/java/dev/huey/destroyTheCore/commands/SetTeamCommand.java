@@ -35,6 +35,7 @@ public class SetTeamCommand extends Subcommand {
   public void execute(Player pl, List<String> args) {
     if (args.isEmpty()) {
       PlayerUtils.prefixedSend(pl, TextUtils.$("commands.join.unclear"));
+      return;
     }
     
     Game.Side side = Arrays.stream(Game.Side.values()).filter(

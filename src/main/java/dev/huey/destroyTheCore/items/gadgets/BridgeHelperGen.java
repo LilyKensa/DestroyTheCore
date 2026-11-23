@@ -14,12 +14,18 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.type.Ladder;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class BridgeHelperGen extends UsableItemGen {
   
   public BridgeHelperGen() {
     super(ItemsManager.ItemKey.BRIDGE_HELPER, Material.BRICK);
+  }
+  
+  @Override
+  public void computeMeta(ItemMeta meta) {
+    meta.setMaxStackSize(16);
   }
   
   static public boolean growPillar(Location loc) {

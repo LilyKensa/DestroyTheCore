@@ -160,8 +160,8 @@ public class LocUtils {
           loc,
           open ? Sound.BLOCK_ENDER_CHEST_OPEN : Sound.BLOCK_ENDER_CHEST_CLOSE,
           SoundCategory.BLOCKS,
-          1, // Volume
-          1 // Pitch
+          1,
+          1
         );
       }
     }
@@ -242,7 +242,7 @@ public class LocUtils {
           Block block = loc.getBlock();
           
           if (block.isCollidable()) {
-            block.breakNaturally();
+            CoreUtils.breakBlock(block);
           }
         }
       }

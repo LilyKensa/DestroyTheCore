@@ -1,7 +1,7 @@
 general:
   title: "<white>殲滅攻城戰 III</white>"
-  subtitle: "原作: <gold>Hageeshow</gold> / 第三版: <gold>_hueeey_</gold>"
-  plugin-prefix: "[<red>殲滅</red><white>攻城</white><yellow>戰</yellow>] "
+  subtitle: "原作: <gold>Hageeshow</gold> / 第三版: <gold>zHueyz</gold>"
+  plugin-prefix: "[<green>殲</green><red>滅</red><white>攻城</white><yellow>戰</yellow>] "
 
 chat:
   format: "<player>: <white><message></white>"
@@ -72,6 +72,9 @@ player:
   respawning: "在 <seconds> 秒後重生"
   respawned: "<yellow>已重生</yellow>"
   item-sent-to-spawn: "<green>你被給予某樣物品, 但因為你正在等待重生, 已改為送至你的重生點!</green>"
+  role-changed:
+    title: "<yellow>職業變更</yellow>"
+    subtitle: "<white><from></white> → <white><to></white>"
 
 quiz:
   prefix: "[<light_purple>問題</light_purple>] "
@@ -103,7 +106,7 @@ game:
   sides:
     red: "<red>紅隊</red>"
     green: "<green>綠隊</green>"
-    spectator: "<gray>旁觀者</gray>"
+    spectator: "<dark_aqua>旁觀者</dark_aqua>"
     items: "<aqua>物品</aqua>"
   prompt-rejoin: "用 <aqua>/rejoin</aqua> 以重新加入遊戲"
   banned:
@@ -178,12 +181,22 @@ game:
       more-health: "<side>有更多血"
       destroyed: "<side>摧毀了敵方核心"
   reduce-respawn-time:
-    progress: "<aqua>你正在贖罪: <progress>/5</aqua>"
+    progress: "<aqua>你正在贖罪: <progress>/<max></aqua>"
     done: "<green>贖罪成功! 罪惡值減少 1 點</green>"
     no-more: "<red>你的罪惡值太低不能贖罪!</red>"
   ores:
     luck: "<aqua>幸運! 礦物掉落 ×<amount>"
     bad-luck: "<red>不幸! 礦物沒有掉落</red>"
+  opening:
+    title: "<white>殲滅攻城戰 III</white> - <yellow>遊戲開始</yellow>"
+    desc: "摧毀敵方的核心, 同時守護好你自己的!"
+    player-list:
+      side: "由 <list> 組成<side>"
+      nobody: "<light_purple>沒有任何人</light_purple>"
+      separator:
+        normal: ", "
+        last: " & "
+    team-chat-hint: "預設聊天頻道是<aqua>隊伍專屬</aqua>, 公開聊天請使用 <click:suggest_command:'/shout'><u><white>/shout</white></u></click> 指令"
   credits:
     title: "<white>殲滅攻城戰 III</white> - <yellow>遊戲結束</yellow>"
     time: "遊玩時間: <time>"
@@ -199,7 +212,7 @@ game:
     top-dyers: "+--------------- <light_purple>死神的常客</light_purple> ---------------+"
     top-miners: "+--------------- <light_purple>最優質礦工</light_purple> ---------------+"
     thanks: "<gold>感謝您的遊玩!</gold>"
-    sign: "- 插件製作人, <yellow>_hueeey_</yellow>"
+    sign: "- 插件製作人, <yellow>zHueyz</yellow>"
   bars:
     no-ores: "<white>礦區封鎖: <time></white>"
     no-shop: "<white>商店封鎖: <time></white>"
@@ -323,7 +336,7 @@ gui:
     swamp: "沼澤"
 
 board:
-  title: "<red>殲滅</red><white>攻城</white><yellow>戰</yellow>"
+  title: "<green>殲</green><red>滅</red><white>攻城</white><yellow>戰</yellow>"
   team: "<white>隊伍</white>: <side>"
   role: "<white>職業</white>: <yellow><role></yellow>"
   phase: "<white>階段</white> <green><index></green> - <aqua><title></aqua>"
@@ -350,10 +363,12 @@ world:
 
 commands:
   root:
-    github: "訪問 <click:open_url:'https://github.com/LilyKensa/DestroyTheCore'><u>https://github.com/LilyKensa/DestroyTheCore</u></click> 已獲得更多訊息"
+    github: "訪問 <click:open_url:'https://github.com/LilyKensa/DestroyTheCore'><u><white>我們的 GitHub</white></u></click> 以獲得更多訊息"
   debug:
     no-game: "<red>There's not a match right now!</red>"
     good: "<green>Debug succeeded!</green>"
+  start:
+    bad-time: "<red>遊戲已經開始了!</red>"
   ping:
     result: "你的延遲是 <value> 毫秒"
   suicide:
@@ -528,17 +543,29 @@ items:
     announce: "<player> 使用了<item>"
   grenade:
     name: "<aqua>手榴彈</aqua>"
-    desc-1: "砰!"
+    desc-1: "投擲物, 落地時對周圍的玩家造成傷害"
+  sensor:
+    name: "<aqua>偵測器</aqua>"
+    desc-1: "投擲物, 落地時標記附近 3 格的敵人"
+  glue:
+    name: "<aqua>瞬間膠</aqua>"
+    desc-1: "投擲物, 落地時產生半徑大約 2 格的蜂蜜方塊"
+    desc-2: "產生的蜂蜜方塊被破壞時不會掉落"
+  mower:
+    name: "<yellow>除草機</yellow>"
+    desc-1: "用於清除附近 5 格內的花花草草的工具"
+    desc-2: "最多可以用 25 次"
   random-role:
     name: "<light_purple>轉職書</light_purple>"
     desc-1: "經過菩薩加持!"
-    desc-2: "使用後可以<yellow>隨機</yellow>轉換職業"
+    desc-2: "使用後可以轉換至<yellow>隨機</yellow>職業"
     confirm: "<yellow>蹲下以確認!</yellow>"
-    announce: "<player> 使用了<item>, 轉職成<yellow><role></yellow>"
+    announce: "<player> 使用了<item>, 隨機轉職成<yellow><role></yellow>"
   choose-role:
     name: "<light_purple>轉職書</light_purple>"
     desc-1: "經過菩薩加持!"
     desc-2: "使用後可以轉換至<yellow>指定</yellow>職業"
+    confirm: "<yellow>蹲下以確認!</yellow>"
     announce: "<player> 使用了<item>, 轉職成<yellow><role></yellow>"
   role-selector:
     name: "<aqua>選擇職業</aqua>"
@@ -546,6 +573,10 @@ items:
     locked: "<red>你尚未解鎖此職業!</red>"
   spectator-teleporter:
     name: "<aqua>旁觀者傳送器</aqua>"
+  cosmetics-entry:
+    name: "<aqua>造型</aqua>"
+  preview-map-entry:
+    name: "<aqua>觀察地圖</aqua>"
   absorption-potion:
     name: "<aqua>強效護水</aqua>"
     desc-1: "擁有守護之神加持的聖水"
@@ -596,6 +627,7 @@ items:
       attack-core-3: "<player> 使<enemy>核心扣 3 點血!"
       slowness: "<player> 使<enemy>全部成員獲得緩速 II (30s)!"
       mining-fatigue: "<player> 使<enemy>全部成員獲得挖掘疲勞 I (30s)!"
+      shuffle-hotbar: "<player> 使 <target> 快捷欄隨機換位"
   gold-digger-chestplate:
     name: "<aqua>反光警示衣</aqua>"
     desc-1: "- <red>淘金者綁定物品</red>"
@@ -839,6 +871,17 @@ missions:
     desc: "找到自己的頭顱便可獲得隨機寶藏!"
     complete: "<player> 找到了自己的頭顱, 獲得 <item> × <dark_aqua><amount></dark_aqua>"
     bar: "<yellow>找頭顱: <time></yellow>"
+  fast-rrt:
+    title: "<yellow>贖罪時間</yellow>"
+    desc: "回到核心附近可以每秒回復 1 點最惡值!"
+    bar: "<yellow>快速贖罪: <time></yellow>"
+  kill-target:
+    title: "<yellow>選定你了</yellow>"
+    desc: "每隊有一個目標, 但隊友不知道是誰, 先殺死目標的隊伍獲勝!"
+    announce: "你們的目標是 <player>"
+  free-lottery:
+    title: "<yellow>抽獎節快樂</yellow>"
+    desc: "每人發放 8 個抽獎核心"
 
 roles:
   default:
@@ -1069,24 +1112,25 @@ roles:
       desc-1: "<dark_purple>給所有隊友額外 6 顆心 (60s)</dark_purple>"
       announce: "<player> 使用了<yellow><role></yellow>技能, 隊友血量增加!"
   glutton:
-    name: "大胃王"
+    name: "暴食者"
     desc-1: "<gold>吸收附近敵人的飽食度並獲得抗性或速度!</gold>"
     feature-1: "無法自主進食, 必須靠既能回復飽食度"
     feature-2: "中毒時緩速 III"
     item:
-      name: "<aqua>鋒利烤魚</aqua>"
-      detail: "鋒利 II 烤鮭魚"
+      name: "<aqua>吸管</aqua>"
+      detail: "水中呼吸 I 旋風桿"
     skill:
-      name: "暴飲暴食"
-      desc-1: "<dark_purple>從 5 格內玩家盜取飽食度</dark_purple>"
+      name: "飢餓竊取"
+      desc-1: "<dark_purple>10 秒內用吸管從 5 格內玩家盜取飽食度</dark_purple>"
       desc-2: "<dark_purple>得到回復 IV (2s) & 虛弱 II (10s)</dark_purple>"
       desc-3: "<dark_purple>根據身旁的玩家數量得到其他效果:</dark_purple>"
       desc-4: "<dark_purple>- 對於每個隊友: 5s 抗性 (最高: IV)</dark_purple>"
       desc-5: "<dark_purple>- 對於每個敵人: 5s 速度 (最高: IV)</dark_purple>"
-      announce: "<player> 使用了<yellow><role></yellow>技能, 吸取了 <aqua><amount></aqua> 位玩家的飽食度!"
+      announce: "<player> 使用了<yellow><role></yellow>技能, 開始吸取飽食度!"
       not-hungry: "<red>你目前還很飽!</red>"
       no-target: "<red>找不到吸食目標!</red>"
       stolen: "<red>你的飽食度被 <player> 盜走了!</red>"
+      bossbar: "<light_purple>你還有 <time> 秒可以吸取飽食度</light_purple>"
     eat-warning: "<red>你不能主動進食!</red>"
   hacker:
     name: "駭客"

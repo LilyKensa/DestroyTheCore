@@ -17,7 +17,9 @@ import org.bukkit.persistence.PersistentDataType;
 
 public class EditorTool {
   
-  static final Component toolPrefix = TextUtils.$("tool.prefix");
+  static Component toolPrefix() {
+    return TextUtils.$("tool.prefix");
+  }
   
   /** Used to distinguish tools, stored data is {@link #id} */
   static final NamespacedKey dataNamespace = new NamespacedKey(
@@ -41,7 +43,7 @@ public class EditorTool {
     ItemMeta meta = item.getItemMeta();
     
     meta.displayName(
-      toolPrefix.append(
+      toolPrefix().append(
         TextUtils.$("tools." + id).color(
           NamedTextColor.GOLD
         )

@@ -10,10 +10,7 @@ import java.util.Optional;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
+import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 
 public class CommandsManager implements TabCompleter, CommandExecutor {
@@ -50,7 +47,8 @@ public class CommandsManager implements TabCompleter, CommandExecutor {
       new PingCommand(),
       new CooldownCommand(),
       new SettingsCommand(),
-      new DebugCommand()
+      new DebugCommand(),
+      new StartCommand()
     );
   }
   
@@ -87,7 +85,18 @@ public class CommandsManager implements TabCompleter, CommandExecutor {
   public boolean onCommand(
     CommandSender sender, Command command, String label, String[] args
   ) {
-    if (!(sender instanceof Player pl)) return true;
+    if (sender instanceof ProxiedCommandSender proxied) {
+      sender = proxied.getCallee();
+    }
+    
+    if (!(sender instanceof Player pl)) {
+      sender.sendMessage(
+        Component.text(
+          "Sending commands from console is currently not supported (possibly never will be)"
+        )
+      );
+      return true;
+    }
     
     if (command.getName().equals("dtc")) {
       if (args.length < 1) {
