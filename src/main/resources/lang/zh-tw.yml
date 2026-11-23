@@ -187,6 +187,16 @@ game:
   ores:
     luck: "<aqua>幸運! 礦物掉落 ×<amount>"
     bad-luck: "<red>不幸! 礦物沒有掉落</red>"
+  opening:
+    title: "<white>殲滅攻城戰 III</white> - <yellow>遊戲開始</yellow>"
+    desc: "摧毀敵方的核心, 同時守護好你自己的!"
+    player-list:
+      side: "由 <list> 組成<side>"
+      nobody: "<light_purple>沒有任何人</light_purple>"
+      separator:
+        normal: ", "
+        last: " & "
+    team-chat-hint: "預設聊天頻道是<aqua>隊伍專屬</aqua>, 公開聊天請使用 <click:suggest_command:'/shout'><u><white>/shout</white></u></click> 指令"
   credits:
     title: "<white>殲滅攻城戰 III</white> - <yellow>遊戲結束</yellow>"
     time: "遊玩時間: <time>"
@@ -353,7 +363,7 @@ world:
 
 commands:
   root:
-    github: "訪問 <click:open_url:'https://github.com/LilyKensa/DestroyTheCore'><u>https://github.com/LilyKensa/DestroyTheCore</u></click> 已獲得更多訊息"
+    github: "訪問 <click:open_url:'https://github.com/LilyKensa/DestroyTheCore'><u><white>我們的 GitHub</white></u></click> 以獲得更多訊息"
   debug:
     no-game: "<red>There's not a match right now!</red>"
     good: "<green>Debug succeeded!</green>"
@@ -533,7 +543,18 @@ items:
     announce: "<player> 使用了<item>"
   grenade:
     name: "<aqua>手榴彈</aqua>"
-    desc-1: "砰!"
+    desc-1: "投擲物, 落地時對周圍的玩家造成傷害"
+  sensor:
+    name: "<aqua>偵測器</aqua>"
+    desc-1: "投擲物, 落地時標記附近 3 格的敵人"
+  glue:
+    name: "<aqua>瞬間膠</aqua>"
+    desc-1: "投擲物, 落地時產生半徑大約 2 格的蜂蜜方塊"
+    desc-2: "產生的蜂蜜方塊被破壞時不會掉落"
+  mower:
+    name: "<yellow>除草機</yellow>"
+    desc-1: "用於清除附近 5 格內的花花草草的工具"
+    desc-2: "最多可以用 25 次"
   random-role:
     name: "<light_purple>轉職書</light_purple>"
     desc-1: "經過菩薩加持!"
@@ -552,6 +573,10 @@ items:
     locked: "<red>你尚未解鎖此職業!</red>"
   spectator-teleporter:
     name: "<aqua>旁觀者傳送器</aqua>"
+  cosmetics-entry:
+    name: "<aqua>造型</aqua>"
+  preview-map-entry:
+    name: "<aqua>觀察地圖</aqua>"
   absorption-potion:
     name: "<aqua>強效護水</aqua>"
     desc-1: "擁有守護之神加持的聖水"

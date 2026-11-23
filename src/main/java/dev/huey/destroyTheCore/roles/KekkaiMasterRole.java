@@ -252,8 +252,8 @@ public class KekkaiMasterRole extends Role {
         for (Player p : Bukkit.getOnlinePlayers()) p.playSound(
           kekkai.loc,
           Sound.ENTITY_BOGGED_DEATH,
-          1, // Volume
-          1 // Pitch
+          1,
+          1
         );
       }
     }

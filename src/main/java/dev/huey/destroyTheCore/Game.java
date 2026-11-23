@@ -9,6 +9,7 @@ import com.destroystokyo.paper.ParticleBuilder;
 import dev.huey.destroyTheCore.bases.ItemGen;
 import dev.huey.destroyTheCore.bases.Mission;
 import dev.huey.destroyTheCore.bases.itemGens.UsableItemGen;
+import dev.huey.destroyTheCore.items.gadgets.GrenadeGen;
 import dev.huey.destroyTheCore.managers.AntiCheatManager;
 import dev.huey.destroyTheCore.managers.ItemsManager;
 import dev.huey.destroyTheCore.managers.RolesManager;
@@ -33,7 +34,9 @@ import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.bossbar.BossBarViewer;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentBuilder;
 import net.kyori.adventure.text.JoinConfiguration;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.title.TitlePart;
@@ -690,12 +693,7 @@ public class Game {
       
       PlayerInventory inv = pl.getInventory();
       
-      inv.setItem(
-        4,
-        DTC.itemsManager.gens.get(
-          ItemsManager.ItemKey.ROLE_SELECTOR
-        ).getItem()
-      );
+      PlayerUtils.giveLobbyItems(pl);
       inv.setHeldItemSlot(4);
       
       PlayerUtils.backToLobby(pl);
@@ -830,6 +828,11 @@ public class Game {
       
       double damage = ev.getDamage(), finalDamage = ev.getFinalDamage();
       
+      boolean isGrenade = proj != null && GrenadeGen.checkExploding(proj);
+      if (isGrenade) {
+        damage *= GrenadeGen.damageMultiplier;
+      }
+      
       PlayerData attackerData = getPlayerData(attacker),
         victimData = getPlayerData(victim);
       
@@ -837,8 +840,8 @@ public class Game {
         if (proj == null) {
           attacker.sendActionBar(TextUtils.$("game.banned.attack.teammate"));
         }
-        else if (proj.getScoreboardTags().contains("grenade")) {
-          ev.setDamage(damage * 0.5);
+        else if (isGrenade) {
+          ev.setDamage(damage * GrenadeGen.teamDamageMultiplier);
           return;
         }
         
@@ -1308,8 +1311,8 @@ public class Game {
       pl.playSound(
         pl.getLocation(),
         Sound.BLOCK_ENDER_CHEST_OPEN,
-        1, // Volume
-        1 // Pitch
+        1,
+        1
       );
     }
     else {
@@ -1318,8 +1321,8 @@ public class Game {
       pl.playSound(
         pl.getLocation(),
         Sound.BLOCK_IRON_DOOR_CLOSE,
-        1, // Volume
-        1 // Pitch
+        1,
+        1
       );
     }
   }
@@ -1477,8 +1480,8 @@ public class Game {
         p.playSound(
           centerLoc,
           ageable.getSoundGroup().getBreakSound(),
-          1, // Volume
-          1 // Pitch
+          1,
+          1
         );
       }
     }
@@ -1696,7 +1699,8 @@ public class Game {
   }
   
   public void handleOresBreak(Player pl, Block block) {
-    PlayerUtils.damageHandItem(pl);
+    pl.damageItemStack(EquipmentSlot.HAND, 1);
+    pl.setExhaustion(pl.getExhaustion() + 0.005f);
     
     Constants.OreData ore = Constants.ores.get(block.getType());
     
@@ -1795,8 +1799,8 @@ public class Game {
   }
   
   public void handleCoreAttack(Player pl, Block block) {
-    PlayerUtils.damageHandItem(pl);
-    pl.setExhaustion(pl.getExhaustion() + 0.19f);
+    pl.damageItemStack(EquipmentSlot.HAND, 1);
+    pl.setExhaustion(pl.getExhaustion() + 0.2f);
     
     BiConsumer<PotionEffectType, Integer> effector = (type, level) -> {
       PlayerUtils.addEffect(
@@ -1847,15 +1851,15 @@ public class Game {
             LocUtils.selfSide(map.core.center(), oppositeSide)
           ),
           Sound.ENTITY_ENDER_DRAGON_FLAP,
-          0.8f, // Volume
-          1 // Pitch
+          0.8f,
+          1
         );
         
         p.playSound(
           p.getLocation(),
           Sound.ENTITY_ENDER_DRAGON_FLAP,
-          0.2f, // Volume
-          1 // Pitch
+          0.2f,
+          1
         );
       }
       
@@ -1883,8 +1887,8 @@ public class Game {
         p.playSound(
           p.getLocation(),
           Sound.BLOCK_ANVIL_LAND,
-          1, // Volume
-          1 // Pitch
+          1,
+          1
         );
       }
       else {
@@ -1893,15 +1897,15 @@ public class Game {
             LocUtils.selfSide(map.core.center(), oppositeSide)
           ),
           Sound.BLOCK_ANVIL_LAND,
-          0.8f, // Volume
-          1 // Pitch
+          0.8f,
+          1
         );
         
         p.playSound(
           p.getLocation(),
           Sound.BLOCK_ANVIL_LAND,
-          0.2f, // Volume
-          1 // Pitch
+          0.2f,
+          1
         );
       }
     }
@@ -1996,7 +2000,8 @@ public class Game {
           )
       )
     ) {
-      PlayerUtils.damageHandItem(pl);
+      pl.damageItemStack(EquipmentSlot.HAND, 1);
+      pl.setExhaustion(pl.getExhaustion() + 0.05f);
       
       PlayerUtils.give(
         pl,
@@ -2862,8 +2867,8 @@ public class Game {
             p.playSound(
               p.getLocation(),
               Sound.BLOCK_NOTE_BLOCK_BELL,
-              1, // Volume
-              2 // Pitch
+              1,
+              2
             );
           }
           
@@ -2889,8 +2894,8 @@ public class Game {
           p.playSound(
             p.getLocation(),
             Sound.BLOCK_NOTE_BLOCK_BELL,
-            1, // Volume
-            1 // Pitch
+            1,
+            1
           );
         }
         
@@ -3008,6 +3013,47 @@ public class Game {
       () -> DTC.rolesManager.onPhaseChange(phase),
       2
     );
+    
+    PlayerUtils.broadcast(Component.empty());
+    PlayerUtils.broadcast(TextUtils.$("game.opening.title"));
+    PlayerUtils.broadcast(TextUtils.$("game.opening.desc"));
+    PlayerUtils.broadcast(Component.empty());
+    for (Side side : bothSide) {
+      ComponentBuilder<TextComponent, TextComponent.Builder> builder = Component
+        .text();
+      List<Player> players = PlayerUtils.getTeammates(side);
+      for (int i = 0, maxI = players.size(); i < maxI; i++) {
+        Player p = players.get(i);
+        if (i > 0) {
+          builder.append(
+            TextUtils.$(
+              "game.opening.player-list.separator.%s".formatted(
+                i == maxI - 1 ? "last" : "normal"
+              )
+            )
+          );
+        }
+        builder.append(PlayerUtils.getName(p));
+      }
+      
+      PlayerUtils.broadcast(
+        TextUtils.$(
+          "game.opening.player-list.side",
+          List.of(
+            Placeholder.component("side", side.title()),
+            Placeholder.component(
+              "list",
+              players.isEmpty()
+                ? TextUtils.$("game.opening.player-list.nobody")
+                : builder.build()
+            )
+          )
+        )
+      );
+    }
+    PlayerUtils.broadcast(Component.empty());
+    PlayerUtils.broadcast(TextUtils.$("game.opening.team-chat-hint"));
+    PlayerUtils.broadcast(Component.empty());
   }
   
   public void nextPhase() {
@@ -3052,8 +3098,8 @@ public class Game {
       p.playSound(
         p.getLocation(),
         Sound.ENTITY_ENDER_DRAGON_AMBIENT,
-        0.5f, // Volume
-        1 // Pitch
+        0.5f,
+        1
       );
     }
     
@@ -3119,12 +3165,7 @@ public class Game {
       
       if (PlayerUtils.shouldHandle(p)) {
         p.getInventory().clear();
-        p.getInventory().setItem(
-          4,
-          DTC.itemsManager.gens.get(
-            ItemsManager.ItemKey.ROLE_SELECTOR
-          ).getItem()
-        );
+        PlayerUtils.giveLobbyItems(p);
       }
     }
     
@@ -3308,8 +3349,8 @@ public class Game {
       p.playSound(
         p.getLocation(),
         Sound.BLOCK_ANVIL_USE,
-        1, // Volume
-        1 // Pitch
+        1,
+        1
       );
       
       PlayerData data = getPlayerData(p);
@@ -3356,8 +3397,8 @@ public class Game {
       p.playSound(
         p.getLocation(),
         sound,
-        1, // Volume
-        1 // Pitch
+        1,
+        1
       );
       
       if (data.side.equals(Side.SPECTATOR)) continue;
@@ -3570,8 +3611,8 @@ public class Game {
         p.playSound(
           p.getLocation(),
           Sound.ENTITY_WITHER_HURT,
-          1, // Volume
-          1 // Pitch
+          1,
+          1
         );
       }
     }

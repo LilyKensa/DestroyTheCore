@@ -147,6 +147,16 @@ game:
   ores:
     luck: "<aqua>You're lucky! Ore drops ×<amount>"
     bad-luck: "<red>You're unlucky... No ore drops</red>"
+  opening:
+    title: "<white>Destroy the Core III</white> - <yellow>Game Start</yellow>"
+    desc: "Destroy the opposite team's core while protecting yours!"
+    player-list:
+      side: "<list> on <side> team"
+      nobody: "<light_purple>Nobody</light_purple>"
+      separator:
+        normal: ", "
+        last: " & "
+    team-chat-hint: "Default chat channel is <aqua>team chat</aqua>, use <click:suggest_command:'/shout'><u><white>/shout</white></u></click> for global chat"
   credits:
     title: "<white>Destroy the Core III</white> - <yellow>Game Over</yellow>"
     time: "Time: <time>"
@@ -313,7 +323,7 @@ world:
 
 commands:
   root:
-    github: "Go to <click:open_url:'https://github.com/LilyKensa/DestroyTheCore'><u>https://github.com/LilyKensa/DestroyTheCore</u></click> for help"
+    github: "Visit <click:open_url:'https://github.com/LilyKensa/DestroyTheCore'><u><white>our GitHub page</white></u></click> for directions"
   debug:
     no-game: "<red>There's not a match right now!</red>"
     good: "<green>Debug succeeded!</green>"
@@ -493,7 +503,18 @@ items:
     announce: "<player> used <item>"
   grenade:
     name: "<aqua>Grenade</aqua>"
-    desc-1: "Boom!"
+    desc-1: "Throwable object that damages players in range"
+  sensor:
+    name: "<aqua>Point Sensor</aqua>"
+    desc-1: "Throwable object that marks enemies within 3 blocks"
+  glue:
+    name: "<aqua>Instant Glue</aqua>"
+    desc-1: "Throwable object that generates honey blocks within 2 blocks"
+    desc-2: "The generated honey blocks won't drop upon breaking"
+  mower:
+    name: "<yellow>Mower</yellow>"
+    desc-1: "Destroys plants within 5 blocks"
+    desc-2: "Can be used up to 25 times"
   random-role:
     name: "<light_purple>Job Changing Book</light_purple>"
     desc-1: "After the blessing of the great bodhisattva!"
@@ -512,6 +533,10 @@ items:
     locked: "<red>You haven't unlocked this role yet!</red>"
   spectator-teleporter:
     name: "<aqua>Spectator Teleporter</aqua>"
+  cosmetics-entry:
+    name: "<aqua>Cosmetics</aqua>"
+  preview-map-entry:
+    name: "<aqua>Preview Map</aqua>"
   absorption-potion:
     name: "<aqua>Guard Potion +</aqua>"
     desc-1: "Holy water blessed by the guardian deity"

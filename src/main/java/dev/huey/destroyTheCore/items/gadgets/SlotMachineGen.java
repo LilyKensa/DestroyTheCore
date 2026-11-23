@@ -19,7 +19,9 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class SlotMachineGen extends UsableItemGen {
@@ -29,6 +31,12 @@ public class SlotMachineGen extends UsableItemGen {
       ItemsManager.ItemKey.SLOT_MACHINE,
       Material.BORDURE_INDENTED_BANNER_PATTERN
     );
+  }
+  
+  @Override
+  public void computeMeta(ItemMeta meta) {
+    meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+    meta.setMaxStackSize(16);
   }
   
   EnumSet<Material> acceptableTypes = EnumSet.of(
@@ -178,8 +186,8 @@ public class SlotMachineGen extends UsableItemGen {
           pl.playSound(
             pl.getLocation(),
             Sound.ENTITY_EXPERIENCE_ORB_PICKUP,
-            1, // Volume
-            1 // Pitch
+            1,
+            1
           );
           
           if (rewardRatio > 0) {
@@ -218,16 +226,16 @@ public class SlotMachineGen extends UsableItemGen {
           pl.playSound(
             pl.getLocation(),
             Sound.BLOCK_PISTON_EXTEND,
-            0.5F, // Volume
-            1 // Pitch
+            0.5F,
+            1
           );
         }
         else if (age % 2 == 0) {
           pl.playSound(
             pl.getLocation(),
             Sound.BLOCK_DISPENSER_DISPENSE,
-            0.5F, // Volume
-            1 // Pitch
+            0.5F,
+            1
           );
         }
         

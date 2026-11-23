@@ -70,8 +70,8 @@ public class MoleRole extends Role {
       p.playSound(
         pl,
         Sound.ENTITY_GENERIC_EXPLODE,
-        1, // Volume
-        1 // Pitch
+        1,
+        1
       );
     }
     

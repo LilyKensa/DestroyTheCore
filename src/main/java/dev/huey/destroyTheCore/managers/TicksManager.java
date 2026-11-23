@@ -1,6 +1,9 @@
 package dev.huey.destroyTheCore.managers;
 
 import dev.huey.destroyTheCore.DTC;
+import dev.huey.destroyTheCore.items.gadgets.GlueGen;
+import dev.huey.destroyTheCore.items.gadgets.GrenadeGen;
+import dev.huey.destroyTheCore.items.gadgets.SensorGen;
 import dev.huey.destroyTheCore.roles.*;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -41,8 +44,13 @@ public class TicksManager {
       DTC.game.onTick();
       
       DTC.missionsManager.onTick();
+      
       KekkaiMasterRole.onTick();
       WandererRole.onTick();
+      
+      GrenadeGen.onTick();
+      SensorGen.onTick();
+      GlueGen.onTick();
       
       if (isParticleTick()) {
         DTC.toolsManager.onParticleTick();

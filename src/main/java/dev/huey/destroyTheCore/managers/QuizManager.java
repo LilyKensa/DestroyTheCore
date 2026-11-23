@@ -88,8 +88,8 @@ public class QuizManager {
         pl.getLocation(),
         correct ? Sound.ENTITY_EXPERIENCE_ORB_PICKUP
           : Sound.ENTITY_ZOMBIE_HORSE_HURT,
-        1, // Volume
-        1 // Pitch
+        1,
+        1
       );
     }
   }

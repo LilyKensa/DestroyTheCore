@@ -171,8 +171,8 @@ public class GuardRole extends Role {
             e.playSound(
               e.getLocation(),
               Sound.ENTITY_ELDER_GUARDIAN_CURSE,
-              1, // Volume
-              1 // Pitch
+              1,
+              1
             );
           }
         );

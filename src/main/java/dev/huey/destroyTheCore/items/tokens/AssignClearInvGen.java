@@ -146,8 +146,8 @@ public class AssignClearInvGen extends UsableItemGen {
         for (Player p : Bukkit.getOnlinePlayers()) p.playSound(
           p.getLocation(),
           Sound.ENTITY_WITHER_SPAWN,
-          1, // Volume
-          1 // Pitch
+          1,
+          1
         );
         
         ParticleUtils.ring(

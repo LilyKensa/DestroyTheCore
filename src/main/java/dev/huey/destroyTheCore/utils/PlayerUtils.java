@@ -27,13 +27,12 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.Openable;
-import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -45,6 +44,12 @@ public class PlayerUtils {
     return Bukkit.getOnlinePlayers().stream().filter(
       p -> p.getEntityId() == id
     ).findAny().orElse(null);
+  }
+  
+  static public void hideEntityForAll(Entity e) {
+    for (Player p : Bukkit.getOnlinePlayers()) {
+      p.hideEntity(DTC.instance, e);
+    }
   }
   
   static public boolean wearingLeather(Player pl) {
@@ -310,25 +315,6 @@ public class PlayerUtils {
     pl.getInventory().setItemInMainHand(item);
   }
   
-  static public void damageHandItem(Player pl) {
-    ItemStack item = getHandItem(pl);
-    if (item.isEmpty()) return;
-    if (item.getType().getMaxDurability() <= 0) return;
-    
-    ItemMeta meta = item.getItemMeta();
-    if (meta != null) {
-      if (meta.isUnbreakable()) return;
-      if (
-        meta.hasEnchant(Enchantment.UNBREAKING) &&
-          RandomUtils.hit(
-            1D / (meta.getEnchantLevel(Enchantment.UNBREAKING) + 1)
-          )
-      ) return;
-    }
-    
-    pl.damageItemStack(EquipmentSlot.HAND, 1);
-  }
-  
   /** Replaces an item, but drop the old one on the ground */
   static public void softReplaceItem(
     Player pl, EquipmentSlot slot, ItemStack item
@@ -508,10 +494,22 @@ public class PlayerUtils {
     addEffect(pl, type, ticks, level, false, true);
   }
   
+  static public void addEffect(
+    LivingEntity pl, PotionEffectType type, int ticks
+  ) {
+    addEffect(pl, type, ticks, 1);
+  }
+  
   static public void addPassiveEffect(
     LivingEntity pl, PotionEffectType type, int ticks, int level
   ) {
     addEffect(pl, type, ticks, level, true, false);
+  }
+  
+  static public void addPassiveEffect(
+    LivingEntity pl, PotionEffectType type, int ticks
+  ) {
+    addPassiveEffect(pl, type, ticks, 1);
   }
   
   static public void setEffect(
@@ -570,8 +568,8 @@ public class PlayerUtils {
         pl.playSound(
           pl.getLocation(),
           Sound.BLOCK_PISTON_EXTEND,
-          1F, // Volume
-          1.5f // Pitch
+          1F,
+          1.5f
         );
       }
       
@@ -592,8 +590,8 @@ public class PlayerUtils {
         pl.playSound(
           pl.getLocation(),
           Sound.BLOCK_BEACON_POWER_SELECT,
-          1, // Volume
-          1.5f // Pitch
+          1,
+          1.5f
         );
         new ParticleBuilder(Particle.HAPPY_VILLAGER)
           .location(pl.getEyeLocation())
@@ -622,8 +620,8 @@ public class PlayerUtils {
         pl.playSound(
           pl.getLocation(),
           Sound.BLOCK_WOODEN_BUTTON_CLICK_OFF,
-          0.5F, // Volume
-          1.5f // Pitch
+          0.5F,
+          1.5f
         );
       }
       
@@ -635,8 +633,8 @@ public class PlayerUtils {
         pl.playSound(
           pl.getLocation(),
           Sound.BLOCK_PISTON_EXTEND,
-          1F, // Volume
-          1.5f // Pitch
+          1F,
+          1.5f
         );
       }
     }
@@ -829,7 +827,7 @@ public class PlayerUtils {
   static public void give(Player pl, ItemsManager.ItemKey key, int count) {
     ItemGen gen = DTC.itemsManager.gens.get(key);
     
-    int maxCount = gen.iconType.getMaxStackSize();
+    int maxCount = gen.getItem().getMaxStackSize();
     if (count > maxCount * 9) {
       count = maxCount * 9;
     }
@@ -845,6 +843,27 @@ public class PlayerUtils {
   
   static public void give(Player pl, ItemsManager.ItemKey key) {
     give(pl, key, 1);
+  }
+  
+  static public void giveLobbyItems(Player pl) {
+    pl.getInventory().setItem(
+      2,
+      DTC.itemsManager.gens.get(
+        ItemsManager.ItemKey.COSMETICS_ENTRY
+      ).getItem()
+    );
+    pl.getInventory().setItem(
+      4,
+      DTC.itemsManager.gens.get(
+        ItemsManager.ItemKey.ROLE_SELECTOR
+      ).getItem()
+    );
+    pl.getInventory().setItem(
+      6,
+      DTC.itemsManager.gens.get(
+        ItemsManager.ItemKey.PREVIEW_MAP_ENTRY
+      ).getItem()
+    );
   }
   
   static final Pattern weaponSuffix = Pattern.compile(

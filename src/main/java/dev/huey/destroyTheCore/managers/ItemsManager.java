@@ -11,6 +11,8 @@ import dev.huey.destroyTheCore.items.assistance.SkillCooldownAssistGen;
 import dev.huey.destroyTheCore.items.fragments.PlaceholderGen;
 import dev.huey.destroyTheCore.items.fragments.SoulGen;
 import dev.huey.destroyTheCore.items.gadgets.*;
+import dev.huey.destroyTheCore.items.gui.CosmeticsEntryGen;
+import dev.huey.destroyTheCore.items.gui.PreviewMapEntryGen;
 import dev.huey.destroyTheCore.items.gui.RoleSelectorGen;
 import dev.huey.destroyTheCore.items.gui.SpectatorTeleporterGen;
 import dev.huey.destroyTheCore.items.misc.AbsorptionPotionGen;
@@ -76,6 +78,9 @@ public class ItemsManager {
     GIVE_JUMP_BOOST,
     GIVE_STRENGTH,
     GRENADE,
+    SENSOR,
+    GLUE,
+    MOWER,
     RANDOM_ROLE,
     CHOOSE_ROLE,
     DASH_SPEAR,
@@ -106,6 +111,8 @@ public class ItemsManager {
     // GUI
     ROLE_SELECTOR,
     SPECTATOR_TELEPORTER,
+    COSMETICS_ENTRY,
+    PREVIEW_MAP_ENTRY,
     // Roles
     GOLD_DIGGER_CHESTPLATE,
     RANGER_HELMET,
@@ -166,6 +173,9 @@ public class ItemsManager {
       new GiveJumpBoostGen(),
       new GiveStrengthGen(),
       new GrenadeGen(),
+      new SensorGen(),
+      new GlueGen(),
+      new MowerGen(),
       new RandomRoleGen(),
       new ChooseRoleGen(),
       new DashSpearGen(),
@@ -196,6 +206,8 @@ public class ItemsManager {
       // GUI
       new RoleSelectorGen(),
       new SpectatorTeleporterGen(),
+      new CosmeticsEntryGen(),
+      new PreviewMapEntryGen(),
       // Roles
       new GoldDiggerChestplateGen(),
       new RangerHelmetGen(),

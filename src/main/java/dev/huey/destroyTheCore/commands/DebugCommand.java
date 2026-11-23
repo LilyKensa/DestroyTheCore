@@ -23,6 +23,8 @@ public class DebugCommand extends Subcommand {
       return;
     }
     
+    if (args.isEmpty()) return;
+    
     switch (args.getFirst()) {
       case "respawn-shop" -> {
         if (!DTC.game.isPlaying) {

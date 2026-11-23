@@ -319,8 +319,8 @@ public class SorcererRole extends Role {
       target.playSound(
         target.getLocation(),
         Sound.ENTITY_WITCH_CELEBRATE,
-        1, // Volume
-        1 // Pitch
+        1,
+        1
       );
     });
     

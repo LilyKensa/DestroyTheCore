@@ -19,6 +19,7 @@ import org.bukkit.damage.DamageSource;
 import org.bukkit.damage.DamageType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -26,6 +27,11 @@ public class LotteryGen extends UsableItemGen {
   
   public LotteryGen() {
     super(ItemsManager.ItemKey.LOTTERY, Material.HEART_OF_THE_SEA);
+  }
+  
+  @Override
+  public void computeMeta(ItemMeta meta) {
+    meta.setMaxStackSize(16);
   }
   
   @Override
@@ -77,24 +83,24 @@ public class LotteryGen extends UsableItemGen {
           pl.playSound(
             pl.getLocation(),
             Sound.BLOCK_PISTON_EXTEND,
-            1, // Volume
-            1 // Pitch
+            1,
+            1
           );
         }
         else if (age == 24) {
           pl.playSound(
             pl.getLocation(),
             Sound.ENTITY_EXPERIENCE_ORB_PICKUP,
-            1, // Volume
-            1 // Pitch
+            1,
+            1
           );
         }
         else if (age < 20 && age % 2 == 0) {
           pl.playSound(
             pl.getLocation(),
             Sound.BLOCK_DISPENSER_DISPENSE,
-            0.5F, // Volume
-            1 // Pitch
+            0.5F,
+            1
           );
         }
         

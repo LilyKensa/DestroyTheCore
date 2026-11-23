@@ -21,7 +21,6 @@ import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -32,14 +31,15 @@ public class WitchcraftGen extends UsableItemGen {
   public WitchcraftGen() {
     super(
       ItemsManager.ItemKey.WITCHCRAFT,
-      Material.SPIRE_ARMOR_TRIM_SMITHING_TEMPLATE,
+      Material.PAPER,
       true
     );
   }
   
   @Override
   public void computeMeta(ItemMeta meta) {
-    meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+    meta.setItemModel(Material.SPIRE_ARMOR_TRIM_SMITHING_TEMPLATE.getKey());
+    meta.setMaxStackSize(16);
   }
   
   @Override

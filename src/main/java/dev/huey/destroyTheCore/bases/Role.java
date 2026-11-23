@@ -14,7 +14,6 @@ import dev.huey.destroyTheCore.records.Stats;
 import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
 import dev.huey.destroyTheCore.utils.TextUtils;
-import io.papermc.paper.datacomponent.DataComponentTypes;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -318,8 +317,8 @@ public class Role {
     pl.playSound(
       pl.getLocation(),
       Sound.BLOCK_CONDUIT_ACTIVATE,
-      1, // Volume
-      1 // Pitch
+      1,
+      1
     );
     LocUtils.ring(
       pl.getLocation().add(0, 0.1, 0),
@@ -431,7 +430,10 @@ public class Role {
         )
       )
       .addModifier(item -> {
-        item.setData(DataComponentTypes.ITEM_MODEL, iconType.key());
+        item.editMeta(meta -> {
+          meta.setItemModel(iconType.getKey());
+          meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+        });
         return item;
       })
       .addLoreLines(
@@ -444,9 +446,6 @@ public class Role {
     Player pl = click.player();
     
     gui.closeForAllViewers();
-    
-    ItemStack handItem = pl.getInventory().getItemInMainHand();
-    ItemGen gen = DTC.itemsManager.getGen(handItem);
     
     if (LocUtils.inLive(pl)) {
       PlayerUtils.broadcast(
@@ -478,8 +477,8 @@ public class Role {
       pl.playSound(
         pl.getLocation(),
         Sound.ENTITY_EXPERIENCE_ORB_PICKUP,
-        1, // Volume
-        1 // Pitch
+        1,
+        1
       );
       
       DTC.rolesManager.setRole(pl, this, false);
@@ -488,8 +487,8 @@ public class Role {
       pl.playSound(
         pl.getLocation(),
         Sound.ENTITY_ENDERMAN_TELEPORT,
-        1, // Volume
-        1 // Pitch
+        1,
+        1
       );
       pl.sendActionBar(TextUtils.$("items.choose-role.locked"));
     }

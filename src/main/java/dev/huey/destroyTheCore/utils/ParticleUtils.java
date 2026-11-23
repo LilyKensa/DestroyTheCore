@@ -154,11 +154,11 @@ public class ParticleUtils {
       if (
         LocUtils.closeEnough(
           loc,
-          loc1.toBlockLocation().add(0.5, 0.5, 0.5)
+          loc1.toCenterLocation()
         ) ||
           LocUtils.closeEnough(
             loc,
-            loc2.toBlockLocation().add(0.5, 0.5, 0.5)
+            loc2.toCenterLocation()
           )
       ) return;
       

@@ -194,8 +194,8 @@ public class GamblerRole extends Role {
           pl.playSound(
             pl.getLocation(),
             Sound.ENTITY_EXPERIENCE_ORB_PICKUP,
-            1, // Volume
-            1 // Pitch
+            1,
+            1
           );
           
           if (rewardRatio > 0) {
@@ -234,16 +234,16 @@ public class GamblerRole extends Role {
           pl.playSound(
             pl.getLocation(),
             Sound.BLOCK_PISTON_EXTEND,
-            0.5F, // Volume
-            1 // Pitch
+            0.5F,
+            1
           );
         }
         else if (age % 2 == 0) {
           pl.playSound(
             pl.getLocation(),
             Sound.BLOCK_DISPENSER_DISPENSE,
-            0.5F, // Volume
-            1 // Pitch
+            0.5F,
+            1
           );
         }
         
