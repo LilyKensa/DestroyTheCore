@@ -108,10 +108,10 @@ game:
     green: "<green>綠隊</green>"
     spectator: "<dark_aqua>旁觀者</dark_aqua>"
     items: "<aqua>物品</aqua>"
-  prompt-rejoin: "用 <aqua>/rejoin</aqua> 以重新加入遊戲"
+  prompt-rejoin: "使用 <click:suggest_command:'/shout'><u><white>/rejoin</white></u></click> 指令以重新加入遊戲"
   banned:
     attack:
-      teammate: "<red>你幹麻打你隊友!</red>"
+      teammate: "<red>別攻擊你的隊友!</red>"
       spectator: "<red>旁觀者不能攻擊!</red>"
       post-respawn: "<red>玩家處於重生後保護狀態!</red>"
     use:
@@ -130,7 +130,7 @@ game:
       lobby: "<red>你不能在大廳破壞方塊!</red>"
       rest-area: "<red>你不能在重生等待區附近破壞方塊!</red>"
       enemy-container: "<red>你被懲罰 10 點罪惡!</red>"
-      own-core: "<red>你幹麻挖你自己核心!</red>"
+      own-core: "<red>別挖你自己陣營的核心!</red>"
       spectator: "<red>旁觀者不能破壞方塊!</red>"
     pour: "<red>你不能在核心旁倒液體!</red>"
     open-enemy-container: "<red>你不能打開敵人的<type>!</red>"
@@ -577,6 +577,10 @@ items:
     name: "<aqua>造型</aqua>"
   preview-map-entry:
     name: "<aqua>觀察地圖</aqua>"
+    only-lobby: "<red>你只能在大廳選擇觀察地圖!</red>"
+  return-to-lobby:
+    name: "<aqua>回到大廳</aqua>"
+    in-lobby: "<red>你已經在大廳了!</red>"
   absorption-potion:
     name: "<aqua>強效護水</aqua>"
     desc-1: "擁有守護之神加持的聖水"

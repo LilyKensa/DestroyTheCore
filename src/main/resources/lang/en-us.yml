@@ -68,7 +68,7 @@ game:
     green: "<green>Green</green>"
     spectator: "<dark_aqua>Spectator</dark_aqua>"
     items: "<aqua>Items</aqua>"
-  prompt-rejoin: "Use <aqua>/rejoin</aqua> to go back to the game"
+  prompt-rejoin: "Use <click:suggest_command:'/shout'><u><white>/rejoin</white></u></click> to go back to the game"
   banned:
     attack:
       teammate: "<red>You can't attack your teammate!</red>"
@@ -537,6 +537,10 @@ items:
     name: "<aqua>Cosmetics</aqua>"
   preview-map-entry:
     name: "<aqua>Preview Map</aqua>"
+    only-lobby: "<red>You can only preview map in lobby!</red>"
+  return-to-lobby:
+    name: "<aqua>Return to Lobby</aqua>"
+    in-lobby: "<red>You're already in lobby</red>"
   absorption-potion:
     name: "<aqua>Guard Potion +</aqua>"
     desc-1: "Holy water blessed by the guardian deity"

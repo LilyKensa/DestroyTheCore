@@ -99,12 +99,12 @@ public class InventoriesManager {
       if (DTC.rolesManager.isExclusiveItem(item)) continue;
       if (
         DTC.itemsManager.isGen(item) &&
-          DTC.itemsManager.getGen(item).willNeverDrop()
+          DTC.itemsManager.extractGen(item).willNeverDrop()
       ) continue;
       
       if (
         DTC.itemsManager.isGen(item) &&
-          DTC.itemsManager.getGen(item).willVanish()
+          DTC.itemsManager.extractGen(item).willVanish()
       ) {
         contents[i] = placeholder;
       }

@@ -10,6 +10,7 @@ public class CosmeticsEntryGen extends UsableItemGen {
   
   public CosmeticsEntryGen() {
     super(ItemsManager.ItemKey.COSMETICS_ENTRY, Material.NAUTILUS_SHELL);
+    setBound();
   }
   
   @Override

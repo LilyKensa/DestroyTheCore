@@ -11,10 +11,7 @@ import dev.huey.destroyTheCore.items.assistance.SkillCooldownAssistGen;
 import dev.huey.destroyTheCore.items.fragments.PlaceholderGen;
 import dev.huey.destroyTheCore.items.fragments.SoulGen;
 import dev.huey.destroyTheCore.items.gadgets.*;
-import dev.huey.destroyTheCore.items.gui.CosmeticsEntryGen;
-import dev.huey.destroyTheCore.items.gui.PreviewMapEntryGen;
-import dev.huey.destroyTheCore.items.gui.RoleSelectorGen;
-import dev.huey.destroyTheCore.items.gui.SpectatorTeleporterGen;
+import dev.huey.destroyTheCore.items.gui.*;
 import dev.huey.destroyTheCore.items.misc.AbsorptionPotionGen;
 import dev.huey.destroyTheCore.items.misc.InvisPotionGen;
 import dev.huey.destroyTheCore.items.misc.LotteryGen;
@@ -113,6 +110,7 @@ public class ItemsManager {
     SPECTATOR_TELEPORTER,
     COSMETICS_ENTRY,
     PREVIEW_MAP_ENTRY,
+    RETURN_TO_LOBBY,
     // Roles
     GOLD_DIGGER_CHESTPLATE,
     RANGER_HELMET,
@@ -208,6 +206,7 @@ public class ItemsManager {
       new SpectatorTeleporterGen(),
       new CosmeticsEntryGen(),
       new PreviewMapEntryGen(),
+      new ReturnToLobbyGen(),
       // Roles
       new GoldDiggerChestplateGen(),
       new RangerHelmetGen(),
@@ -246,11 +245,11 @@ public class ItemsManager {
   }
   
   public boolean isTrash(ItemStack item) {
-    return isGen(item) && getGen(item).isTrash();
+    return isGen(item) && extractGen(item).isTrash();
   }
   
-  /** Get an instance of a item-gen */
-  public ItemGen getGen(ItemStack item) {
+  /** Extract an item-gen from an item stack */
+  public ItemGen extractGen(ItemStack item) {
     if (!isGen(item)) return null;
     
     String id = item.getItemMeta().getPersistentDataContainer().get(
@@ -322,7 +321,7 @@ public class ItemsManager {
     Item itemEntity = ev.getItemDrop();
     ItemStack item = itemEntity.getItemStack();
     if (isGen(item)) {
-      ItemGen gen = getGen(item);
+      ItemGen gen = extractGen(item);
       if (gen.isTrash()) {
         itemEntity.remove();
       }
@@ -345,7 +344,7 @@ public class ItemsManager {
         ItemStack item = list[i];
         if (item == null || !isGen(item)) continue;
         
-        ItemStack replacement = getGen(item).getItem(item.getAmount());
+        ItemStack replacement = extractGen(item).getItem(item.getAmount());
         inv.setItem(i, replacement);
       }
       

@@ -28,6 +28,5 @@ public class DashSpearGen extends ItemGen {
     meta.addEnchant(Enchantment.LUNGE, 5, true);
     
     meta.setUnbreakable(false);
-    meta.setDamage(Material.DIAMOND_SPEAR.getMaxDurability() - 1);
   }
 }

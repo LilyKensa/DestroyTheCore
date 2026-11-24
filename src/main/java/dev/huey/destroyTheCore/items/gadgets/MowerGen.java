@@ -24,6 +24,7 @@ public class MowerGen extends UsableItemGen {
   @Override
   public void computeMeta(ItemMeta meta) {
     meta.setUnbreakable(false);
+    meta.setItemModel(Material.SHEARS.getKey());
   }
   
   @Override

@@ -4,6 +4,7 @@ import dev.huey.destroyTheCore.DTC;
 import dev.huey.destroyTheCore.Game;
 import dev.huey.destroyTheCore.bases.ItemGen;
 import dev.huey.destroyTheCore.bases.Subcommand;
+import dev.huey.destroyTheCore.records.PlayerData;
 import dev.huey.destroyTheCore.utils.CoreUtils;
 import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
@@ -98,13 +99,16 @@ public class SetTeamCommand extends Subcommand {
       );
     }
     
-    DTC.game.getPlayerData(target).join(side);
+    PlayerData data = DTC.game.getPlayerData(target);
+    
+    data.join(side);
     DTC.game.enforceDisplay(target);
     
     DTC.boardsManager.refresh(target);
     
-    if (LocUtils.inLive(target)) {
+    if (LocUtils.inLive(target) && !data.previewing) {
       PlayerUtils.refreshSpectatorAbilities(target);
+      PlayerUtils.toggleSpectatorItems(target);
       PlayerUtils.refreshAllSpectatorVisibilities();
     }
     

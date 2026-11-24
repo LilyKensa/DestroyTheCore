@@ -38,6 +38,7 @@ public class PlayerData implements HasStats {
   public int rightClickedAt = -1;
   public boolean clearedInv = false;
   public boolean skillReloadedMessage = true;
+  public boolean previewing = false;
   
   public int kills = 0, deaths = 0;
   public int coreAttacks = 0;

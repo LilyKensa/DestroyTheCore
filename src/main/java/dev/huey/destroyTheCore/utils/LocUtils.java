@@ -99,13 +99,6 @@ public class LocUtils {
     );
   }
   
-  /**
-   * {@link #toBlockCenter}, but it's 0.25 up from the ground, instead of 0.5
-   */
-  static public Location toSpawnPoint(Location loc) {
-    return Pos.of(loc).spawnPoint().toLoc(loc.getWorld());
-  }
-  
   static public boolean closeEnough(Location target, Location source) {
     return isSameWorld(target, source) &&
       Math.abs(
@@ -254,7 +247,7 @@ public class LocUtils {
     Pos pos = oldPos.clone();
     
     if (flip) {
-      pos.setYaw(pos.getYaw() + 180);
+      pos.yaw(pos.getYaw() + 180);
       pos.setX(-pos.getX() + (pos.getX() % 1 == 0 ? 0 : 1));
       pos.setZ(-pos.getZ() + (pos.getZ() % 1 == 0 ? 0 : 1));
     }

@@ -178,12 +178,11 @@ public class Game {
       
       PlayerUtils.allGaming().stream()
         .filter(
-          p -> p.getGameMode() != GameMode.SPECTATOR &&
-            LocUtils.near(
-              p,
-              villager,
-              5
-            )
+          p -> LocUtils.near(
+            p,
+            villager,
+            5
+          )
         )
         .map(
           p -> LocUtils.hitboxCenter(p)
@@ -680,7 +679,9 @@ public class Game {
     
     if (isPlaying) {
       CoreUtils.setTickOut(() -> {
-        PlayerUtils.prefixedSend(pl, TextUtils.$("game.prompt-rejoin"));
+        PlayerUtils.send(pl, Component.empty());
+        PlayerUtils.send(pl, TextUtils.$("game.prompt-rejoin"));
+        PlayerUtils.send(pl, Component.empty());
       });
     }
     else {
@@ -735,16 +736,19 @@ public class Game {
     ev.viewers().removeIf(
       audience -> audience instanceof Player p &&
         side != Side.SPECTATOR &&
-        getPlayerData(
-          p
-        ).side
-          .equals(side.opposite())
+        getPlayerData(p).side == side.opposite()
     );
+  }
+  
+  public boolean checkSpectatorAction(Player pl) {
+    PlayerData data = getPlayerData(pl);
+    return (isPlaying &&
+      data.side == Side.SPECTATOR) || data.previewing;
   }
   
   public void handleVehicleDamage(VehicleDamageEvent ev) {
     if (ev.getAttacker() instanceof Player attacker) {
-      if (isPlaying && getPlayerData(attacker).side == Side.SPECTATOR) {
+      if (checkSpectatorAction(attacker)) {
         attacker.sendActionBar(TextUtils.$("game.banned.attack.spectator"));
         ev.setCancelled(true);
         return;
@@ -754,7 +758,7 @@ public class Game {
   
   public void handleEntityDamage(EntityDamageByEntityEvent ev) {
     if (ev.getDamager() instanceof Player attacker) {
-      if (isPlaying && getPlayerData(attacker).side == Side.SPECTATOR) {
+      if (checkSpectatorAction(attacker)) {
         attacker.sendActionBar(TextUtils.$("game.banned.attack.spectator"));
         ev.setCancelled(true);
         return;
@@ -1364,7 +1368,6 @@ public class Game {
           ).isSameBlockAs(lobby.startButton)
       ) {
         toggleScheduleStart();
-        return;
       }
       else if (PlayerUtils.shouldHandle(pl)) {
         if (PlayerUtils.checkUsingBlock(pl, block)) {
@@ -1373,13 +1376,13 @@ public class Game {
           );
         }
         ev.setCancelled(true);
-        return;
       }
+      return;
     }
     
     if (!PlayerUtils.shouldHandle(pl)) return;
     
-    if (getPlayerData(pl).side.equals(Side.SPECTATOR)) {
+    if (checkSpectatorAction(pl)) {
       pl.sendActionBar(TextUtils.$("game.banned.use.spectator"));
       ev.setCancelled(true);
       return;
@@ -1499,10 +1502,16 @@ public class Game {
       return;
     }
     
-    if (data.side == Side.SPECTATOR) {
+    if (checkSpectatorAction(pl)) {
       pl.sendActionBar(TextUtils.$("game.banned.use.spectator"));
       ev.setCancelled(true);
       return;
+    }
+  }
+  
+  public void handleLunge(Player pl, ItemStack item) {
+    if (DTC.itemsManager.checkGen(item, ItemsManager.ItemKey.DASH_SPEAR)) {
+      item.damage(9999, pl);
     }
   }
   
@@ -1947,7 +1956,7 @@ public class Game {
       return;
     }
     
-    if (getPlayerData(pl).side.equals(Side.SPECTATOR)) {
+    if (checkSpectatorAction(pl)) {
       pl.sendActionBar(TextUtils.$("game.banned.break.spectator"));
       ev.setCancelled(true);
       return;
@@ -2270,7 +2279,7 @@ public class Game {
   ) {
     if (!PlayerUtils.shouldHandle(pl)) return;
     
-    if (getPlayerData(pl).side.equals(Side.SPECTATOR)) {
+    if (checkSpectatorAction(pl)) {
       ev.setCancelled(true);
       return;
     }
@@ -2295,7 +2304,7 @@ public class Game {
   public void handlePickupArrow(PlayerPickupArrowEvent ev) {
     Player pl = ev.getPlayer();
     
-    if (getPlayerData(pl).side.equals(Side.SPECTATOR)) {
+    if (checkSpectatorAction(pl)) {
       ev.setCancelled(true);
       return;
     }
@@ -2406,7 +2415,7 @@ public class Game {
       if (recipe == null) return;
       
       if (DTC.itemsManager.isGen(item)) {
-        ItemGen gen = DTC.itemsManager.getGen(item);
+        ItemGen gen = DTC.itemsManager.extractGen(item);
         
         if (gen instanceof UsableItemGen ugen && ugen.isInstantUse()) {
           ev.setCancelled(true);
@@ -2845,38 +2854,7 @@ public class Game {
       @Override
       public void run() {
         if (countdown <= 0) {
-          DTC.inventoriesManager.reset();
-          
-          for (Player p : Bukkit.getOnlinePlayers()) {
-            if (PlayerUtils.shouldHandle(p)) {
-              p.clearActivePotionEffects();
-              PlayerUtils.enforceNightVision(p);
-              
-              p.getInventory().clear();
-              p.setExperienceLevelAndProgress(0);
-              
-              PlayerUtils.teleportToRestArea(p);
-            }
-            
-            PlayerUtils.longTitleTimes(p);
-            p.sendTitlePart(TitlePart.TITLE, TextUtils.$("general.title"));
-            p.sendTitlePart(
-              TitlePart.SUBTITLE,
-              TextUtils.$("general.subtitle")
-            );
-            p.playSound(
-              p.getLocation(),
-              Sound.BLOCK_NOTE_BLOCK_BELL,
-              1,
-              2
-            );
-          }
-          
-          Bukkit.getScheduler().runTaskLater(
-            DTC.instance,
-            Game.this::start,
-            100
-          );
+          prepareThenStart();
           
           cancel();
           return;
@@ -2920,6 +2898,47 @@ public class Game {
     else {
       cancelScheduleStart();
     }
+  }
+  
+  public void prepareThenStart() {
+    DTC.inventoriesManager.reset();
+    
+    for (Player p : Bukkit.getOnlinePlayers()) {
+      PlayerData d = getPlayerData(p);
+      d.previewing = false;
+      
+      PlayerUtils.refreshSpectatorAbilities(p);
+      PlayerUtils.toggleSpectatorItems(p);
+      
+      if (PlayerUtils.shouldHandle(p)) {
+        p.clearActivePotionEffects();
+        PlayerUtils.enforceNightVision(p);
+        
+        p.getInventory().clear();
+        p.setExperienceLevelAndProgress(0);
+        
+        PlayerUtils.teleportToRestArea(p);
+      }
+      
+      PlayerUtils.longTitleTimes(p);
+      p.sendTitlePart(TitlePart.TITLE, TextUtils.$("general.title"));
+      p.sendTitlePart(
+        TitlePart.SUBTITLE,
+        TextUtils.$("general.subtitle")
+      );
+      p.playSound(
+        p.getLocation(),
+        Sound.BLOCK_NOTE_BLOCK_BELL,
+        1,
+        2
+      );
+    }
+    
+    Bukkit.getScheduler().runTaskLater(
+      DTC.instance,
+      Game.this::start,
+      100
+    );
   }
   
   public void start() {
@@ -2998,7 +3017,6 @@ public class Game {
         );
       }
       
-      PlayerUtils.refreshSpectatorAbilities(pl);
       PlayerUtils.respawn(pl);
       
       PlayerUtils.addPassiveEffect(pl, PotionEffectType.SPEED, 5 * 20, 2);
@@ -3319,7 +3337,7 @@ public class Game {
             Placeholder.component(
               "time",
               CoreUtils.formatTimeComp(
-                Math.ceilDiv(DTC.ticksManager.ticksCount, 20),
+                Math.floorDiv(DTC.ticksManager.ticksCount, 20),
                 NamedTextColor.GREEN
               )
             )

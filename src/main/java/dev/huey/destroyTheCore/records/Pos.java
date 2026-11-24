@@ -1,5 +1,6 @@
 package dev.huey.destroyTheCore.records;
 
+import dev.huey.destroyTheCore.utils.CoreUtils;
 import java.util.HashMap;
 import java.util.Map;
 import org.bukkit.Location;
@@ -118,14 +119,16 @@ public class Pos implements ConfigurationSerializable {
     return this;
   }
   
-  public Pos setYaw(float yaw) {
-    this.yaw = yaw;
-    return this;
+  public Pos yaw(float yaw) {
+    Pos that = clone();
+    that.yaw = yaw;
+    return that;
   }
   
-  public Pos setPitch(float pitch) {
-    this.pitch = pitch;
-    return this;
+  public Pos pitch(float pitch) {
+    Pos that = clone();
+    that.pitch = pitch;
+    return that;
   }
   
   public void setPos(double x, double y, double z) {
@@ -176,7 +179,8 @@ public class Pos implements ConfigurationSerializable {
   }
   
   public Pos spawnPoint() {
-    return center().add(0, -0.25, 0);
+    return center().add(0, -0.25, 0).yaw(CoreUtils.snapAngle(this.yaw))
+      .pitch(5);
   }
   
   public boolean isSameBlockAs(Pos that) {

@@ -17,7 +17,7 @@ public class MaybeGen implements ConfigurationSerializable {
     MaybeGen mg = new MaybeGen();
     
     if (DTC.itemsManager.isGen(item)) {
-      mg.key = DTC.itemsManager.getGen(item).id;
+      mg.key = DTC.itemsManager.extractGen(item).id;
       mg.amount = item.getAmount();
     }
     else {

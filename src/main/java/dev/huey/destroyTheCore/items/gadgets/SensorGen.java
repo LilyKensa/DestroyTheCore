@@ -25,7 +25,7 @@ import org.bukkit.potion.PotionEffectType;
 public class SensorGen extends UsableItemGen {
   
   static public final int maxLife = 3 * 20;
-  static public final double radius = 3.2;
+  static public final double radius = 3.6;
   static public final int glowDuration = 5 * 20;
   static public final Particle particle = Particle.SCRAPE;
   

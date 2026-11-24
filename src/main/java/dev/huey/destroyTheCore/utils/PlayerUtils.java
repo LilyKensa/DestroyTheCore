@@ -267,7 +267,7 @@ public class PlayerUtils {
   ) {
     for (ItemsManager.ItemKey key : keys) {
       pl.setCooldown(
-        DTC.itemsManager.gens.get(key).getItem().getType(),
+        DTC.itemsManager.gens.get(key).iconType,
         ticks
       );
     }
@@ -277,7 +277,7 @@ public class PlayerUtils {
     Player pl, List<ItemsManager.ItemKey> keys
   ) {
     return pl.getCooldown(
-      DTC.itemsManager.gens.get(keys.getFirst()).getItem().getType()
+      DTC.itemsManager.gens.get(keys.getFirst()).iconType
     );
   }
   
@@ -349,7 +349,20 @@ public class PlayerUtils {
     
     pl.setGameMode(GameMode.SURVIVAL);
     fullyHeal(pl);
-    pl.teleport(LocUtils.lobby(DTC.game.lobby.spawn));
+    
+    pl.teleport(LocUtils.lobby(DTC.game.lobby.spawn.spawnPoint()));
+  }
+  
+  static public void teleportToRestAreaCenter(Player pl) {
+    Location centerLoc = new Location(
+      DTC.worldsManager.live,
+      0.5,
+      DTC.game.map.restArea.getY(),
+      0.5,
+      0,
+      5
+    );
+    pl.teleport(centerLoc);
   }
   
   static public void teleportToRestArea(Player pl) {
@@ -358,10 +371,7 @@ public class PlayerUtils {
     if (
       DTC.game.getPlayerData(pl).side.equals(Game.Side.SPECTATOR)
     ) {
-      Location centerLoc = LocUtils.live(DTC.game.map.restArea);
-      centerLoc.setYaw(0);
-      centerLoc.setX(0);
-      pl.teleport(centerLoc);
+      teleportToRestAreaCenter(pl);
     }
     else {
       pl.teleport(
@@ -443,8 +453,6 @@ public class PlayerUtils {
   
   /** Set the player as a spectator */
   static public void refreshSpectatorAbilities(Player pl, boolean state) {
-    if (!DTC.game.isPlaying) state = false;
-    
     boolean creativeAbility = state ||
       List.of(
         GameMode.CREATIVE,
@@ -454,26 +462,36 @@ public class PlayerUtils {
     pl.setInvisible(state);
     pl.setInvulnerable(state);
     pl.setAllowFlight(creativeAbility);
-    
-    ItemStack teleporterItem = DTC.itemsManager.gens.get(
-      ItemsManager.ItemKey.SPECTATOR_TELEPORTER
-    ).getItem();
-    
-    if (state) {
-      DTC.inventoriesManager.store(pl);
-      pl.getInventory().setItem(4, teleporterItem);
-    }
-    else {
-      pl.getInventory().remove(Material.ENDER_EYE);
-      DTC.inventoriesManager.restore(pl);
-    }
   }
   
   static public void refreshSpectatorAbilities(Player pl) {
     refreshSpectatorAbilities(
       pl,
-      DTC.game.getPlayerData(pl).side.equals(Game.Side.SPECTATOR)
+      DTC.game.checkSpectatorAction(pl)
     );
+  }
+  
+  static public void toggleSpectatorItems(Player pl, boolean state) {
+    ItemStack teleporterItem = DTC.itemsManager.gens.get(
+      ItemsManager.ItemKey.SPECTATOR_TELEPORTER
+    ).getItem();
+    
+    PlayerInventory inv = pl.getInventory();
+    
+    if (shouldHandle(pl)) {
+      if (state) {
+        DTC.inventoriesManager.store(pl);
+        inv.setItem(4, teleporterItem);
+      }
+      else {
+        pl.getInventory().remove(teleporterItem.getType());
+        DTC.inventoriesManager.restore(pl);
+      }
+    }
+  }
+  
+  static public void toggleSpectatorItems(Player pl) {
+    toggleSpectatorItems(pl, DTC.game.checkSpectatorAction(pl));
   }
   
   /** Apply potion effect, level is 1-based */

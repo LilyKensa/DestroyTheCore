@@ -9,13 +9,15 @@ import org.bukkit.inventory.meta.ItemMeta;
 public class ConstructorHelmetGen extends ItemGen {
   
   public ConstructorHelmetGen() {
-    super(ItemsManager.ItemKey.CONSTRUCTOR_HELMET, Material.TURTLE_HELMET);
+    super(ItemsManager.ItemKey.CONSTRUCTOR_HELMET, Material.LEATHER_HELMET);
     setNeverDrop();
     setTrash();
   }
   
   @Override
   public void computeMeta(ItemMeta meta) {
+    meta.setItemModel(Material.TURTLE_HELMET.getKey());
+    
     meta.addEnchant(Enchantment.BINDING_CURSE, 1, true);
     meta.addEnchant(Enchantment.AQUA_AFFINITY, 1, true);
   }

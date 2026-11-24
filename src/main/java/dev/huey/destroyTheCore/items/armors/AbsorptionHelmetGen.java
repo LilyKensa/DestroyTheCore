@@ -12,11 +12,13 @@ import org.bukkit.inventory.meta.ItemMeta;
 public class AbsorptionHelmetGen extends ItemGen {
   
   public AbsorptionHelmetGen() {
-    super(ItemsManager.ItemKey.ABSORPTION_HELMET, Material.TURTLE_HELMET);
+    super(ItemsManager.ItemKey.ABSORPTION_HELMET, Material.NETHERITE_HELMET);
   }
   
   @Override
   public void computeMeta(ItemMeta meta) {
+    meta.setItemModel(Material.TURTLE_HELMET.getKey());
+    
     meta.addEnchant(Enchantment.BINDING_CURSE, 1, true);
     meta.addEnchant(Enchantment.VANISHING_CURSE, 1, true);
     

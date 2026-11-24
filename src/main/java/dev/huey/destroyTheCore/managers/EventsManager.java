@@ -9,6 +9,7 @@ import dev.huey.destroyTheCore.items.gadgets.SensorGen;
 import dev.huey.destroyTheCore.roles.*;
 import dev.huey.destroyTheCore.utils.LocUtils;
 import dev.huey.destroyTheCore.utils.PlayerUtils;
+import io.papermc.paper.event.entity.EntityLungeEvent;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import java.util.List;
 import net.kyori.adventure.text.TextComponent;
@@ -314,6 +315,13 @@ public class EventsManager implements Listener {
   @EventHandler
   public void onBlockPistonRetract(BlockPistonRetractEvent ev) {
     DTC.game.handlePistonRetract(ev);
+  }
+  
+  @EventHandler
+  public void onEntityLunge(EntityLungeEvent ev) {
+    if (ev.getEntity() instanceof Player pl) {
+      DTC.game.handleLunge(pl, pl.getInventory().getItemInMainHand());
+    }
   }
   
   @EventHandler

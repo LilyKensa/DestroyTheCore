@@ -19,7 +19,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 public class GrenadeGen extends UsableItemGen {
   
   static public final int maxLife = 15;
-  static public final float explosionPower = 1.6f;
+  static public final float explosionPower = 2.4f;
   static public final double damageMultiplier = 0.84;
   static public final double teamDamageMultiplier = 0.68;
   static public final Particle particle = Particle.FLAME;
